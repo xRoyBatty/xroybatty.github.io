@@ -23,10 +23,10 @@ async function displayFeaturedPosts() {
         <span class="post-category">${post.category}</span>
         <time class="post-date">${post.date}</time>
         <h2 class="post-title">
-          <a href="/posts/${post.id}.html">${post.title}</a>
+          <a href="/content/posts/${post.id}.html">${post.title}</a>
         </h2>
         <p class="post-excerpt">${post.excerpt}</p>
-        <a href="/posts/${post.id}.html" class="read-more">Read more →</a>
+        <a href="/content/posts/${post.id}.html" class="read-more">Read more →</a>
       </div>
     `;
     
