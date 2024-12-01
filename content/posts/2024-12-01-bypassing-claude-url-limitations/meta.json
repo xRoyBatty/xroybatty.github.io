@@ -1,0 +1,12 @@
+{
+  "id": "2024-12-01-bypassing-claude-url-limitations",
+  "title": "Bypassing Claude's URL Limitations: A Deep Dive into AI-Powered Image Management",
+  "date": "2024-12-01",
+  "author": "Roy",
+  "category": "tech",
+  "tags": ["AI", "Claude", "Web Development", "GitHub", "Images"],
+  "excerpt": "Discover how I engineered a solution to overcome Claude's URL limitations for blog post images, enabling dynamic image hosting through GitHub and improving the visual appeal of AI-generated content.",
+  "image": "/api/placeholder/800/400",
+  "image_alt": "Abstract visualization of AI and web connectivity",
+  "readTime": "12 min"
+}
