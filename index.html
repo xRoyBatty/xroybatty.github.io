@@ -3,12 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iga Świątek: Breaking News Coverage</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Iga Świątek: Doping Controversy and Resolution</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Rest of content... -->
+    <style>
+        .font-playfair { font-family: "Playfair Display", serif; }
+        .font-montserrat { font-family: "Montserrat", sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #1a365d 0%, #2563eb 100%); }
+        .gradient-text { background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .card-hover { transition: transform 0.3s ease-in-out; }
+        .card-hover:hover { transform: translateY(-5px); }
+        .custom-shadow { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); }
+        .quote-box { border-left: 4px solid #2563eb; background: linear-gradient(to right, #f8fafc, white); }
+        .timeline-dot::before { content: ""; position: absolute; left: -39px; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; border-radius: 50%; background-color: #2563eb; border: 3px solid #ffffff; }
+    </style>
 </head>
-<body>
-    <!-- Content... -->
+<body class="bg-gray-50 font-montserrat">
+    <nav class="fixed top-0 left-0 right-0 bg-white bg-opacity-90 backdrop-blur-md shadow-sm z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="text-xl font-playfair font-bold text-blue-900">Tennis Chronicles</div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-600 hover:text-blue-600 transition">Home</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-600 transition">Latest News</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-600 transition">Rankings</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="gradient-bg pt-24 pb-16 px-4 sm:px-6 lg:px-8 text-white mt-16">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="font-playfair text-5xl font-bold mb-6">Breaking News: Iga Świątek</h1>
+            <p class="text-xl opacity-90 font-light">Doping Controversy Shakes Tennis World</p>
+            <div class="mt-8 flex justify-center space-x-4 text-sm">
+                <span class="bg-blue-500 bg-opacity-20 px-4 py-2 rounded-full">Breaking News</span>
+                <span class="bg-blue-500 bg-opacity-20 px-4 py-2 rounded-full">December 2024</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-xl overflow-hidden custom-shadow mb-12">
+            <img src="https://media.aws.iaaf.org/media/Original/666a9c3b-53de-4d6c-9d5e-e205f081120c.jpg" alt="Iga Świątek Press Conference" class="w-full h-96 object-cover">
+            <div class="p-6">
+                <p class="text-sm text-gray-500">Photo: Iga Świątek at recent press conference</p>
+            </div>
+        </div>
+
+        <div class="bg-blue-50 border-l-4 border-blue-600 p-8 rounded-r-xl mb-12 card-hover custom-shadow">
+            <h2 class="text-2xl font-playfair font-bold text-blue-900 mb-4">Breaking Update: One-Month Suspension</h2>
+            <p class="text-gray-700 leading-relaxed">Five-time Grand Slam champion Iga Świątek has accepted a one-month suspension following a positive test for trimetazidine (TMZ), a heart medication that is on the banned substances list.</p>
+        </div>
+
+        <article class="bg-white rounded-xl shadow-lg p-8">
+            <div class="prose max-w-none">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                    <div class="p-6 border rounded-lg">
+                        <h3 class="text-lg font-bold text-blue-900 mb-4">Test Details</h3>
+                        <ul class="space-y-3 text-gray-700">
+                            <li>Substance: Trimetazidine (TMZ)</li>
+                            <li>Test Date: August 2024</li>
+                        </ul>
+                    </div>
+                    <div class="p-6 border rounded-lg">
+                        <h3 class="text-lg font-bold text-blue-900 mb-4">Suspension Details</h3>
+                        <ul class="space-y-3 text-gray-700">
+                            <li>Duration: One Month</li>
+                            <li>Start Date: September 12, 2024</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl font-bold text-blue-900 mb-6">Impact on Career</h3>
+                <p class="text-gray-700 leading-relaxed mb-8">This brief suspension comes during a period of remarkable success for Świątek, who has been dominating the tennis world with multiple Grand Slam victories. The timing and transparent handling of the case reflect the evolving nature of anti-doping protocols in professional tennis.</p>
+
+                <div class="quote-box p-6 mb-8">
+                    <p class="text-gray-700 italic">"The International Tennis Integrity Agency (ITIA) has announced that Świątek tested positive for trimetazidine. The Polish champion's immediate acceptance of the suspension demonstrates her commitment to transparency and cooperation with tennis authorities."</p>
+                </div>
+
+                <div class="mt-12 relative pl-8 border-l-2 border-blue-200">
+                    <div class="mb-8 timeline-dot">
+                        <h4 class="font-bold">August 2024</h4>
+                        <p>Initial drug test conducted</p>
+                    </div>
+                    <div class="mb-8 timeline-dot">
+                        <h4 class="font-bold">September 12, 2024</h4>
+                        <p>Official notification and provisional suspension</p>
+                    </div>
+                    <div class="timeline-dot">
+                        <h4 class="font-bold">October 2024</h4>
+                        <p>Completion of suspension period</p>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <div class="bg-gray-50 p-8 rounded-xl mt-12">
+            <h3 class="text-2xl font-bold text-blue-900 mb-6">Looking Forward</h3>
+            <p class="text-gray-700 leading-relaxed">With the suspension period concluded, Świątek is expected to return to competition with her characteristic determination and skill. The tennis community's supportive response and her professional handling of the situation have helped maintain her standing as one of the sport's most respected figures.</p>
+        </div>
+    </main>
+
+    <footer class="bg-gray-900 text-white mt-12">
+        <div class="max-w-4xl mx-auto py-8 px-4 text-center">
+            <p>&copy; 2024 Tennis Chronicles. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>
