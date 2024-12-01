@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explore the architecture and implementation of an AI-powered worksheet generator using Claude and Model Context Protocol (MCP). Learn about system design, integration patterns, and practical applications in ESL education.">
+    <title>Architecting an AI-Powered Worksheet Generator - Roy's Blog</title>
+    <link href="/assets/css/style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container nav-container">
+            <a href="/" class="site-title">Roy's Blog</a>
+            <nav class="nav-links">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/about" class="nav-link">About</a>
+                <a href="/archive" class="nav-link">Archive</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container main-content">
+        <article class="post">
+            <header class="post-header">
+                <div class="post-meta">
+                    <time datetime="2024-12-01">December 1, 2024</time> • 
+                    <span class="post-category">Tech</span>
+                </div>
+                <h1 class="post-title">Architecting an AI-Powered Worksheet Generator: A Journey Through Claude Projects and MCP</h1>
+            </header>
+
+            <div class="post-content">
+                <p>The most compelling aspect of modern AI isn't its ability to generate text—it's the potential to create sophisticated workflows that transform how we approach content creation. When I set out to build a Digital Worksheet Generator for ESL materials, I discovered that the real power lies in orchestrating multiple AI capabilities through thoughtful system design.</p>
+
+                <h2>The Vision: Beyond Simple Generation</h2>
+                <p>Creating ESL worksheets traditionally involves careful consideration of pedagogical principles, student engagement, and learning progression. The goal wasn't to simply generate questions—it was to craft materials that could:</p>
+                <ul>
+                    <li>Extract key concepts and vocabulary</li>
+                    <li>Create scaffolded learning experiences</li>
+                    <li>Generate varied exercise types</li>
+                    <li>Maintain pedagogical coherence</li>
+                    <li>Produce publisher-quality formatting</li>
+                    <li>Enable version control and iteration</li>
+                </ul>
+
+                <h2>Architectural Overview</h2>
+                <p>The workflow integrates multiple components through MCP services, creating a robust pipeline for worksheet generation. The system leverages Claude's capabilities while maintaining structured data flow and version control.</p>
+
+                <h2>Setting Up the Project Environment</h2>
+                <h3>Step 1: Create a Focused Claude Project</h3>
+                <p>The foundation is a Claude Project dedicated to worksheet generation. This provides a structured environment for maintaining templates, guidelines, and generation workflows.</p>
+
+                <h3>Step 2: Integrating MCP Services</h3>
+                <p>Three critical MCP services form our workflow backbone: memory service for maintaining pedagogical patterns, GitHub service for version control, and fetch service for content retrieval. This integration enables sophisticated content processing and management.</p>
+
+                <h2>The Workflow Architecture</h2>
+                <p>The key insight was developing a multi-stage pipeline that transforms raw content into structured worksheets. Each stage builds upon the previous, creating a coherent learning experience rather than disconnected exercises.</p>
+
+                <h2>Memory System Integration</h2>
+                <p>The memory service maintains critical information about exercise patterns, student challenges, effective explanation strategies, content difficulty levels, and vocabulary frequency patterns. This enables the system to learn and adapt over time.</p>
+
+                <h2>Implementation Deep Dive</h2>
+                <p>The heart of the system is a sophisticated prompt structure that guides Claude through worksheet creation, ensuring pedagogical consistency and quality. The generation pipeline involves content analysis, exercise design, and format generation, each stage carefully orchestrated through MCP integrations.</p>
+
+                <h2>Results and Iterations</h2>
+                <p>Through the memory service, the system has developed an understanding of optimal exercise types for different content, effective scaffolding techniques, and common areas requiring clarification. This learning process continues to refine and improve worksheet quality.</p>
+
+                <h2>Looking Forward</h2>
+                <p>The next evolution of this system will likely involve integration with assessment data, dynamic difficulty adjustment, interactive worksheet variants, collaborative worksheet development, and automated student feedback analysis. The key learning has been that the power lies not in any single component, but in the thoughtful orchestration of multiple AI capabilities through MCP integrations.</p>
+            </div>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About</h3>
+                    <p>Exploring technology, culture, and the intersection of both.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Navigation</h3>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/about">About</a></li>
+                        <li><a href="/archive">Archive</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Roy's Blog. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
