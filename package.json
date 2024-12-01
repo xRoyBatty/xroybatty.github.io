@@ -1,0 +1,19 @@
+{
+  "name": "xroybatty-blog",
+  "version": "1.0.0",
+  "description": "Roy's Blog - A personal blog about technology and culture",
+  "scripts": {
+    "build:featured": "node scripts/build-featured.js",
+    "build": "npm run build:featured"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xroybatty/xroybatty.github.io.git"
+  },
+  "author": "Roy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xroybatty/xroybatty.github.io/issues"
+  },
+  "homepage": "https://github.com/xroybatty/xroybatty.github.io#readme"
+}
