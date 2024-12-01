@@ -1,6 +1,15 @@
 {
   "featured_posts": [
     {
+      "id": "2024-12-01-architecting-ai-worksheet-generator",
+      "title": "Architecting an AI-Powered Worksheet Generator: A Journey Through Claude Projects and MCP",
+      "category": "tech",
+      "date": "2024-12-01",
+      "excerpt": "Explore the architecture and implementation of an AI-powered worksheet generator using Claude and Model Context Protocol (MCP). Learn about system design, integration patterns, and practical applications in ESL education.",
+      "image": "/api/placeholder/800/400",
+      "image_alt": "Abstract diagram showing AI system architecture"
+    },
+    {
       "id": "2024-12-01-eu-wage-equality-directive",
       "title": "EU's New Wage Equality Directive: Closing the Gender Pay Gap",
       "category": "culture",
