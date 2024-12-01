@@ -11,10 +11,8 @@
     <header class="site-header">
         <div class="container nav-container">
             <a href="/" class="site-title">Roy's Blog</a>
-            <nav class="nav-links">
-                <a href="/tech.html" class="nav-link">Tech</a>
-                <a href="/culture.html" class="nav-link">Culture</a>
-                <a href="/about.html" class="nav-link">About</a>
+            <nav class="nav-links" id="dynamicNav">
+                <!-- Navigation links will be inserted here dynamically -->
             </nav>
         </div>
     </header>
@@ -22,18 +20,8 @@
     <main class="container main-content">
         <section class="featured-posts">
             <h2 class="section-title">Latest Posts</h2>
-            <div class="posts-grid">
-                <!-- Featured Post -->
-                <article class="post-card featured-post">
-                    <img src="/api/placeholder/800/400" alt="Woman in professional setting" class="post-image">
-                    <div class="post-content">
-                        <span class="post-category">Culture</span>
-                        <time class="post-date">December 1, 2024</time>
-                        <h2 class="post-title"><a href="/posts/2024-12-01-eu-wage-equality-directive.html">EU's New Wage Equality Directive: Closing the Gender Pay Gap</a></h2>
-                        <p class="post-excerpt">Starting June 7, 2026, new regulations on pay transparency will take effect across the European Union, marking a significant step toward gender pay equality.</p>
-                        <a href="/posts/2024-12-01-eu-wage-equality-directive.html" class="read-more">Read more →</a>
-                    </div>
-                </article>
+            <div class="posts-grid" id="featuredPosts">
+                <!-- Featured posts will be inserted here dynamically -->
             </div>
         </section>
     </main>
@@ -47,9 +35,8 @@
                 </div>
                 <div class="footer-section">
                     <h3>Categories</h3>
-                    <ul>
-                        <li><a href="/tech.html">Technology</a></li>
-                        <li><a href="/culture.html">Culture</a></li>
+                    <ul id="footerCategories">
+                        <!-- Categories will be inserted here dynamically -->
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -64,5 +51,7 @@
             </div>
         </div>
     </footer>
+    <script src="/assets/js/navigation.js"></script>
+    <script src="/assets/js/blogLoader.js"></script>
 </body>
 </html>
