@@ -1,6 +1,12 @@
 # Blog Post Creation Instructions
 
-This document provides the complete workflow for creating and publishing blog posts on xroybatty.github.io.
+This document provides the complete workflow for creating and publishing blog posts on xroybatty.github.io. The blog uses a directory-based structure where each post has its own directory containing all related files.
+
+Key concepts:
+- Each post lives in its own directory with an index.html and meta.json
+- Categories are managed globally in categories.json
+- Featured posts are managed globally in featured.json
+- Post assets (images, etc.) are stored in the post's directory
 
 # Complete Blog Management Guide
 
@@ -33,11 +39,11 @@ xroybatty.github.io/
 1. `meta.json` (Required for each post):
 ```json
 {
-  "id": "2024-12-01-my-post-title",
+  "id": "2024-12-01-my-post-title",     // MUST match directory name
   "title": "My Post Title",
-  "date": "2024-12-01",
+  "date": "2024-12-01",                 // YYYY-MM-DD format
   "author": "Roy",
-  "category": "Technology",
+  "category": "Technology",             // MUST match a category from categories.json
   "tags": ["tag1", "tag2"],
   "excerpt": "Brief description for listings",
   "coverImage": "/api/placeholder/800/400",
@@ -233,16 +239,30 @@ push_files({
 });
 ```
 
-## Usage Flow Example
 
-1. When creating a new post "My Technology Post":
-   ```javascript
-   // 1. First, check if category exists
-   // 2. If not, create new category
-   // 3. Create post directory with index.html and meta.json
-   // 4. If featuring post, update featured.json
-   // 5. Push all changes
-   ```
+## How It All Works Together
+
+1. **Directory Structure**
+   - Each post has its own directory named YYYY-MM-DD-post-slug/
+   - The directory contains index.html (content) and meta.json (metadata)
+   - Optional assets/ subdirectory for post-specific files
+
+2. **Content Loading**
+   - blogLoader.js reads featured.json to display posts on the homepage
+   - For each featured post, it:
+     1. Reads the post's meta.json for display information
+     2. Uses the category from meta.json to look up category details in categories.json
+     3. Loads the post content from index.html when needed
+
+3. **File Relationships**
+   - meta.json → categories.json: Post's category must exist in categories.json
+   - featured.json → meta.json: Featured posts reference post IDs that match directory names
+   - index.html → meta.json: Post content uses metadata from meta.json
+
+4. **Validation Points**
+   - Directory name must match post ID in meta.json
+   - Category in meta.json must exist in categories.json
+   - Featured post IDs must match existing directory names
 
 ## Important Notes
 
