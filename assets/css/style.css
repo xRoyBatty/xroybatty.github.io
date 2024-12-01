@@ -17,8 +17,8 @@
     /* Spacing - Refined for better hierarchy */
     --spacing-xs: 0.5rem;
     --spacing-sm: 1rem;
-    --spacing-md: 1.5rem;
-    --spacing-lg: 2.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 2rem;
     --spacing-xl: 4rem;
     
     /* Container - Adjusted for better readability */
@@ -26,8 +26,8 @@
     --container-padding: clamp(1rem, 5vw, 2rem);
     
     /* Content Widths */
-    --content-width-wide: 85ch;
-    --content-width-normal: 75ch;
+    --content-width-wide: 95ch;
+    --content-width-normal: 85ch;
     
     /* Transitions */
     --transition-fast: 150ms ease;
