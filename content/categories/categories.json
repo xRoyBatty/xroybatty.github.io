@@ -1,0 +1,18 @@
+{
+  "categories": [
+    {
+      "id": "tech",
+      "name": "Tech",
+      "slug": "tech",
+      "description": "Technology-related posts",
+      "created": "2024-12-01"
+    },
+    {
+      "id": "culture",
+      "name": "Culture",
+      "slug": "culture",
+      "description": "Cultural analysis and insights",
+      "created": "2024-12-01"
+    }
+  ]
+}

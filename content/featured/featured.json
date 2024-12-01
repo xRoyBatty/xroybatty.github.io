@@ -1,0 +1,23 @@
+{
+  "featured_posts": [
+    {
+      "id": "2024-12-01-eu-wage-equality-directive",
+      "title": "EU's New Wage Equality Directive: Closing the Gender Pay Gap",
+      "category": "culture",
+      "date": "2024-12-01",
+      "excerpt": "Starting June 7, 2026, new regulations on pay transparency will take effect across the European Union...",
+      "image": "/api/placeholder/800/400",
+      "image_alt": "Woman in professional setting"
+    },
+    {
+      "id": "2024-12-01-anthropic-model-context-protocol",
+      "title": "Anthropic's Model Context Protocol: A New Standard for AI Integration",
+      "category": "tech",
+      "date": "2024-12-01",
+      "excerpt": "In a significant move for the AI industry, Anthropic has introduced the Model Context Protocol (MCP), an open standard designed to revolutionize how AI systems interact with data sources and external tools.",
+      "image": "/api/placeholder/800/400",
+      "image_alt": "Abstract visualization of AI integration"
+    }
+  ],
+  "last_updated": "2024-12-01T12:00:00Z"
+}
