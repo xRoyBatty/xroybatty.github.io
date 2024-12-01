@@ -22,7 +22,7 @@
     --spacing-xl: 4rem;
     
     /* Container - Adjusted for better readability */
-    --container-max: 1200px;
+    --container-max: 1400px;
     --container-padding: clamp(1rem, 5vw, 2rem);
     
     /* Content Widths */
