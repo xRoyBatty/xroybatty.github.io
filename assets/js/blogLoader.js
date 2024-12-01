@@ -1,38 +1,62 @@
+let allPosts = [];
+
 async function loadFeaturedPosts() {
-  try {
-    const response = await fetch('/content/featured/featured.json');
-    const data = await response.json();
-    return data.featured_posts;
-  } catch (error) {
-    console.error('Error loading featured posts:', error);
-    return [];
-  }
+    try {
+        const response = await fetch('/content/featured/featured.json');
+        const data = await response.json();
+        allPosts = data.featured_posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+        return allPosts;
+    } catch (error) {
+        console.error('Error loading featured posts:', error);
+        return [];
+    }
 }
 
-async function displayFeaturedPosts() {
-  const posts = await loadFeaturedPosts();
-  const container = document.getElementById('featuredPosts');
-  
-  posts.forEach(post => {
-    const article = document.createElement('article');
-    article.className = 'post-card featured-post';
+function displayPosts(posts) {
+    const container = document.getElementById('featuredPosts');
+    container.innerHTML = ''; // Clear existing posts
     
-    article.innerHTML = `
-      <img src="${post.image}" alt="${post.image_alt}" class="post-image">
-      <div class="post-content">
-        <span class="post-category">${post.category}</span>
-        <time class="post-date">${post.date}</time>
-        <h2 class="post-title">
-          <a href="/content/posts/${post.id}.html">${post.title}</a>
-        </h2>
-        <p class="post-excerpt">${post.excerpt}</p>
-        <a href="/content/posts/${post.id}.html" class="read-more">Read more →</a>
-      </div>
-    `;
-    
-    container.appendChild(article);
-  });
+    posts.forEach(post => {
+        const article = document.createElement('article');
+        article.className = 'post-card';
+        
+        article.innerHTML = `
+            <img src="${post.image}" alt="${post.image_alt}" class="post-image">
+            <div class="post-content">
+                <span class="post-category">${post.category}</span>
+                <time class="post-date">${formatDate(post.date)}</time>
+                <h2 class="post-title">
+                    <a href="/content/posts/${post.id}/index.html">${post.title}</a>
+                </h2>
+                <p class="post-excerpt">${post.excerpt}</p>
+                <a href="/content/posts/${post.id}/index.html" class="read-more">Read more →</a>
+            </div>
+        `;
+        
+        container.appendChild(article);
+    });
 }
 
-// Initialize featured posts on page load
-document.addEventListener('DOMContentLoaded', displayFeaturedPosts);
+function formatDate(dateString) {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('en-US', options);
+}
+
+function filterPostsByCategory(category) {
+    const filteredPosts = allPosts.filter(post => 
+        post.category.toLowerCase() === category.toLowerCase()
+    );
+    displayPosts(filteredPosts);
+}
+
+function showAllPosts() {
+    displayPosts(allPosts);
+}
+
+// Initialize posts display
+async function initializeBlog() {
+    await loadFeaturedPosts();
+    showAllPosts();
+}
+
+document.addEventListener('DOMContentLoaded', initializeBlog);
