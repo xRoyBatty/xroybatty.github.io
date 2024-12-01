@@ -1,6 +1,15 @@
 {
   "featured_posts": [
     {
+      "id": "2024-12-01-bypassing-claude-url-limitations",
+      "title": "Bypassing Claude's URL Limitations: A Deep Dive into AI-Powered Image Management",
+      "category": "tech",
+      "date": "2024-12-01",
+      "excerpt": "Discover how I engineered a solution to overcome Claude's URL limitations for blog post images, enabling dynamic image hosting through GitHub and improving the visual appeal of AI-generated content.",
+      "image": "/api/placeholder/800/400",
+      "image_alt": "Abstract visualization of AI and web connectivity"
+    },
+    {
       "id": "2024-12-01-architecting-ai-worksheet-generator",
       "title": "Architecting an AI-Powered Worksheet Generator: A Journey Through Claude Projects and MCP",
       "category": "tech",
@@ -28,5 +37,5 @@
       "image_alt": "Illustration showing multiple streaming service logos fading into the distance"
     }
   ],
-  "last_updated": "2024-12-01T12:00:00Z"
+  "last_updated": "2024-12-01T17:45:00Z"
 }
