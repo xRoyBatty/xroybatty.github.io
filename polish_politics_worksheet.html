@@ -1,109 +1,536 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Interactive Worksheet</title>
-<script>
-function checkAnswers() {
-    var correctAnswers = ["accused", "alleged", "criticized", "lifted", "emphasized", "criticized", "fulfilled", "tendency", "dependent", "stance"];
-    var correctVocab = ["d", "i", "c", "e", "g", "h", "j", "f", "a", "b"];
-    var score = 0;
-
-    for (var i = 1; i <= 10; i++) {
-        var userAnswer = document.getElementById("gap" + i).value.toLowerCase();
-        if (userAnswer === correctAnswers[i - 1]) {
-            document.getElementById("gap" + i).style.backgroundColor = "green";
-            score++;
-        } else {
-            document.getElementById("gap" + i).style.backgroundColor = "red";
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Learning Exercises</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f5f5f5;
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+            --text-color: #2c3e50;
+            --border-radius: 8px;
         }
-    }
-
-    for (var i = 1; i <= 10; i++) {
-        var userVocab = document.getElementById("vocab" + i).value.toLowerCase();
-        if (userVocab === correctVocab[i - 1]) {
-            document.getElementById("vocab" + i).style.backgroundColor = "green";
-            score++;
-        } else {
-            document.getElementById("vocab" + i).style.backgroundColor = "red";
+ 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f2f5;
+            color: var(--text-color);
+            line-height: 1.6;
         }
-    }
-
-    alert("Your score: " + score + " out of 20");
-}
-</script>
+ 
+        .section {
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+ 
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+ 
+        .input-group {
+            margin: 15px 0;
+        }
+ 
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+ 
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+ 
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+ 
+        button:hover {
+            background-color: #357abd;
+        }
+ 
+        .exercise {
+            display: none;
+        }
+ 
+        .word-pair {
+            margin: 10px 0;
+            padding: 15px;
+            background-color: var(--secondary-color);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+ 
+        .word-pair:hover {
+            background-color: #e8e8e8;
+        }
+ 
+        .selected {
+            background-color: #d4e6f7;
+            border: 2px solid var(--primary-color);
+        }
+ 
+        img {
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+ 
+        .score-display {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-align: center;
+            padding: 10px;
+            background-color: var(--secondary-color);
+            border-radius: var(--border-radius);
+            margin: 10px 0;
+        }
+ 
+        .result-message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-weight: bold;
+        }
+ 
+        .result-message.success {
+            background-color: var(--success-color);
+            color: white;
+        }
+ 
+        .result-message.error {
+            background-color: var(--error-color);
+            color: white;
+        }
+ 
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            background-color: var(--secondary-color);
+            border-radius: var(--border-radius);
+            margin: 15px 0;
+        }
+ 
+        .stat-item {
+            text-align: center;
+        }
+ 
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+ 
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+ 
+        #imagePreview {
+            max-width: 300px;
+            max-height: 300px;
+            display: block;
+            margin: 15px auto;
+        }
+    </style>
 </head>
 <body>
-
-<h1>Lesson Plan: Politics and Deception</h1>
-
-<h2>Objectives:</h2>
-<ul>
-    <li>Students will be able to understand and use vocabulary related to politics and deception.</li>
-    <li>Students will be able to comprehend a text about political accusations of deception.</li>
-    <li>Students will be able to discuss the topic of political deception and express their opinions.</li>
-</ul>
-
-<h2>Gap-filling task:</h2>
-<h3>Accusations of Deception Fly in Polish Politics</h3>
-<p>
-The leader of Poland’s ruling Law and Justice party (PiS), Jarosław Kaczyński, has <span style="background-color:yellow;" id="gap1">1. __________</span> the current government coalition of “deception” during a recent rally. Kaczyński <span style="background-color:yellow;" id="gap2">2. __________</span> that the opposition’s campaign promises were “a multi-layered deception” aimed at misleading the Polish people. 
-
-He specifically <span style="background-color:yellow;" id="gap3">3. __________</span> the opposition for making false promises about the economy and the daily lives of Poles. According to Kaczyński, during its eight years in power, PiS <span style="background-color:yellow;" id="gap4">4. __________</span> Poland from a “third-world country” to a “civilized state” by, among other things, addressing the issue of child poverty. He <span style="background-color:yellow;" id="gap5">5. __________</span> that this was achieved despite opposition claims of insufficient funds.
-
-Kaczyński also <span style="background-color:yellow;" id="gap6">6. __________</span> the opposition for failing to deliver on its 100-day plan, stating that only nine out of 100 promises have been <span style="background-color:yellow;" id="gap7">7. __________</span>. He argued that this demonstrates the opposition's <span style="background-color:yellow;" id="gap8">8. __________</span> to deceive the public.
-
-Turning to the issue of national security, Kaczyński questioned whether Poland should be a strong and independent nation or <span style="background-color:yellow;" id="gap9">9. __________</span> on Germany and, increasingly, Russia. He contrasted his party's goal of making Poland a leading force in the European Union with the current government's perceived weakness on security matters.
-
-Kaczyński specifically criticized the former Prime Minister Donald Tusk for his <span style="background-color:yellow;" id="gap10">10. __________</span> on Russia’s actions on the Polish border, claiming that Tusk has shifted his position from downplaying the threat to now acknowledging it as “hybrid warfare.” Kaczyński concluded by asserting that Tusk is not a reliable guarantor of national security.
-</p>
-
-<h3>Words to fill in the gaps:</h3>
-<ul>
-    <li>alleged</li> <li>tendency</li> <li>criticized</li> <li>fulfilled</li> <li>emphasized</li> <li>lifted</li> <li>accused</li> <li>stance</li> <li>dependent</li> <li>claimed</li>
-</ul>
-
-<h2>Vocabulary matching:</h2>
-<h3>Match the words with their definitions:</h3>
-<p>
-    <ol>
-        <li><input type='text' id='vocab1' /> accused</li> <li><input type='text' id='vocab2' /> alleged</li> <li><input type='text' id='vocab3' /> stance</li> <li><input type='text' id='vocab4' /> fulfilled</li> <li><input type='text' id='vocab5' /> emphasized</li> <li><input type='text' id='vocab6' /> dependent</li> <li><input type='text' id='vocab7' /> lifted</li> <li><input type='text' id='vocab8' /> criticized</li> <li><input type='text' id='vocab9' /> tendency</li> <li><input type='text' id='vocab10' /> claimed</li>
-    </ol>
-</p>
-<p>
-    <ol type="a">
-        <li>relying on someone or something else for support</li> <li>formally charged someone with a crime</li> <li>to have achieved or accomplished something</li> <li>to have suggested that something is true without proof</li> <li>to have expressed disapproval of someone or something</li> <li>to have raised something to a higher position</li> <li>to have stated something forcefully or convincingly</li> <li>a person's position or opinion on a particular issue</li> <li>stated that something is true, typically without providing evidence</li> <li>a likelihood of behaving in a particular way</li>
-    </ol>
-</p>
-<br>
-<button onclick="checkAnswers()">Check Answers</button>
-
-<h2>Text comprehension questions:</h2>
-<ol>
-    <li>Who is Jarosław Kaczyński?</li>
-    <li>What did Kaczyński accuse the current government coalition of?</li>
-    <li>What specific campaign promises did Kaczyński criticize the opposition for making?</li>
-    <li>According to Kaczyński, how did PiS improve Poland during its time in power?</li>
-    <li>What is Kaczyński's view on Poland’s relationship with Germany and Russia?</li>
-    <li>What is Kaczyński's opinion of Donald Tusk's stance on Russia?</li>
-    <li>Why did Kaczyński criticize the opposition's 100-day plan?</li>
-    <li>How does Kaczyński view the current government's handling of national security?</li>
-    <li>What is meant by the term “hybrid warfare”?</li>
-    <li>What is your overall impression of Kaczyński's accusations?</li>
-</ol>
-
-<h2>Discussion questions:</h2>
-<ol>
-    <li>Do you think Kaczyński's accusations against the opposition are justified? Why or why not?</li>
-    <li>What do you think motivates politicians to make accusations against their opponents?</li>
-    <li>Is it important for politicians to be truthful? Why or why not?</li>
-    <li>What are the potential consequences of political deception?</li>
-    <li>How can citizens protect themselves from being misled by politicians?</li>
-    <li>Do you think the media plays a role in promoting or preventing political deception?</li>
-    <li>What are some examples of political deception from your own country?</li>
-    <li>What measures can be taken to increase transparency and accountability in government?</li>
-    <li>How can we encourage more civil and respectful discourse in politics?</li>
-    <li>Do you think the truth always comes out in the end? Why or why not?</li>
-</ol>
+    <div class="section">
+        <h2>Add New Word</h2>
+        <div class="input-group">
+            <label>English Word:</label>
+            <input type="text" id="englishWord">
+        </div>
+        <div class="input-group">
+            <label>Polish Translation:</label>
+            <input type="text" id="polishWord">
+        </div>
+        <div class="input-group">
+            <label>Image URL (optional):</label>
+            <input type="text" id="imageUrl">
+        </div>
+        <button onclick="addWord()">Add Word</button>
+    </div>
+ 
+    <div class="section">
+        <h2>Data Management</h2>
+        <button onclick="saveToFile()">Save to File</button>
+        <button onclick="document.getElementById('fileInput').click()">Load from File</button>
+        <input type="file" id="fileInput" style="display: none" onchange="loadFromFile(this)">
+    </div>
+ 
+    <div class="section">
+        <h2>Exercises</h2>
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-value" id="totalScore">0</div>
+                <div class="stat-label">Total Score</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="correctAnswers">0</div>
+                <div class="stat-label">Correct Answers</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="totalAttempts">0</div>
+                <div class="stat-label">Total Attempts</div>
+            </div>
+        </div>
+        <button onclick="generateTrueFalse()">True/False Exercise</button>
+        <button onclick="generateMatching()">Matching Exercise</button>
+        <button onclick="generateWriting()">Writing Exercise</button>
+    </div>
+ 
+    <div id="trueFalseExercise" class="exercise section">
+        <h2>True/False Exercise</h2>
+        <div class="score-display">Current Score: <span id="tfScore">0</span></div>
+        <div id="tfQuestion">
+            <img id="tfImage" style="max-width: 300px; display: block; margin: 0 auto;">
+            <p>Polish word: <span id="tfPolish"></span></p>
+            <p>English translation: <span id="tfEnglish"></span></p>
+            <button onclick="checkTrueFalse(true)">True</button>
+            <button onclick="checkTrueFalse(false)">False</button>
+        </div>
+        <div id="tfResult" class="result-message"></div>
+    </div>
+ 
+    <div id="matchingExercise" class="exercise section">
+        <h2>Matching Exercise</h2>
+        <div class="score-display">Current Score: <span id="matchingScore">0</span></div>
+        <div id="polishWords"></div>
+        <div id="englishWords"></div>
+        <button onclick="checkMatching()">Check Matches</button>
+        <div id="matchingResult" class="result-message"></div>
+    </div>
+ 
+    <div id="writingExercise" class="exercise section">
+        <h2>Writing Exercise</h2>
+        <div class="score-display">Current Score: <span id="writingScore">0</span></div>
+        <img id="writeImage" style="max-width: 300px; display: block; margin: 0 auto;">
+        <p>Polish word: <span id="writePolish"></span></p>
+        <div class="input-group">
+            <input type="text" id="writeAnswer" placeholder="Type English translation...">
+        </div>
+        <button onclick="checkWriting()">Check Answer</button>
+        <div id="writeResult" class="result-message"></div>
+    </div>
+ 
+    <script>
+        // Global variables
+        let vocabulary = [];
+        let currentExercise = {};
+        let scores = {
+            truefalse: 0,
+            matching: 0,
+            writing: 0,
+            totalCorrect: 0,
+            totalAttempts: 0
+        };
+ 
+        // Event Listeners - add these after DOM content is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize scores
+            updateScores();
+ 
+            // Add keyboard support for writing exercise
+            document.getElementById('writeAnswer').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkWriting();
+                }
+            });
+        });
+ 
+        // Score management
+        function updateScores() {
+            const totalScore = scores.truefalse + scores.matching + scores.writing;
+            document.getElementById('totalScore').textContent = totalScore;
+            document.getElementById('correctAnswers').textContent = scores.totalCorrect;
+            document.getElementById('totalAttempts').textContent = scores.totalAttempts;
+            document.getElementById('tfScore').textContent = scores.truefalse;
+            document.getElementById('matchingScore').textContent = scores.matching;
+            document.getElementById('writingScore').textContent = scores.writing;
+        }
+ 
+        // Word management functions
+        function addWord() {
+            const english = document.getElementById('englishWord').value;
+            const polish = document.getElementById('polishWord').value;
+            const imageUrl = document.getElementById('imageUrl').value;
+ 
+            if (english && polish) {
+                vocabulary.push({ english, polish, imageUrl });
+                alert('Word added successfully!');
+                clearInputs();
+            } else {
+                alert('Please enter both English and Polish words!');
+            }
+        }
+ 
+        function clearInputs() {
+            document.getElementById('englishWord').value = '';
+            document.getElementById('polishWord').value = '';
+            document.getElementById('imageUrl').value = '';
+        }
+ 
+        // File operations
+        function saveToFile() {
+            const dataToSave = {
+                vocabulary: vocabulary,
+                scores: scores
+            };
+            const dataStr = JSON.stringify(dataToSave);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', 'vocabulary.json');
+            linkElement.click();
+        }
+ 
+        function loadFromFile(input) {
+            const file = input.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = JSON.parse(e.target.result);
+                vocabulary = data.vocabulary || [];
+                scores = data.scores || {
+                    truefalse: 0,
+                    matching: 0,
+                    writing: 0,
+                    totalCorrect: 0,
+                    totalAttempts: 0
+                };
+                updateScores();
+                alert('Vocabulary and scores loaded successfully!');
+            };
+            reader.readAsText(file);
+        }
+ 
+        // Exercise management
+        function hideAllExercises() {
+            document.querySelectorAll('.exercise').forEach(el => el.style.display = 'none');
+        }
+ 
+        // True/False Exercise functions
+        function generateTrueFalse() {
+            if (vocabulary.length < 2) {
+                alert('Add at least 2 words to start exercises!');
+                return;
+            }
+ 
+            hideAllExercises();
+            document.getElementById('trueFalseExercise').style.display = 'block';
+ 
+            const wordIndex = Math.floor(Math.random() * vocabulary.length);
+            const isTrue = Math.random() < 0.5;
+            const word = vocabulary[wordIndex];
+ 
+            let englishShow = word.english;
+            if (!isTrue) {
+                let otherWord;
+                do {
+                    otherWord = vocabulary[Math.floor(Math.random() * vocabulary.length)];
+                } while (otherWord === word);
+                englishShow = otherWord.english;
+            }
+ 
+            currentExercise = {
+                correct: isTrue,
+                original: word
+            };
+ 
+            document.getElementById('tfPolish').textContent = word.polish;
+            document.getElementById('tfEnglish').textContent = englishShow;
+            if (word.imageUrl) {
+                document.getElementById('tfImage').src = word.imageUrl;
+                document.getElementById('tfImage').style.display = 'block';
+            } else {
+                document.getElementById('tfImage').style.display = 'none';
+            }
+            document.getElementById('tfResult').textContent = '';
+        }
+ 
+        function checkTrueFalse(answer) {
+            scores.totalAttempts++;
+            const result = answer === currentExercise.correct;
+            const resultElement = document.getElementById('tfResult');
+ 
+            if (result) {
+                scores.truefalse += 10;
+                scores.totalCorrect++;
+                resultElement.textContent = 'Correct! +10 points';
+                resultElement.className = 'result-message success';
+            } else {
+                scores.truefalse = Math.max(0, scores.truefalse - 5);
+                resultElement.textContent = 'Wrong! -5 points';
+                resultElement.className = 'result-message error';
+            }
+ 
+            updateScores();
+            setTimeout(generateTrueFalse, 2000);
+        }
+ 
+        // Matching Exercise functions
+        let selectedPolish = null;
+        let selectedEnglish = null;
+ 
+        function generateMatching() {
+            if (vocabulary.length < 3) {
+                alert('Add at least 3 words to start matching exercise!');
+                return;
+            }
+ 
+            hideAllExercises();
+            document.getElementById('matchingExercise').style.display = 'block';
+ 
+            const words = [...vocabulary]
+                .sort(() => Math.random() - 0.5)
+                .slice(0, Math.min(5, vocabulary.length));
+ 
+            const polishDiv = document.getElementById('polishWords');
+            const englishDiv = document.getElementById('englishWords');
+            polishDiv.innerHTML = '';
+            englishDiv.innerHTML = '';
+ 
+            words.forEach((word, index) => {
+                const polishWord = document.createElement('div');
+                polishWord.className = 'word-pair';
+                polishWord.textContent = word.polish;
+                polishWord.dataset.index = index;
+                polishWord.onclick = () => selectWord(polishWord, 'polish');
+                polishDiv.appendChild(polishWord);
+ 
+                const englishWord = document.createElement('div');
+                englishWord.className = 'word-pair';
+                englishWord.textContent = word.english;
+                englishWord.dataset.index = index;
+                englishWord.onclick = () => selectWord(englishWord, 'english');
+                englishDiv.appendChild(englishWord);
+            });
+ 
+            for (let i = englishDiv.children.length; i >= 0; i--) {
+                englishDiv.appendChild(englishDiv.children[Math.random() * i | 0]);
+            }
+ 
+            currentExercise = { words };
+            document.getElementById('matchingResult').textContent = '';
+        }
+ 
+        function selectWord(element, type) {
+            if (type === 'polish') {
+                if (selectedPolish) selectedPolish.classList.remove('selected');
+                selectedPolish = element;
+            } else {
+                if (selectedEnglish) selectedEnglish.classList.remove('selected');
+                selectedEnglish = element;
+            }
+            element.classList.add('selected');
+ 
+            if (selectedPolish && selectedEnglish) {
+                scores.totalAttempts++;
+                if (selectedPolish.dataset.index === selectedEnglish.dataset.index) {
+                    scores.matching += 5;
+                    scores.totalCorrect++;
+                    selectedPolish.style.visibility = 'hidden';
+                    selectedEnglish.style.visibility = 'hidden';
+                    document.getElementById('matchingResult').textContent = 'Match found! +5 points';
+                    document.getElementById('matchingResult').className = 'result-message success';
+                } else {
+                    scores.matching = Math.max(0, scores.matching - 2);
+                    document.getElementById('matchingResult').textContent = 'Wrong match! -2 points';
+                    document.getElementById('matchingResult').className = 'result-message error';
+                }
+                updateScores();
+ 
+                selectedPolish.classList.remove('selected');
+                selectedEnglish.classList.remove('selected');
+                selectedPolish = null;
+                selectedEnglish = null;
+ 
+                // Check if exercise is completed
+                const visibleWords = Array.from(document.getElementById('polishWords').children)
+                    .filter(el => el.style.visibility !== 'hidden');
+                if (visibleWords.length === 0) {
+                    setTimeout(() => {
+                        document.getElementById('matchingResult').textContent = 
+                            'Congratulations! All matches found! +10 bonus points';
+                        scores.matching += 10;
+                        updateScores();
+                        setTimeout(generateMatching, 2000);
+                    }, 500);
+                }
+            }
+        }
+ 
+        // Writing Exercise functions
+        function generateWriting() {
+            if (vocabulary.length < 1) {
+                alert('Add at least 1 word to start writing exercise!');
+                return;
+            }
+ 
+            hideAllExercises();
+            document.getElementById('writingExercise').style.display = 'block';
+ 
+            const word = vocabulary[Math.floor(Math.random() * vocabulary.length)];
+            currentExercise = { word };
+ 
+            document.getElementById('writePolish').textContent = word.polish;
+            document.getElementById('writeAnswer').value = '';
+            document.getElementById('writeResult').textContent = '';
+ 
+            if (word.imageUrl) {
+                document.getElementById('writeImage').src = word.imageUrl;
+                document.getElementById('writeImage').style.display = 'block';
+            } else {
+                document.getElementById('writeImage').style.display = 'none';
+            }
+        }
+ 
+        function checkWriting() {
+            scores.totalAttempts++;
+            const answer = document.getElementById('writeAnswer').value.trim().toLowerCase();
+            const correct = currentExercise.word.english.toLowerCase();
+            const resultElement = document.getElementById('writeResult');
+ 
+            if (answer === correct) {
+                scores.writing += 15;
+                scores.totalCorrect++;
+                resultElement.textContent = 'Correct! +15 points';
+                resultElement.className = 'result-message success';
+                setTimeout(generateWriting, 2000);
+            } else {
+                scores.writing = Math.max(0, scores.writing - 7);
+                resultElement.textContent = `Wrong! The correct answer is: ${correct}. -7 points`;
+                resultElement.className = 'result-message error';
+            }
+            updateScores();
+        }
+    </script>
+ 
 </body>
 </html>
