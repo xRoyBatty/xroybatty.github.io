@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz Python - Test Wiedzy</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+
+        .quiz-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .info-panel {
+            background: #ffe0e0;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ff6b6b;
+        }
+
+        .question {
+            margin: 20px 0;
+            display: none;
+        }
+
+        .question.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .option {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background: #f8f8f8;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background: #e8e8e8;
+            border-color: #bbb;
+        }
+
+        .progress {
+            background: #ddd;
+            height: 10px;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #4CAF50;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .result {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+
+        .success {
+            color: #4CAF50;
+        }
+
+        .error {
+            color: #ff6b6b;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="info-panel">
+            <strong>Uwaga!</strong> Jeśli udzielisz błędnej odpowiedzi, quiz rozpocznie się od początku.
+        </div>
+        
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div id="questionContainer"></div>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        const quiz = [
+            {
+                question: "Co wyświetli się na ekranie po wykonaniu: print(\"Hello\") + print(\"World\")?",
+                options: [
+                    "HelloWorld",
+                    "Hello World",
+                    "Hello\nWorld"
+                ],
+                correct: 2
+            },
+            {
+                question: "Które z poniższych przypisań zmiennej jest poprawne?",
+                options: [
+                    "name = Jan",
+                    "name = \"Jan\"",
+                    "\"name\" = Jan"
+                ],
+                correct: 1
+            },
+            {
+                question: "Co robi komenda print()?",
+                options: [
+                    "Zapisuje tekst do pliku",
+                    "Wyświetla tekst na ekranie",
+                    "Drukuje tekst na drukarce"
+                ],
+                correct: 1
+            },
+            {
+                question: "Jaki będzie wynik: powitanie = \"Hej \" + \"tam\"?",
+                options: [
+                    "Hej tam",
+                    "\"Hej tam\"",
+                    "Hejtam"
+                ],
+                correct: 2
+            },
+            {
+                question: "Dlaczego używamy cudzysłowów w print(\"tekst\")?",
+                options: [
+                    "Dla ozdoby",
+                    "Żeby Python wiedział co jest tekstem",
+                    "Żeby tekst wyświetlił się z cudzysłowami"
+                ],
+                correct: 1
+            },
+            {
+                question: "Co się stanie jeśli połączymy dwie zmienne z tekstem: imie = \"Jan\"; nazwisko = \"Kowalski\"; print(imie + nazwisko)?",
+                options: [
+                    "JanKowalski",
+                    "Jan Kowalski",
+                    "Wystąpi błąd"
+                ],
+                correct: 0
+            },
+            {
+                question: "Ile linijek tekstu wyświetli się po wykonaniu:\nprint(\"A\")\nprint(\"B\")\nprint(\"C\")?",
+                options: [
+                    "Jedna",
+                    "Dwie",
+                    "Trzy"
+                ],
+                correct: 2
+            },
+            {
+                question: "Co oznacza = w kodzie: x = \"coś\"?",
+                options: [
+                    "Sprawdza czy x jest równe \"coś\"",
+                    "Przypisuje wartość \"coś\" do zmiennej x",
+                    "Tworzy nową zmienną \"coś\""
+                ],
+                correct: 1
+            },
+            {
+                question: "Co się stanie jeśli nie użyjemy cudzysłowów: print(Hello)?",
+                options: [
+                    "Wyświetli się Hello",
+                    "Wystąpi błąd",
+                    "Nic się nie wyświetli"
+                ],
+                correct: 1
+            },
+            {
+                question: "Jak połączyć dwa teksty ze spacją między nimi?",
+                options: [
+                    "text1 + text2",
+                    "text1 + \" \" + text2",
+                    "text1text2"
+                ],
+                correct: 1
+            }
+        ];
+
+        let currentQuestion = 0;
+        const questionContainer = document.getElementById('questionContainer');
+        const progressBar = document.getElementById('progressBar');
+        const resultDiv = document.getElementById('result');
+
+        function showQuestion(index) {
+            const question = quiz[index];
+            questionContainer.innerHTML = `
+                <div class="question active">
+                    <h3>${index + 1}. ${question.question}</h3>
+                    ${question.options.map((option, i) => `
+                        <button class="option" onclick="checkAnswer(${i})">${option}</button>
+                    `).join('')}
+                </div>
+            `;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestion / quiz.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function checkAnswer(selectedOption) {
+            const correctAnswer = quiz[currentQuestion].correct;
+            
+            if (selectedOption === correctAnswer) {
+                if (currentQuestion === quiz.length - 1) {
+                    // Quiz ukończony
+                    questionContainer.style.display = 'none';
+                    resultDiv.style.display = 'block';
+                    resultDiv.innerHTML = `
+                        <h2 class="success">Gratulacje! Ukończyłeś quiz!</h2>
+                        <p>Odpowiedziałeś poprawnie na wszystkie pytania.</p>
+                    `;
+                } else {
+                    currentQuestion++;
+                    showQuestion(currentQuestion);
+                }
+            } else {
+                // Błędna odpowiedź - restart quizu
+                currentQuestion = 0;
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `
+                    <h2 class="error">Niepoprawna odpowiedź!</h2>
+                    <p>Quiz rozpocznie się od początku za 3 sekundy...</p>
+                `;
+                setTimeout(() => {
+                    resultDiv.style.display = 'none';
+                    showQuestion(currentQuestion);
+                }, 3000);
+            }
+        }
+
+        // Start quizu
+        showQuestion(currentQuestion);
+    </script>
+</body>
+</html>
