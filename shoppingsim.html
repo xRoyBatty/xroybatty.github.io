@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shop Dialogue Animation</title>
+    <style>
+        /* CSS Variables for easier styling updates */
+        :root {
+            --primary-color: #3498db; /* Blue */
+            --secondary-color: #2ecc71; /* Green */
+            --accent-color: #f1c40f; /* Yellow */
+            --text-color: #2c3e50; /* Dark Gray */
+            --background-color: #ecf0f1; /* Light Gray */
+            --bubble-border-color: #a9a9a9;
+            --button-hover-color: #2980b9;
+            --button-active-color: #1f679a;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif; /* Kid-friendly font */
+            background-color: var(--background-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .scene {
+            flex: 1;
+            height: 600px;
+            background-color: #ADD8E6; /* Light blue background */
+            /* Uncomment below if using a background image: */
+            /* background-image: url('background.png');
+            background-size: cover;
+            background-position: center; */
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .control-panel {
+            width: 400px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: fit-content;
+        }
+
+        .section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .section h3 {
+            margin: 0 0 10px 0;
+            color: var(--text-color);
+            font-size: 1.1em;
+        }
+
+        .dialog-inputs {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 10px;
+            align-items: center;
+        }
+
+        select,
+        input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        button {
+            padding: 12px 24px;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            width: 100%;
+            font-size: 1.2em; /* Larger font for buttons */
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .add-button {
+            background-color: var(--secondary-color);
+        }
+        .add-button:hover {
+            background-color: #27ae60;
+        }
+        .play-button {
+            background-color: #2196F3;
+        }
+        .reset-button{
+            background-color: #FF9800;
+            margin-top: 10px;
+        }
+       .clear-button{
+           background-color: #dc3545;
+           margin-top: 10px;
+       }
+        .copy-button {
+            background-color: var(--secondary-color);
+        }
+
+        .copy-button:hover {
+            background-color: #27ae60;
+        }
+
+        .dialog-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            background: #fff;
+        }
+
+        .dialog-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin: 5px 0;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #e9ecef;
+        }
+
+        .dialog-item button {
+            width: auto;
+            padding: 2px 8px;
+             background-color: #dc3545;
+        }
+
+        .dialog-data {
+            width: 100%;
+            height: 80px;
+            padding: 8px;
+            font-family: monospace;
+            background: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            resize: vertical;
+        }
+
+        .voice-controls {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .voice-group {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 5px;
+        }
+
+        .voice-group label {
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        /* Character and Scene Styling */
+
+        .clothes-rack {
+            position: absolute;
+            left: 400px;
+            bottom: 40px;
+            width: 300px;
+            height: 200px;
+        }
+
+        .rack-top {
+            width: 100%;
+            height: 5px;
+            background-color: #666;
+            position: absolute;
+            top: 0;
+        }
+
+        .rack-support {
+            width: 5px;
+            height: 150px;
+            background-color: #666;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .clothes {
+            position: absolute;
+            top: 5px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+        }
+
+       .clothing-item {
+          width: 45px;
+          height: 60px;
+          margin: 0 8px;
+          border-radius: 8px;
+          background-size: cover; /* Important for image-based clothing */
+      }
+      .clothing-item:nth-child(1) { background-image: url('shirt.png'); }
+      .clothing-item:nth-child(2) { background-image: url('pants.png'); }
+      .clothing-item:nth-child(3) { background-image: url('dress.png'); }
+      .clothing-item:nth-child(4) { background-image: url('hat.png');}
+
+
+        .counter {
+            width: 300px;
+            height: 200px;
+            background: linear-gradient(to bottom, #8b4513, #6b3410);
+            position: absolute;
+            left: 50px;
+            bottom: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .counter-top {
+            position: absolute;
+            width: 100%;
+            height: 10px;
+            background-color: #9b5523;
+            top: 0;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .seller {
+            width: 80px;
+            height: 140px;
+            position: absolute;
+            left: 140px;
+            bottom: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .seller-head {
+            width: 50px;
+            height: 50px;
+            background-color: #fdd835; /* Yellow */
+            border-radius: 50%;
+            position: relative; /* For positioning eyes/mouth */
+            margin-bottom: 5px;
+        }
+
+        .seller-head::before,
+        .seller-head::after {
+            /* Eyes */
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: var(--text-color);
+            border-radius: 50%;
+            top: 20px;
+        }
+
+        .seller-head::before {
+            left: 12px;
+        }
+
+        .seller-head::after {
+            right: 12px;
+        }
+
+        .seller-body {
+            width: 60px;
+            height: 90px;
+            background-color: #4CAF50; /* Green */
+            border-radius: 15px;
+            position: relative;
+        }
+
+        /* Customer */
+        .customer {
+            width: 80px;
+            height: 140px;
+            position: absolute;
+            right: 100px; /* Initial position */
+            bottom: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+      .customer-head {
+        width: 50px;
+        height: 50px;
+        background-color: #fdd835; /* Yellow */
+        border-radius: 50%;
+        position: relative;
+        margin-bottom: 5px;
+      }
+    .customer-head::before, .customer-head::after { /* Eyes */
+        content: '';
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background-color: var(--text-color); /* Dark color for eyes */
+        border-radius: 50%;
+        top: 20px;
+    }
+    .customer-head::before { left: 12px; }
+    .customer-head::after { right: 12px; }
+
+        .customer-body {
+            width: 60px;
+            height: 90px;
+            background-color: #8e44ad; /* Purple */
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .wall-shelf {
+            position: absolute;
+            width: 200px;
+            height: 30px;
+            background-color: #8b4513;
+            right: 80px;
+            top: 80px;
+        }
+
+      .shelf-item {
+        position: absolute;
+        width: 35px; /*Adjust as needed*/
+        height: 45px; /*Adjust as needed*/
+        top: -45px;
+        background-size: cover;
+      }
+    .shelf-item:nth-child(1) { background-image: url('toy1.png'); left:10px;}
+    .shelf-item:nth-child(2) { background-image: url('toy2.png'); left: 50px;}
+    .shelf-item:nth-child(3) { background-image: url('toy3.png'); left: 90px;}
+
+
+        .speech-bubble {
+            position: absolute;
+            background: white;
+            border-radius: 20px;
+            padding: 15px;
+            max-width: 200px;
+            opacity: 0;
+            border: 2px solid var(--bubble-border-color);
+            transition: opacity 0.5s;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .seller-speech {
+            left: 100px;
+            top: 150px;
+        }
+
+        .customer-speech {
+            right: 100px;
+            top: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="control-panel">
+            <div class="section">
+                <h3>Add What They Say</h3>
+                <div class="dialog-inputs">
+                    <select id="speaker">
+                        <option value="seller">Shopkeeper</option>
+                        <option value="customer">Customer</option>
+                    </select>
+                    <input type="text" id="dialogText" placeholder="Enter dialogue text here">
+                </div>
+                <button onclick="addDialog()" class ="add-button">➕ Add Dialogue</button>
+            </div>
+
+            <div class="section">
+                <h3>Voice Settings</h3>
+                <div class="voice-controls">
+                    <div class="voice-group">
+                        <label>Shopkeeper Voice:</label>
+                        <select id="sellerVoice" onchange="updateVoices()"></select>
+                    </div>
+                    <div class="voice-group">
+                        <label>Customer Voice:</label>
+                        <select id="customerVoice" onchange="updateVoices()"></select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Dialogue List</h3>
+                <div class="dialog-list" id="dialogList"></div>
+            </div>
+
+            <div class="section">
+                <h3>Save/Load Conversation</h3>
+                <textarea id="dialogData" class="dialog-data" placeholder="Paste saved conversation data here to load it"></textarea>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button onclick="copyDialogData()" class="copy-button">Copy Data</button>
+                    <button onclick="loadDialogData()">Load Data</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <button onclick="startAnimation()" class ="play-button">▶️ Play Animation</button>
+                <button onclick="resetAnimation()" class="reset-button">🔄 Reset</button>
+                <button onclick="clearDialogs()" class="clear-button">🗑️ Clear All</button>
+            </div>
+        </div>
+
+        <div class="scene">
+            <div class="clothes-rack">
+                <div class="rack-top"></div>
+                <div class="rack-support"></div>
+                <div class="clothes">
+                    <div class="clothing-item"></div>
+                    <div class="clothing-item"></div>
+                    <div class="clothing-item"></div>
+                    <div class="clothing-item"></div>
+                </div>
+            </div>
+            <div class="wall-shelf">
+                <div class="shelf-item"></div>
+                <div class="shelf-item"></div>
+                <div class="shelf-item"></div>
+            </div>
+            <div class="counter">
+                <div class="counter-top"></div>
+            </div>
+            <div class="seller">
+                <div class="seller-head"></div>
+                <div class="seller-body"></div>
+            </div>
+            <div class="customer">
+                <div class="customer-head"></div>
+                <div class="customer-body"></div>
+            </div>
+            <div class="speech-bubble seller-speech" id="sellerBubble"></div>
+            <div class="speech-bubble customer-speech" id="customerBubble"></div>
+        </div>
+    </div>
+
+    <script>
+        let dialogs = [];
+        let isAnimating = false;
+        let voices = [];
+        let selectedSellerVoice = null;
+        let selectedCustomerVoice = null;
+
+        // --- Helper Functions ---
+
+        // Plays a sound effect (requires an audio file)
+        function playSound(filename) {
+            const audio = new Audio(filename);
+            audio.play();
+        }
+
+        // --- Voice Handling ---
+
+        function populateVoiceList() {
+            voices = window.speechSynthesis.getVoices();
+            const sellerVoiceSelect = document.getElementById('sellerVoice');
+            const customerVoiceSelect = document.getElementById('customerVoice');
+
+            if (voices.length === 0) {
+                setTimeout(populateVoiceList, 100); // Try again if no voices loaded yet
+                return;
+            }
+
+            sellerVoiceSelect.innerHTML = '';
+            customerVoiceSelect.innerHTML = '';
+
+            let defaultSellerIndex = 0;
+            let defaultCustomerIndex = 0;
+
+            voices.forEach((voice, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${voice.name} (${voice.lang})`;
+
+                // Improved default voice selection
+                if (voice.name === "Microsoft Ava" ||
+                    voice.name.includes("Ava") ||
+                    voice.name.includes("Female")) {
+                    defaultSellerIndex = index;
+                }
+                if (voice.name === "Microsoft Andrew" ||
+                    voice.name.includes("Andrew") ||
+                    voice.name.includes("Male")) {
+                    defaultCustomerIndex = index;
+                }
+
+                sellerVoiceSelect.appendChild(option.cloneNode(true));
+                customerVoiceSelect.appendChild(option);
+            });
+
+            sellerVoiceSelect.value = defaultSellerIndex;
+            customerVoiceSelect.value = defaultCustomerIndex;
+            updateVoices();
+        }
+
+        function updateVoices() {
+            const sellerIndex = document.getElementById('sellerVoice').value;
+            const customerIndex = document.getElementById('customerVoice').value;
+            selectedSellerVoice = voices[sellerIndex];
+            selectedCustomerVoice = voices[customerIndex];
+        }
+
+        function speak(text, voiceSelect) {
+            return new Promise((resolve) => {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.voice = voiceSelect === 'sellerVoice' ? selectedSellerVoice : selectedCustomerVoice;
+                utterance.onend = resolve;
+                window.speechSynthesis.speak(utterance);
+            });
+        }
+
+        // --- Dialogue Management ---
+
+        function generateDialogData() {
+            const sellerVoice = document.getElementById('sellerVoice').value;
+            const customerVoice = document.getElementById('customerVoice').value;
+            return JSON.stringify({
+                sellerVoice,
+                customerVoice,
+                dialogs
+            });
+        }
+
+        function copyDialogData() {
+            const dialogData = document.getElementById('dialogData');
+            dialogData.value = generateDialogData();
+            dialogData.select();
+            document.execCommand('copy');
+            alert('Conversation data copied!');
+        }
+
+        function loadDialogData() {
+            const dialogData = document.getElementById('dialogData');
+            try {
+                const data = JSON.parse(dialogData.value);
+                if (data.sellerVoice !== undefined) {
+                    document.getElementById('sellerVoice').value = data.sellerVoice;
+                }
+                if (data.customerVoice !== undefined) {
+                    document.getElementById('customerVoice').value = data.customerVoice;
+                }
+                updateVoices();
+                if (Array.isArray(data.dialogs)) {
+                    dialogs = data.dialogs;
+                    updateDialogList();
+                }
+                dialogData.value = '';
+                alert('Conversation loaded successfully!');
+            } catch (e) {
+                alert('Error loading conversation data.');
+            }
+        }
+
+        function addDialog() {
+            const speaker = document.getElementById('speaker').value;
+            const text = document.getElementById('dialogText').value.trim();
+
+            // Input validation: Check for empty text
+            if (text === "") {
+                alert("Please enter some text for the dialogue!");
+                return;
+            }
+
+            if (text) {
+                dialogs.push({ speaker, text });
+                updateDialogList();
+                document.getElementById('dialogText').value = '';
+                //playSound('click.mp3'); // Example sound effect
+            }
+        }
+
+
+        function updateDialogList() {
+            const list = document.getElementById('dialogList');
+            list.innerHTML = dialogs.map((dialog, index) => `
+                <div class="dialog-item">
+                    <span>${dialog.speaker === 'seller' ? '👕 Shopkeeper' : '🛍️ Customer'}: ${dialog.text}</span>
+                    <button onclick="removeDialog(${index})">✖</button>
+                </div>
+            `).join('');
+        }
+
+        function removeDialog(index) {
+            dialogs.splice(index, 1);
+            updateDialogList();
+        }
+        function resetAnimation() {
+            if (isAnimating) return;
+            const customer = document.querySelector('.customer');
+            customer.style.transition = 'right 1s';
+            customer.style.right = '-60px';
+            document.getElementById('sellerBubble').style.opacity = 0;
+            document.getElementById('customerBubble').style.opacity = 0;
+            window.speechSynthesis.cancel(); // Stop any ongoing speech
+        }
+        function clearDialogs() {
+            dialogs = [];
+            updateDialogList();
+            document.getElementById('sellerBubble').style.opacity = 0;
+            document.getElementById('customerBubble').style.opacity = 0;
+            window.speechSynthesis.cancel();
+        }
+
+        // --- Animation ---
+
+        async function startAnimation() {
+            if (isAnimating || dialogs.length === 0) return;
+            isAnimating = true;
+
+            const sellerBubble = document.getElementById('sellerBubble');
+            const customerBubble = document.getElementById('customerBubble');
+            const customer = document.querySelector('.customer');
+
+            // Reset positions and visibility
+            sellerBubble.style.opacity = 0;
+            customerBubble.style.opacity = 0;
+            customer.style.transition = 'right 1s ease-in-out'; // Smooth transition
+            customer.style.right = '100px'; // Move customer *into* the scene
+
+
+            for (let dialog of dialogs) {
+                await new Promise(resolve => setTimeout(resolve, 500)); // Short pause
+                const bubble = dialog.speaker === 'seller' ? sellerBubble : customerBubble;
+                const otherBubble = dialog.speaker === 'seller' ? customerBubble : sellerBubble;
+                const voiceSelect = dialog.speaker === 'seller' ? 'sellerVoice' : 'customerVoice';
+
+                otherBubble.style.opacity = 0; // Hide the other bubble
+                bubble.textContent = dialog.text;
+                bubble.style.opacity = 1; // Show current bubble
+
+                await speak(dialog.text, voiceSelect);
+                await new Promise(resolve => setTimeout(resolve, 500)); // Pause after speaking
+            }
+
+            // Animation finished, reset
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            sellerBubble.style.opacity = 0;
+            customerBubble.style.opacity = 0;
+            customer.style.right = '-60px'; // Move customer *out* of the scene
+            isAnimating = false;
+        }
+
+        // --- Initialization ---
+
+        // Initial setup (on page load)
+        document.addEventListener('DOMContentLoaded', () => {
+          // Initialize customer position (off-screen)
+          document.querySelector('.customer').style.right = '-60px';
+
+          // Initialize voices (Chrome needs a push sometimes)
+          if (window.speechSynthesis) {
+              if (window.speechSynthesis.getVoices().length === 0) {
+                  window.speechSynthesis.addEventListener('voiceschanged', populateVoiceList);
+              }
+              populateVoiceList(); // Call it initially, in case voices are ready
+          }
+        });
+
+    </script>
+</body>
+</html>
