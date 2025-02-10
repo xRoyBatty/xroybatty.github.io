@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nauka słówek</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 50px;
+    }
+    .word {
+      font-size: 20px;
+      margin: 10px;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .word span.label {
+      margin: 0 10px;
+      min-width: 180px;
+      text-align: right;
+    }
+    input[type='text'] {
+      padding: 5px;
+      font-size: 18px;
+      margin-right: 10px;
+      width: 180px;
+    }
+    .correct {
+      color: green;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+    .incorrect {
+      color: red;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+    .checkbox {
+      margin-left: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Nauka angielskich słówek</h1>
+  <div id="quiz"></div>
+  <button id="resetLearned">Resetuj nauczone słowa</button>
+
+  <script>
+    // Słownik – klucz: polskie słowo, wartość: angielskie tłumaczenie
+    const allWords = {
+      "co?": "what?",
+      "kto?": "who?",
+      "który?": "which?",
+      "jak?": "how?",
+      "kiedy?": "when?",
+      "gdzie?": "where?",
+      "dlaczego?": "why?"
+    };
+
+    // Odczyt nauczonych słów z localStorage
+    let learnedWords = JSON.parse(localStorage.getItem('learnedWords')) || [];
+    const quizDiv = document.getElementById('quiz');
+    let sessionCompleted = false;
+
+    // Tworzy element quizu dla danego słowa
+    function createWordElement(polish) {
+      const english = allWords[polish];
+      const div = document.createElement('div');
+      div.classList.add('word');
+
+      // Etykieta z polskim słowem
+      const label = document.createElement('span');
+      label.classList.add('label');
+      label.textContent = polish + ':';
+      div.appendChild(label);
+
+      // Pole tekstowe do wpisywania angielskiego tłumaczenia
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.setAttribute('data-word', english);
+      input.oninput = function() {
+        checkWord(input);
+        checkCompletion();
+      };
+      div.appendChild(input);
+
+      // Status (poprawna/niepoprawna odpowiedź)
+      const statusSpan = document.createElement('span');
+      div.appendChild(statusSpan);
+
+      // Checkbox "Nauczyłem się"
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.classList.add('checkbox');
+      checkbox.id = 'chk-' + polish;
+      checkbox.onchange = function() {
+        toggleLearned(polish, input, checkbox, statusSpan);
+      };
+      div.appendChild(checkbox);
+
+      const chkLabel = document.createElement('label');
+      chkLabel.htmlFor = 'chk-' + polish;
+      chkLabel.textContent = 'Nauczyłem się';
+      div.appendChild(chkLabel);
+
+      // Jeżeli słowo jest już oznaczone jako nauczone
+      if (learnedWords.includes(polish)) {
+        checkbox.checked = true;
+        input.value = english;
+        input.disabled = true;
+        statusSpan.textContent = '✔';
+        statusSpan.className = 'correct';
+      }
+      return div;
+    }
+
+    // Inicjalizacja quizu – wyświetlenie wszystkich słów
+    function initQuiz() {
+      quizDiv.innerHTML = '';
+      sessionCompleted = false;
+      for (const polish in allWords) {
+        const wordElement = createWordElement(polish);
+        quizDiv.appendChild(wordElement);
+      }
+    }
+
+    // Sprawdza poprawność wpisanego tłumaczenia
+    function checkWord(input) {
+      const correctWord = input.getAttribute('data-word');
+      const statusSpan = input.nextElementSibling; // pierwszy element po input to statusSpan
+      if (input.value.toLowerCase().trim() === correctWord) {
+        statusSpan.textContent = '✔';
+        statusSpan.className = 'correct';
+      } else {
+        statusSpan.textContent = '✘';
+        statusSpan.className = 'incorrect';
+      }
+    }
+
+    // Przełącza status słowa – nauczone / nie nauczone
+    function toggleLearned(polish, input, checkbox, statusSpan) {
+      if (checkbox.checked) {
+        // Zapisz słowo jako nauczone
+        if (!learnedWords.includes(polish)) {
+          learnedWords.push(polish);
+          localStorage.setItem('learnedWords', JSON.stringify(learnedWords));
+        }
+        input.value = input.getAttribute('data-word');
+        input.disabled = true;
+        statusSpan.textContent = '✔';
+        statusSpan.className = 'correct';
+      } else {
+        // Usuń słowo z nauczonych
+        learnedWords = learnedWords.filter(word => word !== polish);
+        localStorage.setItem('learnedWords', JSON.stringify(learnedWords));
+        input.disabled = false;
+        input.value = '';
+        statusSpan.textContent = '';
+      }
+      checkCompletion();
+    }
+
+    // Sprawdza, czy wszystkie pola (dla słów nieoznaczonych jako nauczone) zostały wypełnione
+    function checkCompletion() {
+      if (sessionCompleted) return;
+      const inputs = document.querySelectorAll('#quiz input[type="text"]');
+      let allFilled = true;
+      inputs.forEach(input => {
+        // Jeśli pole jest nieaktywne (disabled), traktuj jako wypełnione
+        if (!input.disabled && input.value.trim() === '') {
+          allFilled = false;
+        }
+      });
+      if (allFilled) {
+        sessionCompleted = true;
+        setTimeout(() => { // opóźnienie, aby nie wywoływać komunikatu natychmiastowo
+          if (confirm('Ukończyłeś pisanie wszystkich słów. Czy chcesz zacząć jeszcze raz?')) {
+            resetSession();
+          }
+        }, 100);
+      }
+    }
+
+    // Resetuje sesję – czyści pola tekstowe dla słów, które nie są oznaczone jako nauczone
+    function resetSession() {
+      const inputs = document.querySelectorAll('#quiz input[type="text"]');
+      inputs.forEach(input => {
+        if (!input.disabled) {
+          input.value = '';
+          const statusSpan = input.nextElementSibling;
+          statusSpan.textContent = '';
+        }
+      });
+      sessionCompleted = false;
+    }
+
+    // Przycisk resetujący nauczone słowa – czyści localStorage i inicjuje quiz na nowo
+    document.getElementById('resetLearned').addEventListener('click', () => {
+      if (confirm('Czy na pewno chcesz zresetować wszystkie nauczone słowa?')) {
+        localStorage.removeItem('learnedWords');
+        learnedWords = [];
+        initQuiz();
+      }
+    });
+
+    // Inicjalizacja quizu
+    initQuiz();
+  </script>
+</body>
+</html>
