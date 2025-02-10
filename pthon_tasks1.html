@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Python dla Początkujących</title>
+    <style>
+        /* Reset i podstawowe style */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f0f0f0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* Layout */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        /* Terminal */
+        .terminal-section {
+            background: #1e1e1e;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .terminal-header {
+            background: #333;
+            padding: 10px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .terminal {
+            flex-grow: 1;
+            padding: 20px;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 500px;
+            overflow-y: auto;
+        }
+
+        .terminal-output {
+            margin-bottom: 10px;
+            white-space: pre-wrap;
+        }
+
+        /* Info Panel */
+        .info-panel {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            height: fit-content;
+        }
+
+        /* Verification Options */
+        .verification-options {
+            display: none;
+            margin-top: 15px;
+        }
+
+        .option-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-button:hover {
+            background: #4CAF50;
+            color: white;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            background: #333;
+            padding: 3px;
+            border-radius: 5px;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background: #4CAF50;
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Buttons */
+        .control-button {
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .control-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Notes Section */
+        .notes {
+            background: #ffffd0;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        /* Messages */
+        .success {
+            color: #4CAF50;
+        }
+
+        .error {
+            color: #ff6b6b;
+        }
+
+        .milestone-alert {
+            background: #ff9800;
+            color: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="terminal-section">
+            <div class="terminal-header">
+                <span>Python Tutorial</span>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+            </div>
+            <div class="terminal" id="terminal">
+                <div id="output"></div>
+                <div id="verificationOptions" class="verification-options"></div>
+            </div>
+            <button id="nextButton" class="control-button" disabled>Następny krok</button>
+        </div>
+        <div class="info-panel">
+            <h2>Notatki</h2>
+            <div id="notes" class="notes"></div>
+            <div id="explanation"></div>
+        </div>
+    </div>
+
+    <script>
+const lessonData = {
+    lessons: [
+        {
+            step: 1,
+            instruction: "Otwórz Google Colab i w pierwszej komórce wpisz:\nprint(\"Cześć!\")",
+            verification: {
+                question: "Co pojawiło się pod komórką po uruchomieniu kodu?",
+                options: [
+                    "Cześć!",
+                    "print(\"Cześć!\")",
+                    "\"Cześć!\""
+                ],
+                correct: 0,
+                explanation: "Komenda print() wyświetla to co jest w środku nawiasów, ale BEZ cudzysłowów. Cudzysłowy są potrzebne tylko w kodzie, żeby Python wiedział co jest tekstem."
+            },
+            noteContent: "print(\"tekst\") - komenda która wyświetla tekst na ekranie\nPrzykład: print(\"Hello\") pokaże: Hello"
+        },
+        {
+            step: 2,
+            instruction: "Spróbuj teraz wyświetlić kilka linijek tekstu. Wpisz:\nprint(\"Linijka 1\")\nprint(\"Linijka 2\")\nprint(\"Linijka 3\")",
+            verification: {
+                question: "Jak wyświetliły się teksty?",
+                options: [
+                    "Każdy tekst w nowej linii, jeden pod drugim",
+                    "Wszystkie teksty w jednej linii",
+                    "Wystąpił błąd"
+                ],
+                correct: 0,
+                explanation: "Każde print() automatycznie przechodzi do nowej linii. To bardzo przydatne gdy chcemy pokazać wiele rzeczy w czytelny sposób."
+            },
+            noteContent: "Każde print() zaczyna nową linijkę\nMożemy użyć wielu print() jeden pod drugim"
+        },
+        {
+            step: 3,
+            instruction: "Teraz coś ciekawego - stwórzmy zmienną. Wpisz:\nimie = \"Twoje_imie\"\nprint(imie)",
+            verification: {
+                question: "Co stało się po uruchomieniu tego kodu?",
+                options: [
+                    "Wyświetliło się wpisane imię",
+                    "Pokazało się słowo 'imie'",
+                    "Pojawił się błąd NameError"
+                ],
+                correct: 0,
+                explanation: "Stworzyłeś właśnie zmienną - to jak pudełko z etykietą 'imie', do którego włożyłeś swoje imię. Gdy użyłeś print(imie), Python zajrzał do pudełka i wyświetlił jego zawartość."
+            },
+            noteContent: "Zmienna - pudełko na informacje\nNazwa = wartość\nPrzykład: imie = \"Marek\""
+        },
+        {
+            step: 4,
+            instruction: "Spróbujmy połączyć (dodać) dwa teksty. Wpisz:\npowitanie = \"Cześć \"\nprint(powitanie + imie)",
+            verification: {
+                question: "Co się stało z tekstami?",
+                options: [
+                    "Teksty połączyły się w jeden napis",
+                    "Wyświetliły się oddzielnie w dwóch liniach",
+                    "Pojawił się znak + między tekstami"
+                ],
+                correct: 0,
+                explanation: "Znak + między tekstami łączy je w jeden dłuższy tekst. To się nazywa konkatenacja (łączenie tekstów)."
+            },
+            noteContent: "Teksty można łączyć znakiem +\nPrzykład: \"dzień\" + \"dobry\" da nam \"dzieńdobry\""
+        },
+        {
+            step: 5, // Pierwszy MILESTONE
+            type: "MILESTONE",
+            instruction: "Czas na pierwsze większe zadanie!\n\nStwórz program który:\n1. Stworzy dwie zmienne z jakimiś tekstami\n2. Połączy je w śmieszne zdanie\n3. Wyświetli wynik\n\nGdy skończysz, pokaż kod nauczycielowi i wytłumacz jak działa",
+            teacherCheck: true,
+            teacherInstructions: {
+                checkpoints: [
+                    "Czy uczeń stworzył dwie zmienne z tekstami?",
+                    "Czy użył znaku + do połączenia tekstów?",
+                    "Czy użył print() do wyświetlenia wyniku?",
+                    "Czy potrafi wytłumaczyć każdą linijkę kodu?"
+                ]
+            }
+        },
+        {
+            step: 6,
+            instruction: "Teraz poznamy liczby. W nowej komórce wpisz:\nliczba = 7\nprint(liczba + 3)",
+            verification: {
+                question: "Jaki był wynik działania?",
+                options: [
+                    "10",
+                    "7 + 3",
+                    "73"
+                ],
+                correct: 0,
+                explanation: "Python świetnie radzi sobie z matematyką! Gdy używasz liczb (bez cudzysłowów), + oznacza dodawanie matematyczne."
+            },
+            noteContent: "Liczby wpisujemy bez cudzysłowów\nMożemy wykonywać działania: + - * /"
+        },
+        {
+            step: 7,
+            instruction: "Wypróbujmy różne działania matematyczne. Wpisz:\nprint(5 * 3)\nprint(10 - 4)\nprint(15 / 2)",
+            verification: {
+                question: "Które działanie dało wynik z przecinkiem?",
+                options: [
+                    "Dzielenie (15 / 2)",
+                    "Mnożenie (5 * 3)",
+                    "Odejmowanie (10 - 4)"
+                ],
+                correct: 0,
+                explanation: "Dzielenie w Pythonie zawsze daje wynik z przecinkiem (nazywamy to liczbą zmiennoprzecinkową). Inne działania dają liczby całkowite, jeśli to możliwe."
+            },
+            noteContent: "Działania matematyczne:\n+ dodawanie\n- odejmowanie\n* mnożenie\n/ dzielenie"
+        },
+        {
+            step: 8,
+            instruction: "Poznajmy input() - sposób na pytanie użytkownika o dane. Wpisz:\nodpowiedz = input(\"Jak się nazywasz? \")\nprint(\"Miło cię poznać, \" + odpowiedz)",
+            verification: {
+                question: "Co się stało po uruchomieniu kodu?",
+                options: [
+                    "Program zapytał o imię i użył go w powitaniu",
+                    "Program od razu wyświetlił powitanie",
+                    "Wystąpił błąd"
+                ],
+                correct: 0,
+                explanation: "input() zatrzymuje program i czeka aż użytkownik coś wpisze. To co wpiszemy, zostaje zapisane w zmiennej (w tym przypadku 'odpowiedz')."
+            },
+            noteContent: "input(\"pytanie\") - czeka na wpisanie tekstu przez użytkownika\nPrzykład: odpowiedz = input(\"Podaj imię: \")"
+        },
+        {
+            step: 9,
+            instruction: "Spróbujmy połączyć input() z liczbami. Wpisz:\nwiek = input(\"Ile masz lat? \")\nza_rok = int(wiek) + 1\nprint(\"Za rok będziesz mieć \" + str(za_rok) + \" lat\")",
+            verification: {
+                question: "Co robi funkcja int() w tym kodzie?",
+                options: [
+                    "Zamienia tekst na liczbę całkowitą",
+                    "Dodaje 1 do wieku",
+                    "Wyświetla wiek"
+                ],
+                correct: 0,
+                explanation: "input() zawsze daje nam tekst. int() zamienia tekst na liczbę, żebyśmy mogli wykonywać działania matematyczne. str() zamienia z powrotem na tekst, żeby można było użyć + do łączenia napisów."
+            },
+            noteContent: "int() - zamienia tekst na liczbę całkowitą\nstr() - zamienia liczbę na tekst"
+        },
+        {
+            step: 10, // Końcowy MILESTONE
+            type: "MILESTONE",
+            instruction: "PROJEKT KOŃCOWY!\n\nStwórz program który:\n1. Zapyta użytkownika o imię\n2. Zapyta ile ma lat\n3. Obliczy ile będzie miał lat za 10 lat\n4. Wyświetli zabawny komunikat z tymi informacjami\n\nGdy skończysz, zawołaj nauczyciela. Będziesz musiał wytłumaczyć jak działa każda linijka twojego kodu!",
+            teacherCheck: true,
+            teacherInstructions: {
+                checkpoints: [
+                    "Czy program używa input() do pobrania danych?",
+                    "Czy wiek jest prawidłowo konwertowany na liczbę?",
+                    "Czy wykonywane są poprawne obliczenia?",
+                    "Czy wynik jest konwertowany z powrotem na tekst?",
+                    "Czy uczeń rozumie każdą część kodu?",
+                    "Czy komunikat końcowy jest czytelny i poprawny?"
+                ],
+                expectedCode: `imie = input("Jak się nazywasz? ")
+wiek = input("Ile masz lat? ")
+wiek_za_10 = int(wiek) + 10
+print("Hej " + imie + "! Za 10 lat będziesz mieć " + str(wiek_za_10) + " lat!")`
+            }
+        }
+    ]
+};
+        // Stan aplikacji
+        let currentStep = 0;
+        let verificationComplete = false;
+        
+        // Elementy DOM
+        const terminal = document.getElementById('terminal');
+        const output = document.getElementById('output');
+        const verificationOptions = document.getElementById('verificationOptions');
+        const nextButton = document.getElementById('nextButton');
+        const notes = document.getElementById('notes');
+        const explanation = document.getElementById('explanation');
+        const progressBar = document.getElementById('progressBar');
+
+        // Funkcje pomocnicze
+        function printToTerminal(text, className = '') {
+            const line = document.createElement('div');
+            line.className = `terminal-output ${className} fade-in`;
+            line.textContent = text;
+            output.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function showVerificationOptions(options, correctIndex) {
+            verificationOptions.style.display = 'block';
+            verificationOptions.innerHTML = '';
+            
+            options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option-button';
+                button.textContent = option;
+                
+                button.onclick = () => handleVerification(index === correctIndex);
+                verificationOptions.appendChild(button);
+            });
+        }
+
+        function handleVerification(isCorrect) {
+            verificationOptions.style.display = 'none';
+            
+            if (isCorrect) {
+                printToTerminal('Świetnie! Odpowiedź poprawna!', 'success');
+                const lesson = lessonData.lessons[currentStep];
+                
+                // Pokaż wyjaśnienie
+                printToTerminal('\nWYJAŚNIENIE:\n' + lesson.explanation);
+                
+                // Pokaż notatkę
+                notes.style.display = 'block';
+                notes.textContent = lesson.noteContent;
+                
+                verificationComplete = true;
+                nextButton.disabled = false;
+            } else {
+                printToTerminal('Spróbuj jeszcze raz...', 'error');
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentStep + 1) / lessonData.lessons.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function showNextLesson() {
+            verificationComplete = false;
+            nextButton.disabled = true;
+            notes.style.display = 'none';
+            
+            const lesson = lessonData.lessons[currentStep];
+            
+            printToTerminal('\n' + lesson.instruction);
+            
+            if (lesson.type === 'MILESTONE') {
+                const milestoneAlert = document.createElement('div');
+                milestoneAlert.className = 'milestone-alert';
+                milestoneAlert.textContent = 'Zawołaj nauczyciela do sprawdzenia!';
+                output.appendChild(milestoneAlert);
+                nextButton.disabled = false;
+            } else {
+                printToTerminal('\nPo wykonaniu zadania, wybierz poprawną odpowiedź:');
+                showVerificationOptions(lesson.verification.options, lesson.verification.correct);
+            }
+            
+            updateProgress();
+        }
+
+        // Obsługa przycisku "Następny krok"
+        nextButton.onclick = () => {
+            if (currentStep < lessonData.lessons.length - 1) {
+                currentStep++;
+                showNextLesson();
+            } else {
+                printToTerminal('\nGratulacje! Ukończyłeś lekcję! 🎉', 'success');
+                nextButton.disabled = true;
+            }
+        };
+
+        // Inicjalizacja
+        showNextLesson();
+    </script>
+</body>
+</html>
