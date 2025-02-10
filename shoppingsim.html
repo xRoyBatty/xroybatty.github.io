@@ -3,9 +3,7 @@
 <head>
     <title>Shop Dialogue Animation</title>
     <style>
-        /* (Same CSS as before, but I've removed the background-image rules
-           and added styling for the SVGs.  Adjust as needed.) */
-
+        /* Base styles */
         :root {
             --primary-color: #3498db;
             --secondary-color: #2ecc71;
@@ -20,25 +18,29 @@
         body {
             font-family: 'Comic Sans MS', cursive, sans-serif;
             background-color: var(--background-color);
+            margin: 0;
+            padding: 20px;
         }
 
-        /* ... (rest of the CSS from the previous response) ... */
-         .container {
+        /* Layout styles */
+        .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 20px;
+        }
+
+        .scene-container {
             display: flex;
+            flex-direction: column;
             gap: 20px;
         }
 
         .scene {
-            flex: 1;
             height: 600px;
-            background-color: #ADD8E6; /* Light blue background */
-            /* Uncomment below if using a background image: */
-            /* background-image: url('background.png');
-            background-size: cover;
-            background-position: center; */
+            background-color: #ADD8E6;
             position: relative;
             overflow: hidden;
             border: 2px solid #ccc;
@@ -46,46 +48,47 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .control-panel {
-            width: 400px;
+        .scene-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            padding: 15px;
             background: #fff;
-            padding: 20px;
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Dialog item edit mode */
+        .dialog-item.edit-mode {
+            background: #fff3cd;
+            padding: 8px;
+        }
+
+        .dialog-item.edit-mode input {
+            width: calc(100% - 100px);
+            padding: 4px;
+            margin-right: 8px;
+        }
+
+        .edit-controls {
             display: flex;
-            flex-direction: column;
-            gap: 15px;
-            height: fit-content;
+            gap: 5px;
         }
 
-        .section {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #e9ecef;
+        .edit-controls button {
+            padding: 4px 8px;
+            font-size: 12px;
         }
 
-        .section h3 {
-            margin: 0 0 10px 0;
-            color: var(--text-color);
-            font-size: 1.1em;
-        }
-
-        .dialog-inputs {
+        /* Save/Load section */
+        .save-controls {
             display: grid;
-            grid-template-columns: 120px 1fr;
+            grid-template-columns: 1fr auto;
             gap: 10px;
             align-items: center;
         }
 
-        select,
-        input[type="text"] {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            width: 100%;
-        }
-
+                /* Button styles */
         button {
             padding: 12px 24px;
             color: white;
@@ -93,8 +96,7 @@
             border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.3s, transform 0.1s;
-            width: 100%;
-            font-size: 1.2em; /* Larger font for buttons */
+            font-size: 1.1em;
         }
 
         button:hover {
@@ -105,33 +107,29 @@
             transform: scale(0.95);
         }
 
-        .add-button {
-            background-color: var(--secondary-color);
-        }
-        .add-button:hover {
-            background-color: #27ae60;
-        }
-        .play-button {
-            background-color: #2196F3;
-        }
-        .reset-button{
-            background-color: #FF9800;
-            margin-top: 10px;
-        }
-       .clear-button{
-           background-color: #dc3545;
-           margin-top: 10px;
-       }
-        .copy-button {
-            background-color: var(--secondary-color);
+        .add-button { background-color: var(--secondary-color); }
+        .add-button:hover { background-color: #27ae60; }
+        .play-button { background-color: #2196F3; }
+        .reset-button { background-color: #FF9800; }
+        .clear-button { background-color: #dc3545; }
+        .save-button { background-color: var(--secondary-color); }
+        .load-button { background-color: var(--primary-color); }
+        .delete-button { background-color: #dc3545; }
+        .edit-button { background-color: #ffc107; }
+        .remove-button { background-color: #dc3545; }
+
+        /* Input styles */
+        input[type="text"], select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+            width: 100%;
         }
 
-        .copy-button:hover {
-            background-color: #27ae60;
-        }
-
+        /* Dialog section styles */
         .dialog-list {
-            max-height: 200px;
+            max-height: 300px;
             overflow-y: auto;
             border: 1px solid #e9ecef;
             padding: 10px;
@@ -141,52 +139,21 @@
 
         .dialog-item {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            gap: 10px;
-            margin: 5px 0;
+            align-items: center;
             padding: 8px;
+            margin: 5px 0;
             background: #f8f9fa;
             border-radius: 5px;
             border: 1px solid #e9ecef;
         }
 
-        .dialog-item button {
-            width: auto;
-            padding: 2px 8px;
-             background-color: #dc3545;
-        }
-
-        .dialog-data {
-            width: 100%;
-            height: 80px;
-            padding: 8px;
-            font-family: monospace;
-            background: #fff;
-            border: 1px solid #e9ecef;
-            border-radius: 4px;
-            resize: vertical;
-        }
-
-        .voice-controls {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-        }
-
-        .voice-group {
-            display: grid;
-            grid-template-columns: 1fr;
+        .dialog-controls {
+            display: flex;
             gap: 5px;
         }
 
-        .voice-group label {
-            color: var(--text-color);
-            font-weight: 500;
-        }
-
-        /* Character and Scene Styling */
-
+        /* Scene elements styles */
         .clothes-rack {
             position: absolute;
             left: 400px;
@@ -226,6 +193,28 @@
             margin: 0 8px;
         }
 
+        /* Wall shelf styles */
+        .wall-shelf {
+            position: absolute;
+            width: 200px;
+            height: 30px;
+            background-color: #8b4513;
+            right: 80px;
+            top: 80px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .shelf-item {
+            position: absolute;
+            width: 35px;
+            height: 45px;
+            top: -45px;
+            transition: transform 0.3s;
+        }
+
+        .shelf-item:hover {
+            transform: scale(1.1);
+        }
 
         .counter {
             width: 300px;
@@ -247,75 +236,7 @@
             border-radius: 5px 5px 0 0;
         }
 
-        .seller {
-            width: 80px;
-            height: 140px;
-            position: absolute;
-            left: 140px;
-            bottom: 60px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .seller-head {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            position: relative;
-            margin-bottom: 5px;
-        }
-
-        .seller-body {
-            width: 60px;
-            height: 90px;
-            border-radius: 15px;
-            position: relative;
-        }
-
-        /* Customer */
-        .customer {
-            width: 80px;
-            height: 140px;
-            position: absolute;
-            right: 100px;
-            bottom: 60px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-      .customer-head {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        position: relative;
-        margin-bottom: 5px;
-      }
-
-        .customer-body {
-            width: 60px;
-            height: 90px;
-            border-radius: 15px;
-            position: relative;
-        }
-
-        .wall-shelf {
-            position: absolute;
-            width: 200px;
-            height: 30px;
-            background-color: #8b4513;
-            right: 80px;
-            top: 80px;
-        }
-
-      .shelf-item {
-        position: absolute;
-        width: 35px; /*Adjust as needed*/
-        height: 45px; /*Adjust as needed*/
-        top: -45px;
-      }
-
+        /* Speech bubbles */
         .speech-bubble {
             position: absolute;
             background: white;
@@ -338,61 +259,168 @@
             top: 150px;
         }
 
-        /* Styling for the embedded SVGs */
-        .clothing-item svg,
-        .shelf-item svg,
-        .seller-head svg,
-        .seller-body svg,
-        .customer-head svg,
-        .customer-body svg {
-            width: 100%;  /* Make SVG fill its container */
-            height: 100%;
-            display: block; /* Important for consistent sizing */
-        }
-         /* Local storage section styling */
-        .local-storage-section {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-        }
-
-        .save-load-inputs {
-            display: grid;
-            grid-template-columns: 1fr auto auto; /* Name input, Save, Load */
-            gap: 10px;
-            align-items: center;
-        }
-        .save-load-inputs input[type="text"] {
-            width: 100%; /* Make input fill available space */
-        }
-
-        .saved-list {
-            max-height: 150px;
-            overflow-y: auto;
-            border: 1px solid #e9ecef;
-            padding: 10px;
-            border-radius: 5px;
-        }
-         .saved-item {
+        /* Character styles */
+        .seller, .customer {
+            width: 80px;
+            height: 140px;
+            position: absolute;
+            bottom: 60px;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            padding: 5px 0;
-            border-bottom: 1px solid #eee;
-        }
-        .saved-item:last-child {
-            border-bottom: none;
-        }
-        .delete-button{
-            background-color: #dc3545;
         }
 
+        .seller {
+            left: 140px;
+        }
+
+        .customer {
+            right: 100px;
+            transition: right 1s ease-in-out;
+        }
+
+        .seller-head, .customer-head {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-bottom: 5px;
+        }
+
+        .seller-body, .customer-body {
+            width: 60px;
+            height: 90px;
+            border-radius: 15px;
+        }
+
+        .section {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    margin-bottom: 15px;
+}
+
+.voice-group {
+    margin-bottom: 10px;
+}
+
+.voice-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.saved-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.cancel-button { 
+    background-color: #6c757d; 
+}
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="scene-container">
+            <div class="scene">
+                <div class="wall-shelf">
+                    <div class="shelf-item" style="left:10px;">
+                        <svg viewBox="0 0 25 35">
+                            <rect x="0" y="0" width="25" height="35" rx="5" ry="5" fill="#e74c3c"/>
+                        </svg>
+                    </div>
+                    <div class="shelf-item" style="left:50px;">
+                        <svg viewBox="0 0 25 35">
+                            <circle cx="12.5" cy="17.5" r="10" fill="#3498db"/>
+                        </svg>
+                    </div>
+                    <div class="shelf-item" style="left:90px;">
+                        <svg viewBox="0 0 25 35">
+                            <polygon points="12.5,2 2,33 23,33" fill="#2ecc71"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="clothes-rack">
+                    <div class="rack-top"></div>
+                    <div class="rack-support"></div>
+                    <div class="clothes">
+                        <div class="clothing-item">
+                            <svg viewBox="0 0 50 60">
+                                <path d="M45,5 L5,5 C2,5 0,7 0,10 L0,55 C0,58 2,60 5,60 L45,60 C48,60 50,58 50,55 L50,10 C50,7 48,5 45,5 Z" fill="#e74c3c"/>
+                            </svg>
+                        </div>
+                        <div class="clothing-item">
+                            <svg viewBox="0 0 50 60">
+                                <path d="M10,10 L40,10 L40,30 C40,35 35,40 30,40 L20,40 C15,40 10,35 10,30 L10,10 Z" fill="#3498db"/>
+                                <path d="M15,40 L35,40 L35,55 C35,58 32,60 29,60 L21,60 C18,60 15,58 15,55 L15,40 Z" fill="#3498db"/>
+                            </svg>
+                        </div>
+                        <div class="clothing-item">
+                            <svg viewBox="0 0 50 60">
+                                <path d="M2,30 Q48,30 25,2 C2,30 48,30 25,58 C22,58 28,58 25,58 Z" fill="#2ecc71"/>
+                            </svg>
+                        </div>
+                        <div class="clothing-item">
+                            <svg viewBox="0 0 50 60">
+                                <circle cx="25" cy="20" r="18" fill="#f1c40f" />
+                                <path d="M10,40 C 15,55 35,55 40,40" stroke="#f1c40f" stroke-width="5" fill="none"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="counter">
+                    <div class="counter-top"></div>
+                </div>
+                <div class="seller">
+                    <div class="seller-head">
+                        <svg viewBox="0 0 50 50">
+                            <circle cx="25" cy="25" r="24" fill="#fdd835" />
+                            <circle cx="18" cy="20" r="4" fill="#2c3e50" />
+                            <circle cx="32" cy="20" r="4" fill="#2c3e50" />
+                            <path d="M15,35 C 18,40 32,40 35,35" stroke="#2c3e50" stroke-width="2" fill="none"/>
+                        </svg>
+                    </div>
+                    <div class="seller-body">
+                        <svg viewBox="0 0 60 90">
+                            <rect x="0" y="0" width="60" height="90" rx="15" ry="15" fill="#4CAF50"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="customer">
+                    <div class="customer-head">
+                        <svg viewBox="0 0 50 50">
+                            <circle cx="25" cy="25" r="24" fill="#fdd835" />
+                            <circle cx="18" cy="20" r="4" fill="#2c3e50" />
+                            <circle cx="32" cy="20" r="4" fill="#2c3e50" />
+                            <path d="M18,30 Q25,38 32,30" stroke="#2c3e50" stroke-width="2" fill="none"/>
+                        </svg>
+                    </div>
+                    <div class="customer-body">
+                        <svg viewBox="0 0 60 90">
+                            <rect x="0" y="0" width="60" height="90" rx="15" ry="15" fill="#8e44ad"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="speech-bubble seller-speech" id="sellerBubble"></div>
+                <div class="speech-bubble customer-speech" id="customerBubble"></div>
+            </div>
+            <div class="scene-controls">
+                <button onclick="startAnimation()" class="play-button">▶️ Play Animation</button>
+                <button onclick="resetAnimation()" class="reset-button">🔄 Reset</button>
+                <button onclick="clearDialogs()" class="clear-button">🗑️ Clear All</button>
+                <div class="save-controls">
+                    <input type="text" id="saveName" placeholder="Save name">
+                    <button onclick="quickSave()" class="save-button">Save</button>
+                    <button onclick="quickLoad()" class="load-button">Load</button>
+                </div>
+            </div>
+        </div>
+
         <div class="control-panel">
-            <div class="section">
+                        <div class="section">
                 <h3>Add What They Say</h3>
                 <div class="dialog-inputs">
                     <select id="speaker">
@@ -401,7 +429,7 @@
                     </select>
                     <input type="text" id="dialogText" placeholder="Enter dialogue text here">
                 </div>
-                <button onclick="addDialog()" class ="add-button">➕ Add Dialogue</button>
+                <button onclick="addDialog()" class="add-button">➕ Add Dialogue</button>
             </div>
 
             <div class="section">
@@ -422,165 +450,81 @@
                 <h3>Dialogue List</h3>
                 <div class="dialog-list" id="dialogList"></div>
             </div>
-            <!-- Local Storage Save/Load -->
             <div class="section">
-                <h3>Quick Save & Load</h3>
-                <div class="local-storage-section">
-                    <div class="save-load-inputs">
-                        <input type="text" id="saveName" placeholder="Save name">
-                        <button onclick="quickSave()">Save</button>
-                        <button onclick="quickLoad()">Load</button>
-                    </div>
-                    <div class="saved-list" id="savedList">
-                        </div>
-                </div>
+                <h3>Saved Conversations</h3>
+                <div class="saved-list" id="savedList"></div>
             </div>
-
-            <div class="section">
-                <button onclick="startAnimation()" class ="play-button">▶️ Play Animation</button>
-                <button onclick="resetAnimation()" class="reset-button">🔄 Reset</button>
-                <button onclick="clearDialogs()" class="clear-button">🗑️ Clear All</button>
-            </div>
-        </div>
-
-        <div class="scene">
-             <div class="clothes-rack">
-                <div class="rack-top"></div>
-                <div class="rack-support"></div>
-                <div class="clothes">
-                    <div class="clothing-item">
-                        <svg viewBox="0 0 50 60">
-                            <path d="M45,5 L5,5 C2,5 0,7 0,10 L0,55 C0,58 2,60 5,60 L45,60 C48,60 50,58 50,55 L50,10 C50,7 48,5 45,5 Z" fill="#e74c3c"/>
-                        </svg>
-                    </div>
-                     <div class="clothing-item">
-                        <svg viewBox="0 0 50 60">
-                           <path d="M10,10 L40,10 L40,30 C40,35 35,40 30,40 L20,40 C15,40 10,35 10,30 L10,10 Z" fill="#3498db"/>
-                        <path d="M15,40 L35,40 L35,55 C35,58 32,60 29,60 L21,60 C18,60 15,58 15,55 L15,40 Z" fill="#3498db"/>
-                        </svg>
-                    </div>
-                    <div class="clothing-item">
-                        <svg viewBox="0 0 50 60">
-                            <path d="M2,30 Q48,30 25,2 C2,30 48,30 25,58 C22,58 28,58 25,58 Z" fill="#2ecc71"/>
-                        </svg>
-                    </div>
-                    <div class="clothing-item">
-                       <svg viewBox="0 0 50 60">
-                            <circle cx="25" cy="20" r="18" fill="#f1c40f" />
-                            <path d="M10,40 C 15,55 35,55 40,40" stroke="#f1c40f" stroke-width="5" fill="none"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-            <div class="wall-shelf">
-                <div class="shelf-item" style="left:10px;">
-                    <svg viewBox="0 0 25 35">
-                       <rect x="0" y="0" width="25" height="35" rx="5" ry="5" fill="#e74c3c"/>
-                    </svg>
-                </div>
-                <div class="shelf-item" style="left:50px;">
-                    <svg viewBox="0 0 25 35">
-                       <circle cx="12.5" cy="17.5" r="10" fill="#3498db"/>
-                    </svg>
-                </div>
-                <div class="shelf-item" style="left:90px;">
-                    <svg viewBox="0 0 25 35">
-                       <polygon points="12.5,2 2,33 23,33" fill="#2ecc71"/>
-                    </svg>
-                </div>
-            </div>
-            <div class="counter">
-                <div class="counter-top"></div>
-            </div>
-            <div class="seller">
-                <div class="seller-head">
-                    <svg viewBox="0 0 50 50">
-                      <circle cx="25" cy="25" r="24" fill="#fdd835" />
-                      <circle cx="18" cy="20" r="4" fill="#2c3e50" />
-                      <circle cx="32" cy="20" r="4" fill="#2c3e50" />
-                      <path d="M15,35 C 18,40 32,40 35,35" stroke="#2c3e50" stroke-width="2" fill="none"/>
-                  </svg>
-                </div>
-                <div class="seller-body">
-                    <svg viewBox="0 0 60 90">
-                        <rect x="0" y="0" width="60" height="90" rx="15" ry="15" fill="#4CAF50"/>
-                    </svg>
-                </div>
-            </div>
-            <div class="customer">
-                <div class="customer-head">
-                    <svg viewBox="0 0 50 50">
-                        <circle cx="25" cy="25" r="24" fill="#fdd835" />
-                        <circle cx="18" cy="20" r="4" fill="#2c3e50" />
-                        <circle cx="32" cy="20" r="4" fill="#2c3e50" />
-                         <path d="M18,30 Q25,38 32,30" stroke="#2c3e50" stroke-width="2" fill="none"/>
-                    </svg>
-                </div>
-                <div class="customer-body">
-                   <svg viewBox="0 0 60 90">
-                        <rect x="0" y="0" width="60" height="90" rx="15" ry="15" fill="#8e44ad"/>
-                    </svg>
-                </div>
-            </div>
-            <div class="speech-bubble seller-speech" id="sellerBubble"></div>
-            <div class="speech-bubble customer-speech" id="customerBubble"></div>
         </div>
     </div>
 
     <script>
+        // Global variables
         let dialogs = [];
         let isAnimating = false;
         let voices = [];
         let selectedSellerVoice = null;
         let selectedCustomerVoice = null;
 
-        // --- Helper Functions ---
+        // Speech synthesis function
+        function speak(text, voiceSelect) {
+            return new Promise((resolve) => {
+                const utterance = new SpeechSynthesisUtterance(text);
+                // Explicitly get the correct voice based on speaker
+                utterance.voice = voiceSelect === 'sellerVoice' ? 
+                    voices.find(v => v.name.includes('Microsoft Ava')) : 
+                    voices.find(v => v.name.includes('Microsoft Andrew'));
+                utterance.onend = resolve;
+                window.speechSynthesis.speak(utterance);
+            });
+        }
 
+        // Play sound effect (if needed)
         function playSound(filename) {
             const audio = new Audio(filename);
             audio.play();
         }
 
-        // --- Voice Handling ---
+
+        // 1. Voice selection improvement
         function populateVoiceList() {
             voices = window.speechSynthesis.getVoices();
             const sellerVoiceSelect = document.getElementById('sellerVoice');
             const customerVoiceSelect = document.getElementById('customerVoice');
 
             if (voices.length === 0) {
-                setTimeout(populateVoiceList, 100); // Try again if no voices loaded yet
+                setTimeout(populateVoiceList, 100);
                 return;
             }
 
             sellerVoiceSelect.innerHTML = '';
             customerVoiceSelect.innerHTML = '';
 
-            let defaultSellerIndex = 0;
-            let defaultCustomerIndex = 0;
+            // Find Microsoft Ava and Microsoft Andrew voices
+            const avaVoice = voices.find(voice => 
+                voice.name.includes('Microsoft Ava')
+            );
+            const andrewVoice = voices.find(voice => 
+                voice.name.includes('Microsoft Andrew')
+            );
 
-            voices.forEach((voice, index) => {
+            // Add Ava voice to seller select
+            if (avaVoice) {
                 const option = document.createElement('option');
-                option.value = index;
-                option.textContent = `${voice.name} (${voice.lang})`;
+                option.value = voices.indexOf(avaVoice);
+                option.textContent = avaVoice.name;
+                sellerVoiceSelect.appendChild(option);
+                sellerVoiceSelect.value = voices.indexOf(avaVoice);
+            }
 
-                // Improved default voice selection
-                if (voice.name === "Microsoft Ava" ||
-                    voice.name.includes("Ava") ||
-                    voice.name.includes("Female")) {
-                    defaultSellerIndex = index;
-                }
-                if (voice.name === "Microsoft Andrew" ||
-                    voice.name.includes("Andrew") ||
-                    voice.name.includes("Male")) {
-                    defaultCustomerIndex = index;
-                }
-
-                sellerVoiceSelect.appendChild(option.cloneNode(true));
+            // Add Andrew voice to customer select
+            if (andrewVoice) {
+                const option = document.createElement('option');
+                option.value = voices.indexOf(andrewVoice);
+                option.textContent = andrewVoice.name;
                 customerVoiceSelect.appendChild(option);
-            });
+                customerVoiceSelect.value = voices.indexOf(andrewVoice);
+            }
 
-            sellerVoiceSelect.value = defaultSellerIndex;
-            customerVoiceSelect.value = defaultCustomerIndex;
             updateVoices();
         }
 
@@ -591,55 +535,33 @@
             selectedCustomerVoice = voices[customerIndex];
         }
 
-        function speak(text, voiceSelect) {
-            return new Promise((resolve) => {
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.voice = voiceSelect === 'sellerVoice' ? selectedSellerVoice : selectedCustomerVoice;
-                utterance.onend = resolve;
-                window.speechSynthesis.speak(utterance);
-            });
+        // Dialog management functions
+        function makeDialogEditable(index) {
+            const dialogItem = document.querySelectorAll('.dialog-item')[index];
+            const dialog = dialogs[index];
+            
+            dialogItem.classList.add('edit-mode');
+            dialogItem.innerHTML = `
+                <input type="text" value="${dialog.text}" class="edit-input">
+                <div class="edit-controls">
+                    <button onclick="saveDialogEdit(${index})" class="save-button">Save</button>
+                    <button onclick="cancelDialogEdit(${index})" class="cancel-button">Cancel</button>
+                </div>
+            `;
         }
 
-        // --- Dialogue Management ---
-
-        function generateDialogData() {
-            const sellerVoice = document.getElementById('sellerVoice').value;
-            const customerVoice = document.getElementById('customerVoice').value;
-            return JSON.stringify({
-                sellerVoice,
-                customerVoice,
-                dialogs
-            });
-        }
-
-        function copyDialogData() {
-            const dialogData = document.getElementById('dialogData');
-            dialogData.value = generateDialogData();
-            dialogData.select();
-            document.execCommand('copy');
-            alert('Conversation data copied!');
-        }
-
-        function loadDialogData() {
-            const dialogData = document.getElementById('dialogData');
-            try {
-                const data = JSON.parse(dialogData.value);
-                if (data.sellerVoice !== undefined) {
-                    document.getElementById('sellerVoice').value = data.sellerVoice;
-                }
-                if (data.customerVoice !== undefined) {
-                    document.getElementById('customerVoice').value = data.customerVoice;
-                }
-                updateVoices();
-                if (Array.isArray(data.dialogs)) {
-                    dialogs = data.dialogs;
-                    updateDialogList();
-                }
-                dialogData.value = '';
-                alert('Conversation loaded successfully!');
-            } catch (e) {
-                alert('Error loading conversation data.');
+        function saveDialogEdit(index) {
+            const dialogItem = document.querySelectorAll('.dialog-item')[index];
+            const newText = dialogItem.querySelector('.edit-input').value.trim();
+            
+            if (newText) {
+                dialogs[index].text = newText;
+                updateDialogList();
             }
+        }
+
+        function cancelDialogEdit(index) {
+            updateDialogList();
         }
 
         function addDialog() {
@@ -651,11 +573,9 @@
                 return;
             }
 
-            if (text) {
-                dialogs.push({ speaker, text });
-                updateDialogList();
-                document.getElementById('dialogText').value = '';
-            }
+            dialogs.push({ speaker, text });
+            updateDialogList();
+            document.getElementById('dialogText').value = '';
         }
 
         function updateDialogList() {
@@ -663,15 +583,142 @@
             list.innerHTML = dialogs.map((dialog, index) => `
                 <div class="dialog-item">
                     <span>${dialog.speaker === 'seller' ? '👕 Shopkeeper' : '🛍️ Customer'}: ${dialog.text}</span>
-                    <button onclick="removeDialog(${index})">✖</button>
+                    <div class="dialog-controls">
+                        <button onclick="makeDialogEditable(${index})" class="edit-button">✎</button>
+                        <button onclick="removeDialog(${index})" class="remove-button">✖</button>
+                    </div>
                 </div>
             `).join('');
-            updateSavedList();
         }
 
         function removeDialog(index) {
             dialogs.splice(index, 1);
             updateDialogList();
+        }
+
+        // Save/Load functionality
+        function generateDialogData() {
+            return JSON.stringify({
+                sellerVoice: document.getElementById('sellerVoice').value,
+                customerVoice: document.getElementById('customerVoice').value,
+                dialogs
+            });
+        }
+
+        function loadDialogDataFromString(dataString) {
+            try {
+                const data = JSON.parse(dataString);
+                if (data.sellerVoice !== undefined) {
+                    document.getElementById('sellerVoice').value = data.sellerVoice;
+                }
+                if (data.customerVoice !== undefined) {
+                    document.getElementById('customerVoice').value = data.customerVoice;
+                }
+                updateVoices();
+                if (Array.isArray(data.dialogs)) {
+                    dialogs = data.dialogs;
+                    updateDialogList();
+                }
+            } catch (e) {
+                alert('Error loading conversation data.');
+            }
+        }
+
+        function quickSave() {
+            const saveName = document.getElementById('saveName').value.trim();
+            if (!saveName) {
+                alert('Please enter a name for your save.');
+                return;
+            }
+
+            const saveKey = `dialogue_save_${saveName}`;
+            const data = generateDialogData();
+            localStorage.setItem(saveKey, data);
+            document.getElementById('saveName').value = '';
+            updateSavedList();
+            alert('Conversation saved!');
+        }
+
+        function quickLoad() {
+            const saveName = document.getElementById('saveName').value.trim();
+            if (!saveName) {
+                alert('Please enter the name of the save to load.');
+                return;
+            }
+
+            const saveKey = `dialogue_save_${saveName}`;
+            const data = localStorage.getItem(saveKey);
+            if (data) {
+                loadDialogDataFromString(data);
+                document.getElementById('saveName').value = '';
+                alert('Conversation loaded!');
+            } else {
+                alert('Save not found.');
+            }
+        }
+
+        function deleteSave(saveName) {
+            const saveKey = `dialogue_save_${saveName}`;
+            localStorage.removeItem(saveKey);
+            updateSavedList();
+        }
+
+        function updateSavedList() {
+            const savedList = document.getElementById('savedList');
+            savedList.innerHTML = '';
+
+            // Filter only dialogue-related saves
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('dialogue_save_')) {
+                    const saveName = key.replace('dialogue_save_', '');
+                    const listItem = document.createElement('div');
+                    listItem.className = 'saved-item';
+                    listItem.innerHTML = `
+                        <span>${saveName}</span>
+                        <div class="save-controls">
+                            <button onclick="document.getElementById('saveName').value = '${saveName}'; quickLoad();" class="load-button">Load</button>
+                            <button onclick="deleteSave('${saveName}')" class="delete-button">Delete</button>
+                        </div>
+                    `;
+                    savedList.appendChild(listItem);
+                }
+            }
+        }
+
+        // Animation functions
+        async function startAnimation() {
+            if (isAnimating || dialogs.length === 0) return;
+            isAnimating = true;
+
+            const sellerBubble = document.getElementById('sellerBubble');
+            const customerBubble = document.getElementById('customerBubble');
+            const customer = document.querySelector('.customer');
+
+            sellerBubble.style.opacity = 0;
+            customerBubble.style.opacity = 0;
+            customer.style.transition = 'right 1s ease-in-out';
+            customer.style.right = '100px';
+
+            for (let dialog of dialogs) {
+                await new Promise(resolve => setTimeout(resolve, 500));
+                const bubble = dialog.speaker === 'seller' ? sellerBubble : customerBubble;
+                const otherBubble = dialog.speaker === 'seller' ? customerBubble : sellerBubble;
+                const voiceSelect = dialog.speaker === 'seller' ? 'sellerVoice' : 'customerVoice';
+
+                otherBubble.style.opacity = 0;
+                bubble.textContent = dialog.text;
+                bubble.style.opacity = 1;
+
+                await speak(dialog.text, voiceSelect);
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            sellerBubble.style.opacity = 0;
+            customerBubble.style.opacity = 0;
+            customer.style.right = '-60px';
+            isAnimating = false;
         }
 
         function resetAnimation() {
@@ -692,131 +739,18 @@
             window.speechSynthesis.cancel();
         }
 
-        // --- Animation ---
-        async function startAnimation() {
-            if (isAnimating || dialogs.length === 0) return;
-            isAnimating = true;
-
-            const sellerBubble = document.getElementById('sellerBubble');
-            const customerBubble = document.getElementById('customerBubble');
-            const customer = document.querySelector('.customer');
-
-            sellerBubble.style.opacity = 0;
-            customerBubble.style.opacity = 0;
-            customer.style.transition = 'right 1s ease-in-out';
-            customer.style.right = '100px';
-
-
-            for (let dialog of dialogs) {
-                await new Promise(resolve => setTimeout(resolve, 500));
-                const bubble = dialog.speaker === 'seller' ? sellerBubble : customerBubble;
-                const otherBubble = dialog.speaker === 'seller' ? customerBubble : sellerBubble;
-                const voiceSelect = dialog.speaker === 'seller' ? 'sellerVoice' : 'customerVoice';
-
-                otherBubble.style.opacity = 0;
-                bubble.textContent = dialog.text;
-                bubble.style.opacity = 1;
-
-                await speak(dialog.text, voiceSelect);
-                await new Promise(resolve => setTimeout(resolve, 500));
-            }
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            sellerBubble.style.opacity = 0;
-            customerBubble.style.opacity = 0;
-            customer.style.right = '-60px';
-            isAnimating = false;
-        }
-
-        // --- Local Storage Functions ---
-
-        function quickSave() {
-            const saveName = document.getElementById('saveName').value.trim();
-            if (!saveName) {
-                alert('Please enter a name for your save.');
-                return;
-            }
-
-            const data = generateDialogData();  // Get current dialog data
-            localStorage.setItem(saveName, data); // Save to localStorage
-            document.getElementById('saveName').value = ''; // Clear input
-            updateSavedList(); // Update the displayed list
-            alert('Conversation saved!');
-        }
-
-        function quickLoad() {
-            const saveName = document.getElementById('saveName').value.trim();
-            if (!saveName) {
-                alert('Please enter the name of the save to load.');
-                return;
-            }
-
-            const data = localStorage.getItem(saveName);
-            if (data) {
-                loadDialogDataFromString(data); // Load data
-                document.getElementById('saveName').value = '';
-                alert('Conversation loaded!');
-            } else {
-                alert('Save not found.');
-            }
-        }
-        //Loads data from the string
-        function loadDialogDataFromString(dataString) {
-             try {
-                const data = JSON.parse(dataString);
-                if (data.sellerVoice !== undefined) {
-                    document.getElementById('sellerVoice').value = data.sellerVoice;
-                }
-                if (data.customerVoice !== undefined) {
-                    document.getElementById('customerVoice').value = data.customerVoice;
-                }
-                updateVoices();
-                if (Array.isArray(data.dialogs)) {
-                    dialogs = data.dialogs;
-                    updateDialogList();
-                }
-
-            } catch (e) {
-                alert('Error loading conversation data.');
-            }
-        }
-
-        // Deletes a save from local storage.
-        function deleteSave(saveName) {
-            localStorage.removeItem(saveName);
-            updateSavedList();
-        }
-
-        // Updates the displayed list of saved conversations.
-        function updateSavedList() {
-            const savedList = document.getElementById('savedList');
-            savedList.innerHTML = ''; // Clear current list
-
-            for (let i = 0; i < localStorage.length; i++) {
-                const saveName = localStorage.key(i);
-                const listItem = document.createElement('div');
-                listItem.className = 'saved-item';
-                listItem.innerHTML = `
-                    <span>${saveName}</span>
-                    <button onclick="document.getElementById('saveName').value = '${saveName}'; quickLoad();" class = "load-button">Load</button>
-                    <button onclick="deleteSave('${saveName}')" class = "delete-button">Delete</button>
-                `;
-                savedList.appendChild(listItem);
-            }
-        }
-
-        // --- Initialization ---
+        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-          document.querySelector('.customer').style.right = '-60px';
+            document.querySelector('.customer').style.right = '-60px';
 
-          if (window.speechSynthesis) {
-              if (window.speechSynthesis.getVoices().length === 0) {
-                  window.speechSynthesis.addEventListener('voiceschanged', populateVoiceList);
-              }
-              populateVoiceList();
-          }
-          updateSavedList();
+            if (window.speechSynthesis) {
+                if (window.speechSynthesis.getVoices().length === 0) {
+                    window.speechSynthesis.addEventListener('voiceschanged', populateVoiceList);
+                }
+                populateVoiceList();
+            }
+            updateSavedList();
         });
-
     </script>
 </body>
 </html>
