@@ -486,47 +486,64 @@
 
 
         // 1. Voice selection improvement
+       
+
         function populateVoiceList() {
-            voices = window.speechSynthesis.getVoices();
-            const sellerVoiceSelect = document.getElementById('sellerVoice');
-            const customerVoiceSelect = document.getElementById('customerVoice');
+    voices = window.speechSynthesis.getVoices();
+    const sellerVoiceSelect = document.getElementById('sellerVoice');
+    const customerVoiceSelect = document.getElementById('customerVoice');
 
-            if (voices.length === 0) {
-                setTimeout(populateVoiceList, 100);
-                return;
-            }
+    if (voices.length === 0) {
+        setTimeout(populateVoiceList, 100);
+        return;
+    }
 
-            sellerVoiceSelect.innerHTML = '';
-            customerVoiceSelect.innerHTML = '';
+    sellerVoiceSelect.innerHTML = '';
+    customerVoiceSelect.innerHTML = '';
 
-            // Find Microsoft Ava and Microsoft Andrew voices
-            const avaVoice = voices.find(voice => 
-                voice.name.includes('Microsoft Ava')
-            );
-            const andrewVoice = voices.find(voice => 
-                voice.name.includes('Microsoft Andrew')
-            );
+    // Try to find Microsoft voices
+    let avaVoice = voices.find(voice => voice.name.includes('Microsoft Ava'));
+    let andrewVoice = voices.find(voice => voice.name.includes('Microsoft Andrew'));
 
-            // Add Ava voice to seller select
-            if (avaVoice) {
-                const option = document.createElement('option');
-                option.value = voices.indexOf(avaVoice);
-                option.textContent = avaVoice.name;
-                sellerVoiceSelect.appendChild(option);
-                sellerVoiceSelect.value = voices.indexOf(avaVoice);
-            }
+    // If not found, look for any English voices
+    if (!avaVoice) {
+        avaVoice = voices.find(voice => 
+            voice.lang.includes('en') && 
+            (voice.name.includes('female') || voice.name.includes('woman'))
+        );
+    }
+    if (!andrewVoice) {
+        andrewVoice = voices.find(voice => 
+            voice.lang.includes('en') && 
+            (voice.name.includes('male') || voice.name.includes('man'))
+        );
+    }
 
-            // Add Andrew voice to customer select
-            if (andrewVoice) {
-                const option = document.createElement('option');
-                option.value = voices.indexOf(andrewVoice);
-                option.textContent = andrewVoice.name;
-                customerVoiceSelect.appendChild(option);
-                customerVoiceSelect.value = voices.indexOf(andrewVoice);
-            }
+    // If still not found, use any available voices
+    if (!avaVoice || !andrewVoice) {
+        alert('Warning: Microsoft voices not found. Speech quality may be reduced. Please install Microsoft voices for best experience.');
+        // Use whatever voices are available
+        avaVoice = voices[0];
+        andrewVoice = voices[1] || voices[0];
+    }
 
-            updateVoices();
-        }
+    // Add voices to dropdowns
+    const sellerOption = document.createElement('option');
+    sellerOption.value = voices.indexOf(avaVoice);
+    sellerOption.textContent = avaVoice.name;
+    sellerVoiceSelect.appendChild(sellerOption);
+
+    const customerOption = document.createElement('option');
+    customerOption.value = voices.indexOf(andrewVoice);
+    customerOption.textContent = andrewVoice.name;
+    customerVoiceSelect.appendChild(customerOption);
+
+    // Set values
+    sellerVoiceSelect.value = voices.indexOf(avaVoice);
+    customerVoiceSelect.value = voices.indexOf(andrewVoice);
+
+    updateVoices();
+}
 
         function updateVoices() {
             const sellerIndex = document.getElementById('sellerVoice').value;
