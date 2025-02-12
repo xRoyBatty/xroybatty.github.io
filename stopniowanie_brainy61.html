@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Test - Comparisons</title>
+    <title>English Grammar Tests</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -19,6 +19,10 @@
             margin-bottom: 20px;
         }
 
+        .section {
+            margin-bottom: 30px;
+        }
+
         .question {
             margin-bottom: 15px;
             line-height: 1.6;
@@ -31,6 +35,11 @@
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 16px;
+        }
+
+        .adjective {
+            color: #666;
+            margin-left: 5px;
         }
 
         .correct {
@@ -62,84 +71,126 @@
         }
 
         .score {
-            margin-top: 20px;
+            margin-top: 10px;
             font-size: 18px;
             font-weight: bold;
         }
 
-        .hint {
-            color: #666;
-            font-style: italic;
-            font-size: 0.9em;
+        h2 {
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
     <div class="test-container">
-        <h2>English Comparison Test</h2>
-        <p class="hint">Fill in the gaps with correct English translations of the phrases in brackets.</p>
+        <div class="section" id="section1">
+            <h2>1. Uzupełnij zdania odpowiednią formą przymiotników w nawiasach.</h2>
+            
+            <div class="question">
+                1. Snakes are <input type="text" class="input-inline" data-section="1" data-question="1"> than mice.
+                <span class="adjective">(dangerous)</span>
+            </div>
 
-        <div id="testContent">
+            <div class="question">
+                2. Crabs aren't as <input type="text" class="input-inline" data-section="1" data-question="2"> as penguins.
+                <span class="adjective">(cute)</span>
+            </div>
+
+            <div class="question">
+                3. Birds are <input type="text" class="input-inline" data-section="1" data-question="3"> than fish.
+                <span class="adjective">(noisy)</span>
+            </div>
+
+            <div class="question">
+                4. I think dogs are <input type="text" class="input-inline" data-section="1" data-question="4"> pets than cats.
+                <span class="adjective">(good)</span>
+            </div>
+
+            <div class="question">
+                5. Chimpanzees are <input type="text" class="input-inline" data-section="1" data-question="5"> than monkeys.
+                <span class="adjective">(big)</span>
+            </div>
+
+            <div class="score" id="score1"></div>
+        </div>
+
+        <div class="section" id="section2">
+            <h2>2. Przetłumacz fragmenty w nawiasach na język angielski.</h2>
+
             <div class="question">
                 Sharks and dolphins live in seas and oceans, but sharks are fish and dolphins are mammals. Sharks are 
-                <input type="text" class="input-inline" data-question="1" placeholder="(gorsze niż)"> 
+                <input type="text" class="input-inline" data-section="2" data-question="1" placeholder="(gorsze niż)"> 
                 dolphins at learning because they aren't 
-                <input type="text" class="input-inline" data-question="2" placeholder="(tak inteligentne jak)"> 
+                <input type="text" class="input-inline" data-section="2" data-question="2" placeholder="(tak inteligentne jak)"> 
                 dolphins.
             </div>
 
             <div class="question">
                 Both sharks and dolphins are good swimmers, but usually sharks aren't 
-                <input type="text" class="input-inline" data-question="3" placeholder="(tak szybkie jak)"> 
+                <input type="text" class="input-inline" data-section="2" data-question="3" placeholder="(tak szybkie jak)"> 
                 dolphins. Dolphins are also 
-                <input type="text" class="input-inline" data-question="4" placeholder="(bardziej przyjazne niż)"> 
+                <input type="text" class="input-inline" data-section="2" data-question="4" placeholder="(bardziej przyjazne niż)"> 
                 sharks.
             </div>
 
             <div class="question">
                 Sharks are 
-                <input type="text" class="input-inline" data-question="5" placeholder="(bardziej niebezpieczne niż)"> 
+                <input type="text" class="input-inline" data-section="2" data-question="5" placeholder="(bardziej niebezpieczne niż)"> 
                 dolphins or, in fact, any other sea animals.
             </div>
+
+            <div class="score" id="score2"></div>
         </div>
 
         <div class="controls">
             <button onclick="checkAnswers()">Check Answers</button>
             <button onclick="resetTest()">Reset</button>
         </div>
-
-        <div class="score" id="scoreDisplay"></div>
     </div>
 
     <script>
         const answers = {
-            1: ['worse than'],
-            2: ['as intelligent as'],
-            3: ['as fast as'],
-            4: ['friendlier than', 'more friendly than'],
-            5: ['more dangerous than', 'far more dangerous than']
+            section1: {
+                1: ['more dangerous'],
+                2: ['cute'],
+                3: ['noisier'],
+                4: ['better'],
+                5: ['bigger']
+            },
+            section2: {
+                1: ['worse than'],
+                2: ['as intelligent as'],
+                3: ['as fast as'],
+                4: ['friendlier than', 'more friendly than'],
+                5: ['more dangerous than', 'far more dangerous than']
+            }
         };
 
         function checkAnswers() {
-            let score = 0;
+            let score1 = 0;
+            let score2 = 0;
+
             const inputs = document.querySelectorAll('.input-inline');
             
             inputs.forEach(input => {
+                const section = input.dataset.section;
                 const questionNumber = input.dataset.question;
                 const userAnswer = input.value.trim().toLowerCase();
-                const correctAnswers = answers[questionNumber].map(a => a.toLowerCase());
+                const correctAnswers = answers[`section${section}`][questionNumber].map(a => a.toLowerCase());
                 
                 if (correctAnswers.includes(userAnswer)) {
                     input.classList.add('correct');
                     input.classList.remove('incorrect');
-                    score++;
+                    if (section === '1') score1++;
+                    else score2++;
                 } else {
                     input.classList.add('incorrect');
                     input.classList.remove('correct');
                 }
             });
 
-            document.getElementById('scoreDisplay').textContent = `Score: ${score} / 5`;
+            document.getElementById('score1').textContent = `Score: ${score1} / 5`;
+            document.getElementById('score2').textContent = `Score: ${score2} / 5`;
         }
 
         function resetTest() {
@@ -148,7 +199,8 @@
                 input.value = '';
                 input.classList.remove('correct', 'incorrect');
             });
-            document.getElementById('scoreDisplay').textContent = '';
+            document.getElementById('score1').textContent = '';
+            document.getElementById('score2').textContent = '';
         }
     </script>
 </body>
