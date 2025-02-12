@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Grammar Tests</title>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .test-container {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .question {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        input {
+            width: 150px;
+            padding: 5px 8px;
+            margin: 0 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .adjective {
+            color: #666;
+            margin-left: 5px;
+        }
+
+        .correct {
+            background-color: #e6ffe6;
+            border-color: #00cc00;
+        }
+
+        .incorrect {
+            background-color: #ffe6e6;
+            border-color: #cc0000;
+        }
+
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .score {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .test-title {
+            margin-bottom: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const AdjectiveTest = () => {
+            const [answers, setAnswers] = React.useState({});
+            const [showResults, setShowResults] = React.useState(false);
+
+            const questions = [
+                {
+                    id: 1,
+                    text: ['Horses are ', ' than dogs.'],
+                    adjective: 'heavy',
+                    answer: 'heavier'
+                },
+                {
+                    id: 2,
+                    text: ['I think that animals are ', ' than plants.'],
+                    adjective: 'interesting',
+                    answer: 'more interesting'
+                },
+                {
+                    id: 3,
+                    text: ["Whales aren't as ", ' as dolphins.'],
+                    adjective: 'intelligent',
+                    answer: 'intelligent'
+                },
+                {
+                    id: 4,
+                    text: ['Most dogs are ', ' than rats.'],
+                    adjective: 'big',
+                    answer: 'bigger'
+                },
+                {
+                    id: 5,
+                    text: ['I think some cats are ', " pets than dogs because they're not so friendly."],
+                    adjective: 'bad',
+                    answer: 'worse'
+                }
+            ];
+
+            const handleAnswerChange = (questionId, value) => {
+                setAnswers(prev => ({
+                    ...prev,
+                    [questionId]: value
+                }));
+            };
+
+            const calculateScore = () => {
+                return Object.entries(answers).reduce((score, [questionId, answer]) => {
+                    const question = questions.find(q => q.id === parseInt(questionId));
+                    return score + (question?.answer.toLowerCase() === answer.toLowerCase().trim() ? 1 : 0);
+                }, 0);
+            };
+
+            const reset = () => {
+                setAnswers({});
+                setShowResults(false);
+            };
+
+            return (
+                <div className="test-container">
+                    <h2 className="test-title">1. Complete the sentences with the correct form of adjectives in brackets</h2>
+                    
+                    {questions.map((question) => (
+                        <div key={question.id} className="question">
+                            <span>{question.id}. </span>
+                            {question.text[0]}
+                            <input
+                                type="text"
+                                value={answers[question.id] || ''}
+                                onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+                                className={
+                                    showResults
+                                        ? answers[question.id]?.toLowerCase().trim() === question.answer.toLowerCase()
+                                            ? 'correct'
+                                            : 'incorrect'
+                                        : ''
+                                }
+                            />
+                            {question.text[1]}
+                            <span className="adjective">({question.adjective})</span>
+                        </div>
+                    ))}
+
+                    <div className="controls">
+                        <button onClick={() => setShowResults(true)}>Check Answers</button>
+                        <button onClick={reset}>Reset</button>
+                    </div>
+
+                    {showResults && (
+                        <div className="score">
+                            Score: {calculateScore()} / 5
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const TranslationTest = () => {
+            const [answers, setAnswers] = React.useState({});
+            const [showResults, setShowResults] = React.useState(false);
+
+            const questions = [
+                {
+                    id: 1,
+                    beforeText: "Sharks and dolphins live in seas and oceans, but sharks are fish and dolphins are mammals. Dolphins are ",
+                    afterText: " sharks and they are ",
+                    polish: "bardziej inteligentne niż",
+                    answer: "more intelligent than"
+                },
+                {
+                    id: 2,
+                    beforeText: "",
+                    afterText: " sharks at learning.",
+                    polish: "lepsze niż",
+                    answer: "better than"
+                },
+                {
+                    id: 3,
+                    beforeText: "Both sharks and dolphins are good swimmers, but usually dolphins are ",
+                    afterText: " sharks.",
+                    polish: "szybsze niż",
+                    answer: "faster than"
+                },
+                {
+                    id: 4,
+                    beforeText: "Of course, sharks aren't ",
+                    afterText: " dolphins – in fact, they can be very dangerous!",
+                    polish: "tak przyjazne jak",
+                    answer: "as friendly as"
+                },
+                {
+                    id: 5,
+                    beforeText: "But not all of them. Some shark species are ",
+                    afterText: " other fish, like the Dwarf Lantern Shark, which is only about 17 cm long.",
+                    polish: "mniejsze niż",
+                    answer: "smaller than"
+                }
+            ];
+
+            const handleAnswerChange = (questionId, value) => {
+                setAnswers(prev => ({
+                    ...prev,
+                    [questionId]: value
+                }));
+            };
+
+            const calculateScore = () => {
+                return Object.entries(answers).reduce((score, [questionId, answer]) => {
+                    const question = questions.find(q => q.id === parseInt(questionId));
+                    return score + (question?.answer.toLowerCase() === answer.toLowerCase().trim() ? 1 : 0);
+                }, 0);
+            };
+
+            const reset = () => {
+                setAnswers({});
+                setShowResults(false);
+            };
+
+            return (
+                <div className="test-container">
+                    <h2 className="test-title">2. Translate the fragments in brackets into English</h2>
+                    
+                    {questions.map((question) => (
+                        <div key={question.id} className="question">
+                            <span>{question.id}. </span>
+                            {question.beforeText}
+                            <input
+                                type="text"
+                                value={answers[question.id] || ''}
+                                onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+                                className={
+                                    showResults
+                                        ? answers[question.id]?.toLowerCase().trim() === question.answer.toLowerCase()
+                                            ? 'correct'
+                                            : 'incorrect'
+                                        : ''
+                                }
+                            />
+                            {question.afterText}
+                            <span className="adjective">({question.polish})</span>
+                        </div>
+                    ))}
+
+                    <div className="controls">
+                        <button onClick={() => setShowResults(true)}>Check Answers</button>
+                        <button onClick={reset}>Reset</button>
+                    </div>
+
+                    {showResults && (
+                        <div className="score">
+                            Score: {calculateScore()} / 5
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const App = () => {
+            return (
+                <div>
+                    <AdjectiveTest />
+                    <TranslationTest />
+                </div>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
