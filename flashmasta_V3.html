@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Language Learning Exercises</title>
+  <style>
+    :root {
+      --primary-color: #4a90e2;
+      --secondary-color: #f5f5f5;
+      --success-color: #2ecc71;
+      --error-color: #e74c3c;
+      --text-color: #2c3e50;
+      --border-radius: 8px;
+    }
+
+    /* Increase overall learning area width */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f0f2f5;
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    .section {
+      margin: 20px 0;
+      padding: 25px;
+      border-radius: var(--border-radius);
+      background-color: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: var(--primary-color);
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 10px;
+      margin-top: 0;
+    }
+
+    .input-group {
+      margin: 15px 0;
+    }
+
+    input[type="text"], input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: var(--border-radius);
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus, input[type="file"]:focus {
+      border-color: var(--primary-color);
+      outline: none;
+    }
+
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+      margin: 5px;
+    }
+
+    button:hover {
+      background-color: #357abd;
+    }
+
+    .word-pair {
+      margin: 10px 0;
+      padding: 15px;
+      background-color: var(--secondary-color);
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: background-color 0.3s;
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    .word-pair:hover {
+      background-color: #e8e8e8;
+    }
+
+    .selected {
+      background-color: #d4e6f7;
+      border: 2px solid var(--primary-color);
+    }
+
+    img {
+      border-radius: var(--border-radius);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .score-display {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--primary-color);
+      text-align: center;
+      padding: 10px;
+      background-color: var(--secondary-color);
+      border-radius: var(--border-radius);
+      margin: 10px 0;
+    }
+
+    .result-message {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: var(--border-radius);
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .result-message.success {
+      background-color: var(--success-color);
+      color: white;
+    }
+
+    .result-message.error {
+      background-color: var(--error-color);
+      color: white;
+    }
+
+    .stats-container {
+      display: flex;
+      justify-content: space-around;
+      padding: 15px;
+      background-color: var(--secondary-color);
+      border-radius: var(--border-radius);
+      margin: 15px 0;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: #666;
+    }
+
+    /* Flashcard Styles */
+    .flashcard {
+      perspective: 1000px;
+      width: 300px;
+      margin: 0 auto;
+    }
+    .flashcard-inner {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      text-align: center;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+    .flashcard.flipped .flashcard-inner {
+      transform: rotateY(180deg);
+    }
+    .flashcard-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--primary-color);
+      border-radius: var(--border-radius);
+      background-color: var(--secondary-color);
+      font-size: 20px;
+      padding: 10px;
+    }
+    .flashcard-back {
+      transform: rotateY(180deg);
+    }
+
+    /* Word List for Management */
+    .word-list {
+      margin-top: 10px;
+    }
+    .word-item {
+      border-bottom: 1px solid #ddd;
+      padding: 10px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .word-details {
+      flex-grow: 1;
+    }
+    .tag {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-right: 4px;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+    }
+    .modal-content {
+      background: white;
+      max-width: 500px;
+      margin: 50px auto;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    .button-group {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    /* Undo Message Style */
+    .undo-message {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      padding: 10px 20px;
+      border-radius: var(--border-radius);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      z-index: 1001;
+    }
+  </style>
+</head>
+<body>
+  <!-- Add New Word Section -->
+  <div class="section">
+    <h2>Add New Word</h2>
+    <div class="input-group">
+      <label>English Word:</label>
+      <input type="text" id="englishWord">
+    </div>
+    <div class="input-group">
+      <label>Polish Translation:</label>
+      <input type="text" id="polishWord">
+    </div>
+    <div class="input-group">
+      <label>Image URL (optional):</label>
+      <input type="text" id="imageUrl">
+    </div>
+    <div class="input-group">
+      <label>Or Upload Local Image:</label>
+      <input type="file" id="localImage" accept="image/*">
+    </div>
+    <div class="input-group">
+      <label>Tags (comma separated):</label>
+      <input type="text" id="wordTags" placeholder="e.g., beginner, food, verbs">
+    </div>
+    <button onclick="addWord()">Add Word</button>
+  </div>
+
+  <!-- Manage Vocabulary Section -->
+  <div class="section">
+    <h2>Manage Vocabulary</h2>
+    <div id="vocabList" class="word-list"></div>
+  </div>
+
+  <!-- Data Management Section -->
+  <div class="section">
+    <h2>Data Management</h2>
+    <button onclick="saveToFile()">Save to File</button>
+    <button onclick="document.getElementById('fileInput').click()">Load from File</button>
+    <input type="file" id="fileInput" style="display: none" onchange="loadFromFile(this)">
+  </div>
+
+  <!-- Exercises Section -->
+  <div class="section">
+    <h2>Exercises</h2>
+    <div class="stats-container">
+      <div class="stat-item">
+        <div class="stat-value" id="totalScore">0</div>
+        <div class="stat-label">Total Score</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="correctAnswers">0</div>
+        <div class="stat-label">Correct Answers</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="totalAttempts">0</div>
+        <div class="stat-label">Total Attempts</div>
+      </div>
+    </div>
+    <button onclick="generateTrueFalse()">True/False Exercise</button>
+    <button onclick="generateMultipleChoice()">Multiple Choice Quiz</button>
+    <button onclick="generateSRS()">SRS Exercise</button>
+    <button onclick="generateFlashcard()">Flashcard Mode</button>
+    <button onclick="generateMatching()">Matching Exercise</button>
+    <button onclick="generateWriting()">Writing Exercise</button>
+  </div>
+
+  <!-- True/False Exercise -->
+  <div id="trueFalseExercise" class="exercise section" style="display:none">
+    <h2>True/False Exercise</h2>
+    <div class="score-display">Current Score: <span id="tfScore">0</span></div>
+    <div id="tfQuestion">
+      <img id="tfImage" style="max-width: 300px; display: block; margin: 0 auto;">
+      <p>Polish word: <span id="tfPolish"></span></p>
+      <p>English translation: <span id="tfEnglish"></span></p>
+      <button onclick="checkTrueFalse(true)">True</button>
+      <button onclick="checkTrueFalse(false)">False</button>
+    </div>
+    <div id="tfResult" class="result-message"></div>
+  </div>
+
+  <!-- Multiple Choice Quiz Exercise -->
+  <div id="multipleChoiceExercise" class="exercise section" style="display:none">
+    <h2>Multiple Choice Quiz</h2>
+    <div class="score-display">Current Score: <span id="mcScore">0</span></div>
+    <div id="mcQuestion">
+      <p>Polish word: <span id="mcPolish"></span></p>
+      <div id="mcOptions"></div>
+    </div>
+    <div id="mcResult" class="result-message"></div>
+  </div>
+
+  <!-- SRS Exercise -->
+  <div id="srsExercise" class="exercise section" style="display:none">
+    <h2>SRS Exercise</h2>
+    <div class="score-display">Current Score: <span id="srsScore">0</span></div>
+    <div id="srsQuestion">
+      <p>Polish word: <span id="srsPolish"></span></p>
+      <div class="input-group">
+        <input type="text" id="srsAnswer" placeholder="Type English translation...">
+      </div>
+      <button onclick="checkSRS()">Check Answer</button>
+    </div>
+    <div id="srsResult" class="result-message"></div>
+  </div>
+
+  <!-- Flashcard Mode -->
+  <div id="flashcardExercise" class="exercise section" style="display:none">
+    <h2>Flashcard Mode</h2>
+    <div class="flashcard" onclick="flipFlashcard()">
+      <div class="flashcard-inner" id="flashcardInner">
+        <div class="flashcard-face" id="flashcardFront">
+          <!-- Polish word and optional image -->
+        </div>
+        <div class="flashcard-face flashcard-back" id="flashcardBack">
+          <!-- English translation -->
+        </div>
+      </div>
+    </div>
+    <button onclick="generateFlashcard()">Next Flashcard</button>
+  </div>
+
+  <!-- Matching Exercise -->
+  <div id="matchingExercise" class="exercise section" style="display:none">
+    <h2>Matching Exercise</h2>
+    <div class="score-display">Current Score: <span id="matchingScore">0</span></div>
+    <div id="polishWords"></div>
+    <div id="englishWords"></div>
+    <button onclick="checkMatching()">Check Matches</button>
+    <div id="matchingResult" class="result-message"></div>
+  </div>
+
+  <!-- Writing Exercise -->
+  <div id="writingExercise" class="exercise section" style="display:none">
+    <h2>Writing Exercise</h2>
+    <div class="score-display">Current Score: <span id="writingScore">0</span></div>
+    <img id="writeImage" style="max-width: 300px; display: block; margin: 0 auto;">
+    <p>Polish word: <span id="writePolish"></span></p>
+    <div class="input-group">
+      <input type="text" id="writeAnswer" placeholder="Type English translation...">
+    </div>
+    <button onclick="checkWriting()">Check Answer</button>
+    <div id="writeResult" class="result-message"></div>
+  </div>
+
+  <!-- Edit Word Modal -->
+  <div id="editWordModal" class="modal">
+    <div class="modal-content">
+      <h3>Edit Word</h3>
+      <div class="input-group">
+        <label>English Word:</label>
+        <input type="text" id="editEnglish">
+      </div>
+      <div class="input-group">
+        <label>Polish Translation:</label>
+        <input type="text" id="editPolish">
+      </div>
+      <div class="input-group">
+        <label>Image:</label>
+        <input type="text" id="editImageUrl" placeholder="Image URL">
+        <span>OR</span>
+        <input type="file" id="editLocalImage" accept="image/*">
+      </div>
+      <div class="input-group">
+        <label>Tags:</label>
+        <input type="text" id="editTags" placeholder="Comma separated tags">
+      </div>
+      <div class="preview-container">
+        <img id="editImagePreview" style="display: none; max-width: 200px;">
+      </div>
+      <div class="button-group">
+        <button onclick="saveEdit()">Save</button>
+        <button onclick="closeEditModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Global variables
+    let vocabulary = [];
+    let currentExercise = {};
+    let scores = {
+      truefalse: 0,
+      matching: 0,
+      writing: 0,
+      multipleChoice: 0,
+      srs: 0,
+      flashcard: 0,
+      totalCorrect: 0,
+      totalAttempts: 0
+    };
+
+    // Data version for backward compatibility
+    const DATA_VERSION = "2.0";
+
+    // Update vocabulary list for word management
+    function updateVocabList() {
+      const listDiv = document.getElementById('vocabList');
+      listDiv.innerHTML = '';
+      vocabulary.forEach((word, index) => {
+        const wordDiv = document.createElement('div');
+        wordDiv.className = 'word-item';
+        const detailsDiv = document.createElement('div');
+        detailsDiv.className = 'word-details';
+        detailsDiv.innerHTML = `<strong>${word.english}</strong> - ${word.polish} `;
+        if(word.tags) {
+          const tags = word.tags.split(',').map(t => t.trim()).filter(t => t);
+          tags.forEach(tag => {
+            detailsDiv.innerHTML += `<span class="tag">${tag}</span>`;
+          });
+        }
+        // Edit and Delete buttons
+        const editBtn = document.createElement('button');
+        editBtn.textContent = 'Edit';
+        editBtn.onclick = () => editWord(index);
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.onclick = () => deleteWord(index);
+        wordDiv.appendChild(detailsDiv);
+        wordDiv.appendChild(editBtn);
+        wordDiv.appendChild(deleteBtn);
+        listDiv.appendChild(wordDiv);
+      });
+    }
+
+    // Enhanced edit function using modal
+    let currentEditIndex = -1;
+    function editWord(index) {
+      currentEditIndex = index;
+      const word = vocabulary[index];
+      const modal = document.getElementById('editWordModal');
+      
+      document.getElementById('editEnglish').value = word.english;
+      document.getElementById('editPolish').value = word.polish;
+      document.getElementById('editImageUrl').value = word.imageUrl || '';
+      document.getElementById('editTags').value = word.tags || '';
+      
+      const preview = document.getElementById('editImagePreview');
+      if (word.imageUrl) {
+        preview.src = word.imageUrl;
+        preview.style.display = 'block';
+      } else {
+        preview.style.display = 'none';
+      }
+      
+      modal.style.display = 'block';
+    }
+
+    function saveEdit() {
+      if (currentEditIndex === -1) return;
+      
+      const english = document.getElementById('editEnglish').value.trim();
+      const polish = document.getElementById('editPolish').value.trim();
+      const imageUrl = document.getElementById('editImageUrl').value.trim();
+      const tags = document.getElementById('editTags').value.trim();
+      const localImage = document.getElementById('editLocalImage').files[0];
+      
+      if (!english || !polish) {
+        alert('Please enter both English and Polish words!');
+        return;
+      }
+      
+      function finalizeEdit(imageData) {
+        vocabulary[currentEditIndex] = {
+          ...vocabulary[currentEditIndex],
+          english,
+          polish,
+          imageUrl: imageData || imageUrl,
+          tags
+        };
+        updateVocabList();
+        closeEditModal();
+      }
+      
+      if (localImage) {
+        const reader = new FileReader();
+        reader.onload = (e) => finalizeEdit(e.target.result);
+        reader.readAsDataURL(localImage);
+      } else {
+        finalizeEdit();
+      }
+    }
+
+    function closeEditModal() {
+      document.getElementById('editWordModal').style.display = 'none';
+      currentEditIndex = -1;
+    }
+
+    // Enhanced delete function with undo
+    let deletedWords = [];
+    function deleteWord(index) {
+      if (confirm("Are you sure you want to delete this word?")) {
+        const deleted = vocabulary.splice(index, 1)[0];
+        deletedWords.push(deleted);
+        updateVocabList();
+        
+        const undoMessage = document.createElement('div');
+        undoMessage.className = 'undo-message';
+        undoMessage.innerHTML = `Word deleted. <button onclick="undoDelete()">Undo</button>`;
+        document.body.appendChild(undoMessage);
+        
+        setTimeout(() => undoMessage.remove(), 5000);
+      }
+    }
+
+    function undoDelete() {
+      if (deletedWords.length > 0) {
+        vocabulary.push(deletedWords.pop());
+        updateVocabList();
+        document.querySelector('.undo-message')?.remove();
+      }
+    }
+
+    // File operations with backward compatibility
+    function saveToFile() {
+      const dataToSave = {
+        version: DATA_VERSION,
+        vocabulary: vocabulary,
+        scores: scores
+      };
+      const dataStr = JSON.stringify(dataToSave);
+      const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+      const linkElement = document.createElement('a');
+      linkElement.setAttribute('href', dataUri);
+      linkElement.setAttribute('download', 'vocabulary.json');
+      linkElement.click();
+    }
+
+    function loadFromFile(input) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        let data = JSON.parse(e.target.result);
+        if(!data.version) data.version = "1.0";
+        vocabulary = data.vocabulary || [];
+        scores = data.scores || {
+          truefalse: 0,
+          matching: 0,
+          writing: 0,
+          multipleChoice: 0,
+          srs: 0,
+          flashcard: 0,
+          totalCorrect: 0,
+          totalAttempts: 0
+        };
+        vocabulary.forEach(word => {
+          if(typeof word.tags === "undefined") word.tags = "";
+          if(typeof word.nextReview === "undefined") word.nextReview = Date.now();
+        });
+        updateScores();
+        updateVocabList();
+        alert('Vocabulary and scores loaded successfully!');
+      };
+      reader.readAsText(file);
+    }
+
+    // Score management
+    function updateScores() {
+      const totalScore = scores.truefalse + scores.matching + scores.writing + scores.multipleChoice + scores.srs + scores.flashcard;
+      document.getElementById('totalScore').textContent = totalScore;
+      document.getElementById('correctAnswers').textContent = scores.totalCorrect;
+      document.getElementById('totalAttempts').textContent = scores.totalAttempts;
+      document.getElementById('tfScore').textContent = scores.truefalse;
+      document.getElementById('matchingScore').textContent = scores.matching;
+      document.getElementById('writingScore').textContent = scores.writing;
+      document.getElementById('mcScore').textContent = scores.multipleChoice;
+      document.getElementById('srsScore').textContent = scores.srs;
+      if(document.getElementById('flashcardScore')) {
+        document.getElementById('flashcardScore').textContent = scores.flashcard;
+      }
+    }
+
+    // Add New Word function with local image support
+    function addWord() {
+      const english = document.getElementById('englishWord').value.trim();
+      const polish = document.getElementById('polishWord').value.trim();
+      const imageUrl = document.getElementById('imageUrl').value.trim();
+      const localImageInput = document.getElementById('localImage');
+      const tags = document.getElementById('wordTags').value.trim();
+
+      if (!english || !polish) {
+        alert('Please enter both English and Polish words!');
+        return;
+      }
+
+      function finalizeAdd(imageData) {
+        vocabulary.push({ english, polish, imageUrl: imageData || imageUrl, tags, nextReview: Date.now() });
+        updateVocabList();
+        clearInputs();
+        alert('Word added successfully!');
+      }
+
+      if (localImageInput.files && localImageInput.files[0]) {
+        const file = localImageInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          finalizeAdd(e.target.result);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        finalizeAdd();
+      }
+    }
+
+    function clearInputs() {
+      document.getElementById('englishWord').value = '';
+      document.getElementById('polishWord').value = '';
+      document.getElementById('imageUrl').value = '';
+      document.getElementById('localImage').value = '';
+      document.getElementById('wordTags').value = '';
+    }
+
+    // Hide all exercises
+    function hideAllExercises() {
+      document.querySelectorAll('.exercise').forEach(el => el.style.display = 'none');
+    }
+
+    // True/False Exercise functions
+    function generateTrueFalse() {
+      if (vocabulary.length < 2) {
+        alert('Add at least 2 words to start exercises!');
+        return;
+      }
+      hideAllExercises();
+      document.getElementById('trueFalseExercise').style.display = 'block';
+      const wordIndex = Math.floor(Math.random() * vocabulary.length);
+      const isTrue = Math.random() < 0.5;
+      const word = vocabulary[wordIndex];
+      let englishShow = word.english;
+      if (!isTrue) {
+        let otherWord;
+        do {
+          otherWord = vocabulary[Math.floor(Math.random() * vocabulary.length)];
+        } while (otherWord === word);
+        englishShow = otherWord.english;
+      }
+      currentExercise = { correct: isTrue, original: word };
+      document.getElementById('tfPolish').textContent = word.polish;
+      document.getElementById('tfEnglish').textContent = englishShow;
+      if (word.imageUrl) {
+        document.getElementById('tfImage').src = word.imageUrl;
+        document.getElementById('tfImage').style.display = 'block';
+      } else {
+        document.getElementById('tfImage').style.display = 'none';
+      }
+      document.getElementById('tfResult').textContent = '';
+    }
+
+    function checkTrueFalse(answer) {
+      scores.totalAttempts++;
+      const result = answer === currentExercise.correct;
+      const resultElement = document.getElementById('tfResult');
+      if (result) {
+        scores.truefalse += 10;
+        scores.totalCorrect++;
+        resultElement.textContent = 'Correct! +10 points';
+        resultElement.className = 'result-message success';
+      } else {
+        scores.truefalse = Math.max(0, scores.truefalse - 5);
+        resultElement.textContent = 'Wrong! -5 points';
+        resultElement.className = 'result-message error';
+      }
+      updateScores();
+      setTimeout(generateTrueFalse, 2000);
+    }
+
+    // Multiple Choice Quiz functions
+    function generateMultipleChoice() {
+      if (vocabulary.length < 4) {
+        alert('Add at least 4 words for multiple choice exercise!');
+        return;
+      }
+      hideAllExercises();
+      document.getElementById('multipleChoiceExercise').style.display = 'block';
+      const word = vocabulary[Math.floor(Math.random() * vocabulary.length)];
+      currentExercise = { word };
+      document.getElementById('mcPolish').textContent = word.polish;
+      let options = [word.english];
+      while(options.length < 4) {
+        const randomOption = vocabulary[Math.floor(Math.random() * vocabulary.length)].english;
+        if(!options.includes(randomOption)) options.push(randomOption);
+      }
+      options = options.sort(() => Math.random() - 0.5);
+      const optionsDiv = document.getElementById('mcOptions');
+      optionsDiv.innerHTML = '';
+      options.forEach(option => {
+        const btn = document.createElement('button');
+        btn.textContent = option;
+        btn.onclick = () => checkMultipleChoice(option);
+        optionsDiv.appendChild(btn);
+      });
+      document.getElementById('mcResult').textContent = '';
+    }
+
+    function checkMultipleChoice(selected) {
+      scores.totalAttempts++;
+      const resultElement = document.getElementById('mcResult');
+      if (selected === currentExercise.word.english) {
+        scores.multipleChoice += 10;
+        scores.totalCorrect++;
+        resultElement.textContent = 'Correct! +10 points';
+        resultElement.className = 'result-message success';
+      } else {
+        scores.multipleChoice = Math.max(0, scores.multipleChoice - 5);
+        resultElement.textContent = 'Wrong! -5 points';
+        resultElement.className = 'result-message error';
+      }
+      updateScores();
+      setTimeout(generateMultipleChoice, 2000);
+    }
+
+    // SRS Exercise functions (simplified)
+    function generateSRS() {
+      const dueWords = vocabulary.filter(word => Date.now() >= word.nextReview);
+      if (dueWords.length === 0) {
+        alert('No words are due for review. Try again later!');
+        return;
+      }
+      hideAllExercises();
+      document.getElementById('srsExercise').style.display = 'block';
+      const word = dueWords[Math.floor(Math.random() * dueWords.length)];
+      currentExercise = { word };
+      document.getElementById('srsPolish').textContent = word.polish;
+      document.getElementById('srsResult').textContent = '';
+    }
+
+    function checkSRS() {
+      scores.totalAttempts++;
+      const answer = document.getElementById('srsAnswer').value.trim().toLowerCase();
+      const correct = currentExercise.word.english.toLowerCase();
+      const resultElement = document.getElementById('srsResult');
+      if (answer === correct) {
+        scores.srs += 15;
+        scores.totalCorrect++;
+        resultElement.textContent = 'Correct! +15 points';
+        resultElement.className = 'result-message success';
+        currentExercise.word.nextReview = Date.now() + 60000; // 1 minute later for demo
+        setTimeout(generateSRS, 2000);
+      } else {
+        scores.srs = Math.max(0, scores.srs - 7);
+        resultElement.textContent = `Wrong! The correct answer is: ${correct}. -7 points`;
+        resultElement.className = 'result-message error';
+      }
+      updateScores();
+    }
+
+    // Flashcard Mode functions
+    function generateFlashcard() {
+      if (vocabulary.length < 1) {
+        alert('Add at least 1 word for flashcard mode!');
+        return;
+      }
+      hideAllExercises();
+      document.getElementById('flashcardExercise').style.display = 'block';
+      const word = vocabulary[Math.floor(Math.random() * vocabulary.length)];
+      currentExercise = { word };
+      const flashcardFront = document.getElementById('flashcardFront');
+      const flashcardBack = document.getElementById('flashcardBack');
+      flashcardFront.innerHTML = `<strong>${word.polish}</strong>`;
+      if(word.imageUrl) {
+        flashcardFront.innerHTML += `<br><img src="${word.imageUrl}" style="max-width:100px;">`;
+      }
+      flashcardBack.innerHTML = `<strong>${word.english}</strong>`;
+      document.getElementById('flashcardExercise').classList.remove('flipped');
+    }
+
+    function flipFlashcard() {
+      document.getElementById('flashcardExercise').classList.toggle('flipped');
+    }
+
+    // Matching Exercise functions
+    let selectedPolish = null;
+    let selectedEnglish = null;
+
+    function generateMatching() {
+      if (vocabulary.length < 3) {
+        alert('Add at least 3 words to start matching exercise!');
+        return;
+      }
+      hideAllExercises();
+      document.getElementById('matchingExercise').style.display = 'block';
+      const words = [...vocabulary].sort(() => Math.random() - 0.5).slice(0, Math.min(5, vocabulary.length));
+      const polishDiv = document.getElementById('polishWords');
+      const englishDiv = document.getElementById('englishWords');
+      polishDiv.innerHTML = '';
+      englishDiv.innerHTML = '';
+      words.forEach((word, index) => {
+        const polishWord = document.createElement('div');
+        polishWord.className = 'word-pair';
+        polishWord.textContent = word.polish;
+        polishWord.dataset.index = index;
+        polishWord.onclick = () => selectWord(polishWord, 'polish');
+        polishDiv.appendChild(polishWord);
+        const englishWord = document.createElement('div');
+        englishWord.className = 'word-pair';
+        englishWord.textContent = word.english;
+        englishWord.dataset.index = index;
+        englishWord.onclick = () => selectWord(englishWord, 'english');
+        englishDiv.appendChild(englishWord);
+      });
+      for (let i = englishDiv.children.length; i >= 0; i--) {
+        englishDiv.appendChild(englishDiv.children[Math.random() * i | 0]);
+      }
+      currentExercise = { words };
+      document.getElementById('matchingResult').textContent = '';
+    }
+
+    function selectWord(element, type) {
+      if (type === 'polish') {
+        if (selectedPolish) selectedPolish.classList.remove('selected');
+        selectedPolish = element;
+      } else {
+        if (selectedEnglish) selectedEnglish.classList.remove('selected');
+        selectedEnglish = element;
+      }
+      element.classList.add('selected');
+      if (selectedPolish && selectedEnglish) {
+        scores.totalAttempts++;
+        if (selectedPolish.dataset.index === selectedEnglish.dataset.index) {
+          scores.matching += 5;
+          scores.totalCorrect++;
+          selectedPolish.style.visibility = 'hidden';
+          selectedEnglish.style.visibility = 'hidden';
+          document.getElementById('matchingResult').textContent = 'Match found! +5 points';
+          document.getElementById('matchingResult').className = 'result-message success';
+        } else {
+          scores.matching = Math.max(0, scores.matching - 2);
+          document.getElementById('matchingResult').textContent = 'Wrong match! -2 points';
+          document.getElementById('matchingResult').className = 'result-message error';
+        }
+        updateScores();
+        selectedPolish.classList.remove('selected');
+        selectedEnglish.classList.remove('selected');
+        selectedPolish = null;
+        selectedEnglish = null;
+        const visibleWords = Array.from(document.getElementById('polishWords').children)
+          .filter(el => el.style.visibility !== 'hidden');
+        if (visibleWords.length === 0) {
+          setTimeout(() => {
+            document.getElementById('matchingResult').textContent =
+              'Congratulations! All matches found! +10 bonus points';
+            scores.matching += 10;
+            updateScores();
+            setTimeout(generateMatching, 2000);
+          }, 500);
+        }
+      }
+    }
+
+    // Writing Exercise functions
+    function generateWriting() {
+      if (vocabulary.length < 1) {
+        alert('Add at least 1 word to start writing exercise!');
+        return;
+      }
+      hideAllExercises();
+      document.getElementById('writingExercise').style.display = 'block';
+      const word = vocabulary[Math.floor(Math.random() * vocabulary.length)];
+      currentExercise = { word };
+      document.getElementById('writePolish').textContent = word.polish;
+      document.getElementById('writeAnswer').value = '';
+      document.getElementById('writeResult').textContent = '';
+      if (word.imageUrl) {
+        document.getElementById('writeImage').src = word.imageUrl;
+        document.getElementById('writeImage').style.display = 'block';
+      } else {
+        document.getElementById('writeImage').style.display = 'none';
+      }
+    }
+
+    function checkWriting() {
+      scores.totalAttempts++;
+      const answer = document.getElementById('writeAnswer').value.trim().toLowerCase();
+      const correct = currentExercise.word.english.toLowerCase();
+      const resultElement = document.getElementById('writeResult');
+      if (answer === correct) {
+        scores.writing += 15;
+        scores.totalCorrect++;
+        resultElement.textContent = 'Correct! +15 points';
+        resultElement.className = 'result-message success';
+        setTimeout(generateWriting, 2000);
+      } else {
+        scores.writing = Math.max(0, scores.writing - 7);
+        resultElement.textContent = `Wrong! The correct answer is: ${correct}. -7 points`;
+        resultElement.className = 'result-message error';
+      }
+      updateScores();
+    }
+
+    // Optional: Image optimization function
+    function optimizeImage(dataUrl, maxWidth = 800) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = function() {
+          if (img.width <= maxWidth) {
+            resolve(dataUrl);
+            return;
+          }
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          const ratio = maxWidth / img.width;
+          canvas.width = maxWidth;
+          canvas.height = img.height * ratio;
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL('image/jpeg', 0.85));
+        };
+        img.src = dataUrl;
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      updateScores();
+      updateVocabList();
+      document.getElementById('writeAnswer').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          checkWriting();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
