@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Text Analysis Editor with Gemini</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.8; }
+        #input-area { margin-bottom: 20px; }
+        #text-input, #json-output { width: 100%; height: 200px; margin-bottom: 10px; }
+        #json-output { height: 100px; margin-top: 10px; }
+        #visualization { margin-top: 20px; padding: 20px; border: 1px solid #ccc; border-radius: 5px; line-height: 2.5; white-space: pre-wrap; }
+        .word { display: inline; padding: 2px 8px; margin: 2px; border-radius: 15px; cursor: pointer; position: relative; }
+        .single { border: 2px solid #3498db; }
+        .multi { /* No individual border, handled by phrase-group */ }
+        .connected { border: 2px solid #e74c3c; }
+        .phrase-group { display: inline-block; padding: 4px; border: 2px solid #e74c3c; border-radius: 15px; }
+        .connected:hover, .connected.highlighted { background-color: #ffe6e6; }
+        .selected { background-color: #d4edda; }
+        .edit-menu, .gemini-menu { position: absolute; background: white; border: 1px solid #ccc; border-radius: 4px; padding: 5px; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: none; }
+        .edit-menu button, .gemini-menu button { display: block; width: 100%; padding: 5px 10px; margin: 2px 0; border: none; background: none; cursor: pointer; text-align: left; }
+        .edit-menu button:hover, .gemini-menu button:hover { background-color: #f0f0f0; }
+        .controls { margin-bottom: 20px; display: flex; gap: 10px; }
+        .controls button { padding: 8px 15px; }
+        #copy-json { margin-left: auto; }
+        .modified { background-color: #e8f0fe; }
+        .gap { display: inline-block; width: 50px; height: 20px; background-color: #f0f0f0; margin: 0 5px; vertical-align: middle; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Text Analysis Editor with Gemini</h1>
+    
+    <div class="controls">
+        <button onclick="analyzeText()">Analyze Text</button>
+        <button onclick="toggleMode()">Toggle Mode (Current: <span id="mode-display">Edit</span>)</button>
+        <button onclick="clearAll()">Clear</button>
+        <button id="copy-json" onclick="copyJSON()">Copy JSON</button>
+    </div>
+
+    <div id="input-area">
+        <textarea id="text-input" placeholder="Paste your text here..."></textarea>
+        <textarea id="json-output" placeholder="Generated JSON will appear here..." readonly></textarea>
+    </div>
+
+    <div id="visualization"></div>
+
+    <div id="edit-menu" class="edit-menu">
+        <button onclick="changeType('single')">Make Single</button>
+        <button onclick="changeType('multi')">Make Multi</button>
+        <button onclick="changeType('connected')">Make Connected</button>
+        <button onclick="insertGap()">Insert Gap</button>
+    </div>
+
+    <div id="gemini-menu" class="gemini-menu">
+        <button onclick="rephraseFragment()">Rephrase</button>
+        <button onclick="simplifyFragment()">Simplify</button>
+        <button onclick="customPrompt()">Custom Prompt</button>
+    </div>
+
+    <script>
+        let currentData = { text_analysis: { word_elements: [] }, gaps: [] };
+        let activeWord = null;
+        let selectedRange = [];
+        let editMenu = document.getElementById('edit-menu');
+        let geminiMenu = document.getElementById('gemini-menu');
+        let mode = 'edit';
+        const apiKey = 'YOUR_API_KEY_HERE'; // Replace with your Gemini API key
+        const baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models';
+        const model = 'gemini-2.0-flash';
+
+        async function makeGeminiRequest(content) {
+            const url = `${baseUrl}/${model}:generateContent?key=${apiKey}`;
+            const payload = {
+                "contents": [{ "parts": [{"text": content}] }],
+                "safetySettings": [
+                    {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
+                    {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
+                    {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
+                    {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"}
+                ],
+                "generationConfig": {
+                    "temperature": 0.1,
+                    "topP": 0.95,
+                    "topK": 40,
+                    "maxOutputTokens": 8048,
+                    "response_mime_type": "application/json"
+                }
+            };
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (!response.ok) {
+                console.error(`API Error: ${response.status}`, await response.text());
+                return {};
+            }
+            return await response.json();
+        }
+
+        async function analyzeText() {
+            const text = document.getElementById('text-input').value.trim();
+            if (!text) {
+                alert('Please enter some text to analyze.');
+                return;
+            }
+
+            const prompt = `Analyze this text and return JSON only in this exact format:
+{
+  "text_analysis": {
+    "word_elements": [
+      {"text": "word", "position": 0, "type": "single", "interactive": true},
+      {"text": " ", "position": 1, "type": "punctuation", "interactive": false},
+      {"text": "multi", "position": 2, "type": "multi", "interactive": true},
+      {"text": "word", "position": 3, "type": "multi", "interactive": true},
+      {"text": "connected", "position": 4, "type": "connected", "connection_id": "phrase_4", "interactive": true},
+      {"text": "word", "position": 6, "type": "connected", "connection_id": "phrase_4", "interactive": true}
+    ]
+  },
+  "gaps": []
+}
+
+- Split the text into individual tokens (words and punctuation) using spaces and punctuation marks (e.g., " ", ",", ".", "?", "—").
+- Assign "position" as the zero-based index of each token in the sequence (e.g., "Ever" is 0, " " is 1, "wondered" is 2).
+- Use "type": "single" for standalone words not part of a multi-word phrase (e.g., "Ever", "how").
+- Use "type": "multi" for contiguous multi-word phrases that function as a single unit (e.g., "job seekers", "CV deception"), where removing a word changes the meaning.
+- Use "type": "connected" for multi-word phrases that are related but separated by other words (e.g., "bend...truth" in "bend the truth", "takes...on" in "takes on distinct"), assigning a shared "connection_id" (e.g., "phrase_0") to link them.
+- Set "interactive": true for words, false for punctuation.
+- Include spaces and punctuation as separate elements with "type": "punctuation".
+- Ensure the JSON preserves the exact order and content of the original text.
+- Example: For "infuse the people with energy", "infuse" and "with" are "connected" (type: "connected", connection_id: "phrase_0"), "the people" is "multi", "energy" is "single".
+
+Text to analyze:
+${text}`;
+
+            try {
+                const response = await makeGeminiRequest(prompt);
+                console.log('Raw Gemini Response:', response);
+                if (response.candidates?.length > 0) {
+                    const jsonText = response.candidates[0].content.parts[0].text.trim();
+                    console.log('Parsed Gemini JSON:', jsonText);
+                    currentData = JSON.parse(jsonText);
+                    document.getElementById('json-output').value = JSON.stringify(currentData, null, 2);
+                    renderVisualization();
+                } else {
+                    alert('No valid response from Gemini.');
+                }
+            } catch (error) {
+                console.error('Analysis Error:', error);
+                alert('Error analyzing text. Check console for details.');
+            }
+        }
+
+        function renderVisualization() {
+            const visDiv = document.getElementById('visualization');
+            visDiv.innerHTML = '';
+            const elements = currentData.text_analysis.word_elements;
+            let i = 0;
+
+            while (i < elements.length) {
+                const word = elements[i];
+                if (word.type === 'gap') {
+                    const gapSpan = document.createElement('span');
+                    gapSpan.className = 'gap';
+                    gapSpan.setAttribute('data-gap-index', i);
+                    gapSpan.addEventListener('click', handleGapClick);
+                    visDiv.appendChild(gapSpan);
+                    i++;
+                } else if (!word.interactive) {
+                    visDiv.appendChild(document.createTextNode(word.text));
+                    i++;
+                } else if (word.type === 'multi') {
+                    const groupDiv = document.createElement('div');
+                    groupDiv.className = 'phrase-group';
+                    const startPos = word.position;
+                    while (i < elements.length && elements[i].type === 'multi' && 
+                           (i === 0 || elements[i].position === elements[i-1].position + 1)) {
+                        const span = document.createElement('span');
+                        span.textContent = elements[i].text;
+                        span.className = 'word multi';
+                        span.setAttribute('data-position', elements[i].position);
+                        span.addEventListener('click', handleWordClick);
+                        span.addEventListener('contextmenu', handleRightClick);
+                        groupDiv.appendChild(span);
+                        if (i + 1 < elements.length && elements[i + 1].type === 'multi' && 
+                            elements[i + 1].position === elements[i].position + 1) {
+                            groupDiv.appendChild(document.createTextNode(' '));
+                        }
+                        i++;
+                    }
+                    visDiv.appendChild(groupDiv);
+                } else if (word.type === 'connected') {
+                    const span = document.createElement('span');
+                    span.textContent = word.text;
+                    span.className = `word ${word.type}`;
+                    span.setAttribute('data-position', word.position);
+                    span.setAttribute('data-connection', word.connection_id);
+                    span.addEventListener('click', handleWordClick);
+                    span.addEventListener('contextmenu', handleRightClick);
+                    span.addEventListener('mouseover', () => highlightConnected(word.connection_id));
+                    span.addEventListener('mouseout', () => unhighlightConnected(word.connection_id));
+                    visDiv.appendChild(span);
+                    i++;
+                } else {
+                    const span = document.createElement('span');
+                    span.textContent = word.text;
+                    span.className = `word ${word.type}`;
+                    span.setAttribute('data-position', word.position);
+                    span.addEventListener('click', handleWordClick);
+                    span.addEventListener('contextmenu', handleRightClick);
+                    visDiv.appendChild(span);
+                    i++;
+                }
+            }
+        }
+
+        function highlightConnected(connectionId) {
+            document.querySelectorAll(`[data-connection="${connectionId}"]`).forEach(span => {
+                span.classList.add('highlighted');
+            });
+        }
+
+        function unhighlightConnected(connectionId) {
+            document.querySelectorAll(`[data-connection="${connectionId}"]`).forEach(span => {
+                span.classList.remove('highlighted');
+            });
+        }
+
+        function handleWordClick(event) {
+            event.preventDefault();
+            if (mode === 'edit') {
+                activeWord = event.target;
+                showEditMenu(event);
+            } else if (mode === 'gemini') {
+                toggleSelection(event.target);
+            }
+        }
+
+        function handleRightClick(event) {
+            event.preventDefault();
+            if (mode === 'gemini') {
+                activeWord = event.target;
+                showGeminiMenu(event);
+            }
+        }
+
+        function handleGapClick(event) {
+            const gapIndex = parseInt(event.target.getAttribute('data-gap-index'));
+            const gapData = currentData.gaps.find(g => g.position === gapIndex);
+            if (gapData && confirm('Remove this gap and restore original text?')) {
+                currentData.text_analysis.word_elements.splice(gapIndex, 1, ...gapData.original);
+                currentData.gaps = currentData.gaps.filter(g => g.position !== gapIndex);
+                updatePositions();
+                updateJsonOutput();
+                renderVisualization();
+            }
+        }
+
+        function showEditMenu(event) {
+            const rect = activeWord.getBoundingClientRect();
+            editMenu.style.display = 'block';
+            editMenu.style.left = rect.left + window.scrollX + 'px';
+            editMenu.style.top = rect.bottom + window.scrollY + 'px';
+            geminiMenu.style.display = 'none';
+        }
+
+        function showGeminiMenu(event) {
+            const rect = activeWord.getBoundingClientRect();
+            geminiMenu.style.display = 'block';
+            geminiMenu.style.left = rect.left + window.scrollX + 'px';
+            geminiMenu.style.top = rect.bottom + window.scrollY + 'px';
+            editMenu.style.display = 'none';
+        }
+
+        function changeType(newType) {
+            const position = parseInt(activeWord.getAttribute('data-position'));
+            const wordElement = currentData.text_analysis.word_elements[position];
+            wordElement.type = newType;
+            if (newType !== 'connected') delete wordElement.connection_id;
+            activeWord.className = `word ${newType} modified`;
+            editMenu.style.display = 'none';
+            updateJsonOutput();
+            renderVisualization();
+        }
+
+        function insertGap() {
+            const position = parseInt(activeWord.getAttribute('data-position'));
+            const wordElement = currentData.text_analysis.word_elements[position];
+            const original = wordElement.connection_id ? 
+                currentData.text_analysis.word_elements.filter(w => w.connection_id === wordElement.connection_id) : 
+                [wordElement];
+            const gapIndex = position + (original.length > 1 ? original.length : 1);
+            currentData.gaps.push({ position: gapIndex, original });
+            currentData.text_analysis.word_elements.splice(gapIndex, 0, { text: ' ', position: gapIndex, type: 'gap', interactive: false });
+            updatePositions();
+            editMenu.style.display = 'none';
+            updateJsonOutput();
+            renderVisualization();
+        }
+
+        function toggleSelection(wordSpan) {
+            const position = parseInt(wordSpan.getAttribute('data-position'));
+            const index = selectedRange.indexOf(position);
+            if (index === -1) {
+                selectedRange.push(position);
+                wordSpan.classList.add('selected');
+            } else {
+                selectedRange.splice(index, 1);
+                wordSpan.classList.remove('selected');
+            }
+            selectedRange.sort((a, b) => a - b);
+        }
+
+        async function rephraseFragment() {
+            const fragment = getSelectedFragment();
+            if (!fragment) return;
+            const prompt = `Rephrase this text fragment and return the rephrased text only:\n${fragment}`;
+            const response = await makeGeminiRequest(prompt);
+            if (response.candidates?.length > 0) {
+                replaceFragment(response.candidates[0].content.parts[0].text.trim());
+            }
+            geminiMenu.style.display = 'none';
+            clearSelection();
+        }
+
+        async function simplifyFragment() {
+            const fragment = getSelectedFragment();
+            if (!fragment) return;
+            const prompt = `Simplify this text fragment and return the simplified text only:\n${fragment}`;
+            const response = await makeGeminiRequest(prompt);
+            if (response.candidates?.length > 0) {
+                replaceFragment(response.candidates[0].content.parts[0].text.trim());
+            }
+            geminiMenu.style.display = 'none';
+            clearSelection();
+        }
+
+        async function customPrompt() {
+            const fragment = getSelectedFragment();
+            if (!fragment) return;
+            const custom = prompt('Enter your custom prompt for this fragment:', `Process this text: ${fragment}`);
+            if (!custom) return;
+            const response = await makeGeminiRequest(custom);
+            if (response.candidates?.length > 0) {
+                replaceFragment(response.candidates[0].content.parts[0].text.trim());
+            }
+            geminiMenu.style.display = 'none';
+            clearSelection();
+        }
+
+        function getSelectedFragment() {
+            if (!selectedRange.length) {
+                const pos = parseInt(activeWord.getAttribute('data-position'));
+                const word = currentData.text_analysis.word_elements[pos];
+                return word.connection_id ? 
+                    currentData.text_analysis.word_elements
+                        .filter(w => w.connection_id === word.connection_id)
+                        .map(w => w.text).join(' ') : 
+                    word.text;
+            }
+            return currentData.text_analysis.word_elements
+                .slice(selectedRange[0], selectedRange[selectedRange.length - 1] + 1)
+                .map(w => w.text).join('');
+        }
+
+        function replaceFragment(newText) {
+            const elements = currentData.text_analysis.word_elements;
+            let startPos, length;
+            if (selectedRange.length) {
+                startPos = selectedRange[0];
+                length = selectedRange[selectedRange.length - 1] - startPos + 1;
+            } else {
+                startPos = parseInt(activeWord.getAttribute('data-position'));
+                const word = elements[startPos];
+                length = word.connection_id ? 
+                    elements.filter(w => w.connection_id === word.connection_id).length : 1;
+            }
+            elements.splice(startPos, length);
+            const newWords = newText.split(' ');
+            const newConnectionId = newWords.length > 1 ? `phrase_${startPos}` : undefined;
+            newWords.forEach((word, i) => {
+                elements.splice(startPos + i, 0, {
+                    text: word,
+                    position: startPos + i,
+                    type: newWords.length > 1 ? 'connected' : 'single',
+                    connection_id: newConnectionId,
+                    interactive: true
+                });
+            });
+            updatePositions();
+            updateJsonOutput();
+            renderVisualization();
+        }
+
+        function updatePositions() {
+            currentData.text_analysis.word_elements.forEach((w, i) => w.position = i);
+            currentData.gaps.forEach(g => g.position = currentData.text_analysis.word_elements.findIndex(w => w.type === 'gap' && w.position === g.position));
+        }
+
+        function clearSelection() {
+            selectedRange.forEach(pos => {
+                const span = document.querySelector(`[data-position="${pos}"]`);
+                if (span) span.classList.remove('selected');
+            });
+            selectedRange = [];
+        }
+
+        function toggleMode() {
+            mode = mode === 'edit' ? 'gemini' : 'edit';
+            document.getElementById('mode-display').textContent = mode.charAt(0).toUpperCase() + mode.slice(1);
+            clearSelection();
+            editMenu.style.display = 'none';
+            geminiMenu.style.display = 'none';
+        }
+
+        function updateJsonOutput() {
+            document.getElementById('json-output').value = JSON.stringify(currentData, null, 2);
+        }
+
+        function copyJSON() {
+            document.getElementById('json-output').select();
+            document.execCommand('copy');
+            alert('JSON copied to clipboard!');
+        }
+
+        function clearAll() {
+            document.getElementById('text-input').value = '';
+            document.getElementById('json-output').value = '';
+            document.getElementById('visualization').innerHTML = '';
+            currentData = { text_analysis: { word_elements: [] }, gaps: [] };
+            selectedRange = [];
+        }
+
+        document.addEventListener('click', event => {
+            if (!event.target.classList.contains('word') && !event.target.classList.contains('gap')) {
+                editMenu.style.display = 'none';
+                geminiMenu.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
