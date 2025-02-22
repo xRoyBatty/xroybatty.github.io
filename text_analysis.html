@@ -62,7 +62,7 @@
         let editMenu = document.getElementById('edit-menu');
         let geminiMenu = document.getElementById('gemini-menu');
         let mode = 'edit';
-        const apiKey = 'YOUR_API_KEY_HERE'; // Replace with your Gemini API key
+        const apiKey = 'AIzaSyDUjnBSrIXLve2U9cdId8Ux7aKS0enN2YU'; // Replace with your Gemini API key
         const baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models';
         const model = 'gemini-2.0-flash';
 
@@ -103,32 +103,73 @@
                 return;
             }
 
-            const prompt = `Analyze this text and return JSON only in this exact format:
-{
-  "text_analysis": {
-    "word_elements": [
-      {"text": "word", "position": 0, "type": "single", "interactive": true},
-      {"text": " ", "position": 1, "type": "punctuation", "interactive": false},
-      {"text": "multi", "position": 2, "type": "multi", "interactive": true},
-      {"text": "word", "position": 3, "type": "multi", "interactive": true},
-      {"text": "connected", "position": 4, "type": "connected", "connection_id": "phrase_4", "interactive": true},
-      {"text": "word", "position": 6, "type": "connected", "connection_id": "phrase_4", "interactive": true}
-    ]
-  },
-  "gaps": []
-}
+            const prompt = `Analyze the provided text and return a JSON representation that adheres to the following structure. The text should be broken down into tokens, where each token is either a single word/character OR a multi-word phrase.
 
-- Split the text into individual tokens (words and punctuation) using spaces and punctuation marks (e.g., " ", ",", ".", "?", "—").
-- Assign "position" as the zero-based index of each token in the sequence (e.g., "Ever" is 0, " " is 1, "wondered" is 2).
-- Use "type": "single" for standalone words not part of a multi-word phrase (e.g., "Ever", "how").
-- Use "type": "multi" for contiguous multi-word phrases that function as a single unit (e.g., "job seekers", "CV deception"), where removing a word changes the meaning.
-- Use "type": "connected" for multi-word phrases that are related but separated by other words (e.g., "bend...truth" in "bend the truth", "takes...on" in "takes on distinct"), assigning a shared "connection_id" (e.g., "phrase_0") to link them.
-- Set "interactive": true for words, false for punctuation.
-- Include spaces and punctuation as separate elements with "type": "punctuation".
-- Ensure the JSON preserves the exact order and content of the original text.
-- Example: For "infuse the people with energy", "infuse" and "with" are "connected" (type: "connected", connection_id: "phrase_0"), "the people" is "multi", "energy" is "single".
+JSON Structure:
+
+The JSON output should be an object with a single key, "tokens". The value of "tokens" should be an array of token objects. Each token object MUST have the following properties:
+
+text: (string) The word or phrase itself. For split phrases, include the intervening words with "..." between the parts.
+type: (string) One of: "word", "phrase", or "split_phrase".
+resolved_text: (Optional String)
+pos (string, only for type="word"): Part of speech from this list: "noun", "verb", "adjective", "adverb", "pronoun", "preposition", "conjunction", "determiner", "interjection", "proper_noun", "number", "particle", "modal_particle", "filler", "discourse_marker".
+category (string, only for type= "phrase" or "split_phrase") if more than one use ",":
+    Phrase Categories: Use one or more (separated by commas) from the following list:
+        noun_phrase
+        verb_phrase
+        verb_plus_preposition
+        prepositional_phrase
+        adjective_phrase
+        adverb_phrase
+        technical_term
+        idiom
+        collocation
+        proper_noun_phrase
+        greeting
+        phrasal_verb
+        compound_noun
+        modal_phrase
+        discourse_marker_phrase
+        parenthetical_expression
+        hedging_phrase
+        response_phrase
+        time_expression
+        linking_phrase
+        cause_and_effect
+        proverb
+        aphorism
+        foreign_expression
+        formulaic_expression
+        expletive_phrase
+        onomatopoeic_phrase
+        abbreviated_phrase
+        rhetorical_question
+        catchphrase
+        regionalism
+        non_standard_phrase
+
+group: (string, only for type = "split_phrase") A unique identifier (string) to link the parts of a split phrase together. Use a consistent naming convention (e.g., "verb1", "passive2", "correlative3").
+unit: (Optional Object - Only present if pos is "number")
+    symbol: (Optional string) (e.g., %, $, €)
+    label: (Optional string) (e.g., kg, meters, feet)
+    position: (string) ("prefix" or "suffix")
+    complex: (boolean), indicates multiple units.
+
+Specific Instructions:
+
+1.  Single Words: Identify individual words and assign the appropriate pos (part of speech) tag. If a word is a number and has an associated unit (e.g., currency, percentage, measurement), include the unit object.
+
+2.  Phrases: Identify multi-word units **that function as conventionalized, reusable phrases, likely to be found in dictionaries or usage guides.** These phrases should have a meaning that is often more than just the sum of their individual parts and are used across multiple contexts. **Prioritize identifying collocations, idioms, technical terms, and other fixed expressions.** Do *not* combine words into a phrase simply because they form a grammatically correct unit; the phrase must have a degree of lexicalization or conventionalization.
+
+3.  Split Phrases: Identify phrases where the constituent parts are separated by other words. Use the split_phrase type and the group property to link the parts. Examples include:
+    Discontinuous verb phrases (e.g., "has ... completed", "did ... turn ... off")
+    Phrasal verbs (e.g., "look ... up")
+    Correlative conjunctions (e.g., "not only ... but also", "either ... or")
+    Passive voice constructions (e.g., "was ... exchanged")
+4. Verbs: resolve the verbs like 'd 's
 
 Text to analyze:
+
 ${text}`;
 
             try {
