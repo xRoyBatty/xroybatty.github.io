@@ -283,16 +283,119 @@
 <body>
   <!-- Add New Word Section -->
 
-<form action="https://www.google.com/search" method="get" target="_blank">
+  <!-- Exercises Section -->
+  <div class="section">
+    <h2 onclick="toggleSection(this.parentElement)"><span class="collapse-arrow"></span>Exercises</h2>
+    <div class="section-content">
+      <div class="stats-container">
+        <div class="stat-item">
+          <div class="stat-value" id="totalScore">0</div>
+          <div class="stat-label">Total Score</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="correctAnswers">0</div>
+          <div class="stat-label">Correct Answers</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="totalAttempts">0</div>
+          <div class="stat-label">Total Attempts</div>
+        </div>
+      </div>
+      <button onclick="generateTrueFalse()">True/False Exercise</button>
+      <button onclick="generateMultipleChoice()">Multiple Choice Quiz</button>
+      <button onclick="generateSRS()">SRS Exercise</button>
+      <button onclick="generateFlashcard()">Flashcard Mode</button>
+      <button onclick="generateMatching()">Matching Exercise</button>
+      <button onclick="generateWriting()">Writing Exercise</button>
+    </div>
+  </div>
+
+  <!-- Exercise Panels -->
+  <!-- True/False Exercise -->
+  <div id="trueFalseExercise" class="exercise section" style="display:none">
+    <h2>True/False Exercise</h2>
+    <div class="score-display">Current Score: <span id="tfScore">0</span></div>
+    <div id="tfQuestion">
+      <img id="tfImage" style="max-width: 300px; display: block; margin: 0 auto;">
+      <p>Polish word: <span id="tfPolish"></span></p>
+      <p>English translation: <span id="tfEnglish"></span></p>
+      <button onclick="checkTrueFalse(true)">True</button>
+      <button onclick="checkTrueFalse(false)">False</button>
+    </div>
+    <div id="tfResult" class="result-message"></div>
+  </div>
+
+  <!-- Multiple Choice Quiz Exercise -->
+  <div id="multipleChoiceExercise" class="exercise section" style="display:none">
+    <h2>Multiple Choice Quiz</h2>
+    <div class="score-display">Current Score: <span id="mcScore">0</span></div>
+    <div id="mcQuestion">
+      <p>Polish word: <span id="mcPolish"></span></p>
+      <div id="mcOptions"></div>
+    </div>
+    <div id="mcResult" class="result-message"></div>
+  </div>
+
+  <!-- SRS Exercise -->
+  <div id="srsExercise" class="exercise section" style="display:none">
+    <h2>SRS Exercise</h2>
+    <div class="score-display">Current Score: <span id="srsScore">0</span></div>
+    <div id="srsQuestion">
+      <p>Polish word: <span id="srsPolish"></span></p>
+      <div class="input-group">
+        <input type="text" id="srsAnswer" placeholder="Type English translation...">
+      </div>
+      <button onclick="checkSRS()">Check Answer</button>
+    </div>
+    <div id="srsResult" class="result-message"></div>
+  </div>
+
+  <!-- Flashcard Mode -->
+  <div id="flashcardExercise" class="exercise section" style="display:none">
+    <h2>Flashcard Mode</h2>
+    <div class="flashcard" onclick="flipFlashcard()">
+      <div class="flashcard-inner" id="flashcardInner">
+        <div class="flashcard-face" id="flashcardFront">
+          <!-- Polish word and optional image -->
+        </div>
+        <div class="flashcard-face flashcard-back" id="flashcardBack">
+          <!-- English translation -->
+        </div>
+      </div>
+    </div>
+    <button onclick="generateFlashcard()">Next Flashcard</button>
+  </div>
+
+  <!-- Matching Exercise -->
+  <div id="matchingExercise" class="exercise section" style="display:none">
+    <h2>Matching Exercise</h2>
+    <div class="score-display">Current Score: <span id="matchingScore">0</span></div>
+    <div id="polishWords"></div>
+    <div id="englishWords"></div>
+    <button onclick="checkMatching()">Check Matches</button>
+    <div id="matchingResult" class="result-message"></div>
+  </div>
+
+  <!-- Writing Exercise -->
+  <div id="writingExercise" class="exercise section" style="display:none">
+    <h2>Writing Exercise</h2>
+    <div class="score-display">Current Score: <span id="writingScore">0</span></div>
+    <img id="writeImage" style="max-width: 300px; display: block; margin: 0 auto;">
+    <p>Polish word: <span id="writePolish"></span></p>
+    <div class="input-group">
+      <input type="text" id="writeAnswer" placeholder="Type English translation...">
+    </div>
+    <button onclick="checkWriting()">Check Answer</button>
+    <div id="writeResult" class="result-message"></div>
+  </div>
+
+  <form action="https://www.google.com/search" method="get" target="_blank">
     <div class="search-field">
         <svg height="21" viewBox="0 0 21 21" width="21" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd" stroke="#808080" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="5" /><path d="m17.571 17.5-5.571-5.5" /></g></svg>
         <input type="text" name="q">
     </div>
     <input type="hidden" name="tbm" value="isch" />
-</form>
-
-
-
+  </form>
 
   <div class="section">
     <h2 onclick="toggleSection(this.parentElement)">
@@ -335,108 +438,9 @@
     <input type="file" id="fileInput" style="display: none" onchange="loadFromFile(this)">
   </div>
 
-  <!-- Exercises Section -->
-  <div class="section">
-    <h2 onclick="toggleSection(this.parentElement)"><span class="collapse-arrow"></span>Exercises</h2>
-    <div class="stats-container">
-      <div class="stat-item">
-        <div class="stat-value" id="totalScore">0</div>
-        <div class="stat-label">Total Score</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-value" id="correctAnswers">0</div>
-        <div class="stat-label">Correct Answers</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-value" id="totalAttempts">0</div>
-        <div class="stat-label">Total Attempts</div>
-      </div>
-    </div>
-    <button onclick="generateTrueFalse()">True/False Exercise</button>
-    <button onclick="generateMultipleChoice()">Multiple Choice Quiz</button>
-    <button onclick="generateSRS()">SRS Exercise</button>
-    <button onclick="generateFlashcard()">Flashcard Mode</button>
-    <button onclick="generateMatching()">Matching Exercise</button>
-    <button onclick="generateWriting()">Writing Exercise</button>
-  </div>
 
-  <!-- True/False Exercise -->
-  <div id="trueFalseExercise" class="exercise section" style="display:none">
-    <h2 onclick="toggleSection(this.parentElement)"><span class="collapse-arrow"></span>True/False Exercise</h2>
-    <div class="score-display">Current Score: <span id="tfScore">0</span></div>
-    <div id="tfQuestion">
-      <img id="tfImage" style="max-width: 300px; display: block; margin: 0 auto;">
-      <p>Polish word: <span id="tfPolish"></span></p>
-      <p>English translation: <span id="tfEnglish"></span></p>
-      <button onclick="checkTrueFalse(true)">True</button>
-      <button onclick="checkTrueFalse(false)">False</button>
-    </div>
-    <div id="tfResult" class="result-message"></div>
-  </div>
 
-  <!-- Multiple Choice Quiz Exercise -->
-  <div id="multipleChoiceExercise" class="exercise section" style="display:none">
-    <h2 onclick="toggleSection(this.parentElement)"><span class="collapse-arrow"></span>Multiple Choice Quiz</h2>
-    <div class="score-display">Current Score: <span id="mcScore">0</span></div>
-    <div id="mcQuestion">
-      <p>Polish word: <span id="mcPolish"></span></p>
-      <div id="mcOptions"></div>
-    </div>
-    <div id="mcResult" class="result-message"></div>
-  </div>
 
-  <!-- SRS Exercise -->
-  <div id="srsExercise" class="exercise section" style="display:none">
-    <h2 onclick="toggleSection(this.parentElement)"><span class="collapse-arrow"></span>SRS Exercise</h2>
-    <div class="score-display">Current Score: <span id="srsScore">0</span></div>
-    <div id="srsQuestion">
-      <p>Polish word: <span id="srsPolish"></span></p>
-      <div class="input-group">
-        <input type="text" id="srsAnswer" placeholder="Type English translation...">
-      </div>
-      <button onclick="checkSRS()">Check Answer</button>
-    </div>
-    <div id="srsResult" class="result-message"></div>
-  </div>
-
-  <!-- Flashcard Mode -->
-  <div id="flashcardExercise" class="exercise section" style="display:none">
-    <h2 onclick="toggleSection(this.parentElement)"><span class="collapse-arrow"></span>Flashcard Mode</h2>
-    <div class="flashcard" onclick="flipFlashcard()">
-      <div class="flashcard-inner" id="flashcardInner">
-        <div class="flashcard-face" id="flashcardFront">
-          <!-- Polish word and optional image -->
-        </div>
-        <div class="flashcard-face flashcard-back" id="flashcardBack">
-          <!-- English translation -->
-        </div>
-      </div>
-    </div>
-    <button onclick="generateFlashcard()">Next Flashcard</button>
-  </div>
-
-  <!-- Matching Exercise -->
-  <div id="matchingExercise" class="exercise section" style="display:none">
-    <h2 onclick="toggleSection(this.parentElement)"><span class="collapse-arrow"></span>Matching Exercise</h2>
-    <div class="score-display">Current Score: <span id="matchingScore">0</span></div>
-    <div id="polishWords"></div>
-    <div id="englishWords"></div>
-    <button onclick="checkMatching()">Check Matches</button>
-    <div id="matchingResult" class="result-message"></div>
-  </div>
-
-  <!-- Writing Exercise -->
-  <div id="writingExercise" class="exercise section" style="display:none">
-    <h2 onclick="toggleSection(this.parentElement)"><span class="collapse-arrow"></span>Writing Exercise</h2>
-    <div class="score-display">Current Score: <span id="writingScore">0</span></div>
-    <img id="writeImage" style="max-width: 300px; display: block; margin: 0 auto;">
-    <p>Polish word: <span id="writePolish"></span></p>
-    <div class="input-group">
-      <input type="text" id="writeAnswer" placeholder="Type English translation...">
-    </div>
-    <button onclick="checkWriting()">Check Answer</button>
-    <div id="writeResult" class="result-message"></div>
-  </div>
 
   <!-- Edit Word Modal -->
   <div id="editWordModal" class="modal">
@@ -568,9 +572,13 @@
       }
       
       if (localImage) {
-        const reader = new FileReader();
-        reader.onload = (e) => finalizeEdit(e.target.result);
-        reader.readAsDataURL(localImage);
+        imageUtils.validateAndProcessImage(localImage)
+          .then(processedImage => {
+            finalizeEdit(processedImage);
+          })
+          .catch(error => {
+            alert(error.message);
+          });
       } else {
         finalizeEdit();
       }
@@ -686,12 +694,13 @@
       }
 
       if (localImageInput.files && localImageInput.files[0]) {
-        const file = localImageInput.files[0];
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          finalizeAdd(e.target.result);
-        };
-        reader.readAsDataURL(file);
+        imageUtils.validateAndProcessImage(localImageInput.files[0])
+          .then(processedImage => {
+            finalizeAdd(processedImage);
+          })
+          .catch(error => {
+            alert(error.message);
+          });
       } else {
         finalizeAdd();
       }
@@ -707,7 +716,10 @@
 
     // Hide all exercises
     function hideAllExercises() {
-      document.querySelectorAll('.exercise').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.exercise').forEach(el => {
+        el.style.display = 'none';
+        el.classList.remove('collapsed');
+      });
     }
 
     // True/False Exercise functions
@@ -982,26 +994,67 @@
       updateScores();
     }
 
-    // Optional: Image optimization function
-    function optimizeImage(dataUrl, maxWidth = 800) {
-      return new Promise((resolve) => {
-        const img = new Image();
-        img.onload = function() {
-          if (img.width <= maxWidth) {
-            resolve(dataUrl);
+    // Image optimization and validation
+    const imageUtils = {
+      maxWidth: 800,
+      maxHeight: 800,
+      maxFileSize: 2 * 1024 * 1024, // 2MB
+      quality: 0.85, // Good quality that still provides decent compression
+      allowedTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+
+      validateAndProcessImage(file) {
+        return new Promise((resolve, reject) => {
+          if (!file) {
+            reject(new Error('No file selected'));
             return;
           }
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          const ratio = maxWidth / img.width;
-          canvas.width = maxWidth;
-          canvas.height = img.height * ratio;
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          resolve(canvas.toDataURL('image/jpeg', 0.85));
-        };
-        img.src = dataUrl;
-      });
-    }
+
+          if (!this.allowedTypes.includes(file.type)) {
+            reject(new Error('Please use JPG, PNG, GIF or WebP image'));
+            return;
+          }
+
+          if (file.size > this.maxFileSize) {
+            reject(new Error('Image too large (max 2MB)'));
+            return;
+          }
+
+          const img = new Image();
+          
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let { width, height } = img;
+
+            // Scale down if too large while keeping aspect ratio
+            if (width > this.maxWidth) {
+              height *= this.maxWidth / width;
+              width = this.maxWidth;
+            }
+            if (height > this.maxHeight) {
+              width *= this.maxHeight / height;
+              height = this.maxHeight;
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            // Convert to JPEG with good quality
+            resolve(canvas.toDataURL('image/jpeg', this.quality));
+            URL.revokeObjectURL(img.src); // Clean up
+          };
+
+          img.onerror = () => {
+            URL.revokeObjectURL(img.src);
+            reject(new Error('Failed to load image'));
+          };
+
+          img.src = URL.createObjectURL(file);
+        });
+      }
+    };
 
         // Section collapse/expand functionality
     function toggleSection(section) {
@@ -1010,7 +1063,14 @@
       
       if (!content.style.maxHeight || content.classList.contains('collapsed')) {
         content.classList.remove('collapsed');
-        content.style.maxHeight = content.scrollHeight + 'px';
+        // Start with exercise sections collapsed
+        if (section.querySelector('h2').textContent.includes('Exercise') || 
+            section.id.includes('Exercise')) {
+          content.classList.add('collapsed');
+          content.style.maxHeight = '0';
+        } else {
+          content.style.maxHeight = content.scrollHeight + 'px';
+        }
       } else {
         content.classList.add('collapsed');
         content.style.maxHeight = '0';
@@ -1018,7 +1078,7 @@
     }
 
     function initializeSections() {
-      document.querySelectorAll('.section').forEach(section => {
+      document.querySelectorAll('.section:not(.exercise)').forEach(section => {
         // Wrap content in a container div if not already wrapped
         const content = section.querySelector('.section-content') || 
           section.appendChild(document.createElement('div'));
