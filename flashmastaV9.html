@@ -1,0 +1,1925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Learning Exercises</title>
+<style>
+    :root {
+        --primary-color: #4a90e2;
+        --secondary-color: #f5f5f5;
+        --success-color: #2ecc71;
+        --error-color: #e74c3c;
+        --text-color: #2c3e50;
+        --border-radius: 8px;
+    }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f0f2f5;
+        color: var(--text-color);
+        line-height: 1.6;
+    }
+    .section {
+        margin: 20px 0;
+        padding: 25px;
+        border-radius: var(--border-radius);
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h2 {
+        color: var(--primary-color);
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 10px;
+        margin-top: 0;
+        cursor: pointer;
+        user-select: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .section-content {
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+    }
+    .section-content.collapsed {
+        max-height: 0 !important;
+        padding: 0;
+        margin: 0;
+    }
+    .difficulty-tag {
+        display: inline-block;
+        padding: 5px 15px;
+        margin: 5px;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+    .difficulty-tag.learnt { background-color: var(--success-color); color: white; }
+    .difficulty-tag.easy { background-color: #3498db; color: white; }
+    .difficulty-tag.medium { background-color: #f39c12; color: white; }
+    .difficulty-tag.hard { background-color: var(--error-color); color: white; }
+    .difficulty-tag:hover {
+        transform: scale(1.05);
+        opacity: 0.9;
+    }
+    .progress-info {
+        margin: 10px 0;
+        padding: 10px;
+        background: var(--secondary-color);
+        border-radius: var(--border-radius);
+    }
+    .progress-bar {
+        width: 100%;
+        height: 20px;
+        background: #ddd;
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 5px 0;
+    }
+    .progress-fill {
+        height: 100%;
+        background: var(--primary-color);
+        transition: width 0.3s ease;
+    }
+    .difficulty-progress {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 5px;
+        font-size: 12px;
+        color: #666;
+    }
+    .next-milestone {
+        font-weight: bold;
+        color: var(--primary-color);
+        margin-top: 5px;
+    }
+    .input-group { margin: 15px 0; }
+    input[type="text"], input[type="file"] {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #ddd;
+        border-radius: var(--border-radius);
+        font-size: 16px;
+        transition: border-color 0.3s;
+    }
+    input[type="text"]:focus, input[type="file"]:focus {
+        border-color: var(--primary-color);
+        outline: none;
+    }
+    button {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+        margin: 5px;
+    }
+    button:hover { background-color: #357abd; }
+    .word-pair {
+        margin: 10px 0;
+        padding: 15px;
+        background-color: var(--secondary-color);
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: background-color 0.3s;
+        display: inline-block;
+        margin-right: 10px;
+    }
+    .word-pair:hover { background-color: #e8e8e8; }
+    .selected { background-color: #d4e6f7; border: 2px solid var(--primary-color); }
+    img { border-radius: var(--border-radius); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .score-display {
+        font-size: 18px;
+        font-weight: bold;
+        color: var(--primary-color);
+        text-align: center;
+        padding: 10px;
+        background-color: var(--secondary-color);
+        border-radius: var(--border-radius);
+        margin: 10px 0;
+    }
+    .result-message {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: var(--border-radius);
+        text-align: center;
+        font-weight: bold;
+    }
+    .result-message.success { background-color: var(--success-color); color: white; }
+    .result-message.error { background-color: var(--error-color); color: white; }
+    .stats-container {
+        display: flex;
+        justify-content: space-around;
+        padding: 15px;
+        background-color: var(--secondary-color);
+        border-radius: var(--border-radius);
+        margin: 15px 0;
+    }
+    .stat-item { text-align: center; }
+    .stat-value {
+        font-size: 24px;
+        font-weight: bold;
+        color: var(--primary-color);
+    }
+    .stat-label { font-size: 14px; color: #666; }
+    .flashcard {
+        perspective: 1000px;
+        width: 300px;
+        margin: 0 auto;
+        border: 4px solid transparent;
+        transition: border-color 0.3s;
+    }
+    .flashcard[data-difficulty="learnt"] { border-color: var(--success-color); }
+    .flashcard[data-difficulty="easy"] { border-color: #3498db; }
+    .flashcard[data-difficulty="medium"] { border-color: #f39c12; }
+    .flashcard[data-difficulty="hard"] { border-color: #e74c3c; }
+    .flashcard[data-difficulty="mastered"] { border-color: #9b59b6; border-style: double; border-width: 6px; }
+    .flashcard-inner {
+        position: relative;
+        width: 100%;
+        height: 200px;
+        text-align: center;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+        cursor: pointer;
+    }
+    .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+    .flashcard-face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid var(--primary-color);
+        border-radius: var(--border-radius);
+        background-color: var(--secondary-color);
+        font-size: 20px;
+        padding: 10px;
+    }
+    .flashcard-back { transform: rotateY(180deg); }
+    .word-list { margin-top: 10px; }
+    .word-item {
+        border-bottom: 1px solid #ddd;
+        padding: 10px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .word-details { flex-grow: 1; }
+    .tag {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 12px;
+        margin-right: 4px;
+    }
+    .achievements-icon { font-size: 20px; }
+    .achievements-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+        padding: 15px;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+    .achievement-card {
+        background: var(--secondary-color);
+        padding: 15px;
+        border-radius: var(--border-radius);
+        text-align: center;
+        position: relative;
+        transition: transform 0.2s;
+    }
+    .achievement-card.achieved {
+        background: linear-gradient(45deg, #f1c40f20, #f39c1220);
+        border: 2px solid #f1c40f;
+    }
+    .achievement-card:hover { transform: translateY(-2px); }
+    .achievement-icon { font-size: 32px; margin-bottom: 10px; }
+    .achievement-level {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 12px;
+        color: #666;
+    }
+    .achievement-progress {
+        margin-top: 10px;
+        height: 4px;
+        background: #ddd;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+    .achievement-progress-bar {
+        height: 100%;
+        background: var(--primary-color);
+        transition: width 0.3s;
+    }
+    .achievement-notification {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: white;
+        padding: 15px;
+        border-radius: var(--border-radius);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        transform: translateX(120%);
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        z-index: 2000;
+    }
+    .achievement-notification.show { transform: translateX(0); }
+    .notification-content { display: flex; align-items: center; gap: 10px; }
+    .achievement-text { display: flex; flex-direction: column; }
+    .achievement-title { font-weight: bold; color: var(--primary-color); }
+    .achievement-name { font-size: 14px; color: var(--text-color); }
+    @keyframes celebrate {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+    .celebrating { animation: celebrate 0.5s ease-out; }
+    /* Header Container */
+    .header-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 10px;
+        z-index: 1000;
+    }
+    .avatar-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        background: white;
+        padding: 10px;
+        border-radius: var(--border-radius);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .avatar-display {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    .avatar-display:hover { transform: scale(1.1); }
+    .word-stats { display: flex; flex-direction: column; font-size: 12px; color: var(--text-color); }
+    .word-count { display: flex; gap: 8px; }
+    .count-item { padding: 2px 6px; border-radius: 4px; color: white; font-weight: bold; }
+    .count-mastered { background-color: #9b59b6; }
+    .count-learnt { background-color: var(--success-color); }
+    .count-easy { background-color: #3498db; }
+    .count-medium { background-color: #f39c12; }
+    .count-hard { background-color: var(--error-color); }
+    .avatar-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; padding: 20px; }
+    .avatar-option {
+        text-align: center;
+        padding: 10px;
+        border: 2px solid transparent;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .avatar-option:hover { transform: scale(1.05); background-color: var(--secondary-color); }
+    .avatar-option.selected { border-color: var(--primary-color); background-color: var(--secondary-color); }
+    .avatar-option img { width: 80px; height: 80px; margin-bottom: 5px; }
+    .avatar-name { font-size: 12px; color: var(--text-color); }
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 2000;
+        overflow-y: auto;
+    }
+    .modal-content {
+        background: white;
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 25px;
+        border-radius: var(--border-radius);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .achievements-content { max-width: 1000px; }
+    .achievements-section { margin-bottom: 30px; }
+    .achievements-section h4 {
+        color: var(--primary-color);
+        margin-bottom: 15px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid var(--secondary-color);
+    }
+    .modal h3 {
+        color: var(--primary-color);
+        margin-top: 0;
+        margin-bottom: 20px;
+        text-align: center;
+        font-size: 24px;
+    }
+    .button-group {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid var(--secondary-color);
+    }
+    /* Undo Message Style */
+    .undo-message {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: #fff3cd;
+        border: 1px solid #ffeeba;
+        padding: 10px 20px;
+        border-radius: var(--border-radius);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        z-index: 1001;
+    }
+    /* Achievements Button (Updated Position) */
+    .achievements-button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: white;
+        padding: 10px 15px;
+        border-radius: var(--border-radius);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    .achievements-button:hover {
+        transform: scale(1.05);
+    }
+</style>
+</head>
+<body>
+<!-- Header Container -->
+<div class="header-container">
+    <div class="avatar-header" onclick="showAvatarSelector()" style="cursor: pointer;">
+        <img id="currentAvatar" class="avatar-display" src="https://api.dicebear.com/9.x/micah/svg?seed=default" alt="Your avatar">
+        <div class="word-stats">
+            <div class="word-count">
+                <span class="count-item count-mastered" title="Mastered">0</span>
+                <span class="count-item count-learnt" title="Learnt">0</span>
+                <span class="count-item count-easy" title="Easy">0</span>
+                <span class="count-item count-medium" title="Medium">0</span>
+                <span class="count-item count-hard" title="Hard">0</span>
+            </div>
+        </div>
+    </div>
+    <div class="achievements-button" onclick="showAchievements()">
+        <span class="achievements-icon">🏆</span>
+        Achievements
+    </div>
+</div>
+
+    <!-- Achievements Modal -->
+    <div id="achievementsModal" class="modal">
+        <div class="modal-content achievements-content">
+            <h3>Achievements</h3>
+            <div class="achievements-grid" id="achievementsGrid"></div>
+            <div class="button-group">
+                <button onclick="closeAchievements()">Close</button>
+            </div>
+        </div>
+    </div>
+    <!-- Achievement Notification -->
+    <div id="achievementNotification" class="achievement-notification">
+        <div class="notification-content">
+            <div class="achievement-icon"></div>
+            <div class="achievement-text">
+                <div class="achievement-title">Achievement Unlocked!</div>
+                <div class="achievement-name"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Avatar Selection Modal -->
+    <div id="avatarModal" class="modal">
+        <div class="modal-content">
+            <h3>Choose Your Avatar</h3>
+            <div class="avatar-grid">
+                <div class="avatar-option" data-style="big-smile" data-name="Big Smile">
+                    <img src="https://api.dicebear.com/9.x/big-smile/svg" alt="Big Smile">
+                    <div class="avatar-name">Big Smile</div>
+                </div>
+                <div class="avatar-option" data-style="micah" data-name="Micah" data-seed="Eden">
+                    <img src="https://api.dicebear.com/9.x/micah/svg?seed=Eden" alt="Micah">
+                    <div class="avatar-name">Micah</div>
+                </div>
+                <div class="avatar-option" data-style="pixel-art" data-name="Pixel Art">
+                    <img src="https://api.dicebear.com/9.x/pixel-art/svg" alt="Pixel Art">
+                    <div class="avatar-name">Pixel Art</div>
+                </div>
+                <div class="avatar-option" data-style="bottts" data-name="Bottts">
+                    <img src="https://api.dicebear.com/9.x/bottts/svg" alt="Bottts">
+                    <div class="avatar-name">Bottts</div>
+                </div>
+                <div class="avatar-option" data-style="lorelei" data-name="Lorelei">
+                    <img src="https://api.dicebear.com/9.x/lorelei/svg" alt="Lorelei">
+                    <div class="avatar-name">Lorelei</div>
+                </div>
+                <div class="avatar-option" data-style="personas" data-name="Personas">
+                    <img src="https://api.dicebear.com/9.x/personas/svg" alt="Personas">
+                    <div class="avatar-name">Personas</div>
+                </div>
+                <div class="avatar-option" data-style="adventurer" data-name="Adventurer" data-seed="Avery">
+                    <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Avery" alt="Adventurer">
+                    <div class="avatar-name">Adventurer</div>
+                </div>
+                <div class="avatar-option" data-style="open-peeps" data-name="Open Peeps">
+                    <img src="https://api.dicebear.com/9.x/open-peeps/svg" alt="Open Peeps">
+                    <div class="avatar-name">Open Peeps</div>
+                </div>
+                <div class="avatar-option" data-style="thumbs" data-name="Thumbs">
+                    <img src="https://api.dicebear.com/9.x/thumbs/svg" alt="Thumbs">
+                    <div class="avatar-name">Thumbs</div>
+                </div>
+                <div class="avatar-option" data-style="avataaars" data-name="Avataaars">
+                    <img src="https://api.dicebear.com/9.x/avataaars/svg?backgroundColor=ffd700" alt="Avataaars">
+                    <div class="avatar-name">Avataaars</div>
+                </div>
+                <div class="avatar-option" data-style="croodles" data-name="Croodles">
+                    <img src="https://api.dicebear.com/9.x/croodles/svg" alt="Croodles">
+                    <div class="avatar-name">Croodles</div>
+                </div>
+                <div class="avatar-option" data-style="dylan" data-name="Dylan">
+                    <img src="https://api.dicebear.com/9.x/dylan/svg" alt="Dylan">
+                    <div class="avatar-name">Dylan</div>
+                </div>
+                <div class="avatar-option" data-style="big-ears" data-name="Big Ears" data-seed="Andrea">
+                    <img src="https://api.dicebear.com/9.x/big-ears/svg?seed=Andrea" alt="Big Ears">
+                    <div class="avatar-name">Big Ears</div>
+                </div>
+                <div class="avatar-option" data-style="micah" data-name="Micah Felix" data-seed="Felix">
+                    <img src="https://api.dicebear.com/9.x/micah/svg?seed=Felix" alt="Micah Felix">
+                    <div class="avatar-name">Micah Felix</div>
+                </div>
+            </div>
+            <div class="button-group">
+                <button onclick="closeAvatarSelector()">Close</button>
+            </div>
+        </div>
+    </div>
+    <!-- Exercises Section -->
+    <div class="section">
+        <h2 onclick="toggleSection(this.parentElement)"><span class="collapse-arrow"></span>Exercises</h2>
+        <div class="section-content">
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalScore">0</div>
+                    <div class="stat-label">Total Score</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="correctAnswers">0</div>
+                    <div class="stat-label">Correct Answers</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalAttempts">0</div>
+                    <div class="stat-label">Total Attempts</div>
+                </div>
+            </div>
+            <button onclick="generateTrueFalse()">True/False Exercise</button>
+            <button onclick="generateMultipleChoice()">Multiple Choice Quiz</button>
+            <button onclick="generateSRS()">SRS Exercise</button>
+            <button onclick="generateFlashcard()">Flashcard Mode</button>
+            <button onclick="generateMatching()">Matching Exercise</button>
+            <button onclick="generateWriting()">Writing Exercise</button>
+        </div>
+    </div>
+    <!-- Exercise Panels -->
+    <!-- True/False Exercise -->
+    <div id="trueFalseExercise" class="exercise section" style="display:none">
+        <h2>True/False Exercise</h2>
+        <div class="score-display">Current Score: <span id="tfScore">0</span></div>
+        <div id="tfQuestion">
+            <img id="tfImage" style="max-width: 300px; display: block; margin: 0 auto;">
+            <p>Polish word: <span id="tfPolish"></span></p>
+            <p>English translation: <span id="tfEnglish"></span></p>
+            <button onclick="checkTrueFalse(true)">True</button>
+            <button onclick="checkTrueFalse(false)">False</button>
+        </div>
+        <div id="tfResult" class="result-message"></div>
+    </div>
+    <!-- Multiple Choice Quiz Exercise -->
+    <div id="multipleChoiceExercise" class="exercise section" style="display:none">
+        <h2>Multiple Choice Quiz</h2>
+        <div class="score-display">Current Score: <span id="mcScore">0</span></div>
+        <div id="mcQuestion">
+            <p>Polish word: <span id="mcPolish"></span></p>
+            <div id="mcOptions"></div>
+        </div>
+        <div id="mcResult" class="result-message"></div>
+    </div>
+    <!-- SRS Exercise -->
+    <div id="srsExercise" class="exercise section" style="display:none">
+        <h2>SRS Exercise</h2>
+        <div class="score-display">Current Score: <span id="srsScore">0</span></div>
+        <div id="srsQuestion">
+            <div class="progress-info">
+                <div id="srsProgress"></div>
+                <div class="progress-bar">
+                    <div id="srsProgressFill" class="progress-fill"></div>
+                </div>
+                <div class="difficulty-progress">
+                    <span>Hard</span>
+                    <span>Medium</span>
+                    <span>Easy</span>
+                    <span>Learnt</span>
+                    <span>Mastered</span>
+                </div>
+                <div id="srsNextMilestone" class="next-milestone"></div>
+            </div>
+            <p>Polish word: <span id="srsPolish"></span></p>
+            <div id="srsMultipleChoice" style="display:none">
+                <div id="srsOptions"></div>
+            </div>
+            <div id="srsWriting" style="display:none">
+                <div class="input-group">
+                    <input type="text" id="srsAnswer" placeholder="Type English translation...">
+                </div>
+                <button onclick="checkSRS()">Check Answer</button>
+            </div>
+        </div>
+        <div id="srsResult" class="result-message"></div>
+    </div>
+    <!-- Flashcard Mode -->
+    <div id="flashcardExercise" class="exercise section" style="display:none">
+        <h2>Flashcard Mode</h2>
+        <div class="flashcard" onclick="flipFlashcard()">
+            <div class="flashcard-inner" id="flashcardInner">
+                <div class="flashcard-face" id="flashcardFront"></div>
+                <div class="flashcard-face flashcard-back" id="flashcardBack"></div>
+            </div>
+        </div>
+        <div class="progress-info">
+            <div id="flashcardProgress"></div>
+            <div class="progress-bar">
+                <div id="flashcardProgressFill" class="progress-fill"></div>
+            </div>
+            <div class="difficulty-progress">
+                <span>Hard</span>
+                <span>Medium</span>
+                <span>Easy</span>
+                <span>Learnt</span>
+                <span>Mastered</span>
+            </div>
+            <div id="flashcardNextMilestone" class="next-milestone"></div>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <div class="difficulty-tag learnt" onclick="tagWord('learnt')">Learnt</div>
+            <div class="difficulty-tag easy" onclick="tagWord('easy')">Easy</div>
+            <div class="difficulty-tag medium" onclick="tagWord('medium')">Medium</div>
+            <div class="difficulty-tag hard" onclick="tagWord('hard')">Hard</div>
+        </div>
+        <button onclick="generateFlashcard()">Next Flashcard</button>
+    </div>
+    <!-- Matching Exercise -->
+    <div id="matchingExercise" class="exercise section" style="display:none">
+        <h2>Matching Exercise</h2>
+        <div class="score-display">Current Score: <span id="matchingScore">0</span></div>
+        <div id="polishWords"></div>
+        <div id="englishWords"></div>
+        <button onclick="checkMatching()">Check Matches</button>
+        <div id="matchingResult" class="result-message"></div>
+    </div>
+    <!-- Writing Exercise -->
+    <div id="writingExercise" class="exercise section" style="display:none">
+        <h2>Writing Exercise</h2>
+        <div class="score-display">Current Score: <span id="writingScore">0</span></div>
+        <img id="writeImage" style="max-width: 300px; display: block; margin: 0 auto;">
+        <p>Polish word: <span id="writePolish"></span></p>
+        <div class="input-group">
+            <input type="text" id="writeAnswer" placeholder="Type English translation...">
+        </div>
+        <button onclick="checkWriting()">Check Answer</button>
+        <div id="writeResult" class="result-message"></div>
+    </div>
+    <form action="https://www.google.com/search" method="get" target="_blank">
+        <div class="search-field">
+            <svg height="21" viewBox="0 0 21 21" width="21" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd" stroke="#808080" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="5" /><path d="m17.571 17.5-5.571-5.5" /></g></svg>
+            <input type="text" name="q">
+        </div>
+        <input type="hidden" name="tbm" value="isch" />
+    </form>
+    <div class="section">
+        <h2 onclick="toggleSection(this.parentElement)">
+            <span class="collapse-arrow"></span>Add New Word
+        </h2>
+        <div class="input-group">
+            <label>English Word:</label>
+            <input type="text" id="englishWord">
+        </div>
+        <div class="input-group">
+            <label>Polish Translation:</label>
+            <input type="text" id="polishWord">
+        </div>
+        <div class="input-group">
+            <label>Image URL (optional):</label>
+            <input type="text" id="imageUrl">
+        </div>
+        <div class="input-group">
+            <label>Or Upload Local Image:</label>
+            <input type="file" id="localImage" accept="image/*">
+        </div>
+        <div class="input-group">
+            <label>Tags (comma separated):</label>
+            <input type="text" id="wordTags" placeholder="e.g., beginner, food, verbs">
+        </div>
+        <button onclick="addWord()">Add Word</button>
+    </div>
+    <!-- Manage Vocabulary Section -->
+    <div class="section">
+        <h2 onclick="toggleSection(this.parentElement)"><span class="collapse-arrow"></span>Manage Vocabulary</h2>
+        <div id="vocabList" class="word-list"></div>
+    </div>
+    <!-- Data Management Section -->
+    <div class="section">
+        <h2 onclick="toggleSection(this.parentElement)"><span class="collapse-arrow"></span>Data Management</h2>
+        <button onclick="saveToFile()">Save to File</button>
+        <button onclick="document.getElementById('fileInput').click()">Load from File</button>
+        <input type="file" id="fileInput" style="display: none" onchange="loadFromFile(this)">
+    </div>
+    <!-- Edit Word Modal -->
+    <div id="editWordModal" class="modal">
+        <div class="modal-content">
+            <h3>Edit Word</h3>
+            <div class="input-group">
+                <label>English Word:</label>
+                <input type="text" id="editEnglish">
+            </div>
+            <div class="input-group">
+                <label>Polish Translation:</label>
+                <input type="text" id="editPolish">
+            </div>
+            <div class="input-group">
+                <label>Image:</label>
+                <input type="text" id="editImageUrl" placeholder="Image URL">
+                <span>OR</span>
+                <input type="file" id="editLocalImage" accept="image/*">
+            </div>
+            <div class="input-group">
+                <label>Tags:</label>
+                <input type="text" id="editTags" placeholder="Comma separated tags">
+            </div>
+            <div class="preview-container">
+                <img id="editImagePreview" style="display: none; max-width: 200px;">
+            </div>
+            <div class="button-group">
+                <button onclick="saveEdit()">Save</button>
+                <button onclick="closeEditModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        let vocabulary = [];
+        let scores = {
+            truefalse: 0,
+            matching: 0,
+            writing: 0,
+            multipleChoice: 0,
+            srs: 0,
+            flashcard: 0,
+            totalCorrect: 0,
+            totalAttempts: 0
+        };
+        let currentExercise = null;
+
+        // Achievement System (Added and Fixed)
+        const achievementSystem = {
+            achievements: [
+                {
+                    id: 'word_master_bronze',
+                    name: 'Word Master Bronze',
+                    description: 'Get all words to at least medium difficulty',
+                    icon: '🥉',
+                    type: 'progress',
+                    level: 1,
+                    progress: 0,
+                    target: null,
+                    achieved: false,
+                    dateAchieved: null
+                },
+                {
+                    id: 'word_master_silver',
+                    name: 'Word Master Silver',
+                    description: 'Get all words to at least easy difficulty',
+                    icon: '🥈',
+                    type: 'progress',
+                    level: 2,
+                    progress: 0,
+                    target: null,
+                    achieved: false,
+                    dateAchieved: null
+                },
+                {
+                    id: 'word_master_gold',
+                    name: 'Word Master Gold',
+                    description: 'Get all words to at least learnt difficulty',
+                    icon: '🥇',
+                    type: 'progress',
+                    level: 3,
+                    progress: 0,
+                    target: null,
+                    achieved: false,
+                    dateAchieved: null
+                },
+                {
+                    id: 'perfect_recall_bronze',
+                    name: 'Perfect Recall Bronze',
+                    description: '3 consecutive writing successes',
+                    icon: '📝',
+                    type: 'performance',
+                    level: 1,
+                    progress: 0,
+                    target: 3,
+                    achieved: false,
+                    dateAchieved: null
+                },
+                {
+                    id: 'perfect_recall_silver',
+                    name: 'Perfect Recall Silver',
+                    description: '5 consecutive writing successes',
+                    icon: '✍️',
+                    type: 'performance',
+                    level: 2,
+                    progress: 0,
+                    target: 5,
+                    achieved: false,
+                    dateAchieved: null
+                },
+                {
+                    id: 'perfect_recall_gold',
+                    name: 'Perfect Recall Gold',
+                    description: '10 consecutive writing successes',
+                    icon: '🏆',
+                    type: 'performance',
+                    level: 3,
+                    progress: 0,
+                    target: 10,
+                    achieved: false,
+                    dateAchieved: null
+                },
+                {
+                    id: 'speed_demon_bronze',
+                    name: 'Speed Demon Bronze',
+                    description: 'Complete 5 words under 30 seconds each',
+                    icon: '⚡',
+                    type: 'speed',
+                    level: 1,
+                    progress: 0,
+                    target: 5,
+                    achieved: false,
+                    dateAchieved: null
+                },
+                {
+                    id: 'explorer',
+                    name: 'Explorer',
+                    description: 'Try all exercise types',
+                    icon: '🌟',
+                    type: 'special',
+                    level: 1,
+                    progress: 0,
+                    target: 6,
+                    achieved: false,
+                    dateAchieved: null,
+                    exercisesTried: new Set()
+                }
+            ],
+            init() {
+                this.updateWordTargets();
+                this.checkAchievements();
+            },
+            updateWordTargets() {
+                this.achievements.forEach(achievement => {
+                    if (achievement.id.startsWith('word_master_')) {
+                        achievement.target = vocabulary.length;
+                        achievement.progress = this.countWordsAboveDifficulty(
+                            achievement.id === 'word_master_bronze' ? 'hard' :
+                            achievement.id === 'word_master_silver' ? 'medium' : 'easy'
+                        );
+                    }
+                });
+            },
+            countWordsAboveDifficulty(minDifficulty) {
+                const difficultyLevels = ['hard', 'medium', 'easy', 'learnt', 'mastered'];
+                const minIndex = difficultyLevels.indexOf(minDifficulty);
+                return vocabulary.filter(word => {
+                    const wordIndex = difficultyLevels.indexOf(word.difficulty);
+                    return wordIndex > minIndex;
+                }).length;
+            },
+            checkAchievements() {
+                this.achievements.forEach(achievement => {
+                    // Fix: Skip Word Master achievements if vocabulary is empty
+                    if (achievement.id.startsWith('word_master_') && vocabulary.length === 0) {
+                        return;
+                    }
+                    if (!achievement.achieved && achievement.progress >= achievement.target) {
+                        this.unlockAchievement(achievement);
+                    }
+                });
+            },
+            unlockAchievement(achievement) {
+                achievement.achieved = true;
+                achievement.dateAchieved = new Date();
+                this.showUnlockNotification(achievement);
+                this.saveAchievements();
+            },
+            showUnlockNotification(achievement) {
+                const notification = document.getElementById('achievementNotification');
+                const icon = notification.querySelector('.achievement-icon');
+                const name = notification.querySelector('.achievement-name');
+                icon.textContent = achievement.icon;
+                name.textContent = achievement.name;
+                notification.classList.add('show');
+                icon.classList.add('celebrating');
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    icon.classList.remove('celebrating');
+                }, 3000);
+            },
+            showAchievementsModal() {
+                const modal = document.getElementById('achievementsModal');
+                const grid = document.getElementById('achievementsGrid');
+                grid.innerHTML = '';
+                const groupedAchievements = this.achievements.reduce((acc, achievement) => {
+                    if (!acc[achievement.type]) acc[achievement.type] = [];
+                    acc[achievement.type].push(achievement);
+                    return acc;
+                }, {});
+                Object.entries(groupedAchievements).forEach(([type, achievements]) => {
+                    const section = document.createElement('div');
+                    section.className = 'achievements-section';
+                    section.innerHTML = `<h4>${type.charAt(0).toUpperCase() + type.slice(1)}</h4>`;
+                    achievements.forEach(achievement => {
+                        const card = document.createElement('div');
+                        card.className = `achievement-card ${achievement.achieved ? 'achieved' : ''}`;
+                        const progress = achievement.target ?
+                            Math.min(100, (achievement.progress / achievement.target) * 100) : 0;
+                        card.innerHTML = `
+                            <div class="achievement-icon">${achievement.icon}</div>
+                            <div class="achievement-level">${'★'.repeat(achievement.level)}</div>
+                            <h4>${achievement.name}</h4>
+                            <p>${achievement.description}</p>
+                            ${achievement.target ? `
+                            <div class="achievement-progress">
+                                <div class="achievement-progress-bar" style="width: ${progress}%"></div>
+                            </div>
+                            <div class="achievement-progress-text">
+                                ${achievement.progress}/${achievement.target}
+                            </div>
+                            ` : ''}
+                        `;
+                        section.appendChild(card);
+                    });
+                    grid.appendChild(section);
+                });
+                modal.style.display = 'block';
+            },
+            closeAchievementsModal() {
+                document.getElementById('achievementsModal').style.display = 'none';
+            },
+            saveAchievements() {
+                // Integrated with saveToFile
+            },
+            recordWritingSuccess(consecutive) {
+                this.achievements
+                    .filter(a => a.id.startsWith('perfect_recall_'))
+                    .forEach(a => {
+                        a.progress = consecutive;
+                        this.checkAchievements();
+                    });
+            },
+            recordExerciseAttempt(type) {
+                const explorer = this.achievements.find(a => a.id === 'explorer');
+                if (explorer && !explorer.exercisesTried.has(type)) {
+                    explorer.exercisesTried.add(type);
+                    explorer.progress = explorer.exercisesTried.size;
+                    this.checkAchievements();
+                }
+            }
+        };
+
+        // SRS System (unchanged from previous response)
+        const srsSystem = {
+            successCounters: {},
+            wordHistory: {},
+            difficultyLevels: ['hard', 'medium', 'easy', 'learnt', 'mastered'],
+            initWord(word) {
+                if (!word.difficulty) {
+                    word.difficulty = 'medium';
+                }
+                if (!this.successCounters[word.english]) {
+                    this.successCounters[word.english] = {
+                        multipleChoice: 0,
+                        writing: 0,
+                        consecutive: 0
+                    };
+                }
+                if (!this.wordHistory[word.english]) {
+                    this.wordHistory[word.english] = [];
+                }
+            },
+            updateProgressDisplay(word, mode) {
+                const progress = document.getElementById(`${mode}Progress`);
+                const progressFill = document.getElementById(`${mode}ProgressFill`);
+                const nextMilestone = document.getElementById(`${mode}NextMilestone`);
+                if (!progress || !progressFill || !nextMilestone) return;
+                const currentLevel = this.difficultyLevels.indexOf(word.difficulty);
+                const progressPercent = (currentLevel / (this.difficultyLevels.length - 1)) * 100;
+                progressFill.style.width = `${progressPercent}%`;
+                progress.textContent = `Current level: ${word.difficulty}`;
+                const counters = this.successCounters[word.english];
+                let milestoneText = '';
+                switch(word.difficulty) {
+                    case 'hard':
+                        milestoneText = `${3 - counters.multipleChoice} more multiple choice successes needed for 'medium'`;
+                        break;
+                    case 'medium':
+                        if (counters.multipleChoice < 2) {
+                            milestoneText = `${2 - counters.multipleChoice} more multiple choice successes needed`;
+                        } else {
+                            milestoneText = `1 writing success needed for 'easy'`;
+                        }
+                        break;
+                    case 'easy':
+                        milestoneText = `${3 - counters.consecutive} more writing successes needed for 'learnt'`;
+                        break;
+                    case 'learnt':
+                        milestoneText = `${3 - counters.consecutive} more writing successes needed for 'mastered'`;
+                        break;
+                    case 'mastered':
+                        milestoneText = 'Mastered! 🎉';
+                        break;
+                }
+                nextMilestone.textContent = milestoneText;
+            },
+            shouldUseMultipleChoice(word) {
+                this.initWord(word);
+                if (word.difficulty === 'learnt' || word.difficulty === 'easy') {
+                    return false;
+                }
+                const successes = this.successCounters[word.english].multipleChoice;
+                if (word.difficulty === 'medium' && successes >= 2) {
+                    return false;
+                }
+                if (word.difficulty === 'hard' && successes >= 3) {
+                    return false;
+                }
+                const history = this.wordHistory[word.english];
+                if (history.length > 0) {
+                    const lastAttempt = history[history.length - 1];
+                    return lastAttempt.type === 'writing' && !lastAttempt.success;
+                }
+                return true;
+            },
+            checkDifficultyProgression(word, type, currentStreak) {
+                switch(word.difficulty) {
+                    case 'hard':
+                        if (type === 'multipleChoice' && currentStreak >= 3) {
+                            word.difficulty = 'medium';
+                            return true;
+                        }
+                        break;
+                    case 'medium':
+                        if (type === 'writing' &&
+                            this.successCounters[word.english].multipleChoice >= 2 &&
+                            currentStreak >= 1) {
+                            word.difficulty = 'easy';
+                            return true;
+                        }
+                        break;
+                    case 'easy':
+                        if (type === 'writing' && currentStreak >= 3) {
+                            word.difficulty = 'learnt';
+                            return true;
+                        }
+                        break;
+                    case 'learnt':
+                        if (type === 'writing' && currentStreak >= 3) {
+                            word.difficulty = 'mastered';
+                            return true;
+                        }
+                        break;
+                }
+                return false;
+            },
+            checkDifficultyRegression(word, type, failures) {
+                const currentLevel = this.difficultyLevels.indexOf(word.difficulty);
+                if (currentLevel <= 0) return false;
+                let shouldRegress = false;
+                if (type === 'writing' && failures === 1) {
+                    shouldRegress = true;
+                } else if (type === 'multipleChoice' && failures >= 2) {
+                    shouldRegress = true;
+                }
+                if (shouldRegress) {
+                    word.difficulty = this.difficultyLevels[currentLevel - 1];
+                    this.successCounters[word.english].multipleChoice = 0;
+                    this.successCounters[word.english].writing = 0;
+                    this.successCounters[word.english].consecutive = 0;
+                    return true;
+                }
+                return false;
+            },
+            recordAttempt(word, type, success) {
+                this.initWord(word);
+                if (success) {
+                    this.successCounters[word.english][type]++;
+                    this.successCounters[word.english].consecutive++;
+                    if (this.checkDifficultyProgression(word, type, this.successCounters[word.english].consecutive)) {
+                        this.successCounters[word.english].multipleChoice = 0;
+                        this.successCounters[word.english].writing = 0;
+                        this.successCounters[word.english].consecutive = 0;
+                    }
+                } else {
+                    const history = this.wordHistory[word.english];
+                    const recentFailures = history
+                        .slice(-2)
+                        .filter(h => h.type === type && !h.success)
+                        .length + 1;
+                    this.checkDifficultyRegression(word, type, recentFailures);
+                    this.successCounters[word.english].consecutive = 0;
+                }
+                this.wordHistory[word.english].push({
+                    type,
+                    success,
+                    timestamp: Date.now(),
+                    newDifficulty: word.difficulty
+                });
+            }
+        };
+
+        const DATA_VERSION = "2.0";
+
+        function updateVocabList() {
+            const listDiv = document.getElementById('vocabList');
+            listDiv.innerHTML = '';
+            vocabulary.forEach((word, index) => {
+                const wordDiv = document.createElement('div');
+                wordDiv.className = 'word-item';
+                const detailsDiv = document.createElement('div');
+                detailsDiv.className = 'word-details';
+                detailsDiv.innerHTML = `<strong>${word.english}</strong> - ${word.polish} `;
+                if(word.tags) {
+                    const tags = word.tags.split(',').map(t => t.trim()).filter(t => t);
+                    tags.forEach(tag => {
+                        detailsDiv.innerHTML += `<span class="tag">${tag}</span>`;
+                    });
+                }
+                const editBtn = document.createElement('button');
+                editBtn.textContent = 'Edit';
+                editBtn.onclick = () => editWord(index);
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.onclick = () => deleteWord(index);
+                wordDiv.appendChild(detailsDiv);
+                wordDiv.appendChild(editBtn);
+                wordDiv.appendChild(deleteBtn);
+                listDiv.appendChild(wordDiv);
+            });
+        }
+
+        let currentEditIndex = -1;
+        function editWord(index) {
+            currentEditIndex = index;
+            const word = vocabulary[index];
+            const modal = document.getElementById('editWordModal');
+            document.getElementById('editEnglish').value = word.english;
+            document.getElementById('editPolish').value = word.polish;
+            document.getElementById('editImageUrl').value = word.imageUrl || '';
+            document.getElementById('editTags').value = word.tags || '';
+            const preview = document.getElementById('editImagePreview');
+            if (word.imageUrl) {
+                preview.src = word.imageUrl;
+                preview.style.display = 'block';
+            } else {
+                preview.style.display = 'none';
+            }
+            modal.style.display = 'block';
+        }
+
+        function saveEdit() {
+            if (currentEditIndex === -1) return;
+            const english = document.getElementById('editEnglish').value.trim();
+            const polish = document.getElementById('editPolish').value.trim();
+            const imageUrl = document.getElementById('editImageUrl').value.trim();
+            const tags = document.getElementById('editTags').value.trim();
+            const localImage = document.getElementById('editLocalImage').files[0];
+            if (!english || !polish) {
+                alert('Please enter both English and Polish words!');
+                return;
+            }
+            function finalizeEdit(imageData) {
+                const oldEnglish = vocabulary[currentEditIndex].english;
+                if (oldEnglish !== english) {
+                    if (srsSystem.successCounters[oldEnglish]) {
+                        srsSystem.successCounters[english] = srsSystem.successCounters[oldEnglish];
+                        delete srsSystem.successCounters[oldEnglish];
+                    }
+                    if (srsSystem.wordHistory[oldEnglish]) {
+                        srsSystem.wordHistory[english] = srsSystem.wordHistory[oldEnglish];
+                        delete srsSystem.wordHistory[oldEnglish];
+                    }
+                }
+                vocabulary[currentEditIndex] = {
+                    english,
+                    polish,
+                    imageUrl: imageData || imageUrl,
+                    tags,
+                    difficulty: vocabulary[currentEditIndex].difficulty || 'medium',
+                    nextReview: vocabulary[currentEditIndex].nextReview || Date.now()
+                };
+                srsSystem.initWord(vocabulary[currentEditIndex]);
+                updateVocabList();
+                closeEditModal();
+            }
+            if (localImage) {
+                imageUtils.validateAndProcessImage(localImage)
+                    .then(processedImage => {
+                        finalizeEdit(processedImage);
+                    })
+                    .catch(error => {
+                        alert(error.message);
+                    });
+            } else {
+                finalizeEdit();
+            }
+        }
+
+        function closeEditModal() {
+            document.getElementById('editWordModal').style.display = 'none';
+            currentEditIndex = -1;
+        }
+
+        let deletedWords = [];
+        function deleteWord(index) {
+            if (confirm("Are you sure you want to delete this word?")) {
+                const deleted = vocabulary.splice(index, 1)[0];
+                const english = deleted.english;
+                delete srsSystem.successCounters[english];
+                delete srsSystem.wordHistory[english];
+                deletedWords.push(deleted);
+                updateVocabList();
+                const undoMessage = document.createElement('div');
+                undoMessage.className = 'undo-message';
+                undoMessage.innerHTML = `Word deleted. <button onclick="undoDelete()">Undo</button>`;
+                document.body.appendChild(undoMessage);
+                setTimeout(() => undoMessage.remove(), 5000);
+            }
+        }
+
+        function undoDelete() {
+            if (deletedWords.length > 0) {
+                const word = deletedWords.pop();
+                vocabulary.push(word);
+                srsSystem.initWord(word);
+                updateVocabList();
+                document.querySelector('.undo-message')?.remove();
+            }
+        }
+
+        function showAchievements() {
+            achievementSystem.showAchievementsModal();
+        }
+
+        function closeAchievements() {
+            achievementSystem.closeAchievementsModal();
+        }
+
+        function saveToFile() {
+    const dataToSave = {
+        version: DATA_VERSION,
+        vocabulary: vocabulary,
+        scores: scores,
+        avatar: avatarSystem.current,
+        achievements: achievementSystem.achievements.map(achievement => ({
+            ...achievement,
+            exercisesTried: achievement.exercisesTried ? Array.from(achievement.exercisesTried) : []
+        })),
+        srs: {
+            successCounters: srsSystem.successCounters,
+            wordHistory: srsSystem.wordHistory
+        }
+    };
+    const dataStr = JSON.stringify(dataToSave);
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', 'vocabulary.json');
+    linkElement.click();
+}
+
+        function loadFromFile(input) {
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        let data = JSON.parse(e.target.result);
+        if(!data.version) data.version = "1.0";
+        vocabulary = data.vocabulary || [];
+        scores = data.scores || {
+            truefalse: 0,
+            matching: 0,
+            writing: 0,
+            multipleChoice: 0,
+            srs: 0,
+            flashcard: 0,
+            totalCorrect: 0,
+            totalAttempts: 0
+        };
+        if (data.avatar) {
+            avatarSystem.current = data.avatar;
+            avatarSystem.updateAvatar();
+        }
+        if (data.achievements) {
+            achievementSystem.achievements.forEach((achievement, index) => {
+                if (data.achievements[index]) {
+                    if (achievement.exercisesTried) {
+                        const exercisesTried = data.achievements[index].exercisesTried;
+                        // Handle both array and object cases, with fallback to empty array
+                        achievement.exercisesTried = new Set(
+                            Array.isArray(exercisesTried) ? exercisesTried :
+                            (exercisesTried && typeof exercisesTried === 'object' ? Object.values(exercisesTried) : [])
+                        );
+                    }
+                    achievement.progress = data.achievements[index].progress || 0;
+                    achievement.achieved = data.achievements[index].achieved || false;
+                    achievement.dateAchieved = data.achievements[index].dateAchieved || null;
+                }
+            });
+        }
+        if (data.srs) {
+            srsSystem.successCounters = data.srs.successCounters || {};
+            srsSystem.wordHistory = data.srs.wordHistory || {};
+        } else {
+            srsSystem.successCounters = {};
+            srsSystem.wordHistory = {};
+        }
+        vocabulary.forEach(word => {
+            if(typeof word.tags === "undefined") word.tags = "";
+            if(typeof word.difficulty === "undefined") word.difficulty = "medium";
+            srsSystem.initWord(word);
+        });
+        updateScores();
+        updateVocabList();
+        avatarSystem.updateWordCounts();
+        achievementSystem.init();
+        alert('Vocabulary, achievements, and scores loaded successfully!');
+    };
+    reader.readAsText(file);
+}
+
+        function updateScores() {
+            const totalScore = scores.truefalse + scores.matching + scores.writing + scores.multipleChoice + scores.srs + scores.flashcard;
+            document.getElementById('totalScore').textContent = totalScore;
+            document.getElementById('correctAnswers').textContent = scores.totalCorrect;
+            document.getElementById('totalAttempts').textContent = scores.totalAttempts;
+            document.getElementById('tfScore').textContent = scores.truefalse;
+            document.getElementById('matchingScore').textContent = scores.matching;
+            document.getElementById('writingScore').textContent = scores.writing;
+            document.getElementById('mcScore').textContent = scores.multipleChoice;
+            document.getElementById('srsScore').textContent = scores.srs;
+            if(document.getElementById('flashcardScore')) {
+                document.getElementById('flashcardScore').textContent = scores.flashcard;
+            }
+        }
+
+        function addWord() {
+            const english = document.getElementById('englishWord').value.trim();
+            const polish = document.getElementById('polishWord').value.trim();
+            const imageUrl = document.getElementById('imageUrl').value.trim();
+            const localImageInput = document.getElementById('localImage');
+            const tags = document.getElementById('wordTags').value.trim();
+            if (!english || !polish) {
+                alert('Please enter both English and Polish words!');
+                return;
+            }
+            function finalizeAdd(imageData) {
+                const newWord = { english, polish, imageUrl: imageData || imageUrl, tags, nextReview: Date.now() };
+                srsSystem.initWord(newWord);
+                vocabulary.push(newWord);
+                updateVocabList();
+                achievementSystem.updateWordTargets(); // Update targets after adding a word
+                achievementSystem.checkAchievements(); // Check achievements
+                clearInputs();
+                alert('Word added successfully!');
+            }
+            if (localImageInput.files && localImageInput.files[0]) {
+                imageUtils.validateAndProcessImage(localImageInput.files[0])
+                    .then(processedImage => {
+                        finalizeAdd(processedImage);
+                    })
+                    .catch(error => {
+                        alert(error.message);
+                    });
+            } else {
+                finalizeAdd();
+            }
+        }
+
+        function clearInputs() {
+            document.getElementById('englishWord').value = '';
+            document.getElementById('polishWord').value = '';
+            document.getElementById('imageUrl').value = '';
+            document.getElementById('localImage').value = '';
+            document.getElementById('wordTags').value = '';
+        }
+
+        function hideAllExercises() {
+            document.querySelectorAll('.exercise').forEach(el => {
+                el.style.display = 'none';
+                el.classList.remove('collapsed');
+            });
+        }
+
+        function generateTrueFalse() {
+            if (vocabulary.length < 2) {
+                alert('Add at least 2 words to start exercises!');
+                return;
+            }
+            hideAllExercises();
+            document.getElementById('trueFalseExercise').style.display = 'block';
+            const wordIndex = Math.floor(Math.random() * vocabulary.length);
+            const isTrue = Math.random() < 0.5;
+            const word = vocabulary[wordIndex];
+            let englishShow = word.english;
+            if (!isTrue) {
+                let otherWord;
+                do {
+                    otherWord = vocabulary[Math.floor(Math.random() * vocabulary.length)];
+                } while (otherWord === word);
+                englishShow = otherWord.english;
+            }
+            currentExercise = { correct: isTrue, original: word };
+            document.getElementById('tfPolish').textContent = word.polish;
+            document.getElementById('tfEnglish').textContent = englishShow;
+            if (word.imageUrl) {
+                document.getElementById('tfImage').src = word.imageUrl;
+                document.getElementById('tfImage').style.display = 'block';
+            } else {
+                document.getElementById('tfImage').style.display = 'none';
+            }
+            document.getElementById('tfResult').textContent = '';
+        }
+
+        function checkTrueFalse(answer) {
+            scores.totalAttempts++;
+            const result = answer === currentExercise.correct;
+            const resultElement = document.getElementById('tfResult');
+            if (result) {
+                scores.truefalse += 10;
+                scores.totalCorrect++;
+                resultElement.textContent = 'Correct! +10 points';
+                resultElement.className = 'result-message success';
+            } else {
+                scores.truefalse = Math.max(0, scores.truefalse - 5);
+                resultElement.textContent = 'Wrong! -5 points';
+                resultElement.className = 'result-message error';
+            }
+            updateScores();
+            setTimeout(generateTrueFalse, 2000);
+        }
+
+        function generateMultipleChoice() {
+            if (vocabulary.length < 4) {
+                alert('Add at least 4 words for multiple choice exercise!');
+                return;
+            }
+            hideAllExercises();
+            document.getElementById('multipleChoiceExercise').style.display = 'block';
+            const word = vocabulary[Math.floor(Math.random() * vocabulary.length)];
+            currentExercise = { word };
+            document.getElementById('mcPolish').textContent = word.polish;
+            let options = [word.english];
+            while(options.length < 4) {
+                const randomOption = vocabulary[Math.floor(Math.random() * vocabulary.length)].english;
+                if(!options.includes(randomOption)) options.push(randomOption);
+            }
+            options = options.sort(() => Math.random() - 0.5);
+            const optionsDiv = document.getElementById('mcOptions');
+            optionsDiv.innerHTML = '';
+            options.forEach(option => {
+                const btn = document.createElement('button');
+                btn.textContent = option;
+                btn.onclick = () => checkMultipleChoice(option);
+                optionsDiv.appendChild(btn);
+            });
+            document.getElementById('mcResult').textContent = '';
+        }
+
+        function checkMultipleChoice(selected) {
+            scores.totalAttempts++;
+            const resultElement = document.getElementById('mcResult');
+            if (selected === currentExercise.word.english) {
+                scores.multipleChoice += 10;
+                scores.totalCorrect++;
+                resultElement.textContent = 'Correct! +10 points';
+                resultElement.className = 'result-message success';
+            } else {
+                scores.multipleChoice = Math.max(0, scores.multipleChoice - 5);
+                resultElement.textContent = 'Wrong! -5 points';
+                resultElement.className = 'result-message error';
+            }
+            updateScores();
+            setTimeout(generateMultipleChoice, 2000);
+        }
+
+        function generateSRS() {
+            if (vocabulary.length < 1) {
+                alert('Add at least 1 word for SRS exercise!');
+                return;
+            }
+            const availableWords = vocabulary.filter(word => word.difficulty !== 'mastered');
+            if (availableWords.length === 0) {
+                alert('Congratulations! All words have been mastered!');
+                return;
+            }
+            hideAllExercises();
+            document.getElementById('srsExercise').style.display = 'block';
+            const word = availableWords[Math.floor(Math.random() * availableWords.length)];
+            currentExercise = { word };
+            document.getElementById('srsPolish').textContent = word.polish;
+            const useMultipleChoice = srsSystem.shouldUseMultipleChoice(word);
+            document.getElementById('srsMultipleChoice').style.display = useMultipleChoice ? 'block' : 'none';
+            document.getElementById('srsWriting').style.display = useMultipleChoice ? 'none' : 'block';
+            if (useMultipleChoice) {
+                let options = [word.english];
+                while (options.length < 4) {
+                    const randomWord = availableWords[Math.floor(Math.random() * availableWords.length)];
+                    if (!options.includes(randomWord.english)) {
+                        options.push(randomWord.english);
+                    }
+                }
+                options = options.sort(() => Math.random() - 0.5);
+                const optionsDiv = document.getElementById('srsOptions');
+                optionsDiv.innerHTML = '';
+                options.forEach(option => {
+                    const btn = document.createElement('button');
+                    btn.textContent = option;
+                    btn.onclick = () => checkSRSMultipleChoice(option);
+                    optionsDiv.appendChild(btn);
+                });
+            } else {
+                document.getElementById('srsAnswer').value = '';
+            }
+            document.getElementById('srsResult').textContent = '';
+            srsSystem.updateProgressDisplay(word, 'srs');
+        }
+
+        function checkSRSMultipleChoice(selected) {
+            if (!currentExercise.word) return;
+            scores.totalAttempts++;
+            const resultElement = document.getElementById('srsResult');
+            const success = selected === currentExercise.word.english;
+            if (success) {
+                scores.srs += 10;
+                scores.totalCorrect++;
+                resultElement.textContent = 'Correct! +10 points';
+                resultElement.className = 'result-message success';
+            } else {
+                scores.srs = Math.max(0, scores.srs - 5);
+                resultElement.textContent = 'Wrong! -5 points';
+                resultElement.className = 'result-message error';
+            }
+            srsSystem.recordAttempt(currentExercise.word, 'multipleChoice', success);
+            updateScores();
+            srsSystem.updateProgressDisplay(currentExercise.word, 'srs');
+            setTimeout(generateSRS, 2000);
+        }
+
+        function checkSRS() {
+            if (!currentExercise.word) return;
+            scores.totalAttempts++;
+            const answer = document.getElementById('srsAnswer').value.trim().toLowerCase();
+            const correct = currentExercise.word.english.toLowerCase();
+            const resultElement = document.getElementById('srsResult');
+            const success = answer === correct;
+            if (success) {
+                scores.srs += 15;
+                scores.totalCorrect++;
+                resultElement.textContent = 'Correct! +15 points';
+                resultElement.className = 'result-message success';
+            } else {
+                scores.srs = Math.max(0, scores.srs - 7);
+                resultElement.textContent = `Wrong! The correct answer is: ${correct}. -7 points`;
+                resultElement.className = 'result-message error';
+            }
+            srsSystem.recordAttempt(currentExercise.word, 'writing', success);
+            updateScores();
+            srsSystem.updateProgressDisplay(currentExercise.word, 'srs');
+            setTimeout(generateSRS, 2000);
+        }
+
+        function generateFlashcard() {
+            if (vocabulary.length < 1) {
+                alert('Add at least 1 word for flashcard mode!');
+                return;
+            }
+            hideAllExercises();
+            document.getElementById('flashcardExercise').style.display = 'block';
+            const word = vocabulary[Math.floor(Math.random() * vocabulary.length)];
+            if (!word.difficulty) {
+                word.difficulty = 'medium';
+            }
+            currentExercise = { word };
+            const flashcard = document.querySelector('.flashcard');
+            const flashcardFront = document.getElementById('flashcardFront');
+            const flashcardBack = document.getElementById('flashcardBack');
+            flashcardFront.innerHTML = `<strong>${word.polish}</strong>`;
+            if(word.imageUrl) {
+                flashcardFront.innerHTML += `<br><img src="${word.imageUrl}" style="max-width:100px;">`;
+            }
+            flashcardBack.innerHTML = `<strong>${word.english}</strong>`;
+            flashcard.classList.remove('flipped');
+            flashcard.setAttribute('data-difficulty', word.difficulty);
+            document.querySelectorAll('.difficulty-tag').forEach(tag => {
+                tag.classList.toggle('selected', tag.classList.contains(word.difficulty));
+            });
+        }
+
+        function flipFlashcard() {
+            const flashcard = document.querySelector('.flashcard');
+            flashcard.classList.toggle('flipped');
+        }
+
+        function tagWord(difficulty) {
+            if (!currentExercise.word) return;
+            const word = vocabulary.find(w => w.english === currentExercise.word.english);
+            if (word) {
+                const oldDifficulty = word.difficulty;
+                word.difficulty = difficulty;
+                if (oldDifficulty !== difficulty) {
+                    srsSystem.successCounters[word.english] = {
+                        multipleChoice: 0,
+                        writing: 0,
+                        consecutive: 0
+                    };
+                }
+            }
+            document.querySelectorAll('.difficulty-tag').forEach(tag => {
+                tag.classList.toggle('selected', tag.classList.contains(difficulty));
+            });
+            srsSystem.updateProgressDisplay(word, 'flashcard');
+            achievementSystem.updateWordTargets(); // Update targets after difficulty change
+            achievementSystem.checkAchievements(); // Check achievements
+            setTimeout(generateFlashcard, 500);
+        }
+
+        let selectedPolish = null;
+        let selectedEnglish = null;
+        function generateMatching() {
+            if (vocabulary.length < 3) {
+                alert('Add at least 3 words to start matching exercise!');
+                return;
+            }
+            hideAllExercises();
+            document.getElementById('matchingExercise').style.display = 'block';
+            const words = [...vocabulary].sort(() => Math.random() - 0.5).slice(0, Math.min(5, vocabulary.length));
+            const polishDiv = document.getElementById('polishWords');
+            const englishDiv = document.getElementById('englishWords');
+            polishDiv.innerHTML = '';
+            englishDiv.innerHTML = '';
+            words.forEach((word, index) => {
+                const polishWord = document.createElement('div');
+                polishWord.className = 'word-pair';
+                polishWord.textContent = word.polish;
+                polishWord.dataset.index = index;
+                polishWord.onclick = () => selectWord(polishWord, 'polish');
+                polishDiv.appendChild(polishWord);
+                const englishWord = document.createElement('div');
+                englishWord.className = 'word-pair';
+                englishWord.textContent = word.english;
+                englishWord.dataset.index = index;
+                englishWord.onclick = () => selectWord(englishWord, 'english');
+                englishDiv.appendChild(englishWord);
+            });
+            for (let i = englishDiv.children.length; i >= 0; i--) {
+                englishDiv.appendChild(englishDiv.children[Math.random() * i | 0]);
+            }
+            currentExercise = { words };
+            document.getElementById('matchingResult').textContent = '';
+        }
+
+        function selectWord(element, type) {
+            if (type === 'polish') {
+                if (selectedPolish) selectedPolish.classList.remove('selected');
+                selectedPolish = element;
+            } else {
+                if (selectedEnglish) selectedEnglish.classList.remove('selected');
+                selectedEnglish = element;
+            }
+            element.classList.add('selected');
+            if (selectedPolish && selectedEnglish) {
+                scores.totalAttempts++;
+                if (selectedPolish.dataset.index === selectedEnglish.dataset.index) {
+                    scores.matching += 5;
+                    scores.totalCorrect++;
+                    selectedPolish.style.visibility = 'hidden';
+                    selectedEnglish.style.visibility = 'hidden';
+                    document.getElementById('matchingResult').textContent = 'Match found! +5 points';
+                    document.getElementById('matchingResult').className = 'result-message success';
+                } else {
+                    scores.matching = Math.max(0, scores.matching - 2);
+                    document.getElementById('matchingResult').textContent = 'Wrong match! -2 points';
+                    document.getElementById('matchingResult').className = 'result-message error';
+                }
+                updateScores();
+                selectedPolish.classList.remove('selected');
+                selectedEnglish.classList.remove('selected');
+                selectedPolish = null;
+                selectedEnglish = null;
+                const visibleWords = Array.from(document.getElementById('polishWords').children)
+                    .filter(el => el.style.visibility !== 'hidden');
+                if (visibleWords.length === 0) {
+                    setTimeout(() => {
+                        document.getElementById('matchingResult').textContent =
+                            'Congratulations! All matches found! +10 bonus points';
+                        scores.matching += 10;
+                        updateScores();
+                        setTimeout(generateMatching, 2000);
+                    }, 500);
+                }
+            }
+        }
+
+        function generateWriting() {
+            if (vocabulary.length < 1) {
+                alert('Add at least 1 word to start writing exercise!');
+                return;
+            }
+            hideAllExercises();
+            document.getElementById('writingExercise').style.display = 'block';
+            const word = vocabulary[Math.floor(Math.random() * vocabulary.length)];
+            currentExercise = { word };
+            document.getElementById('writePolish').textContent = word.polish;
+            document.getElementById('writeAnswer').value = '';
+            document.getElementById('writeResult').textContent = '';
+            if (word.imageUrl) {
+                document.getElementById('writeImage').src = word.imageUrl;
+                document.getElementById('writeImage').style.display = 'block';
+            } else {
+                document.getElementById('writeImage').style.display = 'none';
+            }
+        }
+
+        function checkWriting() {
+            scores.totalAttempts++;
+            const answer = document.getElementById('writeAnswer').value.trim().toLowerCase();
+            const correct = currentExercise.word.english.toLowerCase();
+            const resultElement = document.getElementById('writeResult');
+            if (answer === correct) {
+                scores.writing += 15;
+                scores.totalCorrect++;
+                resultElement.textContent = 'Correct! +15 points';
+                resultElement.className = 'result-message success';
+                setTimeout(generateWriting, 2000);
+            } else {
+                scores.writing = Math.max(0, scores.writing - 7);
+                resultElement.textContent = `Wrong! The correct answer is: ${correct}. -7 points`;
+                resultElement.className = 'result-message error';
+            }
+            updateScores();
+        }
+
+        const imageUtils = {
+            maxWidth: 800,
+            maxHeight: 800,
+            maxFileSize: 2 * 1024 * 1024,
+            quality: 0.85,
+            allowedTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+            validateAndProcessImage(file) {
+                return new Promise((resolve, reject) => {
+                    if (!file) {
+                        reject(new Error('No file selected'));
+                        return;
+                    }
+                    if (!this.allowedTypes.includes(file.type)) {
+                        reject(new Error('Please use JPG, PNG, GIF or WebP image'));
+                        return;
+                    }
+                    if (file.size > this.maxFileSize) {
+                        reject(new Error('Image too large (max 2MB)'));
+                        return;
+                    }
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let { width, height } = img;
+                        if (width > this.maxWidth) {
+                            height *= this.maxWidth / width;
+                            width = this.maxWidth;
+                        }
+                        if (height > this.maxHeight) {
+                            width *= this.maxHeight / height;
+                            height = this.maxHeight;
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        resolve(canvas.toDataURL('image/jpeg', this.quality));
+                        URL.revokeObjectURL(img.src);
+                    };
+                    img.onerror = () => {
+                        URL.revokeObjectURL(img.src);
+                        reject(new Error('Failed to load image'));
+                    };
+                    img.src = URL.createObjectURL(file);
+                });
+            }
+        };
+
+        function toggleSection(section) {
+            const content = section.querySelector('.section-content');
+            const arrow = section.querySelector('.collapse-arrow');
+            if (!content.style.maxHeight || content.classList.contains('collapsed')) {
+                content.classList.remove('collapsed');
+                if (section.querySelector('h2').textContent.includes('Exercise') ||
+                    section.id.includes('Exercise')) {
+                    content.classList.add('collapsed');
+                    content.style.maxHeight = '0';
+                } else {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                }
+            } else {
+                content.classList.add('collapsed');
+                content.style.maxHeight = '0';
+            }
+        }
+
+        function initializeSections() {
+            document.querySelectorAll('.section:not(.exercise)').forEach(section => {
+                const content = section.querySelector('.section-content') ||
+                    section.appendChild(document.createElement('div'));
+                if (!content.classList.contains('section-content')) {
+                    content.className = 'section-content';
+                    Array.from(section.children).forEach(child => {
+                        if (child.tagName !== 'H2' && child !== content) {
+                            content.appendChild(child);
+                        }
+                    });
+                }
+                content.style.maxHeight = content.scrollHeight + 'px';
+            });
+        }
+
+        const avatarSystem = {
+            current: {
+                style: 'micah',
+                seed: 'default',
+                name: 'Default Avatar'
+            },
+            showSelector() {
+                document.getElementById('avatarModal').style.display = 'block';
+                document.querySelectorAll('.avatar-option').forEach(option => {
+                    const isSelected = option.dataset.style === this.current.style &&
+                        (!this.current.seed || option.dataset.seed === this.current.seed);
+                    option.classList.toggle('selected', isSelected);
+                });
+            },
+            closeSelector() {
+                document.getElementById('avatarModal').style.display = 'none';
+            },
+            selectAvatar(style, name, seed) {
+                this.current = { style, name, seed };
+                this.updateAvatar();
+                this.closeSelector();
+            },
+            updateAvatar() {
+                const baseUrl = `https://api.dicebear.com/9.x/${this.current.style}/svg`;
+                const params = this.current.seed ? `?seed=${this.current.seed}` : '';
+                document.getElementById('currentAvatar').src = baseUrl + params;
+            },
+            updateWordCounts() {
+                const counts = vocabulary.reduce((acc, word) => {
+                    acc[word.difficulty] = (acc[word.difficulty] || 0) + 1;
+                    return acc;
+                }, {});
+                document.querySelector('.count-mastered').textContent = counts.mastered || 0;
+                document.querySelector('.count-learnt').textContent = counts.learnt || 0;
+                document.querySelector('.count-easy').textContent = counts.easy || 0;
+                document.querySelector('.count-medium').textContent = counts.medium || 0;
+                document.querySelector('.count-hard').textContent = counts.hard || 0;
+            }
+        };
+
+        function showAvatarSelector() {
+            avatarSystem.showSelector();
+        }
+
+        function closeAvatarSelector() {
+            avatarSystem.closeSelector();
+        }
+
+        const originalUpdateVocabList = updateVocabList;
+        updateVocabList = function() {
+            originalUpdateVocabList.apply(this, arguments);
+            avatarSystem.updateWordCounts();
+        };
+
+        const originalRecordAttempt = srsSystem.recordAttempt;
+        srsSystem.recordAttempt = function() {
+            originalRecordAttempt.apply(this, arguments);
+            avatarSystem.updateWordCounts();
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSections();
+            updateScores();
+            updateVocabList();
+            achievementSystem.init(); // Initialize achievement system
+            document.querySelectorAll('.avatar-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    avatarSystem.selectAvatar(
+                        option.dataset.style,
+                        option.dataset.name,
+                        option.dataset.seed
+                    );
+                });
+            });
+            avatarSystem.updateAvatar();
+            avatarSystem.updateWordCounts();
+            document.getElementById('writeAnswer').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkWriting();
+                }
+            });
+            const exerciseButtons = {
+                'generateTrueFalse': 'true-false',
+                'generateMultipleChoice': 'multiple-choice',
+                'generateSRS': 'srs',
+                'generateFlashcard': 'flashcard',
+                'generateMatching': 'matching',
+                'generateWriting': 'writing'
+            };
+            Object.entries(exerciseButtons).forEach(([func, type]) => {
+                const original = window[func];
+                window[func] = function() {
+                    achievementSystem.recordExerciseAttempt(type);
+                    original.apply(this, arguments);
+                };
+            });
+        });
+    </script>
+</body>
+</html>
