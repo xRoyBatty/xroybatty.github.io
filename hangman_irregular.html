@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hangman Game - Irregular Verbs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 900px;
+            width: 95%;
+        }
+        .input-section, .game-section {
+            margin: 20px 0;
+        }
+        .hidden {
+            display: none;
+        }
+        .verb-display {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        .verb-form {
+            font-size: 24px;
+            letter-spacing: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            min-height: 40px;
+            min-width: 200px;
+            width: auto;
+            padding: 15px 25px;
+            border: 3px solid transparent;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            white-space: nowrap;
+            overflow-x: visible;
+            text-align: center;
+        }
+        
+        .verb-form-container {
+            min-width: 250px;
+            margin: 0 10px;
+        }
+        .active-form {
+            border-color: #5E63BA;
+            background-color: #f0f2ff;
+            box-shadow: 0 0 10px rgba(94, 99, 186, 0.3);
+        }
+        .completed-form {
+            border-color: #28a745;
+            background-color: #f0fff0;
+        }
+        .form-label {
+            font-weight: bold;
+            color: #5E63BA;
+            margin-bottom: 5px;
+        }
+        .keyboard button {
+            margin: 5px;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #5E63BA;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        .keyboard button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        #message {
+            color: #ff4444;
+            font-weight: bold;
+            margin-top: 10px;
+            min-height: 24px;
+        }
+        #hangmanCanvas {
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            margin: 10px auto;
+            width: 250px;
+            height: 300px;
+        }
+        .attempts {
+            font-size: 18px;
+            color: #5E63BA;
+            margin: 10px 0;
+        }
+        .hint {
+            font-size: 20px;
+            color: #28a745;
+            margin: 10px 0;
+            font-style: italic;
+            min-height: 30px;
+        }
+        .progress {
+            font-size: 16px;
+            color: #6c757d;
+            margin: 15px 0;
+        }
+        .mode-switch, .attempts-selector {
+            margin: 20px 0;
+        }
+        button {
+            background-color: #5E63BA;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button.active {
+            background-color: #3f3f8f;
+            font-weight: bold;
+        }
+        .score {
+            font-size: 18px;
+            color: #28a745;
+            margin: 10px 0;
+        }
+        .game-controls {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .setup-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .attempts-option {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            margin: 0 5px;
+            background-color: #6c757d;
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .attempts-option.active {
+            background-color: #28a745;
+            font-weight: bold;
+        }
+        .current-phase {
+            font-size: 18px;
+            color: #5E63BA;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hangman - Irregular Verbs</h1>
+        
+        <div id="setupSection" class="setup-section">
+            <h2>Ustawienia gry</h2>
+            
+            <div class="mode-switch">
+                <h3>Wybierz tryb gry:</h3>
+                <button id="easyMode" class="active" onclick="setDifficulty('easy')">Poziom łatwy</button>
+                <button id="hardMode" onclick="setDifficulty('hard')">Poziom trudny</button>
+            </div>
+            
+            <div class="attempts-selector">
+                <h3>Wybierz liczbę prób:</h3>
+                <div id="attemptsOptions">
+                    <span class="attempts-option" data-attempts="1" onclick="setMaxAttempts(1)">1</span>
+                    <span class="attempts-option" data-attempts="2" onclick="setMaxAttempts(2)">2</span>
+                    <span class="attempts-option" data-attempts="3" onclick="setMaxAttempts(3)">3</span>
+                    <span class="attempts-option active" data-attempts="4" onclick="setMaxAttempts(4)">4</span>
+                    <span class="attempts-option" data-attempts="5" onclick="setMaxAttempts(5)">5</span>
+                    <span class="attempts-option" data-attempts="6" onclick="setMaxAttempts(6)">6</span>
+                </div>
+            </div>
+            
+            <button onclick="startGame()">Rozpocznij grę</button>
+        </div>
+        
+        <div id="gameSection" class="game-section hidden">
+            <div class="progress" id="progress">Czasownik 1 z 13</div>
+            <div class="current-phase" id="currentPhase">Faza: Bezokolicznik</div>
+            <div class="hint" id="currentHint"></div>
+            <canvas id="hangmanCanvas" width="250" height="300"></canvas>
+            <div class="attempts" id="attempts">Pozostałe próby: 4</div>
+            
+            <div class="verb-display">
+                <div class="verb-form-container">
+                    <div class="form-label">Base Form</div>
+                    <div class="verb-form" id="baseFormDisplay"></div>
+                </div>
+                <div class="verb-form-container">
+                    <div class="form-label">Past Simple</div>
+                    <div class="verb-form" id="pastFormDisplay"></div>
+                </div>
+                <div class="verb-form-container">
+                    <div class="form-label">Past Participle</div>
+                    <div class="verb-form" id="pastParticipleDisplay"></div>
+                </div>
+            </div>
+            
+            <div class="keyboard" id="keyboard"></div>
+            <div class="score" id="score">Wynik: 0</div>
+            <p id="message"></p>
+            
+            <div class="game-controls">
+                <button onclick="resetGame()">Nowa gra</button>
+                <button onclick="showSetup()">Ustawienia</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Irregular verbs with their Polish translations
+        let verbSets = {
+            same23: [
+                {base: "sweep", past: "swept", pastParticiple: "swept", translation: "zamiatać"},
+                {base: "stand", past: "stood", pastParticiple: "stood", translation: "stać"},
+                {base: "teach", past: "taught", pastParticiple: "taught", translation: "uczyć (kogoś)"},
+                {base: "tell", past: "told", pastParticiple: "told", translation: "powiedzieć, opowiadać"},
+                {base: "think", past: "thought", pastParticiple: "thought", translation: "myśleć"},
+                {base: "understand", past: "understood", pastParticiple: "understood", translation: "rozumieć"},
+                {base: "win", past: "won", pastParticiple: "won", translation: "wygrywać"}
+            ],
+            enEnding: [
+                {base: "steal", past: "stole", pastParticiple: "stolen", translation: "kraść"},
+                {base: "take", past: "took", pastParticiple: "taken", translation: "brać"},
+                {base: "wake", past: "woke", pastParticiple: "woken", translation: "budzić (się)"},
+                {base: "wear", past: "wore", pastParticiple: "worn", translation: "nosić, mieć na sobie"},
+                {base: "write", past: "wrote", pastParticiple: "written", translation: "pisać"}
+            ],
+            other: [
+                {base: "swim", past: "swam", pastParticiple: "swum", translation: "pływać"}
+            ]
+        };
+        
+        let allVerbs = [];
+        let currentIndex = 0;
+        let currentVerb = null;
+        let guessedLetters = [];
+        let currentFormIndex = 0; // 0: base, 1: past, 2: pastParticiple
+        let remainingAttempts = 4;
+        let maxAttempts = 4;
+        let canvas, ctx;
+        let score = 0;
+        let difficulty = 'easy'; // 'easy' or 'hard'
+        let formCompleted = [false, false, false];
+        
+        function setDifficulty(mode) {
+            difficulty = mode;
+            document.getElementById('easyMode').classList.toggle('active', mode === 'easy');
+            document.getElementById('hardMode').classList.toggle('active', mode === 'hard');
+        }
+        
+        function setMaxAttempts(attempts) {
+            maxAttempts = attempts;
+            document.querySelectorAll('.attempts-option').forEach(option => {
+                option.classList.toggle('active', parseInt(option.dataset.attempts) === attempts);
+            });
+        }
+        
+        function startGame() {
+            document.getElementById('setupSection').classList.add('hidden');
+            document.getElementById('gameSection').classList.remove('hidden');
+            resetGame();
+        }
+        
+        function showSetup() {
+            document.getElementById('setupSection').classList.remove('hidden');
+            document.getElementById('gameSection').classList.add('hidden');
+        }
+        
+        function resetGame() {
+            // Create a copy of all verbs and shuffle them
+            allVerbs = [];
+            Object.values(verbSets).forEach(group => {
+                allVerbs = allVerbs.concat([...group]); // Create a fresh copy
+            });
+            allVerbs = shuffleArray(allVerbs);
+            
+            currentIndex = 0;
+            score = 0;
+            document.getElementById('score').textContent = `Wynik: ${score}`;
+            
+            // Reset all game state completely
+            guessedLetters = [];
+            currentFormIndex = 0;
+            formCompleted = [false, false, false];
+            remainingAttempts = maxAttempts;
+            
+            // Reset UI
+            document.querySelectorAll('.verb-form').forEach(el => {
+                el.classList.remove('active-form', 'completed-form');
+            });
+            document.getElementById('message').textContent = '';
+            
+            initializeVerb();
+        }
+        
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function drawHangman(stage) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#444';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            
+            // Calculate stages based on maxAttempts
+            const stageRatio = 6 / maxAttempts;
+            
+            if(stage >= 1 * stageRatio) {
+                // Base
+                ctx.moveTo(20, 270);
+                ctx.lineTo(230, 270);
+            }
+            if(stage >= 2 * stageRatio) {
+                // Vertical pole
+                ctx.moveTo(40, 270);
+                ctx.lineTo(40, 20);
+            }
+            if(stage >= 3 * stageRatio) {
+                // Horizontal pole
+                ctx.moveTo(40, 20);
+                ctx.lineTo(150, 20);
+            }
+            if(stage >= 4 * stageRatio) {
+                // Rope
+                ctx.moveTo(150, 20);
+                ctx.lineTo(150, 50);
+            }
+            if(stage >= 5 * stageRatio) {
+                // Head
+                ctx.moveTo(170, 70);
+                ctx.arc(150, 70, 20, 0, Math.PI * 2);
+            }
+            if(stage >= 6 * stageRatio) {
+                // Body and limbs
+                ctx.moveTo(150, 90);
+                ctx.lineTo(150, 170);
+                ctx.moveTo(150, 110);
+                ctx.lineTo(120, 140);
+                ctx.moveTo(150, 110);
+                ctx.lineTo(180, 140);
+                ctx.moveTo(150, 170);
+                ctx.lineTo(120, 220);
+                ctx.moveTo(150, 170);
+                ctx.lineTo(180, 220);
+            }
+            ctx.stroke();
+        }
+
+        function initializeVerb() {
+            if (currentIndex >= allVerbs.length) {
+                document.getElementById('message').textContent = 'Gratulacje! Ukończyłeś wszystkie czasowniki!';
+                return;
+            }
+
+            currentVerb = allVerbs[currentIndex];
+            guessedLetters = [];
+            remainingAttempts = maxAttempts;
+            currentFormIndex = 0;
+            formCompleted = [false, false, false];
+            
+            // Reset all UI elements
+            document.querySelectorAll('.verb-form').forEach(el => {
+                el.classList.remove('active-form', 'completed-form');
+            });
+            
+            updateCurrentPhase();
+            drawHangman(0);
+            
+            document.getElementById('currentHint').textContent = currentVerb.translation;
+            document.getElementById('progress').textContent = `Czasownik ${currentIndex + 1} z ${allVerbs.length}`;
+            updateVerbDisplay();
+            updateActiveForm();
+            createKeyboard();
+            document.getElementById('message').textContent = '';
+            document.getElementById('attempts').textContent = `Pozostałe próby: ${remainingAttempts}`;
+        }
+        
+        function updateCurrentPhase() {
+            const phases = ["Bezokolicznik", "Past Simple", "Past Participle"];
+            document.getElementById('currentPhase').textContent = `Faza: ${phases[currentFormIndex]}`;
+        }
+        
+        function updateActiveForm() {
+            const formIds = ['baseFormDisplay', 'pastFormDisplay', 'pastParticipleDisplay'];
+            
+            formIds.forEach((id, index) => {
+                const element = document.getElementById(id);
+                element.classList.remove('active-form');
+                
+                if (formCompleted[index]) {
+                    element.classList.add('completed-form');
+                } else if (index === currentFormIndex && difficulty === 'hard') {
+                    // Only add active-form highlight in hard mode
+                    element.classList.add('active-form');
+                }
+            });
+        }
+
+        function updateVerbDisplay() {
+            const forms = [
+                { id: 'baseFormDisplay', word: currentVerb.base },
+                { id: 'pastFormDisplay', word: currentVerb.past },
+                { id: 'pastParticipleDisplay', word: currentVerb.pastParticiple }
+            ];
+            
+            forms.forEach((form, index) => {
+                const formEl = document.getElementById(form.id);
+                
+                // For completed forms, show the full word
+                if (formCompleted[index]) {
+                    formEl.textContent = form.word;
+                    return;
+                }
+                
+                // For current form in easy mode, show guessed letters
+                if (difficulty === 'easy' || index === currentFormIndex) {
+                    const display = form.word.split('').map(letter => 
+                        guessedLetters.includes(letter.toUpperCase()) ? letter : '_'
+                    ).join(' ');
+                    formEl.textContent = display;
+                } else {
+                    // For other forms in hard mode, show placeholders
+                    formEl.textContent = '_ '.repeat(form.word.length).trim();
+                }
+                
+                // Remove custom width - let CSS handle it
+                formEl.style.width = '';
+            });
+        }
+        
+        function checkCurrentFormComplete() {
+            const forms = [
+                currentVerb.base,
+                currentVerb.past,
+                currentVerb.pastParticiple
+            ];
+            
+            const currentForm = forms[currentFormIndex];
+            const isComplete = currentForm.split('').every(letter => 
+                guessedLetters.includes(letter.toUpperCase())
+            );
+            
+            if (isComplete) {
+                formCompleted[currentFormIndex] = true;
+                updateActiveForm();
+                
+                if (currentFormIndex < 2) {
+                    // Move to next form
+                    currentFormIndex++;
+                    guessedLetters = []; // Reset guessed letters for new form
+                    updateCurrentPhase();
+                    updateActiveForm();
+                    createKeyboard(); // Recreate keyboard with fresh buttons
+                    document.getElementById('message').textContent = "Dobra robota! Teraz kolejna forma.";
+                    setTimeout(() => {
+                        document.getElementById('message').textContent = "";
+                    }, 1500);
+                } else {
+                    // All forms complete
+                    score++;
+                    document.getElementById('score').textContent = `Wynik: ${score}`;
+                    document.getElementById('message').textContent = 'Poprawnie! Przechodzimy do następnego czasownika...';
+                    
+                    // Disable keyboard until next verb
+                    disableKeyboard();
+                    
+                    setTimeout(() => {
+                        currentIndex++;
+                        initializeVerb();
+                    }, 2000);
+                }
+            }
+        }
+
+        function createKeyboard() {
+            const keyboard = document.getElementById('keyboard');
+            keyboard.innerHTML = '';
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(letter => {
+                const button = document.createElement('button');
+                button.textContent = letter;
+                button.setAttribute('data-letter', letter);
+                button.onclick = () => guessLetter(letter);
+                // Only disable buttons for letters already guessed in the current form
+                if (guessedLetters.includes(letter) && 
+                    !formCompleted[currentFormIndex]) {
+                    button.disabled = true;
+                }
+                keyboard.appendChild(button);
+            });
+        }
+
+        function guessLetter(letter) {
+            if (guessedLetters.includes(letter)) return;
+            
+            guessedLetters.push(letter);
+            const button = document.querySelector(`button[data-letter="${letter}"]`);
+            if (button) button.disabled = true;
+            
+            // Check if letter is in current form
+            const currentForm = [
+                currentVerb.base,
+                currentVerb.past,
+                currentVerb.pastParticiple
+            ][currentFormIndex].toUpperCase();
+            
+            if (!currentForm.includes(letter)) {
+                remainingAttempts--;
+                document.getElementById('attempts').textContent = `Pozostałe próby: ${remainingAttempts}`;
+                drawHangman(maxAttempts - remainingAttempts);
+                
+                if (remainingAttempts === 0) {
+                    // Game over for this verb
+                    document.getElementById('message').textContent = 
+                        `Koniec gry! Poprawne formy to: ${currentVerb.base}, ${currentVerb.past}, ${currentVerb.pastParticiple}`;
+                    disableKeyboard();
+                    
+                    // Show all forms
+                    formCompleted = [true, true, true];
+                    updateVerbDisplay();
+                    updateActiveForm();
+                    
+                    // Disable keyboard until next verb
+                    disableKeyboard();
+                    
+                    setTimeout(() => {
+                        currentIndex++;
+                        initializeVerb();
+                    }, 3000);
+                    return;
+                }
+            }
+            
+            updateVerbDisplay();
+            checkCurrentFormComplete();
+        }
+
+        function disableKeyboard() {
+            const buttons = document.querySelectorAll('.keyboard button');
+            buttons.forEach(button => button.disabled = true);
+        }
+
+        // Initialize the game when window loads
+        window.onload = function() {
+            canvas = document.getElementById('hangmanCanvas');
+            ctx = canvas.getContext('2d');
+            
+            // Prefill allVerbs
+            Object.values(verbSets).forEach(group => {
+                allVerbs = allVerbs.concat([...group]);
+            });
+        };
+    </script>
+</body>
+</html>
