@@ -1,73 +1,283 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Shop Dialogue Animation</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Dialogue Animation</title>
     <style>
-        /* Base styles */
+        /* Modern color scheme */
         :root {
-            --primary-color: #3498db;
-            --secondary-color: #2ecc71;
-            --accent-color: #f1c40f;
-            --text-color: #2c3e50;
-            --background-color: #ecf0f1;
-            --bubble-border-color: #a9a9a9;
-            --button-hover-color: #2980b9;
-            --button-active-color: #1f679a;
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --primary-dark: #3f37c9;
+            --accent: #f72585;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #e63946;
+            --dark: #212529;
+            --light: #f8f9fa;
+            --gray: #adb5bd;
+            --gray-light: #dee2e6;
+            --gray-dark: #6c757d;
+            --shadow: rgba(0, 0, 0, 0.15);
+            --shadow-strong: rgba(0, 0, 0, 0.25);
+            --gradient-blue: linear-gradient(135deg, #4361ee, #4cc9f0);
+            --gradient-pink: linear-gradient(135deg, #f72585, #b5179e);
+            --bg-shop: #ced4da;
+            --bg-restaurant: #ffe8d6;
+            --bg-park: #d8f3dc;
+        }
+
+        /* Base styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            font-family: 'Comic Sans MS', cursive, sans-serif;
-            background-color: var(--background-color);
-            margin: 0;
-            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: var(--dark);
+            line-height: 1.6;
         }
 
-        /* Layout styles */
+        /* Main layout */
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
             display: grid;
-            grid-template-columns: 1fr 400px;
-            gap: 20px;
+            grid-template-columns: 1fr minmax(300px, 380px);
+            gap: 25px;
         }
 
+        /* Card styling */
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px var(--shadow);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background: var(--gradient-blue);
+            color: white;
+            padding: 12px 20px;
+            font-weight: bold;
+            font-size: 1.1em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Form controls */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--gray-light);
+            border-radius: 6px;
+            font-size: 1em;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.25);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            font-weight: 500;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            cursor: pointer;
+            user-select: none;
+            border: 1px solid transparent;
+            padding: 10px 16px;
+            font-size: 1em;
+            line-height: 1.5;
+            border-radius: 6px;
+            transition: all 0.2s;
+            text-transform: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 3px var(--shadow);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #3db5d8;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #e67700;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c92a37;
+        }
+
+        .btn-icon {
+            padding: 8px 10px;
+            font-size: 0.9em;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        /* Scene container - FIX: Added explicit height */
         .scene-container {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+        }
+
+        .scene-wrapper {
+            position: relative;
+            height: 500px; /* FIX: Explicit height instead of padding */
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 15px var(--shadow-strong);
         }
 
         .scene {
-            height: 600px;
-            background-color: #ADD8E6;
-            position: relative;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
             overflow: hidden;
-            border: 2px solid #ccc;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none; /* Initially hide all scenes */
         }
 
-        .scene-controls {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
-            padding: 15px;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        /* Scene selection tabs */
+        .scene-tabs {
+            display: flex;
+            margin-bottom: 15px;
         }
 
-        /* Dialog item edit mode */
+        .scene-tab {
+            padding: 10px 20px;
+            background: var(--gray-light);
+            color: var(--dark);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .scene-tab:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+
+        .scene-tab:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+
+        .scene-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Control panel */
+        .control-panel {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        /* Dialog list */
+        .dialog-list {
+            max-height: 250px;
+            overflow-y: auto;
+            margin-top: 10px;
+            border: 1px solid var(--gray-light);
+            border-radius: 6px;
+            background: #f8f9fa;
+        }
+
+        .dialog-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            margin: 5px;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px var(--shadow);
+            transition: all 0.2s;
+        }
+
+        .dialog-item:hover {
+            transform: translateX(2px);
+            box-shadow: 2px 2px 6px var(--shadow);
+        }
+
+        .dialog-item.seller-dialog {
+            border-left: 4px solid var(--primary);
+        }
+
+        .dialog-item.customer-dialog {
+            border-left: 4px solid var(--accent);
+        }
+
         .dialog-item.edit-mode {
-            background: #fff3cd;
-            padding: 8px;
-        }
-
-        .dialog-item.edit-mode input {
-            width: calc(100% - 100px);
-            padding: 4px;
-            margin-right: 8px;
+            background: var(--gray-light);
+            padding: 12px;
         }
 
         .edit-controls {
@@ -75,384 +285,838 @@
             gap: 5px;
         }
 
-        .edit-controls button {
-            padding: 4px 8px;
-            font-size: 12px;
-        }
-
-        /* Save/Load section */
-        .save-controls {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 10px;
-            align-items: center;
-        }
-
-                /* Button styles */
-        button {
-            padding: 12px 24px;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.1s;
-            font-size: 1.1em;
-        }
-
-        button:hover {
-            transform: scale(1.05);
-        }
-
-        button:active {
-            transform: scale(0.95);
-        }
-
-        .add-button { background-color: var(--secondary-color); }
-        .add-button:hover { background-color: #27ae60; }
-        .play-button { background-color: #2196F3; }
-        .reset-button { background-color: #FF9800; }
-        .clear-button { background-color: #dc3545; }
-        .save-button { background-color: var(--secondary-color); }
-        .load-button { background-color: var(--primary-color); }
-        .delete-button { background-color: #dc3545; }
-        .edit-button { background-color: #ffc107; }
-        .remove-button { background-color: #dc3545; }
-
-        /* Input styles */
-        input[type="text"], select {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 1em;
-            width: 100%;
-        }
-
-        /* Dialog section styles */
-        .dialog-list {
-            max-height: 300px;
+        /* Saved items */
+        .saved-list {
+            max-height: 200px;
             overflow-y: auto;
-            border: 1px solid #e9ecef;
-            padding: 10px;
-            border-radius: 5px;
-            background: #fff;
+            margin-top: 10px;
+            border: 1px solid var(--gray-light);
+            border-radius: 6px;
+            background: #f8f9fa;
         }
 
-        .dialog-item {
+        .saved-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px;
-            margin: 5px 0;
-            background: #f8f9fa;
-            border-radius: 5px;
-            border: 1px solid #e9ecef;
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--gray-light);
+            transition: all 0.2s;
         }
 
-        .dialog-controls {
-            display: flex;
-            gap: 5px;
-        }
-
-        /* Scene elements styles */
-        .clothes-rack {
-            position: absolute;
-            left: 400px;
-            bottom: 40px;
-            width: 300px;
-            height: 200px;
-        }
-
-        .rack-top {
-            width: 100%;
-            height: 5px;
-            background-color: #666;
-            position: absolute;
-            top: 0;
-        }
-
-        .rack-support {
-            width: 5px;
-            height: 150px;
-            background-color: #666;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .clothes {
-            position: absolute;
-            top: 5px;
-            width: 100%;
-            display: flex;
-            justify-content: space-around;
-        }
-
-        .clothing-item {
-            width: 45px;
-            height: 60px;
-            margin: 0 8px;
-        }
-
-        /* Wall shelf styles */
-        .wall-shelf {
-            position: absolute;
-            width: 200px;
-            height: 30px;
-            background-color: #8b4513;
-            right: 80px;
-            top: 80px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .shelf-item {
-            position: absolute;
-            width: 35px;
-            height: 45px;
-            top: -45px;
-            transition: transform 0.3s;
-        }
-
-        .shelf-item:hover {
-            transform: scale(1.1);
-        }
-
-        .counter {
-            width: 300px;
-            height: 200px;
-            background: linear-gradient(to bottom, #8b4513, #6b3410);
-            position: absolute;
-            left: 50px;
-            bottom: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .counter-top {
-            position: absolute;
-            width: 100%;
-            height: 10px;
-            background-color: #9b5523;
-            top: 0;
-            border-radius: 5px 5px 0 0;
+        .saved-item:hover {
+            background: rgba(67, 97, 238, 0.05);
         }
 
         /* Speech bubbles */
         .speech-bubble {
             position: absolute;
             background: white;
-            border-radius: 20px;
+            border-radius: 18px;
             padding: 15px;
-            max-width: 200px;
+            max-width: 220px;
             opacity: 0;
-            border: 2px solid var(--bubble-border-color);
-            transition: opacity 0.5s;
-            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 8px var(--shadow);
+            transition: opacity 0.5s, transform 0.3s;
+            font-size: 15px;
+            line-height: 1.4;
+            z-index: 100;
         }
 
         .seller-speech {
             left: 100px;
-            top: 150px;
+            top: 130px;
+        }
+
+        .seller-speech::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 30px;
+            border-width: 15px 15px 0;
+            border-style: solid;
+            border-color: white transparent;
         }
 
         .customer-speech {
             right: 100px;
-            top: 150px;
+            top: 130px;
+        }
+
+        .customer-speech::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            right: 30px;
+            border-width: 15px 15px 0;
+            border-style: solid;
+            border-color: white transparent;
+        }
+
+        /* Speaking indicator */
+        .speaking {
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .speaking span {
+            width: 6px;
+            height: 6px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            animation: soundwave 1.5s infinite;
+        }
+
+        .speaking span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .speaking span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes soundwave {
+            0%, 100% {
+                height: 6px;
+            }
+            50% {
+                height: 10px;
+            }
+        }
+
+        /* Scene-specific backgrounds */
+        .shop-scene {
+            background: var(--bg-shop);
+            position: relative;
+        }
+
+        .restaurant-scene {
+            background: var(--bg-restaurant);
+            position: relative;
+        }
+
+        .park-scene {
+            background: var(--bg-park);
+            position: relative;
+        }
+
+        /* Shop scene elements */
+        .clothes-rack {
+            position: absolute;
+            left: 65%;
+            bottom: 10%;
+            width: 20%;
+            height: 35%;
+        }
+
+        .rack-top {
+            width: 100%;
+            height: 8px;
+            background-color: #555;
+            position: absolute;
+            top: 0;
+            border-radius: 4px;
+        }
+
+        .rack-support {
+            width: 8px;
+            height: 80%;
+            background-color: #555;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 4px;
+        }
+
+        .clothes {
+            position: absolute;
+            top: 8px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .clothing-item {
+            width: 40px;
+            height: 60px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .clothing-item:hover {
+            transform: scale(1.2);
+        }
+
+        .wall-shelf {
+            position: absolute;
+            width: 15%;
+            height: 20px;
+            background-color: #8b4513;
+            right: 10%;
+            top: 20%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .shelf-item {
+            position: absolute;
+            width: 30px;
+            height: 40px;
+            top: -40px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .shelf-item:hover {
+            transform: scale(1.2) translateY(-5px);
+        }
+
+        .counter {
+            width: 30%;
+            height: 30%;
+            background: linear-gradient(to bottom, #8b4513, #6b3410);
+            position: absolute;
+            left: 10%;
+            bottom: 10%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .counter-top {
+            position: absolute;
+            width: 100%;
+            height: 15px;
+            background-color: #9b5523;
+            top: 0;
+            border-radius: 8px 8px 0 0;
+        }
+
+        /* Restaurant scene elements */
+        .restaurant-table {
+            position: absolute;
+            left: 50%;
+            top: 60%;
+            transform: translate(-50%, -50%);
+            width: 20%;
+            height: 15%;
+            border-radius: 50%;
+            background: #5e3023;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .table-cloth {
+            position: absolute;
+            left: 50%;
+            top: 60%;
+            transform: translate(-50%, -50%);
+            width: 16%;
+            height: 12%;
+            border-radius: 50%;
+            background: #f5f5f5;
+        }
+
+        .table-leg {
+            position: absolute;
+            left: 50%;
+            top: 70%;
+            transform: translateX(-50%);
+            width: 5%;
+            height: 20%;
+            background: #5e3023;
+            border-radius: 10px;
+        }
+
+        .restaurant-chair {
+            position: absolute;
+            width: 8%;
+            height: 10%;
+            background: #8b4513;
+            border-radius: 10px 10px 5px 5px;
+        }
+
+        .chair-back {
+            position: absolute;
+            bottom: 100%;
+            width: 100%;
+            height: 100%;
+            background: #8b4513;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .chair-seat {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 30%;
+            background: #8b4513;
+            border-radius: 5px;
+        }
+
+        .chair-leg {
+            position: absolute;
+            width: 20%;
+            bottom: 0;
+            height: 70%;
+            background: #6b3410;
+        }
+
+        .restaurant-counter {
+            position: absolute;
+            width: 40%;
+            height: 20%;
+            bottom: 10%;
+            left: 5%;
+            background: #6b3410;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-board {
+            position: absolute;
+            width: 20%;
+            height: 25%;
+            top: 15%;
+            left: 10%;
+            background: #2c3e50;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 10px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+        /* Park scene elements */
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 20%;
+            background: #2e7d32;
+        }
+
+        .tree {
+            position: absolute;
+            bottom: 20%;
+        }
+
+        .tree-trunk {
+            width: 20px;
+            height: 100px;
+            background: #795548;
+            position: absolute;
+            bottom: 0;
+            left: 40px;
+        }
+
+        .tree-foliage {
+            width: 100px;
+            height: 120px;
+            background: #2e7d32;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 80px;
+            left: 0;
+        }
+
+        .bench {
+            position: absolute;
+            width: 150px;
+            height: 40px;
+            bottom: 20%;
+            left: 30%;
+            background: #8d6e63;
+            border-radius: 5px;
+        }
+
+        .bench-leg {
+            position: absolute;
+            width: 10px;
+            height: 30px;
+            background: #5d4037;
+            bottom: 0;
+        }
+
+        .bench-back {
+            position: absolute;
+            width: 150px;
+            height: 20px;
+            bottom: 40px;
+            background: #8d6e63;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.9;
+        }
+
+        .sun {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: #ffeb3b;
+            border-radius: 50%;
+            top: 10%;
+            right: 10%;
+            box-shadow: 0 0 30px #ffeb3b;
         }
 
         /* Character styles */
-        .seller, .customer {
+        .character {
             width: 80px;
             height: 140px;
             position: absolute;
-            bottom: 60px;
+            bottom: 15%;
             display: flex;
             flex-direction: column;
             align-items: center;
+            transition: all 1s ease-in-out;
+            z-index: 10;
         }
 
         .seller {
-            left: 140px;
+            left: 18%;
         }
 
         .customer {
-            right: 100px;
-            transition: right 1s ease-in-out;
+            right: -100px;
         }
 
-        .seller-head, .customer-head {
+        .head {
             width: 50px;
             height: 50px;
             border-radius: 50%;
             margin-bottom: 5px;
+            position: relative;
+            z-index: 2;
         }
 
-        .seller-body, .customer-body {
+        .body {
             width: 60px;
             height: 90px;
-            border-radius: 15px;
+            border-radius: 25px 25px 15px 15px;
+            position: relative;
+            z-index: 1;
         }
 
-        .section {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 8px;
-    border: 1px solid #e9ecef;
-    margin-bottom: 15px;
-}
+        .eyes {
+            position: absolute;
+            width: 100%;
+            top: 18px;
+            display: flex;
+            justify-content: space-around;
+            padding: 0 10px;
+        }
 
-.voice-group {
-    margin-bottom: 10px;
-}
+        .eye {
+            width: 10px;
+            height: 10px;
+            background: #333;
+            border-radius: 50%;
+        }
 
-.voice-group label {
-    display: block;
-    margin-bottom: 5px;
-}
+        .mouth {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 10px;
+            border-radius: 0 0 10px 10px;
+            border: 2px solid #333;
+            border-top: none;
+        }
 
-.saved-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px;
-    border-bottom: 1px solid #e9ecef;
-}
+        .smile {
+            border-radius: 0 0 10px 10px;
+        }
 
-.cancel-button { 
-    background-color: #6c757d; 
-}
+        .neutral {
+            height: 2px;
+            width: 15px;
+            border-radius: 0;
+        }
+
+        /* Animation controls */
+        .scene-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        /* Status indicator */
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            background: rgba(76, 201, 240, 0.1);
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--gray);
+        }
+
+        .status-dot.active {
+            background: var(--success);
+            box-shadow: 0 0 0 4px rgba(76, 201, 240, 0.3);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(76, 201, 240, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 6px rgba(76, 201, 240, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(76, 201, 240, 0);
+            }
+        }
+
+        /* Adaptations for mobile */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="scene-container">
-            <div class="scene">
-                <div class="wall-shelf">
-                    <div class="shelf-item" style="left:10px;">
-                        <svg viewBox="0 0 25 35">
-                            <rect x="0" y="0" width="25" height="35" rx="5" ry="5" fill="#e74c3c"/>
-                        </svg>
-                    </div>
-                    <div class="shelf-item" style="left:50px;">
-                        <svg viewBox="0 0 25 35">
-                            <circle cx="12.5" cy="17.5" r="10" fill="#3498db"/>
-                        </svg>
-                    </div>
-                    <div class="shelf-item" style="left:90px;">
-                        <svg viewBox="0 0 25 35">
-                            <polygon points="12.5,2 2,33 23,33" fill="#2ecc71"/>
-                        </svg>
+            <div class="card">
+                <div class="card-header">
+                    <span>Scene Selector</span>
+                </div>
+                <div class="card-body">
+                    <div class="scene-tabs">
+                        <button class="scene-tab active" data-scene="shop">Shop</button>
+                        <button class="scene-tab" data-scene="restaurant">Restaurant</button>
+                        <button class="scene-tab" data-scene="park">Park</button>
                     </div>
                 </div>
-                <div class="clothes-rack">
-                    <div class="rack-top"></div>
-                    <div class="rack-support"></div>
-                    <div class="clothes">
-                        <div class="clothing-item">
-                            <svg viewBox="0 0 50 60">
-                                <path d="M45,5 L5,5 C2,5 0,7 0,10 L0,55 C0,58 2,60 5,60 L45,60 C48,60 50,58 50,55 L50,10 C50,7 48,5 45,5 Z" fill="#e74c3c"/>
-                            </svg>
-                        </div>
-                        <div class="clothing-item">
-                            <svg viewBox="0 0 50 60">
-                                <path d="M10,10 L40,10 L40,30 C40,35 35,40 30,40 L20,40 C15,40 10,35 10,30 L10,10 Z" fill="#3498db"/>
-                                <path d="M15,40 L35,40 L35,55 C35,58 32,60 29,60 L21,60 C18,60 15,58 15,55 L15,40 Z" fill="#3498db"/>
-                            </svg>
-                        </div>
-                        <div class="clothing-item">
-                            <svg viewBox="0 0 50 60">
-                                <path d="M2,30 Q48,30 25,2 C2,30 48,30 25,58 C22,58 28,58 25,58 Z" fill="#2ecc71"/>
-                            </svg>
-                        </div>
-                        <div class="clothing-item">
-                            <svg viewBox="0 0 50 60">
-                                <circle cx="25" cy="20" r="18" fill="#f1c40f" />
-                                <path d="M10,40 C 15,55 35,55 40,40" stroke="#f1c40f" stroke-width="5" fill="none"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="counter">
-                    <div class="counter-top"></div>
-                </div>
-                <div class="seller">
-                    <div class="seller-head">
-                        <svg viewBox="0 0 50 50">
-                            <circle cx="25" cy="25" r="24" fill="#fdd835" />
-                            <circle cx="18" cy="20" r="4" fill="#2c3e50" />
-                            <circle cx="32" cy="20" r="4" fill="#2c3e50" />
-                            <path d="M15,35 C 18,40 32,40 35,35" stroke="#2c3e50" stroke-width="2" fill="none"/>
-                        </svg>
-                    </div>
-                    <div class="seller-body">
-                        <svg viewBox="0 0 60 90">
-                            <rect x="0" y="0" width="60" height="90" rx="15" ry="15" fill="#4CAF50"/>
-                        </svg>
-                    </div>
-                </div>
-                <div class="customer">
-                    <div class="customer-head">
-                        <svg viewBox="0 0 50 50">
-                            <circle cx="25" cy="25" r="24" fill="#fdd835" />
-                            <circle cx="18" cy="20" r="4" fill="#2c3e50" />
-                            <circle cx="32" cy="20" r="4" fill="#2c3e50" />
-                            <path d="M18,30 Q25,38 32,30" stroke="#2c3e50" stroke-width="2" fill="none"/>
-                        </svg>
-                    </div>
-                    <div class="customer-body">
-                        <svg viewBox="0 0 60 90">
-                            <rect x="0" y="0" width="60" height="90" rx="15" ry="15" fill="#8e44ad"/>
-                        </svg>
-                    </div>
-                </div>
-                <div class="speech-bubble seller-speech" id="sellerBubble"></div>
-                <div class="speech-bubble customer-speech" id="customerBubble"></div>
             </div>
-            <div class="scene-controls">
-                <button onclick="startAnimation()" class="play-button">▶️ Play Animation</button>
-                <button onclick="resetAnimation()" class="reset-button">🔄 Reset</button>
-                <button onclick="clearDialogs()" class="clear-button">🗑️ Clear All</button>
-                <div class="save-controls">
-                    <input type="text" id="saveName" placeholder="Save name">
-                    <button onclick="quickSave()" class="save-button">Save</button>
-                    <button onclick="quickLoad()" class="load-button">Load</button>
+
+            <div class="scene-wrapper">
+                <!-- Shop Scene -->
+                <div class="scene shop-scene" id="shopScene" style="display:block;">
+                    <div class="wall-shelf">
+                        <div class="shelf-item" style="left:10%;">
+                            <svg viewBox="0 0 25 35">
+                                <rect x="0" y="0" width="25" height="35" rx="5" ry="5" fill="#e74c3c"/>
+                            </svg>
+                        </div>
+                        <div class="shelf-item" style="left:40%;">
+                            <svg viewBox="0 0 25 35">
+                                <circle cx="12.5" cy="17.5" r="10" fill="#3498db"/>
+                            </svg>
+                        </div>
+                        <div class="shelf-item" style="left:70%;">
+                            <svg viewBox="0 0 25 35">
+                                <polygon points="12.5,2 2,33 23,33" fill="#2ecc71"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="clothes-rack">
+                        <div class="rack-top"></div>
+                        <div class="rack-support"></div>
+                        <div class="clothes">
+                            <div class="clothing-item">
+                                <svg viewBox="0 0 50 60">
+                                    <path d="M45,5 L5,5 C2,5 0,7 0,10 L0,55 C0,58 2,60 5,60 L45,60 C48,60 50,58 50,55 L50,10 C50,7 48,5 45,5 Z" fill="#e74c3c"/>
+                                </svg>
+                            </div>
+                            <div class="clothing-item">
+                                <svg viewBox="0 0 50 60">
+                                    <path d="M10,10 L40,10 L40,30 C40,35 35,40 30,40 L20,40 C15,40 10,35 10,30 L10,10 Z" fill="#3498db"/>
+                                    <path d="M15,40 L35,40 L35,55 C35,58 32,60 29,60 L21,60 C18,60 15,58 15,55 L15,40 Z" fill="#3498db"/>
+                                </svg>
+                            </div>
+                            <div class="clothing-item">
+                                <svg viewBox="0 0 50 60">
+                                    <path d="M2,30 Q48,30 25,2 C2,30 48,30 25,58 C22,58 28,58 25,58 Z" fill="#2ecc71"/>
+                                </svg>
+                            </div>
+                            <div class="clothing-item">
+                                <svg viewBox="0 0 50 60">
+                                    <circle cx="25" cy="20" r="18" fill="#f1c40f" />
+                                    <path d="M10,40 C 15,55 35,55 40,40" stroke="#f1c40f" stroke-width="5" fill="none"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="counter">
+                        <div class="counter-top"></div>
+                    </div>
+
+                    <div class="character seller">
+                        <div class="head seller-head">
+                            <svg viewBox="0 0 50 50">
+                                <circle cx="25" cy="25" r="24" fill="#fdd835" />
+                                <circle cx="18" cy="20" r="4" fill="#2c3e50" />
+                                <circle cx="32" cy="20" r="4" fill="#2c3e50" />
+                                <path d="M15,35 C 18,40 32,40 35,35" stroke="#2c3e50" stroke-width="2" fill="none"/>
+                            </svg>
+                            <div class="speaking seller-speaking">
+                                <span></span><span></span><span></span>
+                            </div>
+                        </div>
+                        <div class="body seller-body">
+                            <svg viewBox="0 0 60 90">
+                                <rect x="0" y="0" width="60" height="90" rx="15" ry="15" fill="#4CAF50"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="character customer">
+                        <div class="head customer-head">
+                            <svg viewBox="0 0 50 50">
+                                <circle cx="25" cy="25" r="24" fill="#fdd835" />
+                                <circle cx="18" cy="20" r="4" fill="#2c3e50" />
+                                <circle cx="32" cy="20" r="4" fill="#2c3e50" />
+                                <path d="M18,30 Q25,38 32,30" stroke="#2c3e50" stroke-width="2" fill="none"/>
+                            </svg>
+                            <div class="speaking customer-speaking">
+                                <span></span><span></span><span></span>
+                            </div>
+                        </div>
+                        <div class="body customer-body">
+                            <svg viewBox="0 0 60 90">
+                                <rect x="0" y="0" width="60" height="90" rx="15" ry="15" fill="#8e44ad"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="speech-bubble seller-speech" id="sellerBubble"></div>
+                    <div class="speech-bubble customer-speech" id="customerBubble"></div>
+                </div>
+
+                <!-- Restaurant Scene -->
+                <div class="scene restaurant-scene" id="restaurantScene">
+                    <div class="menu-board">
+                        <div>☕ Coffee - $3.50</div>
+                        <div>🍔 Burger - $8.99</div>
+                        <div>🍕 Pizza - $12.99</div>
+                        <div>🥗 Salad - $6.99</div>
+                        <div>🍰 Cake - $5.50</div>
+                    </div>
+
+                    <div class="restaurant-counter">
+                        <div style="position: absolute; top: 0; width: 100%; height: 15px; background: #8b4513; border-radius: 10px 10px 0 0;"></div>
+                    </div>
+
+                    <div class="table-leg"></div>
+                    <div class="restaurant-table"></div>
+                    <div class="table-cloth"></div>
+
+                    <div class="restaurant-chair" style="left: 35%; bottom: 20%;">
+                        <div class="chair-back"></div>
+                    </div>
+
+                    <div class="restaurant-chair" style="right: 35%; bottom: 20%;">
+                        <div class="chair-back"></div>
+                    </div>
+
+                    <div class="character seller">
+                        <div class="head seller-head">
+                            <svg viewBox="0 0 50 50">
+                                <circle cx="25" cy="25" r="24" fill="#fdd835" />
+                                <circle cx="18" cy="20" r="4" fill="#2c3e50" />
+                                <circle cx="32" cy="20" r="4" fill="#2c3e50" />
+                                <path d="M15,35 C 18,40 32,40 35,35" stroke="#2c3e50" stroke-width="2" fill="none"/>
+                            </svg>
+                            <div class="speaking seller-speaking">
+                                <span></span><span></span><span></span>
+                            </div>
+                        </div>
+                        <div class="body seller-body">
+                            <svg viewBox="0 0 60 90">
+                                <rect x="0" y="0" width="60" height="90" rx="15" ry="15" fill="#d32f2f"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="character customer">
+                        <div class="head customer-head">
+                            <svg viewBox="0 0 50 50">
+                                <circle cx="25" cy="25" r="24" fill="#fdd835" />
+                                <circle cx="18" cy="20" r="4" fill="#2c3e50" />
+                                <circle cx="32" cy="20" r="4" fill="#2c3e50" />
+                                <path d="M18,30 Q25,38 32,30" stroke="#2c3e50" stroke-width="2" fill="none"/>
+                            </svg>
+                            <div class="speaking customer-speaking">
+                                <span></span><span></span><span></span>
+                            </div>
+                        </div>
+                        <div class="body customer-body">
+                            <svg viewBox="0 0 60 90">
+                                <rect x="0" y="0" width="60" height="90" rx="15" ry="15" fill="#1976d2"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="speech-bubble seller-speech" id="sellerBubbleRestaurant"></div>
+                    <div class="speech-bubble customer-speech" id="customerBubbleRestaurant"></div>
+                </div>
+
+                <!-- Park Scene -->
+                <div class="scene park-scene" id="parkScene">
+                    <div class="sun"></div>
+                    <div class="cloud" style="width: 100px; height: 50px; left: 20%; top: 15%;"></div>
+                    <div class="cloud" style="width: 80px; height: 40px; left: 40%; top: 10%;"></div>
+                    <div class="cloud" style="width: 120px; height: 60px; left: 60%; top: 20%;"></div>
+                    
+                    <div class="tree" style="left: 10%;">
+                        <div class="tree-trunk"></div>
+                        <div class="tree-foliage"></div>
+                    </div>
+                    <div class="tree" style="right: 10%;">
+                        <div class="tree-trunk"></div>
+                        <div class="tree-foliage"></div>
+                    </div>
+                    
+                    <div class="bench">
+                        <div class="bench-leg" style="left: 20px;"></div>
+                        <div class="bench-leg" style="right: 20px;"></div>
+                        <div class="bench-back"></div>
+                    </div>
+                    
+                    <div class="ground"></div>
+
+                    <div class="character seller">
+                        <div class="head seller-head">
+                            <svg viewBox="0 0 50 50">
+                                <circle cx="25" cy="25" r="24" fill="#fdd835" />
+                                <circle cx="18" cy="20" r="4" fill="#2c3e50" />
+                                <circle cx="32" cy="20" r="4" fill="#2c3e50" />
+                                <path d="M15,35 C 18,40 32,40 35,35" stroke="#2c3e50" stroke-width="2" fill="none"/>
+                            </svg>
+                            <div class="speaking seller-speaking">
+                                <span></span><span></span><span></span>
+                            </div>
+                        </div>
+                        <div class="body seller-body">
+                            <svg viewBox="0 0 60 90">
+                                <rect x="0" y="0" width="60" height="90" rx="15" ry="15" fill="#43a047"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="character customer">
+                        <div class="head customer-head">
+                            <svg viewBox="0 0 50 50">
+                                <circle cx="25" cy="25" r="24" fill="#fdd835" />
+                                <circle cx="18" cy="20" r="4" fill="#2c3e50" />
+                                <circle cx="32" cy="20" r="4" fill="#2c3e50" />
+                                <path d="M18,30 Q25,38 32,30" stroke="#2c3e50" stroke-width="2" fill="none"/>
+                            </svg>
+                            <div class="speaking customer-speaking">
+                                <span></span><span></span><span></span>
+                            </div>
+                        </div>
+                        <div class="body customer-body">
+                            <svg viewBox="0 0 60 90">
+                                <rect x="0" y="0" width="60" height="90" rx="15" ry="15" fill="#5e35b1"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="speech-bubble seller-speech" id="sellerBubblePark"></div>
+                    <div class="speech-bubble customer-speech" id="customerBubblePark"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span>Animation Controls</span>
+                </div>
+                <div class="card-body">
+                    <div class="scene-controls">
+                        <button id="playButton" class="btn btn-primary">▶️ Play Animation</button>
+                        <button id="resetButton" class="btn btn-warning">🔄 Reset</button>
+                        <button id="clearButton" class="btn btn-danger">🗑️ Clear All</button>
+                    </div>
+                    <div class="status-indicator">
+                        <div id="statusDot" class="status-dot"></div>
+                        <span id="statusText">Ready</span>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="control-panel">
-                        <div class="section">
-                <h3>Add What They Say</h3>
-                <div class="dialog-inputs">
-                    <select id="speaker">
-                        <option value="seller">Shopkeeper</option>
-                        <option value="customer">Customer</option>
-                    </select>
-                    <input type="text" id="dialogText" placeholder="Enter dialogue text here">
+            <div class="card">
+                <div class="card-header">
+                    <span>Add Dialogue</span>
                 </div>
-                <button onclick="addDialog()" class="add-button">➕ Add Dialogue</button>
-            </div>
-
-            <div class="section">
-                <h3>Voice Settings</h3>
-                <div class="voice-controls">
-                    <div class="voice-group">
-                        <label>Shopkeeper Voice:</label>
-                        <select id="sellerVoice" onchange="updateVoices()"></select>
+                <div class="card-body">
+                    <div class="form-group">
+                        <select id="speaker" class="form-control">
+                            <option value="seller">Shopkeeper/Server/Guide</option>
+                            <option value="customer">Customer/Client/Visitor</option>
+                        </select>
                     </div>
-                    <div class="voice-group">
-                        <label>Customer Voice:</label>
-                        <select id="customerVoice" onchange="updateVoices()"></select>
+                    <div class="form-group">
+                        <input type="text" id="dialogText" class="form-control" placeholder="Enter dialogue text here">
                     </div>
+                    <button id="addButton" class="btn btn-success btn-block">➕ Add Dialogue</button>
                 </div>
             </div>
 
-            <div class="section">
-                <h3>Dialogue List</h3>
-                <div class="dialog-list" id="dialogList"></div>
+            <div class="card">
+                <div class="card-header">
+                    <span>Voice Settings</span>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="sellerVoice">Character 1 Voice:</label>
+                        <select id="sellerVoice" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="customerVoice">Character 2 Voice:</label>
+                        <select id="customerVoice" class="form-control"></select>
+                    </div>
+                </div>
             </div>
-            <div class="section">
-                <h3>Saved Conversations</h3>
-                <div class="saved-list" id="savedList"></div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span>Dialogue List</span>
+                </div>
+                <div class="card-body">
+                    <div class="dialog-list" id="dialogList"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span>Save & Load</span>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <input type="text" id="saveName" class="form-control" placeholder="Conversation name">
+                    </div>
+                    <div class="btn-group">
+                        <button id="saveButton" class="btn btn-success">💾 Save</button>
+                        <button id="loadButton" class="btn btn-primary">📂 Load</button>
+                    </div>
+                    <div class="saved-list" id="savedList"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -464,92 +1128,220 @@
         let voices = [];
         let selectedSellerVoice = null;
         let selectedCustomerVoice = null;
+        let currentScene = 'shop';
 
-        // Speech synthesis function
+        // DOM elements
+        const dialogList = document.getElementById('dialogList');
+        const dialogText = document.getElementById('dialogText');
+        const sellerVoiceSelect = document.getElementById('sellerVoice');
+        const customerVoiceSelect = document.getElementById('customerVoice');
+        const saveName = document.getElementById('saveName');
+        const savedList = document.getElementById('savedList');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+
+        // Scene management - SIMPLIFIED FOR BETTER RELIABILITY
+        function changeScene(sceneName) {
+            console.log("Changing scene to:", sceneName);
+            
+            // Hide all scenes with direct style manipulation
+            document.querySelectorAll('.scene').forEach(scene => {
+                scene.style.display = 'none';
+            });
+            
+            // Show selected scene with direct style manipulation
+            const selectedScene = document.getElementById(`${sceneName}Scene`);
+            if (selectedScene) {
+                selectedScene.style.display = 'block';
+            } else {
+                console.error(`Scene not found: ${sceneName}Scene`);
+                return; // Exit if scene not found
+            }
+            
+            // Update active tab
+            document.querySelectorAll('.scene-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            const activeTab = document.querySelector(`.scene-tab[data-scene="${sceneName}"]`);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+            
+            // Update current scene
+            currentScene = sceneName;
+            
+            // Reset positions
+            resetAnimation();
+        }
+
+        // Speech synthesis function with better cross-browser support
         function speak(text, voiceSelect) {
             return new Promise((resolve) => {
+                // Update status indicator
+                statusDot.classList.add('active');
+                statusText.textContent = 'Speaking...';
+
+                if (!window.speechSynthesis) {
+                    console.warn("Speech synthesis not supported");
+                    setTimeout(resolve, 2000); // Simulate speech duration
+                    return;
+                }
+
                 const utterance = new SpeechSynthesisUtterance(text);
-                // Explicitly get the correct voice based on speaker
-                utterance.voice = voiceSelect === 'sellerVoice' ? 
-                    voices.find(v => v.name.includes('Microsoft Ava')) : 
-                    voices.find(v => v.name.includes('Microsoft Andrew'));
-                utterance.onend = resolve;
-                window.speechSynthesis.speak(utterance);
+
+                // Try to find the selected voice or use a fallback
+                try {
+                    const sceneSpeakingElements = document.querySelectorAll(`#${currentScene}Scene .speaking`);
+                    if (voiceSelect === 'sellerVoice') {
+                        utterance.voice = selectedSellerVoice;
+                        document.querySelectorAll('.seller-speaking').forEach(el => {
+                            el.style.opacity = 1;
+                        });
+                    } else {
+                        utterance.voice = selectedCustomerVoice;
+                        document.querySelectorAll('.customer-speaking').forEach(el => {
+                            el.style.opacity = 1;
+                        });
+                    }
+                } catch (e) {
+                    console.warn("Error setting voice:", e);
+                }
+
+                utterance.onend = () => {
+                    // Hide the speaking indicator
+                    document.querySelectorAll('.speaking').forEach(el => {
+                        el.style.opacity = 0;
+                    });
+                    resolve();
+                };
+
+                // Fallback for browsers that don't fire onend reliably
+                utterance.onerror = () => {
+                    document.querySelectorAll('.speaking').forEach(el => {
+                        el.style.opacity = 0;
+                    });
+                    resolve();
+                };
+
+                // Additional fallback
+                const maxSpeechTime = text.length * 80; // Roughly 80ms per character
+                setTimeout(() => {
+                    document.querySelectorAll('.speaking').forEach(el => {
+                        el.style.opacity = 0;
+                    });
+                    resolve();
+                }, maxSpeechTime);
+
+                try {
+                    window.speechSynthesis.speak(utterance);
+                } catch (e) {
+                    console.error("Speech synthesis error:", e);
+                    setTimeout(resolve, 1000);
+                }
             });
         }
 
-        // Play sound effect (if needed)
-        function playSound(filename) {
-            const audio = new Audio(filename);
-            audio.play();
+        // Initialize and populate voice selections with better fallbacks
+        function populateVoiceList() {
+            try {
+                voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+                
+                if (voices.length === 0 && window.speechSynthesis) {
+                    // If voices aren't loaded yet, try again in a moment
+                    setTimeout(populateVoiceList, 100);
+                    return;
+                }
+
+                sellerVoiceSelect.innerHTML = '';
+                customerVoiceSelect.innerHTML = '';
+
+                if (voices.length === 0) {
+                    // No voices available, create placeholders
+                    const placeholder = document.createElement('option');
+                    placeholder.textContent = 'Default voice (no options available)';
+                    sellerVoiceSelect.appendChild(placeholder.cloneNode(true));
+                    customerVoiceSelect.appendChild(placeholder);
+                    
+                    console.warn("No speech voices available. Speech may not work.");
+                    return;
+                }
+
+                // Find best voices for each character
+                let femaleVoice = findBestVoice(['female', 'woman', 'girl', 'Microsoft Ava', 'Samantha']);
+                let maleVoice = findBestVoice(['male', 'man', 'boy', 'Microsoft Andrew', 'Daniel']);
+
+                // Fallback to any English voices if specific voices aren't found
+                if (!femaleVoice) femaleVoice = voices.find(v => v.lang && v.lang.startsWith('en')) || voices[0];
+                if (!maleVoice) maleVoice = voices.find(v => v !== femaleVoice && v.lang && v.lang.startsWith('en')) || voices[voices.length > 1 ? 1 : 0];
+
+                // Add all available voices
+                voices.forEach((voice, i) => {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = `${voice.name} (${voice.lang})`;
+                    
+                    const sellerOption = option.cloneNode(true);
+                    const customerOption = option.cloneNode(true);
+                    
+                    // Preselect the best voices
+                    if (voice === femaleVoice) sellerOption.selected = true;
+                    if (voice === maleVoice) customerOption.selected = true;
+                    
+                    sellerVoiceSelect.appendChild(sellerOption);
+                    customerVoiceSelect.appendChild(customerOption);
+                });
+
+                updateVoices();
+            } catch (error) {
+                console.error("Error populating voice list:", error);
+                // Create fallback options
+                const fallbackOption = document.createElement('option');
+                fallbackOption.textContent = 'Default voice';
+                sellerVoiceSelect.appendChild(fallbackOption.cloneNode(true));
+                customerVoiceSelect.appendChild(fallbackOption);
+            }
         }
 
+        // Helper function to find the best matching voice
+        function findBestVoice(keywords) {
+            // Try to find a direct match first
+            for (const keyword of keywords) {
+                const match = voices.find(v => 
+                    v.name.toLowerCase().includes(keyword.toLowerCase())
+                );
+                if (match) return match;
+            }
+            
+            // Try to find by language and gender
+            const enVoices = voices.filter(v => v.lang && v.lang.startsWith('en'));
+            if (enVoices.length > 0) {
+                // If we have English voices, try to match by keywords again
+                for (const keyword of keywords) {
+                    const match = enVoices.find(v => 
+                        v.name.toLowerCase().includes(keyword.toLowerCase())
+                    );
+                    if (match) return match;
+                }
+                // Return any English voice if no match
+                return enVoices[0];
+            }
+            
+            // Last resort - return any voice
+            return voices[0];
+        }
 
-        // 1. Voice selection improvement
-       
-
-        function populateVoiceList() {
-    voices = window.speechSynthesis.getVoices();
-    const sellerVoiceSelect = document.getElementById('sellerVoice');
-    const customerVoiceSelect = document.getElementById('customerVoice');
-
-    if (voices.length === 0) {
-        setTimeout(populateVoiceList, 100);
-        return;
-    }
-
-    sellerVoiceSelect.innerHTML = '';
-    customerVoiceSelect.innerHTML = '';
-
-    // Try to find Microsoft voices
-    let avaVoice = voices.find(voice => voice.name.includes('Microsoft Ava'));
-    let andrewVoice = voices.find(voice => voice.name.includes('Microsoft Andrew'));
-
-    // If not found, look for any English voices
-    if (!avaVoice) {
-        avaVoice = voices.find(voice => 
-            voice.lang.includes('en') && 
-            (voice.name.includes('female') || voice.name.includes('woman'))
-        );
-    }
-    if (!andrewVoice) {
-        andrewVoice = voices.find(voice => 
-            voice.lang.includes('en') && 
-            (voice.name.includes('male') || voice.name.includes('man'))
-        );
-    }
-
-    // If still not found, use any available voices
-    if (!avaVoice || !andrewVoice) {
-        alert('Warning: Microsoft voices not found. Speech quality may be reduced. Please install Microsoft voices for best experience.');
-        // Use whatever voices are available
-        avaVoice = voices[0];
-        andrewVoice = voices[1] || voices[0];
-    }
-
-    // Add voices to dropdowns
-    const sellerOption = document.createElement('option');
-    sellerOption.value = voices.indexOf(avaVoice);
-    sellerOption.textContent = avaVoice.name;
-    sellerVoiceSelect.appendChild(sellerOption);
-
-    const customerOption = document.createElement('option');
-    customerOption.value = voices.indexOf(andrewVoice);
-    customerOption.textContent = andrewVoice.name;
-    customerVoiceSelect.appendChild(customerOption);
-
-    // Set values
-    sellerVoiceSelect.value = voices.indexOf(avaVoice);
-    customerVoiceSelect.value = voices.indexOf(andrewVoice);
-
-    updateVoices();
-}
-
+        // Update selected voices
         function updateVoices() {
-            const sellerIndex = document.getElementById('sellerVoice').value;
-            const customerIndex = document.getElementById('customerVoice').value;
-            selectedSellerVoice = voices[sellerIndex];
-            selectedCustomerVoice = voices[customerIndex];
+            try {
+                const sellerIndex = parseInt(sellerVoiceSelect.value);
+                const customerIndex = parseInt(customerVoiceSelect.value);
+                
+                selectedSellerVoice = voices[sellerIndex];
+                selectedCustomerVoice = voices[customerIndex];
+            } catch (error) {
+                console.error("Error updating voices:", error);
+            }
         }
 
         // Dialog management functions
@@ -559,10 +1351,10 @@
             
             dialogItem.classList.add('edit-mode');
             dialogItem.innerHTML = `
-                <input type="text" value="${dialog.text}" class="edit-input">
+                <input type="text" value="${dialog.text}" class="form-control edit-input">
                 <div class="edit-controls">
-                    <button onclick="saveDialogEdit(${index})" class="save-button">Save</button>
-                    <button onclick="cancelDialogEdit(${index})" class="cancel-button">Cancel</button>
+                    <button onclick="saveDialogEdit(${index})" class="btn btn-success btn-icon">Save</button>
+                    <button onclick="cancelDialogEdit(${index})" class="btn btn-danger btn-icon">Cancel</button>
                 </div>
             `;
         }
@@ -583,29 +1375,41 @@
 
         function addDialog() {
             const speaker = document.getElementById('speaker').value;
-            const text = document.getElementById('dialogText').value.trim();
-
+            const text = dialogText.value.trim();
+            
             if (text === "") {
                 alert("Please enter some text for the dialogue!");
                 return;
             }
-
+            
             dialogs.push({ speaker, text });
             updateDialogList();
-            document.getElementById('dialogText').value = '';
+            dialogText.value = '';
+            dialogText.focus();
         }
 
         function updateDialogList() {
-            const list = document.getElementById('dialogList');
-            list.innerHTML = dialogs.map((dialog, index) => `
-                <div class="dialog-item">
-                    <span>${dialog.speaker === 'seller' ? '👕 Shopkeeper' : '🛍️ Customer'}: ${dialog.text}</span>
+            dialogList.innerHTML = '';
+            
+            dialogs.forEach((dialog, index) => {
+                const dialogItem = document.createElement('div');
+                dialogItem.className = `dialog-item ${dialog.speaker}-dialog`;
+                
+                const icon = dialog.speaker === 'seller' ? '👕' : '🛍️';
+                const label = dialog.speaker === 'seller' ? 'Character 1' : 'Character 2';
+                
+                dialogItem.innerHTML = `
+                    <span>${icon} ${label}: ${dialog.text}</span>
                     <div class="dialog-controls">
-                        <button onclick="makeDialogEditable(${index})" class="edit-button">✎</button>
-                        <button onclick="removeDialog(${index})" class="remove-button">✖</button>
+                        <button onclick="makeDialogEditable(${index})" class="btn btn-warning btn-icon">✎</button>
+                        <button onclick="moveDialogUp(${index})" class="btn btn-primary btn-icon" ${index === 0 ? 'disabled' : ''}>↑</button>
+                        <button onclick="moveDialogDown(${index})" class="btn btn-primary btn-icon" ${index === dialogs.length - 1 ? 'disabled' : ''}>↓</button>
+                        <button onclick="removeDialog(${index})" class="btn btn-danger btn-icon">✖</button>
                     </div>
-                </div>
-            `).join('');
+                `;
+                
+                dialogList.appendChild(dialogItem);
+            });
         }
 
         function removeDialog(index) {
@@ -613,11 +1417,26 @@
             updateDialogList();
         }
 
+        function moveDialogUp(index) {
+            if (index > 0) {
+                [dialogs[index], dialogs[index - 1]] = [dialogs[index - 1], dialogs[index]];
+                updateDialogList();
+            }
+        }
+
+        function moveDialogDown(index) {
+            if (index < dialogs.length - 1) {
+                [dialogs[index], dialogs[index + 1]] = [dialogs[index + 1], dialogs[index]];
+                updateDialogList();
+            }
+        }
+
         // Save/Load functionality
         function generateDialogData() {
             return JSON.stringify({
-                sellerVoice: document.getElementById('sellerVoice').value,
-                customerVoice: document.getElementById('customerVoice').value,
+                sellerVoice: sellerVoiceSelect.value,
+                customerVoice: customerVoiceSelect.value,
+                currentScene: currentScene,
                 dialogs
             });
         }
@@ -625,148 +1444,297 @@
         function loadDialogDataFromString(dataString) {
             try {
                 const data = JSON.parse(dataString);
+                
                 if (data.sellerVoice !== undefined) {
-                    document.getElementById('sellerVoice').value = data.sellerVoice;
+                    sellerVoiceSelect.value = data.sellerVoice;
                 }
+                
                 if (data.customerVoice !== undefined) {
-                    document.getElementById('customerVoice').value = data.customerVoice;
+                    customerVoiceSelect.value = data.customerVoice;
                 }
+                
+                if (data.currentScene !== undefined) {
+                    changeScene(data.currentScene);
+                }
+                
                 updateVoices();
+                
                 if (Array.isArray(data.dialogs)) {
                     dialogs = data.dialogs;
                     updateDialogList();
                 }
             } catch (e) {
+                console.error("Error loading data:", e);
                 alert('Error loading conversation data.');
             }
         }
 
         function quickSave() {
-            const saveName = document.getElementById('saveName').value.trim();
-            if (!saveName) {
+            const saveNameValue = saveName.value.trim();
+            
+            if (!saveNameValue) {
                 alert('Please enter a name for your save.');
                 return;
             }
-
-            const saveKey = `dialogue_save_${saveName}`;
+            
+            const saveKey = `dialogue_save_${saveNameValue}`;
             const data = generateDialogData();
-            localStorage.setItem(saveKey, data);
-            document.getElementById('saveName').value = '';
-            updateSavedList();
-            alert('Conversation saved!');
+            
+            try {
+                localStorage.setItem(saveKey, data);
+                saveName.value = '';
+                updateSavedList();
+                
+                // Show confirmation
+                statusText.textContent = 'Conversation saved!';
+                setTimeout(() => {
+                    statusText.textContent = 'Ready';
+                }, 2000);
+            } catch (e) {
+                alert('Error saving conversation. Local storage may be full or disabled.');
+            }
         }
 
         function quickLoad() {
-            const saveName = document.getElementById('saveName').value.trim();
-            if (!saveName) {
+            const saveNameValue = saveName.value.trim();
+            
+            if (!saveNameValue) {
                 alert('Please enter the name of the save to load.');
                 return;
             }
-
-            const saveKey = `dialogue_save_${saveName}`;
+            
+            const saveKey = `dialogue_save_${saveNameValue}`;
             const data = localStorage.getItem(saveKey);
+            
             if (data) {
                 loadDialogDataFromString(data);
-                document.getElementById('saveName').value = '';
-                alert('Conversation loaded!');
+                saveName.value = '';
+                
+                // Show confirmation
+                statusText.textContent = 'Conversation loaded!';
+                setTimeout(() => {
+                    statusText.textContent = 'Ready';
+                }, 2000);
             } else {
                 alert('Save not found.');
             }
         }
 
-        function deleteSave(saveName) {
-            const saveKey = `dialogue_save_${saveName}`;
-            localStorage.removeItem(saveKey);
-            updateSavedList();
+        function deleteSave(saveNameValue) {
+            const saveKey = `dialogue_save_${saveNameValue}`;
+            
+            try {
+                localStorage.removeItem(saveKey);
+                updateSavedList();
+            } catch (e) {
+                alert('Error deleting save.');
+            }
         }
 
         function updateSavedList() {
-            const savedList = document.getElementById('savedList');
             savedList.innerHTML = '';
-
-            // Filter only dialogue-related saves
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key.startsWith('dialogue_save_')) {
-                    const saveName = key.replace('dialogue_save_', '');
+            
+            try {
+                // Filter only dialogue-related saves
+                const savedItems = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    
+                    if (key && key.startsWith('dialogue_save_')) {
+                        const saveNameValue = key.replace('dialogue_save_', '');
+                        savedItems.push(saveNameValue);
+                    }
+                }
+                
+                // Sort by name
+                savedItems.sort();
+                
+                // Create elements
+                savedItems.forEach(saveNameValue => {
                     const listItem = document.createElement('div');
                     listItem.className = 'saved-item';
+                    
                     listItem.innerHTML = `
-                        <span>${saveName}</span>
-                        <div class="save-controls">
-                            <button onclick="document.getElementById('saveName').value = '${saveName}'; quickLoad();" class="load-button">Load</button>
-                            <button onclick="deleteSave('${saveName}')" class="delete-button">Delete</button>
+                        <span>${saveNameValue}</span>
+                        <div class="btn-group">
+                            <button class="btn btn-primary btn-icon load-btn">Load</button>
+                            <button class="btn btn-danger btn-icon delete-btn">Delete</button>
                         </div>
                     `;
+                    
+                    const loadBtn = listItem.querySelector('.load-btn');
+                    const deleteBtn = listItem.querySelector('.delete-btn');
+                    
+                    loadBtn.addEventListener('click', () => {
+                        const key = `dialogue_save_${saveNameValue}`;
+                        loadDialogDataFromString(localStorage.getItem(key));
+                        statusText.textContent = 'Conversation loaded!';
+                        setTimeout(() => {
+                            statusText.textContent = 'Ready';
+                        }, 2000);
+                    });
+                    
+                    deleteBtn.addEventListener('click', () => {
+                        if (confirm(`Delete "${saveNameValue}"?`)) {
+                            deleteSave(saveNameValue);
+                        }
+                    });
+                    
                     savedList.appendChild(listItem);
+                });
+                
+                // Add message if no saves
+                if (savedList.children.length === 0) {
+                    savedList.innerHTML = '<div class="saved-item"><em>No saved conversations</em></div>';
                 }
+            } catch (e) {
+                console.error("Error updating saved list:", e);
+                savedList.innerHTML = '<div class="saved-item"><em>Error loading saved conversations</em></div>';
             }
         }
 
         // Animation functions
         async function startAnimation() {
             if (isAnimating || dialogs.length === 0) return;
+            
             isAnimating = true;
-
-            const sellerBubble = document.getElementById('sellerBubble');
-            const customerBubble = document.getElementById('customerBubble');
-            const customer = document.querySelector('.customer');
-
+            statusDot.classList.add('active');
+            statusText.textContent = 'Animating...';
+            
+            // Get the current scene's speech bubbles
+            const scene = document.getElementById(`${currentScene}Scene`);
+            const sellerBubble = scene.querySelector('.seller-speech');
+            const customerBubble = scene.querySelector('.customer-speech');
+            const customer = scene.querySelector('.customer');
+            
+            // Reset bubbles
             sellerBubble.style.opacity = 0;
             customerBubble.style.opacity = 0;
-            customer.style.transition = 'right 1s ease-in-out';
+            sellerBubble.textContent = '';
+            customerBubble.textContent = '';
+            
+            // Position customer at the screen
             customer.style.right = '100px';
-
+            
+            // Wait for the customer to enter
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Go through each dialog
             for (let dialog of dialogs) {
-                await new Promise(resolve => setTimeout(resolve, 500));
+                // Clear previous bubbles
+                sellerBubble.style.opacity = 0;
+                customerBubble.style.opacity = 0;
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                // Show the current bubble
                 const bubble = dialog.speaker === 'seller' ? sellerBubble : customerBubble;
-                const otherBubble = dialog.speaker === 'seller' ? customerBubble : sellerBubble;
-                const voiceSelect = dialog.speaker === 'seller' ? 'sellerVoice' : 'customerVoice';
-
-                otherBubble.style.opacity = 0;
                 bubble.textContent = dialog.text;
                 bubble.style.opacity = 1;
-
+                
+                // Speak the text
+                const voiceSelect = dialog.speaker === 'seller' ? 'sellerVoice' : 'customerVoice';
                 await speak(dialog.text, voiceSelect);
+                
+                // Pause briefly between dialogs
                 await new Promise(resolve => setTimeout(resolve, 500));
             }
-
+            
+            // Animation finished
             await new Promise(resolve => setTimeout(resolve, 1000));
             sellerBubble.style.opacity = 0;
             customerBubble.style.opacity = 0;
-            customer.style.right = '-60px';
+            customer.style.right = '-100px';
+            
             isAnimating = false;
+            statusDot.classList.remove('active');
+            statusText.textContent = 'Ready';
         }
 
         function resetAnimation() {
-            if (isAnimating) return;
-            const customer = document.querySelector('.customer');
-            customer.style.transition = 'right 1s';
-            customer.style.right = '-60px';
-            document.getElementById('sellerBubble').style.opacity = 0;
-            document.getElementById('customerBubble').style.opacity = 0;
-            window.speechSynthesis.cancel();
+            if (isAnimating) {
+                window.speechSynthesis && window.speechSynthesis.cancel();
+                isAnimating = false;
+            }
+            
+            // Reset all scenes
+            document.querySelectorAll('.scene').forEach(scene => {
+                const customer = scene.querySelector('.customer');
+                const sellerBubble = scene.querySelector('.seller-speech');
+                const customerBubble = scene.querySelector('.customer-speech');
+                
+                if (customer) customer.style.right = '-100px';
+                if (sellerBubble) sellerBubble.style.opacity = 0;
+                if (customerBubble) customerBubble.style.opacity = 0;
+            });
+            
+            // Reset speaking indicators
+            document.querySelectorAll('.speaking').forEach(indicator => {
+                indicator.style.opacity = 0;
+            });
+            
+            statusDot.classList.remove('active');
+            statusText.textContent = 'Ready';
         }
 
         function clearDialogs() {
-            dialogs = [];
-            updateDialogList();
-            document.getElementById('sellerBubble').style.opacity = 0;
-            document.getElementById('customerBubble').style.opacity = 0;
-            window.speechSynthesis.cancel();
+            if (confirm('Are you sure you want to clear all dialogues?')) {
+                dialogs = [];
+                updateDialogList();
+                resetAnimation();
+            }
         }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            document.querySelector('.customer').style.right = '-60px';
-
+            console.log("Document loaded, initializing...");
+            
+            // Event listeners for scene tabs
+            document.querySelectorAll('.scene-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const sceneName = tab.getAttribute('data-scene');
+                    console.log("Tab clicked:", sceneName);
+                    changeScene(sceneName);
+                });
+            });
+            
+            // Initialize speech synthesis
             if (window.speechSynthesis) {
-                if (window.speechSynthesis.getVoices().length === 0) {
-                    window.speechSynthesis.addEventListener('voiceschanged', populateVoiceList);
+                try {
+                    if (window.speechSynthesis.getVoices().length === 0) {
+                        window.speechSynthesis.addEventListener('voiceschanged', populateVoiceList);
+                    }
+                    populateVoiceList();
+                } catch (e) {
+                    console.error("Speech synthesis initialization error:", e);
                 }
-                populateVoiceList();
+            } else {
+                console.warn("Speech synthesis not supported in this browser");
+                document.getElementById('statusText').textContent = 'Voice not supported in this browser';
             }
+            
+            // Update saved list
             updateSavedList();
+            
+            // Event listeners for control buttons
+            document.getElementById('playButton').addEventListener('click', startAnimation);
+            document.getElementById('resetButton').addEventListener('click', resetAnimation);
+            document.getElementById('clearButton').addEventListener('click', clearDialogs);
+            document.getElementById('addButton').addEventListener('click', addDialog);
+            document.getElementById('saveButton').addEventListener('click', quickSave);
+            document.getElementById('loadButton').addEventListener('click', quickLoad);
+            
+            // Event listener for voice changes
+            sellerVoiceSelect.addEventListener('change', updateVoices);
+            customerVoiceSelect.addEventListener('change', updateVoices);
+            
+            // Enter key for adding dialog
+            dialogText.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    addDialog();
+                }
+            });
+            
+            console.log("Initialization complete");
         });
     </script>
 </body>
