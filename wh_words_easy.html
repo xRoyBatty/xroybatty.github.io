@@ -277,6 +277,8 @@ const allWords = {
         input.value = '';
         statusSpan.textContent = '';
         showNotification('Słowo odznaczone', 'error');
+        sessionCompleted = false;  // Reset the session completed flag
+
       }
       
       localStorage.setItem('learnedWords', JSON.stringify(learnedWords));
