@@ -1,0 +1,2118 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python dla Początkujących - Interaktywny Kurs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Reset i podstawowe style */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #f9f9f9;
+            padding: 20px;
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            transition: background-color 0.3s;
+        }
+        body.dark-mode {
+            background: #1a1a1a;
+            color: #f0f0f0;
+        }
+        
+        /* Layout */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+        }
+        
+        /* Header */
+        .header {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .dark-mode .header {
+            background: #2a2a2a;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .logo img {
+            width: 40px;
+            height: 40px;
+        }
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #4a4a4a;
+        }
+        .dark-mode .logo h1 {
+            color: #f0f0f0;
+        }
+        .course-progress {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .progress-label {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        .dark-mode .progress-label {
+            color: #aaa;
+        }
+        .progress-container {
+            width: 200px;
+            height: 10px;
+            background: #eee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .dark-mode .progress-container {
+            background: #444;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #555;
+            padding: 5px;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        .dark-mode .theme-toggle {
+            color: #ddd;
+        }
+        .theme-toggle:hover {
+            background: #eee;
+        }
+        .dark-mode .theme-toggle:hover {
+            background: #444;
+        }
+        
+        /* Dekoracyjne elementy tła */
+        .header::before {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(45deg, rgba(76, 175, 80, 0.1), rgba(139, 195, 74, 0.1));
+            border-radius: 50%;
+            top: -50px;
+            right: -50px;
+            z-index: 0;
+        }
+        
+        /* Terminal */
+        .terminal-section {
+            background: #1e1e1e;
+            border-radius: 15px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 1px solid #333;
+            transition: all 0.3s ease;
+        }
+        .dark-mode .terminal-section {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border: 1px solid #444;
+        }
+        .terminal-header {
+            background: #333;
+            padding: 10px 15px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #444;
+        }
+        .terminal-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .terminal-title span {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.9rem;
+        }
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+        .window-control {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .close { background: #ff5f56; }
+        .minimize { background: #ffbd2e; }
+        .maximize { background: #27c93f; }
+        
+        .terminal {
+            flex-grow: 1;
+            padding: 20px;
+            color: #fff;
+            font-family: 'Roboto Mono', monospace;
+            min-height: 500px;
+            max-height: 500px;
+            overflow-y: auto;
+            background-color: #1e1e1e;
+            position: relative;
+        }
+        .terminal-output {
+            margin-bottom: 10px;
+            white-space: pre-wrap;
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease;
+        }
+        .terminal-input {
+            display: flex;
+            margin-top: 15px;
+        }
+        .terminal-prompt {
+            color: #4CAF50;
+            margin-right: 10px;
+        }
+        .terminal-input-field {
+            flex-grow: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1em;
+            outline: none;
+        }
+        
+        /* Control Panel */
+        .control-panel {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            background: #282828;
+            border-top: 1px solid #444;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .control-button {
+            padding: 8px 15px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .control-button:hover {
+            background: #3d8b40;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .control-button:active {
+            transform: translateY(0px);
+            box-shadow: none;
+        }
+        .control-button:disabled {
+            background: #505050;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            opacity: 0.7;
+        }
+        .control-button.prev {
+            background: #607D8B;
+        }
+        .control-button.prev:hover {
+            background: #4b636e;
+        }
+        .control-button.hint {
+            background: #FF9800;
+        }
+        .control-button.hint:hover {
+            background: #e68900;
+        }
+        
+        /* Verification Options */
+        .verification-options {
+            display: none;
+            margin-top: 15px;
+            animation: fadeIn 0.5s ease;
+        }
+        .verification-title {
+            font-weight: 500;
+            color: #ddd;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        .option-button {
+            display: block;
+            width: 100%;
+            padding: 12px 15px;
+            margin: 8px 0;
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            background: rgba(76, 175, 80, 0.1);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+        .option-button:hover {
+            background: rgba(76, 175, 80, 0.2);
+            transform: translateX(5px);
+        }
+        .option-button:active {
+            transform: translateX(2px);
+        }
+        
+        /* Info Panel */
+        .info-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 0;
+            height: fit-content;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+        .dark-mode .info-panel {
+            background: #2a2a2a;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .info-panel-header {
+            padding: 15px 20px;
+            background: #f5f5f5;
+            border-bottom: 1px solid #eee;
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dark-mode .info-panel-header {
+            background: #333;
+            border-bottom: 1px solid #444;
+            color: #f0f0f0;
+        }
+        .info-panel-body {
+            padding: 20px;
+            flex-grow: 1;
+        }
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .tab-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            color: #777;
+        }
+        .dark-mode .tab-button {
+            color: #aaa;
+        }
+        .tab-button:hover {
+            background: #eee;
+            color: #333;
+        }
+        .dark-mode .tab-button:hover {
+            background: #444;
+            color: #f0f0f0;
+        }
+        .tab-button.active {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        /* Tabs */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Notes Section */
+        .notes {
+            background: #ffffd0;
+            padding: 15px;
+            border-radius: 8px;
+            position: relative;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            line-height: 1.6;
+            font-size: 0.95rem;
+            display: none;
+            animation: slideDown 0.4s ease;
+        }
+        .dark-mode .notes {
+            background: #41403b;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .notes::before {
+            content: '📝';
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            font-size: 1.2rem;
+        }
+        
+        /* Przykłady kodu */
+        .code-examples {
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.9rem;
+            margin: 15px 0;
+            line-height: 1.6;
+            overflow-x: auto;
+        }
+        .dark-mode .code-examples {
+            background: #333;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        /* Achievements */
+        .achievements {
+            margin-top: 20px;
+        }
+        .achievement {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: #f8f8f8;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+            opacity: 0.6;
+        }
+        .dark-mode .achievement {
+            background: #333;
+        }
+        .achievement.unlocked {
+            opacity: 1;
+            background: #e9f7ef;
+        }
+        .dark-mode .achievement.unlocked {
+            background: #2e442e;
+        }
+        .achievement-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+        }
+        .achievement.unlocked .achievement-icon {
+            background: #4CAF50;
+            color: white;
+        }
+        .achievement-info {
+            flex: 1;
+        }
+        .achievement-title {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .achievement-desc {
+            font-size: 0.8rem;
+            color: #777;
+        }
+        .dark-mode .achievement-desc {
+            color: #aaa;
+        }
+        
+        /* Hint System */
+        .hint-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 8px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .dark-mode .hint-box {
+            background: #3a3522;
+            border-left: 4px solid #ffc107;
+        }
+        .hint-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #856404;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .dark-mode .hint-title {
+            color: #ffd966;
+        }
+        .hint-content {
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        /* Messages */
+        .message {
+            padding: 12px 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .dark-mode .success {
+            background: #1e3e2f;
+            color: #8fd19e;
+            border-left: 4px solid #28a745;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        .dark-mode .error {
+            background: #3e1c1f;
+            color: #ea868f;
+            border-left: 4px solid #dc3545;
+        }
+        .milestone-alert {
+            background: linear-gradient(135deg, #ff9800, #ff5722);
+            color: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(255, 152, 0, 0.3);
+            animation: pulse 2s infinite;
+        }
+        .dark-mode .milestone-alert {
+            box-shadow: 0 4px 10px rgba(255, 152, 0, 0.5);
+        }
+        .milestone-alert::before {
+            content: "🏆";
+            font-size: 1.5rem;
+            margin-right: 10px;
+            animation: bounce 1s infinite;
+            display: inline-block;
+        }
+        
+        /* Explanation Section */
+        #explanation {
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        
+        /* Responsywność */
+        @media (max-width: 1100px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .terminal {
+                min-height: 400px;
+                max-height: 400px;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            .course-progress {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .progress-container {
+                flex-grow: 1;
+            }
+            .terminal {
+                min-height: 350px;
+                max-height: 350px;
+            }
+            .tab-buttons {
+                gap: 5px;
+            }
+            .tab-button {
+                padding: 5px 8px;
+                font-size: 0.8rem;
+            }
+        }
+        
+        /* Animacje */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes slideDown {
+            from { 
+                opacity: 0;
+                max-height: 0;
+            }
+            to { 
+                opacity: 1;
+                max-height: 500px;
+            }
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 152, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); }
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-8px); }
+            60% { transform: translateY(-4px); }
+        }
+
+        /* Milestones Badge */
+        .milestone-badge {
+            position: relative;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #ddd;
+            margin-right: 10px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #777;
+        }
+        .dark-mode .milestone-badge {
+            background: #444;
+            color: #aaa;
+        }
+        .milestone-badge.completed {
+            background: #4CAF50;
+            color: white;
+        }
+        .milestone-badges {
+            display: flex;
+            gap: 5px;
+            margin-top: 15px;
+        }
+        
+        /* Customizing scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #2c2c2c;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4d4d4d;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #5a5a5a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <div>🐍</div>
+                <h1>Python dla Początkujących</h1>
+            </div>
+            <div class="course-progress">
+                <div class="progress-label">Postęp: <span id="progressText">0%</span></div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+            </div>
+            <button id="themeToggle" class="theme-toggle">🌙</button>
+        </div>
+        
+        <div class="terminal-section">
+            <div class="terminal-header">
+                <div class="terminal-title">
+                    <div class="window-controls">
+                        <div class="window-control close"></div>
+                        <div class="window-control minimize"></div>
+                        <div class="window-control maximize"></div>
+                    </div>
+                    <span>python_kurs.py</span>
+                </div>
+                <div class="milestone-badges" id="milestoneBadges">
+                    <!-- Badges będą generowane przez JavaScript -->
+                </div>
+            </div>
+            <div class="terminal" id="terminal">
+                <div id="output"></div>
+                <div id="verificationOptions" class="verification-options">
+                    <div class="verification-title">Wybierz poprawną odpowiedź:</div>
+                    <!-- Opcje będą generowane przez JavaScript -->
+                </div>
+                <div id="hintBox" class="hint-box">
+                    <div class="hint-title">💡 Podpowiedź</div>
+                    <div class="hint-content" id="hintContent"></div>
+                </div>
+            </div>
+            <div class="control-panel">
+                <div class="control-buttons">
+                    <button id="prevButton" class="control-button prev" disabled>
+                        ⬅️ Poprzedni
+                    </button>
+                    <button id="hintButton" class="control-button hint">
+                        💡 Podpowiedź
+                    </button>
+                </div>
+                <button id="nextButton" class="control-button" disabled>
+                    Następny ➡️
+                </button>
+            </div>
+        </div>
+        
+        <div class="info-panel">
+            <div class="info-panel-header">
+                <span>Pomoc i Wskazówki</span>
+                <div class="tab-buttons">
+                    <button class="tab-button active" data-tab="notesTab">Notatki</button>
+                    <button class="tab-button" data-tab="achievementsTab">Osiągnięcia</button>
+                    <button class="tab-button" data-tab="referenceTab">Ściąga</button>
+                </div>
+            </div>
+            <div class="info-panel-body">
+                <div id="notesTab" class="tab-content active">
+                    <div id="notes" class="notes"></div>
+                    <div id="explanation"></div>
+                    <div class="code-examples" id="codeExamples">
+                        <span>// Przykłady pojawią się po rozwiązaniu zadania</span>
+                    </div>
+                </div>
+                <div id="achievementsTab" class="tab-content">
+                    <div class="achievements" id="achievements">
+                        <div class="achievement">
+                            <div class="achievement-icon">1</div>
+                            <div class="achievement-info">
+                                <div class="achievement-title">Pierwsze kroki</div>
+                                <div class="achievement-desc">Ukończ pierwszy milestone</div>
+                            </div>
+                        </div>
+                        <div class="achievement">
+                            <div class="achievement-icon">2</div>
+                            <div class="achievement-info">
+                                <div class="achievement-title">Matematyk</div>
+                                <div class="achievement-desc">Ukończ drugi milestone</div>
+                            </div>
+                        </div>
+                        <div class="achievement">
+                            <div class="achievement-icon">3</div>
+                            <div class="achievement-info">
+                                <div class="achievement-title">Decyzje</div>
+                                <div class="achievement-desc">Ukończ trzeci milestone</div>
+                            </div>
+                        </div>
+                        <div class="achievement">
+                            <div class="achievement-icon">4</div>
+                            <div class="achievement-info">
+                                <div class="achievement-title">Kolekcjoner</div>
+                                <div class="achievement-desc">Ukończ czwarty milestone</div>
+                            </div>
+                        </div>
+                        <div class="achievement">
+                            <div class="achievement-icon">5</div>
+                            <div class="achievement-info">
+                                <div class="achievement-title">Twórca</div>
+                                <div class="achievement-desc">Ukończ piąty milestone</div>
+                            </div>
+                        </div>
+                        <div class="achievement">
+                            <div class="achievement-icon">6</div>
+                            <div class="achievement-info">
+                                <div class="achievement-title">Programista</div>
+                                <div class="achievement-desc">Ukończ kurs</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="referenceTab" class="tab-content">
+                    <h3>Przydatne skróty i przypomnienia</h3>
+                    <div class="code-examples">
+print("tekst")        # wyświetla tekst
+zmienna = 10          # tworzy zmienną
+zmienna = "tekst"     # zmienne mogą zawierać tekst
+x + y                 # dodawanie
+x - y                 # odejmowanie
+x * y                 # mnożenie
+x / y                 # dzielenie
+x % y                 # reszta z dzielenia
+x ** y                # potęgowanie
+input("pytanie")      # pobiera dane od użytkownika
+int(tekst)            # zamienia tekst na liczbę
+str(liczba)           # zamienia liczbę na tekst
+                    </div>
+                    <h3>Instrukcje warunkowe</h3>
+                    <div class="code-examples">
+if warunek:
+    # kod wykonywany gdy warunek jest prawdziwy
+elif inny_warunek:
+    # kod wykonywany gdy inny_warunek jest prawdziwy
+else:
+    # kod wykonywany gdy żaden warunek nie jest prawdziwy
+                    </div>
+                    <h3>Listy</h3>
+                    <div class="code-examples">
+lista = [1, 2, 3, 4]  # tworzenie listy
+lista[0]              # pierwszy element (1)
+lista.append(5)       # dodaje element na koniec
+len(lista)            # długość listy
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+const lessonData = {
+    lessons: [
+        // ETAP 1: PIERWSZE KROKI
+        {
+            step: 1,
+            instruction: "Witaj w świecie programowania! Zacznijmy od najprostszej komendy. Wpisz:\nprint(\"Cześć, świecie!\")",
+            verification: {
+                options: [
+                    "Cześć, świecie!",
+                    "print(\"Cześć, świecie!\")",
+                    "Nic się nie wyświetliło"
+                ],
+                correct: 0,
+                explanation: "Funkcja print() wyświetla tekst na ekranie. Tekst musi być w cudzysłowach, aby Python wiedział, że to jest tekst, a nie kod do wykonania."
+            },
+            noteContent: "print(\"tekst\") - komenda która wyświetla tekst na ekranie.\nCudzysłowy mówią Pythonowi, że to jest zwykły tekst."
+        },
+        {
+            step: 2,
+            instruction: "Super! Spróbujmy wyświetlić emotkę. Wpisz:\nprint(\"😊\")",
+            verification: {
+                options: [
+                    "Pokazała się uśmiechnięta buźka 😊",
+                    "Pokazał się błąd",
+                    "Pokazały się znaki \\U0001F600"
+                ],
+                correct: 0,
+                explanation: "Python wspiera emotki! Możesz używać emoji w swoich programach, aby uczynić je bardziej przyjaznymi i zabawnymi."
+            },
+            noteContent: "W Pythonie możesz używać emotek bezpośrednio w kodzie, co czyni programy bardziej przyjazne."
+        },
+        {
+            step: 3,
+            instruction: "Teraz spróbujmy wyświetlić coś wyjątkowego. Wpisz:\nprint(\"**** Super Program ****\")\nprint(\"Autor: Twoje Imię\")",
+            verification: {
+                options: [
+                    "Wyświetliło się wszystko w dwóch liniach",
+                    "Wyświetliło się wszystko w jednej linii",
+                    "Pojawił się błąd"
+                ],
+                correct: 0,
+                explanation: "Każdy print() tworzy nową linię. To pomaga nam organizować tekst w czytelny sposób."
+            },
+            noteContent: "Każda funkcja print() tworzy nową linię w wyniku.\nMożemy tworzyć proste 'banery' używając znaków takich jak gwiazdki *."
+        },
+        {
+            step: 4,
+            instruction: "Poznajmy teraz zmienne! Zmienne to jak podpisane pudełka na informacje. Wpisz:\nimie = \"Emma\"\nprint(\"Hej,\", imie, \"!\")",
+            verification: {
+                options: [
+                    "Hej, Emma !",
+                    "Hej, imie !",
+                    "Hej, \"Emma\" !"
+                ],
+                correct: 0,
+                explanation: "Stworzyliśmy zmienną 'imie' i zapisaliśmy w niej tekst 'Emma'. Gdy używamy przecinków w print(), Python automatycznie dodaje spacje między elementami."
+            },
+            noteContent: "Zmienne - to jak pudełka z etykietami, gdzie przechowujemy informacje.\nPrzykład: imie = \"Adam\"\nW print() możemy używać przecinków zamiast + aby łączyć elementy. Python automatycznie dodaje spacje."
+        },
+        {
+            step: 5,
+            instruction: "Spróbujmy teraz użyć kilku zmiennych. Wpisz:\nimie = \"Zosia\"\nwiek = \"9\"\nprint(imie, \"ma\", wiek, \"lat.\")",
+            verification: {
+                options: [
+                    "Zosia ma 9 lat.",
+                    "imie ma wiek lat.",
+                    "Zosia ma lat 9."
+                ],
+                correct: 0,
+                explanation: "Używamy kilku zmiennych w jednym print(). Python wstawia ich zawartość w odpowiednie miejsca."
+            },
+            noteContent: "Możemy użyć wielu zmiennych w jednym print().\nPrzecinek w print() dodaje automatycznie spację między elementami."
+        },
+        {
+            step: 6,
+            instruction: "Spróbujmy teraz połączyć tekst używając znaku +. Wpisz:\nimie = \"Kuba\"\npowitanie = \"Witaj, \" + imie + \"!\"\nprint(powitanie)",
+            verification: {
+                options: [
+                    "Witaj, Kuba!",
+                    "Witaj, + imie + !",
+                    "Witaj,Kuba!"
+                ],
+                correct: 0,
+                explanation: "Znak + łączy teksty (to nazywa się konkatenacja). Zauważ, że w przeciwieństwie do przecinka, + nie dodaje spacji - musimy je dodać sami w tekstach."
+            },
+            noteContent: "Znak + łączy teksty bez dodawania spacji.\nJeśli chcemy spacje, musimy je dodać w tekstach: \"Witaj, \" + imie"
+        },
+        {
+            step: 7,
+            instruction: "Teraz spróbujmy czegoś zabawnego - powtarzanie tekstu. Wpisz:\nprint(\"ha\" * 5)",
+            verification: {
+                options: [
+                    "hahahahaha",
+                    "ha * 5",
+                    "ha ha ha ha ha"
+                ],
+                correct: 0,
+                explanation: "Znak * powtarza tekst określoną liczbę razy. To świetny sposób na tworzenie wzorów lub efektów dźwiękowych w tekstach!"
+            },
+            noteContent: "Tekst * liczba powtarza tekst określoną liczbę razy.\nPrzykład: \"ba\" * 3 da \"bababa\""
+        },
+        {
+            step: 8,
+            type: "MILESTONE",
+            instruction: "PIERWSZY MILESTONE! 🎉\n\nStwórz program, który:\n1. Przechowa twoje imię w zmiennej\n2. Przechowa twoje hobby w zmiennej\n3. Wyświetli zabawne ogłoszenie używając tych zmiennych\n4. Użyje powtarzanego tekstu do stworzenia dekoracyjnej ramki\n\nNa przykład:\n*****************************\nUWAGA! UWAGA!\nAsia uwielbia rysowanie!\nSzukamy innych artystów!\n*****************************\n\nGdy skończysz, pokaż swój kod nauczycielowi!",
+            teacherCheck: true,
+            teacherInstructions: {
+                checkpoints: [
+                    "Czy uczeń utworzył zmienne dla imienia i hobby?",
+                    "Czy program wyświetla ogłoszenie używając tych zmiennych?",
+                    "Czy użyto powtarzającego się tekstu (operator *) do stworzenia ramki?",
+                    "Czy uczeń rozumie jak działa każda linijka kodu?"
+                ],
+                exampleSolution: `imie = "Asia"
+hobby = "rysowanie"
+ramka = "*" * 29
+print(ramka)
+print("UWAGA! UWAGA!")
+print(imie, "uwielbia", hobby + "!")
+print("Szukamy innych artystów!")
+print(ramka)`
+            }
+        },
+        
+        // ETAP 2: LICZBY I MATEMATYKA
+        {
+            step: 9,
+            instruction: "Teraz przejdźmy do liczb. W Pythonie możemy używać liczb bez cudzysłowów. Wpisz:\nwiek = 10\nprint(\"Mam\", wiek, \"lat.\")",
+            verification: {
+                options: [
+                    "Mam 10 lat.",
+                    "Mam wiek lat.",
+                    "Mam \"10\" lat."
+                ],
+                correct: 0,
+                explanation: "Liczby w Pythonie piszemy bez cudzysłowów. Dzięki temu Python traktuje je jako liczby, a nie jako tekst, co pozwala nam wykonywać na nich działania matematyczne."
+            },
+            noteContent: "Liczby piszemy bez cudzysłowów: wiek = 10\nMożemy łączyć liczby i tekst w print() za pomocą przecinków."
+        },
+        {
+            step: 10,
+            instruction: "Spróbujmy prostych działań matematycznych. Wpisz:\nprint(5 + 3)\nprint(10 - 7)\nprint(4 * 2)\nprint(10 / 2)",
+            verification: {
+                options: [
+                    "8\n3\n8\n5.0",
+                    "5 + 3 = 8\n10 - 7 = 3\n4 * 2 = 8\n10 / 2 = 5",
+                    "5+3\n10-7\n4*2\n10/2"
+                ],
+                correct: 0,
+                explanation: "Python świetnie radzi sobie z matematyką! +, -, * i / to podstawowe operatory matematyczne. Zauważ, że wynik dzielenia zawsze ma kropkę dziesiętną, nawet jeśli to liczba całkowita."
+            },
+            noteContent: "Operatory matematyczne:\n+ dodawanie\n- odejmowanie\n* mnożenie\n/ dzielenie (zawsze daje wynik z kropką dziesiętną)"
+        },
+        {
+            step: 11,
+            instruction: "Zobaczmy bardziej zaawansowane działania. Wpisz:\nprint(10 % 3)  # reszta z dzielenia\nprint(3 ** 2)  # potęgowanie\nprint(7 // 2)  # dzielenie całkowitoliczbowe",
+            verification: {
+                options: [
+                    "1\n9\n3",
+                    "10%3\n3^2\n7÷2",
+                    "Pojawił się błąd"
+                ],
+                correct: 0,
+                explanation: "% to reszta z dzielenia (10 podzielone przez 3 daje 3 reszty 1)\n** to potęgowanie (3 do potęgi 2 to 9)\n// to dzielenie całkowitoliczbowe (7 podzielone przez 2 daje 3 całe i resztę odrzucamy)"
+            },
+            noteContent: "Zaawansowane operatory:\n% (modulo) - reszta z dzielenia\n** - potęgowanie\n// - dzielenie całkowitoliczbowe (bez części dziesiętnej)"
+        },
+        {
+            step: 12,
+            instruction: "Możemy też używać zmiennych w działaniach. Wpisz:\npierwsza = 7\ndruga = 4\nsuma = pierwsza + druga\nprint(\"Suma:\", suma)\nprint(\"Różnica:\", pierwsza - druga)\nprint(\"Iloczyn:\", pierwsza * druga)",
+            verification: {
+                options: [
+                    "Suma: 11\nRóżnica: 3\nIloczyn: 28",
+                    "Suma: pierwsza + druga\nRóżnica: pierwsza - druga\nIloczyn: pierwsza * druga",
+                    "Pojawił się błąd"
+                ],
+                correct: 0,
+                explanation: "Możemy przechowywać liczby w zmiennych, a następnie używać tych zmiennych w działaniach matematycznych, dokładnie tak jak używamy samych liczb."
+            },
+            noteContent: "Zmienne mogą przechowywać liczby i możemy używać ich w działaniach matematycznych.\nMożemy też zapisywać wyniki działań w nowych zmiennych."
+        },
+        {
+            step: 13,
+            instruction: "Poznajmy teraz funkcję input(), która pozwala pytać użytkownika o dane. Wpisz:\nimie = input(\"Jak masz na imię? \")\nprint(\"Cześć,\", imie, \"! Miło cię poznać!\")",
+            verification: {
+                options: [
+                    "Program zapyta o imię, a potem użyje go w powitaniu",
+                    "Program wyświetli: Cześć, imie! Miło cię poznać!",
+                    "Pojawi się błąd"
+                ],
+                correct: 0,
+                explanation: "Funkcja input() wyświetla pytanie i czeka aż użytkownik wpisze odpowiedź. Ta odpowiedź jest zapisywana w zmiennej (tutaj: imie)."
+            },
+            noteContent: "input(\"pytanie\") - pokazuje pytanie i czeka na odpowiedź użytkownika.\nOdpowiedź jest zapisywana jako tekst w zmiennej."
+        },
+        {
+            step: 14,
+            instruction: "Spróbujmy połączyć input() z liczbami. Wpisz:\nliczba = input(\"Podaj liczbę: \")\nwynik = int(liczba) * 2\nprint(\"Podwojona liczba to:\", wynik)",
+            verification: {
+                options: [
+                    "Program podwoi wpisaną liczbę",
+                    "Pojawi się błąd",
+                    "Program wyświetli liczbę dwa razy"
+                ],
+                correct: 0,
+                explanation: "input() zawsze daje nam tekst, nawet jeśli wpiszemy liczbę. Funkcja int() zamienia tekst na liczbę całkowitą, dzięki czemu możemy wykonywać działania matematyczne."
+            },
+            noteContent: "input() zawsze daje tekst.\nint() zamienia tekst na liczbę całkowitą.\nPotrzebujemy int() aby wykonywać działania matematyczne na liczbach z input()."
+        },
+        {
+            step: 15,
+            instruction: "Teraz spróbujmy obliczyć wiek w psich latach! Wpisz:\nwiek = input(\"Ile masz lat? \")\npsie_lata = int(wiek) * 7\nprint(\"W psich latach masz\", psie_lata, \"lat!\")",
+            verification: {
+                options: [
+                    "Program obliczy i wyświetli wiek w psich latach",
+                    "Program wyświetli wiek pomnożony przez 7 znaków zapytania",
+                    "Program poprosi o podanie wieku psa"
+                ],
+                correct: 0,
+                explanation: "Obliczanie wieku w psich latach to zabawny sposób zastosowania matematyki. Tradycyjnie uznaje się, że 1 ludzki rok to około 7 psich lat."
+            },
+            noteContent: "int(input()) pozwala od razu zamienić wprowadzony tekst na liczbę.\nMożemy tworzyć zabawne przeliczniki i kalkulatory."
+        },
+        {
+            step: 16,
+            type: "MILESTONE",
+            instruction: "DRUGI MILESTONE! 🎉\n\nStwórz kalkulator kieszonkowego! Program ma:\n1. Zapytać o kwotę tygodniowego kieszonkowego\n2. Obliczyć ile to będzie miesięcznie (pomnóż przez 4)\n3. Obliczyć ile to będzie rocznie (pomnóż miesięczną kwotę przez 12)\n4. Obliczyć ile można by za to kupić gier po 150 zł rocznie (podziel kwotę roczną przez 150)\n5. Wyświetlić wszystkie wyniki w ładny, czytelny sposób\n\nPodpowiedź: pamiętaj o konwersji input() na int()\n\nGdy skończysz, pokaż swój kod nauczycielowi!",
+            teacherCheck: true,
+            teacherInstructions: {
+                checkpoints: [
+                    "Czy program pobiera kwotę kieszonkowego przy pomocy input()?",
+                    "Czy prawidłowo konwertuje wprowadzoną wartość na liczbę?",
+                    "Czy poprawnie oblicza kwotę miesięczną i roczną?",
+                    "Czy oblicza liczbę gier za pomocą dzielenia?",
+                    "Czy wyniki są przedstawione w czytelny sposób?"
+                ],
+                exampleSolution: `kieszonkowe = input("Ile dostajesz kieszonkowego tygodniowo? ")
+tygodniowo = int(kieszonkowe)
+miesiecznie = tygodniowo * 4
+rocznie = miesiecznie * 12
+liczba_gier = rocznie // 150
+
+print("=" * 30)
+print("KALKULATOR KIESZONKOWEGO")
+print("=" * 30)
+print("Tygodniowo:", tygodniowo, "zł")
+print("Miesięcznie:", miesiecznie, "zł")
+print("Rocznie:", rocznie, "zł")
+print("Możesz kupić około", liczba_gier, "gier po 150 zł rocznie!")
+print("=" * 30)`
+            }
+        },
+        
+        // ETAP 3: DECYZJE I WARUNKI
+        {
+            step: 17,
+            instruction: "Teraz poznamy instrukcje warunkowe - if. Pozwalają one programowi podejmować decyzje. Wpisz:\npogoda = \"słoneczna\"\nif pogoda == \"słoneczna\":\n    print(\"Weź okulary przeciwsłoneczne!\")\nprint(\"Miłego dnia!\")",
+            verification: {
+                options: [
+                    "Wyświetli się: Weź okulary przeciwsłoneczne! Miłego dnia!",
+                    "Wyświetli się tylko: Miłego dnia!",
+                    "Pojawi się błąd"
+                ],
+                correct: 0,
+                explanation: "Instrukcja if sprawdza warunek. Jeśli warunek jest prawdziwy (pogoda rzeczywiście jest słoneczna), wykonuje się kod pod if z wcięciem. Ostatnia linia bez wcięcia zawsze się wykona, niezależnie od warunku."
+            },
+            noteContent: "if warunek:\n    kod do wykonania\n\nInstrukcja if wykonuje kod tylko gdy warunek jest prawdziwy.\nWcięcia (4 spacje) są ważne w Pythonie - oznaczają blok kodu."
+        },
+        {
+            step: 18,
+            instruction: "Dodajmy teraz alternatywę z else. Wpisz:\npogoda = \"deszczowa\"\nif pogoda == \"słoneczna\":\n    print(\"Weź okulary przeciwsłoneczne!\")\nelse:\n    print(\"Weź parasol!\")\nprint(\"Miłego dnia!\")",
+            verification: {
+                options: [
+                    "Weź parasol!\nMiłego dnia!",
+                    "Weź okulary przeciwsłoneczne!\nMiłego dnia!",
+                    "Miłego dnia!"
+                ],
+                correct: 0,
+                explanation: "Teraz dodaliśmy else, który wykonuje się gdy warunek w if jest nieprawdziwy. Pogoda jest 'deszczowa', więc warunek (pogoda == 'słoneczna') jest nieprawdziwy, więc wykonuje się blok po else."
+            },
+            noteContent: "if warunek:\n    kod jeśli prawda\nelse:\n    kod jeśli fałsz\n\nelse wykonuje się tylko gdy warunek w if jest nieprawdziwy."
+        },
+        {
+            step: 19,
+            instruction: "Teraz użyjmy elif do sprawdzenia wielu warunków. Wpisz:\npogoda = \"pochmurna\"\nif pogoda == \"słoneczna\":\n    print(\"Weź okulary przeciwsłoneczne!\")\nelif pogoda == \"deszczowa\":\n    print(\"Weź parasol!\")\nelif pogoda == \"pochmurna\":\n    print(\"Weź bluzę!\")\nelse:\n    print(\"Sprawdź prognozę pogody!\")",
+            verification: {
+                options: [
+                    "Weź bluzę!",
+                    "Weź parasol!",
+                    "Sprawdź prognozę pogody!"
+                ],
+                correct: 0,
+                explanation: "elif pozwala sprawdzić wiele warunków po kolei. Python sprawdza każdy warunek i wykonuje kod przy pierwszym prawdziwym warunku. Potem pomija resztę warunków."
+            },
+            noteContent: "if warunek1:\n    kod1\nelif warunek2:\n    kod2\nelif warunek3:\n    kod3\nelse:\n    kod4\n\nelif to skrót od 'else if' - pozwala sprawdzić wiele warunków."
+        },
+        {
+            step: 20,
+            instruction: "Spróbujmy teraz stworzyć prosty quiz. Wpisz:\nodpowiedz = input(\"Jaka jest stolica Polski? \")\nif odpowiedz == \"Warszawa\":\n    print(\"Brawo! Poprawna odpowiedź!\")\nelse:\n    print(\"Niestety, to nie jest prawidłowa odpowiedź.\")",
+            verification: {
+                options: [
+                    "Program wyświetli 'Brawo!' tylko jeśli odpowiem 'Warszawa'",
+                    "Program zawsze wyświetli 'Brawo!'",
+                    "Program zawsze wyświetli 'Niestety...'"
+                ],
+                correct: 0,
+                explanation: "Program porównuje dokładnie to, co wpisał użytkownik, z tekstem 'Warszawa'. Musi być dokładnie tak samo, z dużej litery!"
+            },
+            noteContent: "Możemy używać input() z if do tworzenia interaktywnych programów.\nPorównanie == jest dokładne - ważne są wielkie/małe litery."
+        },
+        {
+            step: 21,
+            instruction: "Spróbujmy ulepszyć nasz quiz, aby akceptował różne wersje odpowiedzi. Wpisz:\nodpowiedz = input(\"Jaka jest stolica Polski? \")\nif odpowiedz.lower() == \"warszawa\":\n    print(\"Brawo! Poprawna odpowiedź!\")\nelse:\n    print(\"Niestety, to nie jest prawidłowa odpowiedź.\")",
+            verification: {
+                options: [
+                    "Program akceptuje 'Warszawa', 'warszawa', 'WARSZAWA' itp.",
+                    "Program akceptuje tylko 'Warszawa'",
+                    "Program akceptuje dowolną odpowiedź"
+                ],
+                correct: 0,
+                explanation: "Metoda .lower() zamienia wszystkie litery na małe. Dzięki temu program akceptuje odpowiedź niezależnie od wielkości liter."
+            },
+            noteContent: "tekst.lower() - zamienia wszystkie litery na małe\ntekst.upper() - zamienia wszystkie litery na WIELKIE\nPrzydatne do porównań niezależnych od wielkości liter."
+        },
+        {
+            step: 22,
+            instruction: "Spróbujmy teraz porównać liczby. Wpisz:\nwiek = int(input(\"Ile masz lat? \"))\nif wiek < 10:\n    print(\"Jesteś jeszcze dzieckiem!\")\nelif wiek < 18:\n    print(\"Jesteś nastolatkiem!\")\nelse:\n    print(\"Jesteś dorosły!\")",
+            verification: {
+                options: [
+                    "Program pokazuje różne komunikaty zależnie od wieku",
+                    "Program pokazuje wszystkie trzy komunikaty",
+                    "Program pyta o wiek, ale nic nie wyświetla"
+                ],
+                correct: 0,
+                explanation: "Program używa operatorów porównania (<) aby sprawdzić przedziały wiekowe. Warunki są sprawdzane po kolei. Gdy wiek < 10, pierwsza wiadomość jest wyświetlana. Gdy 10 <= wiek < 18, druga wiadomość. Dla wieku >= 18, trzecia wiadomość."
+            },
+            noteContent: "Operatory porównania dla liczb:\n< mniejszy niż\n> większy niż\n<= mniejszy lub równy\n>= większy lub równy\n== równy\n!= różny od"
+        },
+        {
+            step: 23,
+            instruction: "Poznajmy operatory logiczne and oraz or. Wpisz:\nwiek = int(input(\"Ile masz lat? \"))\nwzrost = int(input(\"Jaki masz wzrost w cm? \"))\nif wiek >= 10 and wzrost >= 140:\n    print(\"Możesz jechać kolejką górską!\")\nelse:\n    print(\"Niestety, nie możesz jechać kolejką.\")",
+            verification: {
+                options: [
+                    "Program wymaga spełnienia obu warunków (wiek i wzrost)",
+                    "Program wymaga spełnienia tylko jednego warunku",
+                    "Program zawsze pozwala jechać kolejką"
+                ],
+                correct: 0,
+                explanation: "Operator and wymaga, aby oba warunki były prawdziwe. Jeśli choć jeden warunek jest nieprawdziwy, cały warunek jest nieprawdziwy."
+            },
+            noteContent: "and - oba warunki muszą być prawdziwe\nor - przynajmniej jeden warunek musi być prawdziwy\nnot - odwraca wartość logiczną (prawda staje się fałszem, fałsz staje się prawdą)"
+        },
+        {
+            step: 24,
+            type: "MILESTONE",
+            instruction: "TRZECI MILESTONE! 🎉\n\nStwórz program \"Magiczna Kula 8\", który:\n1. Przywita użytkownika i wyjaśni, że może zadać pytanie magicznej kuli\n2. Poprosi o wpisanie pytania (tak/nie)\n3. Użyje instrukcji if/elif/else do losowego wyboru odpowiedzi\n4. Możliwe odpowiedzi: \"Tak!\", \"Nie!\", \"Może...\", \"To skomplikowane\", \"Spytaj później\"\n5. Wyświetli odpowiedź w ciekawy sposób\n\nPodpowiedź: Możesz użyć liczby (np. od 1 do 5) do wyboru odpowiedzi\n\nGdy skończysz, pokaż swój kod nauczycielowi!",
+            teacherCheck: true,
+            teacherInstructions: {
+                checkpoints: [
+                    "Czy program wita użytkownika i wyjaśnia zasady?",
+                    "Czy program prosi o wpisanie pytania?",
+                    "Czy program używa instrukcji if/elif/else do wyboru odpowiedzi?",
+                    "Czy odpowiedzi są różnorodne i interesujące?",
+                    "Czy program jest przyjazny dla użytkownika?"
+                ],
+                exampleSolution: `import random
+
+print("=" * 30)
+print("MAGICZNA KULA 8")
+print("=" * 30)
+print("Zadaj pytanie, a magiczna kula odpowie!")
+pytanie = input("Twoje pytanie (tak/nie): ")
+
+# Losujemy liczbę od 1 do 5
+liczba = random.randint(1, 5)
+
+print("\\nMagiczna kula myśli", end="")
+for i in range(3):
+    print(".", end="", flush=True)
+    import time
+    time.sleep(0.5)
+print("\\n")
+
+if liczba == 1:
+    print("✨ Tak! ✨")
+elif liczba == 2:
+    print("❌ Nie! ❌")
+elif liczba == 3:
+    print("🤔 Może... 🤔")
+elif liczba == 4:
+    print("🌀 To skomplikowane 🌀")
+else:
+    print("⏰ Spytaj później ⏰")
+
+print("\\n" + "=" * 30)`
+            }
+        },
+        
+        // ETAP 4: KOLEKCJE i BIBLIOTEKA RANDOM
+        {
+            step: 25,
+            instruction: "Teraz poznamy listy - sposób na przechowywanie wielu wartości w jednej zmiennej. Wpisz:\nowoce = [\"jabłko\", \"banan\", \"gruszka\", \"truskawka\"]\nprint(owoce)\nprint(\"Mój ulubiony owoc to\", owoce[0])",
+            verification: {
+                options: [
+                    "Program wyświetli listę wszystkich owoców, a potem 'Mój ulubiony owoc to jabłko'",
+                    "Program wyświetli tylko 'jabłko'",
+                    "Program wyświetli błąd"
+                ],
+                correct: 0,
+                explanation: "Lista to kolekcja elementów w nawiasach kwadratowych []. Możemy odwoływać się do pojedynczych elementów przez ich indeks, zaczynając od 0. Więc owoce[0] to pierwszy element (jabłko)."
+            },
+            noteContent: "Lista - kolekcja elementów w nawiasach []\nIndeksy zaczynają się od 0\nPrzykład: lista[0] - pierwszy element, lista[1] - drugi element"
+        },
+        {
+            step: 26,
+            instruction: "Spróbujmy zobaczyć inne elementy listy. Wpisz:\nowoce = [\"jabłko\", \"banan\", \"gruszka\", \"truskawka\"]\nprint(\"Drugi owoc:\", owoce[1])\nprint(\"Ostatni owoc:\", owoce[3])\nprint(\"Liczba owoców:\", len(owoce))",
+            verification: {
+                options: [
+                    "Drugi owoc: banan\nOstatni owoc: truskawka\nLiczba owoców: 4",
+                    "Drugi owoc: gruszka\nOstatni owoc: jabłko\nLiczba owoców: 4",
+                    "Pojawi się błąd"
+                ],
+                correct: 0,
+                explanation: "Indeksy listy to pozycje elementów, zaczynając od 0. Więc owoce[1] to drugi element. Funkcja len() zwraca liczbę elementów na liście."
+            },
+            noteContent: "Indeks 0 = pierwszy element\nIndeks 1 = drugi element\nIndeks 2 = trzeci element\nlen(lista) - zwraca liczbę elementów na liście"
+        },
+        {
+            step: 27,
+            instruction: "Możemy też modyfikować listy. Wpisz:\nowoce = [\"jabłko\", \"banan\", \"gruszka\"]\nprint(\"Przed:\", owoce)\nowoce.append(\"ananas\")\nprint(\"Po append:\", owoce)\nowoce[1] = \"kiwi\"\nprint(\"Po zmianie drugiego elementu:\", owoce)",
+            verification: {
+                options: [
+                    "Program pokaże jak lista się zmienia po każdej operacji",
+                    "Program pokaże tylko końcową listę",
+                    "Pojawi się błąd"
+                ],
+                correct: 0,
+                explanation: "Listy w Pythonie są modyfikowalne. append() dodaje nowy element na koniec listy. Możemy też przypisać nową wartość do konkretnego elementu za pomocą indeksu."
+            },
+            noteContent: "lista.append(element) - dodaje element na koniec listy\nlista[indeks] = wartość - zmienia element na danej pozycji\nListy w Pythonie można modyfikować po ich utworzeniu"
+        },
+        {
+            step: 28,
+            instruction: "Teraz użyjmy biblioteki random do losowania. Najpierw musimy ją zaimportować. Wpisz:\nimport random\n\nliczba = random.randint(1, 10)\nprint(\"Wylosowana liczba:\", liczba)\n\nponownie = random.randint(1, 10)\nprint(\"Druga losowa liczba:\", ponownie)",
+            verification: {
+                options: [
+                    "Program wyświetli dwie losowe liczby z zakresu 1-10",
+                    "Program wyświetli dwa razy tę samą liczbę",
+                    "Program wyświetli błąd"
+                ],
+                correct: 0,
+                explanation: "Biblioteka random pozwala na generowanie losowych wartości. Funkcja randint(a, b) daje losową liczbę całkowitą z zakresu od a do b (włącznie)."
+            },
+            noteContent: "import random - importuje bibliotekę do losowania\nrandom.randint(a, b) - losuje liczbę całkowitą od a do b (włącznie)"
+        },
+        {
+            step: 29,
+            instruction: "Spróbujmy połączyć listy z losowaniem. Wpisz:\nimport random\n\nkolory = [\"czerwony\", \"niebieski\", \"zielony\", \"żółty\", \"fioletowy\"]\nlosowy_kolor = random.choice(kolory)\nprint(\"Wylosowany kolor:\", losowy_kolor)",
+            verification: {
+                options: [
+                    "Program wylosuje i wyświetli jeden z kolorów z listy",
+                    "Program wyświetli wszystkie kolory",
+                    "Program wyświetli losową liczbę z zakresu 0-4"
+                ],
+                correct: 0,
+                explanation: "Funkcja random.choice() losuje jeden element z listy. To bardzo przydatne gdy chcemy wybrać coś losowo z gotowej kolekcji."
+            },
+            noteContent: "random.choice(lista) - losuje jeden element z listy\nPrzydatne do gier, quizów i innych programów z elementem losowości"
+        },
+        {
+            step: 30,
+            instruction: "Stwórzmy prostą grę zgadywania liczby. Wpisz:\nimport random\n\ntajna_liczba = random.randint(1, 10)\nprint(\"Zgadnij liczbę od 1 do 10!\")\n\npropozycja = int(input(\"Twoja propozycja: \"))\n\nif propozycja == tajna_liczba:\n    print(\"Brawo! Zgadłeś!\")\nelif propozycja < tajna_liczba:\n    print(\"Za mało! Tajemnicza liczba to:\", tajna_liczba)\nelse:\n    print(\"Za dużo! Tajemnicza liczba to:\", tajna_liczba)",
+            verification: {
+                options: [
+                    "Program generuje liczbę, prosi o zgadywanie i informuje o wyniku",
+                    "Program zawsze informuje, że zgadliśmy",
+                    "Program wyświetla błąd"
+                ],
+                correct: 0,
+                explanation: "Ta prosta gra łączy losowanie liczby, pobieranie danych od użytkownika i instrukcje warunkowe. To podstawy większości gier komputerowych!"
+            },
+            noteContent: "Możemy łączyć random, input() i if do tworzenia prostych gier\nTaka gra to przykład jak proste elementy składają się na interaktywny program"
+        },
+        {
+            step: 31,
+            instruction: "Teraz stwórzmy zabawny generator losowych zdań. Wpisz:\nimport random\n\npodmioty = [\"Kot\", \"Pies\", \"Nauczyciel\", \"Uczeń\", \"Robot\"]\nczasowniki = [\"biegnie\", \"skacze\", \"śpi\", \"je\", \"programuje\"]\nmiejsca = [\"w parku\", \"w szkole\", \"na plaży\", \"na Marsie\", \"pod łóżkiem\"]\n\npodmiot = random.choice(podmioty)\nczasownik = random.choice(czasowniki)\nmiejsce = random.choice(miejsca)\n\nprint(podmiot, czasownik, miejsce + \".\")",
+            verification: {
+                options: [
+                    "Program generuje losowe zdanie łącząc słowa z trzech list",
+                    "Program wyświetla wszystkie możliwe kombinacje zdań",
+                    "Program wyświetla tylko losowe słowa bez łączenia ich w zdanie"
+                ],
+                correct: 0,
+                explanation: "Ten program tworzy zabawne losowe zdania wybierając po jednym słowie z każdej kategorii. Jest 5×5×5=125 możliwych różnych zdań!"
+            },
+            noteContent: "Możemy używać list i random.choice() do tworzenia losowych kombinacji\nTo świetny sposób na tworzenie generatorów losowych zdań, historii, postaci itp."
+        },
+        {
+            step: 32,
+            type: "MILESTONE",
+            instruction: "CZWARTY MILESTONE! 🎉\n\nStwórz grę \"Papier, Kamień, Nożyce\" która:\n1. Wita gracza i wyjaśnia zasady\n2. Prosi o wybór (papier, kamień lub nożyce)\n3. Losuje wybór komputera\n4. Określa zwycięzcę według zasad gry:\n   - Papier owija kamień (papier wygrywa)\n   - Kamień tępi nożyce (kamień wygrywa)\n   - Nożyce tną papier (nożyce wygrywają)\n5. Wyświetla wybór komputera i ogłasza wynik (wygrana/przegrana/remis)\n\nGdy skończysz, pokaż swój kod nauczycielowi!",
+            teacherCheck: true,
+            teacherInstructions: {
+                checkpoints: [
+                    "Czy program poprawnie wita gracza i wyjaśnia zasady?",
+                    "Czy program pobiera wybór użytkownika i sprawdza jego poprawność?",
+                    "Czy program poprawnie losuje wybór komputera?",
+                    "Czy program poprawnie określa zwycięzcę według standardowych zasad gry?",
+                    "Czy program wyświetla wybory obu stron i ogłasza wynik w jasny sposób?"
+                ],
+                exampleSolution: `import random
+
+print("=" * 40)
+print("GRA: PAPIER, KAMIEŃ, NOŻYCE")
+print("=" * 40)
+print("Zasady:")
+print("- Papier owija kamień (papier wygrywa)")
+print("- Kamień tępi nożyce (kamień wygrywa)")
+print("- Nożyce tną papier (nożyce wygrywają)")
+print("=" * 40)
+
+wybor_gracza = input("Twój wybór (papier, kamień, nożyce): ").lower()
+
+# Sprawdzanie poprawności wyboru
+if wybor_gracza not in ["papier", "kamień", "nożyce"]:
+    print("Nieprawidłowy wybór! Wybierz: papier, kamień lub nożyce.")
+else:
+    # Losowanie wyboru komputera
+    mozliwosci = ["papier", "kamień", "nożyce"]
+    wybor_komputera = random.choice(mozliwosci)
+    
+    print("\\nTwój wybór:", wybor_gracza)
+    print("Wybór komputera:", wybor_komputera)
+    print("-" * 40)
+    
+    # Określanie zwycięzcy
+    if wybor_gracza == wybor_komputera:
+        print("REMIS! Oboje wybraliście", wybor_gracza)
+    elif (wybor_gracza == "papier" and wybor_komputera == "kamień") or \
+         (wybor_gracza == "kamień" and wybor_komputera == "nożyce") or \
+         (wybor_gracza == "nożyce" and wybor_komputera == "papier"):
+        print("WYGRAŁEŚ! 🎉", wybor_gracza, "pokonuje", wybor_komputera)
+    else:
+        print("PRZEGRAŁEŚ! 😢", wybor_komputera, "pokonuje", wybor_gracza)
+
+print("=" * 40)`
+            }
+        },
+        
+        // ETAP 5: BIBLIOTEKA FAKER I SŁOWNIKI
+        {
+            step: 33,
+            instruction: "Teraz poznamy słowniki - struktury danych przechowujące pary klucz:wartość. Wpisz:\nuczniowie = {\n    \"Ania\": 12,\n    \"Bartek\": 11,\n    \"Celina\": 13\n}\nprint(uczniowie)\nprint(\"Wiek Bartka:\", uczniowie[\"Bartek\"])",
+            verification: {
+                options: [
+                    "Program wyświetli słownik, a potem wiek Bartka (11)",
+                    "Program wyświetli tylko wiek Bartka",
+                    "Program wyświetli listę uczniów bez ich wieku"
+                ],
+                correct: 0,
+                explanation: "Słownik to zbiór par klucz:wartość. Klucze są unikalne i służą do dostępu do wartości, tak jak indeksy w listach. Ale w słowniku kluczem może być tekst, a nie tylko liczba."
+            },
+            noteContent: "Słownik - struktura {klucz1: wartość1, klucz2: wartość2}\nDostęp do wartości przez klucz: slownik[klucz]\nKlucze są unikalne i mogą być tekstami"
+        },
+        {
+            step: 34,
+            instruction: "Możemy też dodawać i modyfikować dane w słowniku. Wpisz:\nuczniowie = {\n    \"Ania\": 12,\n    \"Bartek\": 11\n}\nprint(\"Przed:\", uczniowie)\n\n# Dodajemy nowego ucznia\nuczniowie[\"Daniel\"] = 10\nprint(\"Po dodaniu:\", uczniowie)\n\n# Zmieniamy wiek Ani\nuczniowie[\"Ania\"] = 13\nprint(\"Po zmianie:\", uczniowie)",
+            verification: {
+                options: [
+                    "Program pokazuje słownik po każdej operacji z dodanym Danielem i zmienionym wiekiem Ani",
+                    "Program wyświetla tylko początkowy słownik",
+                    "Program wyświetla błąd"
+                ],
+                correct: 0,
+                explanation: "Słowniki, podobnie jak listy, są modyfikowalne. Możemy dodawać nowe pary klucz:wartość lub zmieniać istniejące wartości przypisując je do klucza."
+            },
+            noteContent: "Dodawanie do słownika: slownik[nowy_klucz] = wartość\nModyfikacja: slownik[istniejący_klucz] = nowa_wartość\nSłowniki są przydatne do przechowywania powiązanych informacji"
+        },
+        {
+            step: 35,
+            instruction: "Teraz poznamy bibliotekę faker, która generuje realistyczne, ale fałszywe dane. Wpisz:\nfrom faker import Faker\n\nfake = Faker('pl_PL')  # ustawienie na język polski\n\nprint(\"Wygenerowane imię:\", fake.first_name())\nprint(\"Wygenerowane nazwisko:\", fake.last_name())\nprint(\"Wygenerowany adres email:\", fake.email())",
+            verification: {
+                options: [
+                    "Program generuje różne realistyczne dane osobowe w języku polskim",
+                    "Program generuje dane tylko w języku angielskim",
+                    "Program wyświetla błąd importu"
+                ],
+                correct: 0,
+                explanation: "Biblioteka faker służy do generowania realistycznych, ale fikcyjnych danych osobowych, adresów, numerów telefonów itp. Jest przydatna przy tworzeniu przykładowych baz danych, prototypów aplikacji lub gdy potrzebujemy danych testowych."
+            },
+            noteContent: "from faker import Faker - importuje bibliotekę do generowania fałszywych danych\nFaker('pl_PL') - ustawienie na język polski\nfake.first_name(), fake.last_name(), fake.email() - generowanie danych"
+        },
+        {
+            step: 36,
+            instruction: "Wygenerujmy więcej różnych danych. Wpisz:\nfrom faker import Faker\n\nfake = Faker('pl_PL')\n\nprint(\"Imię i nazwisko:\", fake.name())\nprint(\"Adres:\", fake.address())\nprint(\"Zawód:\", fake.job())\nprint(\"Telefon:\", fake.phone_number())\nprint(\"Data urodzenia:\", fake.date_of_birth(minimum_age=10, maximum_age=80).strftime('%d-%m-%Y'))",
+            verification: {
+                options: [
+                    "Program generuje różne typy danych: imiona, adresy, zawody, telefony i daty",
+                    "Program generuje tylko imiona",
+                    "Program wyświetla błąd"
+                ],
+                correct: 0,
+                explanation: "Faker oferuje wiele różnych metod do generowania danych. Możemy generować pełne imiona, adresy, zawody, numery telefonów, daty urodzenia i wiele innych typów danych."
+            },
+            noteContent: "fake.name() - pełne imię i nazwisko\nfake.address() - adres\nfake.job() - zawód\nfake.phone_number() - numer telefonu\nfake.date_of_birth() - data urodzenia"
+        },
+        {
+            step: 37,
+            instruction: "Połączmy faker ze słownikiem, aby utworzyć bazę fikcyjnych uczniów. Wpisz:\nfrom faker import Faker\n\nfake = Faker('pl_PL')\n\n# Tworzymy słownik z danymi ucznia\nuczen = {\n    \"imie\": fake.first_name(),\n    \"nazwisko\": fake.last_name(),\n    \"wiek\": fake.random_int(min=10, max=15),\n    \"klasa\": str(fake.random_int(min=4, max=8)) + fake.random_element(['a', 'b', 'c'])\n}\n\nprint(\"Dane ucznia:\")\nfor klucz, wartosc in uczen.items():\n    print(klucz + \":\", wartosc)",
+            verification: {
+                options: [
+                    "Program generuje i wyświetla słownik z danymi fikcyjnego ucznia",
+                    "Program wyświetla dane prawdziwego ucznia",
+                    "Program wyświetla błąd"
+                ],
+                correct: 0,
+                explanation: "Ten kod tworzy słownik z fikcyjnymi danymi ucznia, a następnie wyświetla go używając pętli for dla każdej pary klucz-wartość. Metoda .items() zwraca wszystkie pary klucz-wartość ze słownika."
+            },
+            noteContent: "fake.random_int(min, max) - losowa liczba z zakresu\nfake.random_element(lista) - losowy element z listy\nfor klucz, wartosc in slownik.items(): - iteracja po słowniku"
+        },
+        {
+            step: 38,
+            instruction: "Zapiszmy teraz dane wygenerowane przez faker do pliku. Wpisz:\nfrom faker import Faker\n\nfake = Faker('pl_PL')\n\n# Generujemy dane 3 uczniów\nwith open('uczniowie.txt', 'w', encoding='utf-8') as plik:\n    for i in range(3):\n        imie = fake.first_name()\n        nazwisko = fake.last_name()\n        wiek = fake.random_int(min=10, max=15)\n        klasa = str(fake.random_int(min=4, max=8)) + fake.random_element(['a', 'b', 'c'])\n        \n        # Zapisujemy dane do pliku\n        linia = f\"{imie} {nazwisko}, wiek: {wiek}, klasa: {klasa}\\n\"\n        plik.write(linia)\n        \n        # Wyświetlamy też na ekranie\n        print(linia, end='')\n\nprint(\"\\nDane zostały zapisane do pliku uczniowie.txt\")",
+            verification: {
+                options: [
+                    "Program generuje dane 3 uczniów, wyświetla je i zapisuje do pliku",
+                    "Program tylko wyświetla dane, ale nie zapisuje do pliku",
+                    "Program wyświetla błąd"
+                ],
+                correct: 0,
+                explanation: "Ten kod generuje dane trzech fikcyjnych uczniów, zapisuje je do pliku 'uczniowie.txt' i wyświetla je na ekranie. Używamy konstrukcji 'with open() as' która automatycznie zamyka plik po zakończeniu bloku kodu."
+            },
+            noteContent: "with open(nazwa_pliku, tryb) as plik: - otwieranie pliku\nplik.write(tekst) - zapisywanie do pliku\nf\"tekst {zmienna}\" - fstring, wygodny sposób łączenia tekstu ze zmiennymi"
+        },
+        {
+            step: 39,
+            instruction: "Odczytajmy teraz dane z pliku, który utworzyliśmy. Wpisz:\nprint(\"Odczytujemy dane z pliku uczniowie.txt:\\n\")\n\n# Odczytujemy dane z pliku\nwith open('uczniowie.txt', 'r', encoding='utf-8') as plik:\n    dane = plik.read()\n    print(dane)\n\nprint(\"Koniec danych z pliku.\")",
+            verification: {
+                options: [
+                    "Program poprawnie odczytuje i wyświetla dane z pliku",
+                    "Program wyświetla błąd, że plik nie istnieje",
+                    "Program wyświetla puste dane"
+                ],
+                correct: 0,
+                explanation: "Ten kod otwiera plik 'uczniowie.txt' w trybie odczytu ('r'), odczytuje całą jego zawartość i wyświetla ją na ekranie."
+            },
+            noteContent: "open(nazwa_pliku, 'r') - otwieranie pliku do odczytu\nplik.read() - odczytanie całej zawartości pliku\nencoding='utf-8' - obsługa polskich znaków"
+        },
+        {
+            step: 40,
+            type: "MILESTONE",
+            instruction: "PIĄTY MILESTONE! 🎉\n\nStwórz \"Generator Klas Szkolnych\", który:\n1. Zapyta użytkownika o nazwę klasy (np. '5c')\n2. Zapyta ile uczniów ma wygenerować\n3. Użyje biblioteki faker do wygenerowania listy fikcyjnych uczniów z danymi:\n   - Imię i nazwisko\n   - Numer w dzienniku\n   - Adres\n   - Data urodzenia\n4. Zapisze dane do pliku o nazwie związanej z klasą (np. 'klasa_5c.txt')\n5. Wyświetli potwierdzenie zapisania danych i podgląd kilku pierwszych uczniów\n\nGdy skończysz, pokaż swój kod nauczycielowi!",
+            teacherCheck: true,
+            teacherInstructions: {
+                checkpoints: [
+                    "Czy program pyta o nazwę klasy i liczbę uczniów?",
+                    "Czy program poprawnie używa biblioteki faker do generowania danych?",
+                    "Czy każdy uczeń ma wszystkie wymagane dane?",
+                    "Czy dane są zapisywane do pliku o odpowiedniej nazwie?",
+                    "Czy program wyświetla potwierdzenie i podgląd danych?"
+                ],
+                exampleSolution: `from faker import Faker
+
+# Inicjalizacja Faker dla języka polskiego
+fake = Faker('pl_PL')
+
+# Pobieramy dane od użytkownika
+nazwa_klasy = input("Podaj nazwę klasy (np. 5c): ")
+liczba_uczniow = int(input("Ile uczniów chcesz wygenerować? "))
+
+# Nazwa pliku oparta na nazwie klasy
+nazwa_pliku = f"klasa_{nazwa_klasy}.txt"
+
+# Generujemy i zapisujemy dane uczniów
+with open(nazwa_pliku, 'w', encoding='utf-8') as plik:
+    # Nagłówek
+    plik.write(f"LISTA UCZNIÓW KLASY {nazwa_klasy.upper()}\\n")
+    plik.write("=" * 50 + "\\n\\n")
+    
+    # Generujemy dane dla każdego ucznia
+    for numer in range(1, liczba_uczniow + 1):
+        imie = fake.first_name()
+        nazwisko = fake.last_name()
+        data_urodzenia = fake.date_of_birth(minimum_age=10, maximum_age=15).strftime('%d.%m.%Y')
+        adres = fake.address().replace('\\n', ', ')
+        
+        # Zapisujemy dane ucznia
+        plik.write(f"Numer: {numer}\\n")
+        plik.write(f"Imię i nazwisko: {imie} {nazwisko}\\n")
+        plik.write(f"Data urodzenia: {data_urodzenia}\\n")
+        plik.write(f"Adres: {adres}\\n")
+        plik.write("-" * 40 + "\\n\\n")
+
+# Wyświetlamy potwierdzenie
+print(f"\\nWygenerowano {liczba_uczniow} uczniów dla klasy {nazwa_klasy}!")
+print(f"Dane zostały zapisane do pliku: {nazwa_pliku}")
+
+# Wyświetlamy podgląd danych (pierwsi 2 uczniowie lub mniej)
+print("\\nPodgląd danych:\\n")
+with open(nazwa_pliku, 'r', encoding='utf-8') as plik:
+    lines = plik.readlines()
+    # Wyświetlamy nagłówek i dane pierwszych uczniów (max. 15 linii)
+    for i in range(min(15, len(lines))):
+        print(lines[i], end='')
+    
+    if len(lines) > 15:
+        print("\\n... (więcej danych w pliku)")
+`
+            }
+        },
+        
+        // ETAP 6: PROJEKT KOŃCOWY
+        {
+            step: 41,
+            instruction: "Przygotujmy się do projektu końcowego! Najpierw poćwiczmy łączenie wszystkiego, co nauczyliśmy się do tej pory. Wpisz:\nimport random\nfrom faker import Faker\n\nfake = Faker('pl_PL')\n\nprint(\"QUIZ O KRAJACH ŚWIATA\")\nprint(\"=\" * 30)\n\n# Lista pytań i odpowiedzi\npytania = [\n    {\"pytanie\": \"Jaka jest stolica Francji?\", \"odpowiedz\": \"paryż\"},\n    {\"pytanie\": \"Jaka jest stolica Japonii?\", \"odpowiedz\": \"tokio\"},\n    {\"pytanie\": \"Jaka jest stolica Australii?\", \"odpowiedz\": \"canberra\"},\n]\n\n# Losujemy jedno pytanie\npytanie = random.choice(pytania)\n\n# Pokazujemy pytanie\nprint(\"Pytanie:\", pytanie[\"pytanie\"])\n\n# Pobieramy odpowiedź od użytkownika\nodpowiedz_uzytkownika = input(\"Twoja odpowiedź: \").lower()\n\n# Sprawdzamy odpowiedź\nif odpowiedz_uzytkownika == pytanie[\"odpowiedz\"]:\n    print(\"Brawo! Poprawna odpowiedź!\")\n    # Generujemy fikcyjne dane zwycięzcy\n    print(\"\\nGratulacje dla zwycięzcy!\")\n    print(\"Imię:\", fake.first_name())\n    print(\"Nagroda:\", random.randint(100, 1000), \"punktów\")\nelse:\n    print(f\"Niestety, poprawna odpowiedź to: {pytanie['odpowiedz']}\")",
+            verification: {
+                options: [
+                    "Program pokazuje losowe pytanie o stolicę, sprawdza odpowiedź i generuje dane zwycięzcy jeśli odpowiedź jest poprawna",
+                    "Program pokazuje wszystkie pytania naraz",
+                    "Program zawsze informuje, że odpowiedź jest niepoprawna"
+                ],
+                correct: 0,
+                explanation: "Ten program łączy słowniki (pytania i odpowiedzi), listy, losowanie, porównywanie tekstu i faker do stworzenia prostego quizu z nagrodami."
+            },
+            noteContent: "Ten kod łączy wiele poznanych koncepcji:\n- Słowniki do przechowywania pytań i odpowiedzi\n- random.choice() do losowego wyboru pytania\n- input() i porównywanie tekstów\n- faker do generowania fikcyjnych danych\n- Instrukcje warunkowe if/else"
+        },
+        {
+            step: 42,
+            instruction: "Ostatnie przygotowanie przed projektem końcowym. Wpisz:\nimport random\nimport time\n\nprint(\"SYMULATOR RZUTU KOSTKĄ\")\nprint(\"=\" * 30)\n\n# Pytamy, ile kostek chce rzucić użytkownik\nilosc_kostek = int(input(\"Ile kostek chcesz rzucić (1-5)? \"))\n\n# Ograniczamy ilość kostek od 1 do 5\nif ilosc_kostek < 1:\n    ilosc_kostek = 1\n    print(\"Za mała liczba kostek. Ustawiam na 1.\")\nelif ilosc_kostek > 5:\n    ilosc_kostek = 5\n    print(\"Za duża liczba kostek. Ustawiam na 5.\")\n\n# Animacja rzutu kostką\nprint(\"\\nRzucam\", end=\"\")\nfor i in range(3):\n    print(\".\", end=\"\", flush=True)\n    time.sleep(0.5)\nprint(\"\\n\")\n\n# Rzucamy kostkami i zapisujemy wyniki\nwyniki = []\nfor i in range(ilosc_kostek):\n    wynik = random.randint(1, 6)\n    wyniki.append(wynik)\n    print(f\"Kostka {i+1}: {wynik}\")\n\n# Pokazujemy sumę\nprint(\"\\nSuma wyników:\", sum(wyniki))\n\n# Sprawdzamy specjalne kombinacje\nif len(wyniki) > 1:\n    if len(set(wyniki)) == 1:  # wszystkie takie same\n        print(\"WOW! Wszystkie kostki pokazały tę samą wartość!\")\n    elif sum(wyniki) == len(wyniki) * 6:  # wszystkie to szóstki\n        print(\"NIESAMOWITE! Same szóstki!\")",
+            verification: {
+                options: [
+                    "Program symuluje rzut kostką, pokazuje animację i wyniki, oraz sprawdza specjalne kombinacje",
+                    "Program pokazuje tylko jedną liczbę",
+                    "Program wyświetla błąd"
+                ],
+                correct: 0,
+                explanation: "Ten program używa biblioteki time do tworzenia animacji, random do losowania wyników rzutu kostką, list do przechowywania wyników, i instrukcji warunkowych do sprawdzania specjalnych kombinacji."
+            },
+            noteContent: "Ten kod wprowadza nowe elementy:\n- time.sleep() - zatrzymuje program na określony czas (w sekundach)\n- flush=True - natychmiastowe wyświetlenie tekstu\n- sum(lista) - sumuje wszystkie elementy listy\n- set(lista) - tworzy zbiór (unikalne elementy) z listy"
+        },
+        {
+            step: 43,
+            type: "MILESTONE",
+            instruction: "FINAŁOWY MILESTONE! 🎉🎉🎉\n\nStwórz \"Dziennik Przygód\" - interaktywną aplikację, która:\n1. Na początku prosi użytkownika o podanie swojego imienia i wieku\n2. Oferuje menu z różnymi opcjami:\n   a) Wygeneruj nową przygodę (tworzy losową historyjkę z użyciem faker i random)\n   b) Zapisz swoją własną przygodę (użytkownik wpisuje historię, która jest zapisywana do pliku)\n   c) Odczytaj zapisane przygody\n   d) Quiz wiedzy (prosty quiz z losowymi pytaniami)\n   e) Wyjście z programu\n3. Program powinien działać w pętli, wracając do menu po każdej akcji\n4. Przy każdej akcji, powinien zapisywać wpis do \"dziennika\" (pliku) z datą i godziną\n\nPodpowiedzi:\n- Użyj słownika do przechowywania opcji menu\n- Każdą funkcjonalność zaimplementuj jako oddzielny blok kodu\n- Użyj biblioteki faker do generowania losowych elementów przygód\n- Użyj biblioteki random do losowania pytań, wyborów itp.\n\nTo jest projekt otwarty, więc możesz dodać własne pomysły i kreatywne rozwiązania!\n\nGdy skończysz, pokaż swój kod nauczycielowi do oceny!",
+            teacherCheck: true,
+            teacherInstructions: {
+                checkpoints: [
+                    "Czy program pobiera podstawowe dane użytkownika (imię, wiek)?",
+                    "Czy menu jest czytelne i funkcjonalne?",
+                    "Czy opcja 'Wygeneruj nową przygodę' tworzy losowe historyjki?",
+                    "Czy opcja 'Zapisz swoją przygodę' działa poprawnie?",
+                    "Czy opcja 'Odczytaj zapisane przygody' wyświetla zawartość pliku?",
+                    "Czy funkcja quizu jest zaimplementowana poprawnie?",
+                    "Czy program zapisuje wszystkie akcje do pliku dziennika?",
+                    "Czy uczeń rozumie i potrafi wytłumaczyć cały kod?"
+                ],
+                exampleSolution: `import random
+import time
+from faker import Faker
+from datetime import datetime
+
+# Inicjalizacja Faker
+fake = Faker('pl_PL')
+
+# Funkcja do zapisu do dziennika
+def zapisz_do_dziennika(wpis):
+    teraz = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with open(f"dziennik_{imie}.txt", "a", encoding="utf-8") as plik:
+        plik.write(f"[{teraz}] {wpis}\\n")
+
+# Funkcja do generowania losowej przygody
+def generuj_przygode():
+    miejsca = ["tajemniczym lesie", "starym zamku", "podziemnej jaskini", "obcej planecie", "magicznej krainie"]
+    postacie = ["czarodziej", "smok", "robot", "kosmita", "olbrzym", "wróżka"]
+    przedmioty = ["magiczny miecz", "starożytna księga", "zaczarowany klucz", "kryształowa kula", "magiczna różdżka"]
+    
+    miejsce = random.choice(miejsca)
+    postac = random.choice(postacie)
+    przedmiot = random.choice(przedmioty)
+    
+    przygoda = f"""
+NOWA PRZYGODA: "{fake.catch_phrase().upper()}"
+
+Bohater: {imie}, {wiek} lat
+
+Pewnego {fake.day_of_week()}, {imie} znalazł(a) się w {miejsce}. 
+Nagle pojawił się {postac}, który wręczył bohaterowi {przedmiot}.
+"{fake.sentence()}" - powiedział {postac}.
+
+{imie} musiał(a) podjąć decyzję. Po długim namyśle postanowił(a) {fake.bs()}.
+To była właściwa decyzja! {fake.sentence()}
+
+KONIEC PRZYGODY
+"""
+    print(przygoda)
+    
+    # Zapisujemy przygodę do pliku przygód
+    with open(f"przygody_{imie}.txt", "a", encoding="utf-8") as plik:
+        plik.write("\\n" + "=" * 50 + "\\n")
+        plik.write(przygoda)
+    
+    # Zapisujemy informację do dziennika
+    zapisz_do_dziennika(f"Wygenerowano nową przygodę")
+    
+    print(f"\\nPrzygoda została zapisana do pliku przygody_{imie}.txt")
+
+# Funkcja do zapisu własnej przygody
+def zapisz_wlasna_przygode():
+    print("\\nOpisz swoją przygodę! (Aby zakończyć, wpisz 'KONIEC' w nowej linii)")
+    print("=" * 50)
+    
+    tytul = input("Podaj tytuł przygody: ")
+    print("Teraz opisz przygodę (pisz i wciskaj Enter po każdej linii):")
+    
+    linie = []
+    while True:
+        linia = input()
+        if linia == "KONIEC":
+            break
+        linie.append(linia)
+    
+    przygoda = f"""
+TWOJA PRZYGODA: "{tytul.upper()}"
+
+Bohater: {imie}, {wiek} lat
+
+{('\\n'.join(linie))}
+
+KONIEC PRZYGODY
+"""
+    
+    # Zapisujemy przygodę do pliku przygód
+    with open(f"przygody_{imie}.txt", "a", encoding="utf-8") as plik:
+        plik.write("\\n" + "=" * 50 + "\\n")
+        plik.write(przygoda)
+    
+    # Zapisujemy informację do dziennika
+    zapisz_do_dziennika(f"Zapisano własną przygodę: {tytul}")
+    
+    print(f"\\nTwoja przygoda została zapisana do pliku przygody_{imie}.txt")
+
+# Funkcja do odczytywania przygód
+def odczytaj_przygody():
+    try:
+        with open(f"przygody_{imie}.txt", "r", encoding="utf-8") as plik:
+            przygody = plik.read()
+            print("\\nTwoje zapisane przygody:\\n")
+            print(przygody)
+    except FileNotFoundError:
+        print("\\nNie masz jeszcze żadnych zapisanych przygód!")
+    
+    # Zapisujemy informację do dziennika
+    zapisz_do_dziennika("Odczytano zapisane przygody")
+
+# Funkcja quizu
+def quiz_wiedzy():
+    pytania = [
+        {"pytanie": "Ile planet jest w Układzie Słonecznym?", "odpowiedz": "8"},
+        {"pytanie": "Jaki jest największy ocean na Ziemi?", "odpowiedz": "spokojny"},
+        {"pytanie": "Ile boków ma trójkąt?", "odpowiedz": "3"},
+        {"pytanie": "Jaki jest symbol chemiczny złota?", "odpowiedz": "au"},
+        {"pytanie": "Z ilu znaków składa się standardowy numer telefonu komórkowego w Polsce?", "odpowiedz": "9"}
+    ]
+    
+    # Wybieramy 3 losowe pytania (lub mniej, jeśli mamy mniej pytań)
+    wybrane_pytania = random.sample(pytania, min(3, len(pytania)))
+    
+    print("\\nQUIZ WIEDZY!")
+    print("=" * 30)
+    
+    punkty = 0
+    
+    for i, pytanie in enumerate(wybrane_pytania, 1):
+        print(f"\\nPytanie {i}: {pytanie['pytanie']}")
+        odpowiedz_uzytkownika = input("Twoja odpowiedź: ").lower()
+        
+        if odpowiedz_uzytkownika == pytanie["odpowiedz"].lower():
+            print("Poprawna odpowiedź! +1 punkt")
+            punkty += 1
+        else:
+            print(f"Niestety, poprawna odpowiedź to: {pytanie['odpowiedz']}")
+    
+    print(f"\\nKoniec quizu! Zdobyłeś(aś) {punkty} z {len(wybrane_pytania)} punktów!")
+    
+    # Zapisujemy informację do dziennika
+    zapisz_do_dziennika(f"Ukończono quiz z wynikiem {punkty}/{len(wybrane_pytania)}")
+
+# Główny program
+print("=" * 50)
+print("WITAJ W DZIENNIKU PRZYGÓD!")
+print("=" * 50)
+
+# Pobieranie danych użytkownika
+imie = input("Jak masz na imię? ")
+wiek = input("Ile masz lat? ")
+
+# Tworzymy plik dziennika jeśli nie istnieje
+with open(f"dziennik_{imie}.txt", "a", encoding="utf-8") as plik:
+    pass
+
+# Zapisujemy informację o rozpoczęciu sesji
+zapisz_do_dziennika(f"Rozpoczęto nową sesję dziennika przygód")
+
+# Główna pętla programu
+while True:
+    print("\\n" + "=" * 30)
+    print("MENU GŁÓWNE:")
+    print("1. Wygeneruj nową przygodę")
+    print("2. Zapisz swoją własną przygodę")
+    print("3. Odczytaj zapisane przygody")
+    print("4. Quiz wiedzy")
+    print("5. Wyjście z programu")
+    print("=" * 30)
+    
+    wybor = input("\\nWybierz opcję (1-5): ")
+    
+    if wybor == "1":
+        generuj_przygode()
+    elif wybor == "2":
+        zapisz_wlasna_przygode()
+    elif wybor == "3":
+        odczytaj_przygody()
+    elif wybor == "4":
+        quiz_wiedzy()
+    elif wybor == "5":
+        print("\\nDziękuję za korzystanie z Dziennika Przygód! Do zobaczenia!")
+        zapisz_do_dziennika("Zakończono sesję dziennika przygód")
+        break
+    else:
+        print("\\nNieprawidłowy wybór. Spróbuj ponownie.")
+        
+    # Krótka pauza przed powrotem do menu
+    print("\\nWracam do menu", end="")
+    for i in range(3):
+        print(".", end="", flush=True)
+        time.sleep(0.5)
+    print()
+`
+            }
+        }
+    ]
+};        
+        // Stan aplikacji
+        let currentStep = 0;
+        let verificationComplete = false;
+        let hintsUsed = 0;
+        let completedSteps = [];
+        let darkMode = false;
+        
+        // Elementy DOM
+        const terminal = document.getElementById('terminal');
+        const output = document.getElementById('output');
+        const verificationOptions = document.getElementById('verificationOptions');
+        const nextButton = document.getElementById('nextButton');
+        const prevButton = document.getElementById('prevButton');
+        const hintButton = document.getElementById('hintButton');
+        const hintBox = document.getElementById('hintBox');
+        const hintContent = document.getElementById('hintContent');
+        const notes = document.getElementById('notes');
+        const explanation = document.getElementById('explanation');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const codeExamples = document.getElementById('codeExamples');
+        const achievements = document.getElementById('achievements');
+        const themeToggle = document.getElementById('themeToggle');
+        const milestoneBadges = document.getElementById('milestoneBadges');
+        
+        // Funkcje pomocnicze
+        function printToTerminal(text, className = '') {
+            const line = document.createElement('div');
+            line.className = `terminal-output ${className}`;
+            line.textContent = text;
+            output.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+        
+// 1. Modyfikacja funkcji showVerificationOptions 
+// aby losować kolejność odpowiedzi
+function showVerificationOptions(options, correctIndex) {
+    verificationOptions.style.display = 'block';
+    verificationOptions.querySelectorAll('.option-button').forEach(btn => btn.remove());
+    
+    // Tworzymy kopię tablicy opcji wraz z informacją, która jest poprawna
+    const optionsWithCorrect = options.map((option, index) => ({
+        text: option,
+        isCorrect: index === correctIndex
+    }));
+    
+    // Mieszamy opcje
+    for (let i = optionsWithCorrect.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [optionsWithCorrect[i], optionsWithCorrect[j]] = [optionsWithCorrect[j], optionsWithCorrect[i]];
+    }
+    
+    // Tworzymy przyciski z wymieszanymi opcjami
+    optionsWithCorrect.forEach((option) => {
+        const button = document.createElement('button');
+        button.className = 'option-button';
+        button.textContent = option.text;
+        
+        button.onclick = () => handleVerification(option.isCorrect);
+        verificationOptions.appendChild(button);
+    });
+}
+        
+       // 2. Modyfikacja funkcji handleVerification 
+// aby usunąć redundantne wyjaśnienie z terminala
+function handleVerification(isCorrect) {
+    if (isCorrect) {
+        verificationOptions.style.display = 'none';
+        
+        const successMessage = document.createElement('div');
+        successMessage.className = 'message success';
+        successMessage.textContent = '✓ Świetnie! Odpowiedź poprawna!';
+        output.appendChild(successMessage);
+        
+        const lesson = lessonData.lessons[currentStep];
+        
+        // Usuwamy wyświetlanie wyjaśnienia w terminalu
+        // i zamiast tego aktualizujemy panel wyjaśnień
+        explanation.innerHTML = `<h3>📋 Wyjaśnienie:</h3><p>${lesson.explanation}</p>`;
+        
+        // Show note
+        notes.style.display = 'block';
+        notes.textContent = lesson.noteContent;
+        
+        // Update code examples
+        updateCodeExamples();
+        
+        verificationComplete = true;
+        nextButton.disabled = false;
+        
+        // Update completed steps
+        if (!completedSteps.includes(currentStep)) {
+            completedSteps.push(currentStep);
+            
+            // Check for milestones
+            checkMilestones();
+        }
+        
+        // Hide the hint if it was shown
+        hintBox.style.display = 'none';
+        
+    } else {
+        const errorMessage = document.createElement('div');
+        errorMessage.className = 'message error';
+        errorMessage.textContent = '✗ Spróbuj jeszcze raz...';
+        output.appendChild(errorMessage);
+        terminal.scrollTop = terminal.scrollHeight;
+    }
+}
+        
+        function updateProgress() {
+            const progress = ((completedSteps.length) / lessonData.lessons.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = `${Math.round(progress)}%`;
+        }
+        
+        function showNextLesson() {
+            verificationComplete = false;
+            nextButton.disabled = true;
+            hintBox.style.display = 'none';
+            
+            const lesson = lessonData.lessons[currentStep];
+            
+            // Add separator for clarity
+            const separator = document.createElement('div');
+            separator.style.borderBottom = '1px solid #444';
+            separator.style.margin = '20px 0';
+            output.appendChild(separator);
+            
+            printToTerminal(`\n🔍 ZADANIE ${currentStep + 1}:`);
+            printToTerminal(lesson.instruction);
+            
+            if (lesson.type === 'MILESTONE') {
+                const milestoneAlert = document.createElement('div');
+                milestoneAlert.className = 'milestone-alert';
+                milestoneAlert.textContent = 'Zawołaj nauczyciela do sprawdzenia!';
+                output.appendChild(milestoneAlert);
+                nextButton.disabled = false;
+            } else {
+                printToTerminal('\nPo wykonaniu zadania, wybierz poprawną odpowiedź:');
+                showVerificationOptions(lesson.verification.options, lesson.verification.correct);
+            }
+            
+            updateProgress();
+            updateButtonStates();
+        }
+        
+        function showPreviousLesson() {
+            if (currentStep > 0) {
+                currentStep--;
+                showNextLesson();
+            }
+        }
+        
+        function updateButtonStates() {
+            // Previous button
+            prevButton.disabled = currentStep === 0;
+            
+            // Next button state is handled by verification
+            
+            // Update milestone badges
+            updateMilestoneBadges();
+        }
+        
+        function updateMilestoneBadges() {
+            milestoneBadges.innerHTML = '';
+            
+            // Find all milestone steps
+            const milestoneSteps = lessonData.lessons
+                .map((lesson, index) => lesson.type === 'MILESTONE' ? index : null)
+                .filter(index => index !== null);
+            
+            milestoneSteps.forEach((stepIndex, i) => {
+                const badge = document.createElement('div');
+                badge.className = 'milestone-badge';
+                badge.textContent = i + 1;
+                
+                // Mark as completed if previous milestone
+                if (completedSteps.includes(stepIndex)) {
+                    badge.classList.add('completed');
+                }
+                
+                milestoneBadges.appendChild(badge);
+            });
+        }
+        
+        function checkMilestones() {
+            // Check for completed milestones and update achievements
+            lessonData.lessons.forEach((lesson, index) => {
+                if (lesson.type === 'MILESTONE' && completedSteps.includes(index)) {
+                    const milestoneNumber = Math.floor(index / 8) + 1; // Rough estimate of milestone numbers
+                    
+                    // Update achievement
+                    const achievementElements = achievements.querySelectorAll('.achievement');
+                    if (milestoneNumber <= achievementElements.length) {
+                        achievementElements[milestoneNumber - 1].classList.add('unlocked');
+                    }
+                }
+            });
+        }
+        
+        function showHint() {
+            const lesson = lessonData.lessons[currentStep];
+            hintBox.style.display = 'block';
+            
+            // Generate hint based on lesson type
+            let hintText = '';
+            
+            if (lesson.type === 'MILESTONE') {
+                hintText = "To zadanie wymaga sprawdzenia przez nauczyciela. Upewnij się, że wykonałeś wszystkie kroki z instrukcji.";
+            } else {
+                hintText = "Sprawdź uważnie instrukcję zadania. Zwróć uwagę na to, co dokładnie ma zostać wyświetlone.";
+                
+                // Add more specific hint if this isn't the first time
+                if (hintsUsed > 0) {
+                    hintText += `\n\nPoprawna odpowiedź związana jest z opcją: "${lesson.verification.options[lesson.verification.correct]}"`;
+                }
+            }
+            
+            hintContent.textContent = hintText;
+            hintsUsed++;
+            
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+        
+        function updateCodeExamples() {
+            const lesson = lessonData.lessons[currentStep];
+            let exampleCode = '';
+            
+            // Generate example code based on the current lesson
+            switch(currentStep % 8) {
+                case 0:
+                    exampleCode = `print("Hello World!")\nprint("To jest przykład wyświetlania tekstu.")`;
+                    break;
+                case 1:
+                case 2:
+                    exampleCode = `imie = "Anna"\nwiek = 12\nprint("Witaj", imie + "!")\nprint("Masz", wiek, "lat.")`;
+                    break;
+                case 3:
+                case 4:
+                    exampleCode = `# Podstawowe działania matematyczne\na = 10\nb = 3\nprint("Suma:", a + b)\nprint("Różnica:", a - b)\nprint("Iloczyn:", a * b)\nprint("Iloraz:", a / b)`;
+                    break;
+                case 5:
+                    exampleCode = `# Przykład użycia if/else\nwiek = int(input("Ile masz lat? "))\nif wiek < 10:\n    print("Jesteś dzieckiem")\nelif wiek < 18:\n    print("Jesteś nastolatkiem")\nelse:\n    print("Jesteś dorosły")`;
+                    break;
+                case 6:
+                    exampleCode = `# Praca z listami\nowoce = ["jabłko", "banan", "gruszka"]\nprint("Pierwszy owoc:", owoce[0])\nowoce.append("ananas")\nprint("Wszystkie owoce:", owoce)`;
+                    break;
+                case 7:
+                    exampleCode = `# Losowanie z biblioteki random\nimport random\nliczba = random.randint(1, 10)\nprint("Wylosowana liczba:", liczba)`;
+                    break;
+                default:
+                    exampleCode = `# Przykład kodu pojawi się po rozwiązaniu zadania`;
+            }
+            
+            codeExamples.textContent = exampleCode;
+        }
+        
+        // Obsługa zmian w interfejsie
+        
+        // Dark Mode
+        themeToggle.addEventListener('click', () => {
+            darkMode = !darkMode;
+            document.body.classList.toggle('dark-mode', darkMode);
+            themeToggle.textContent = darkMode ? '☀️' : '🌙';
+        });
+        
+        // Tabs
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                // Deactivate all tabs
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Activate selected tab
+                button.classList.add('active');
+                document.getElementById(button.dataset.tab).classList.add('active');
+            });
+        });
+        
+        // Obsługa przycisków
+        nextButton.onclick = () => {
+            if (currentStep < lessonData.lessons.length - 1) {
+                currentStep++;
+                showNextLesson();
+            } else {
+                // Course completed
+                const separator = document.createElement('div');
+                separator.style.borderBottom = '1px solid #444';
+                separator.style.margin = '20px 0';
+                output.appendChild(separator);
+                
+                printToTerminal('\n🎉 GRATULACJE! 🎉');
+                printToTerminal('Ukończyłeś kurs "Python dla Początkujących"!');
+                printToTerminal('Jesteś teraz gotów do tworzenia własnych programów!');
+                
+                nextButton.disabled = true;
+                
+                // Mark all achievements
+                document.querySelectorAll('.achievement').forEach(achievement => {
+                    achievement.classList.add('unlocked');
+                });
+            }
+        };
+        
+        prevButton.onclick = () => {
+            showPreviousLesson();
+        };
+        
+        hintButton.onclick = () => {
+            showHint();
+        };
+        
+        // Inicjalizacja
+        function initialize() {
+            // Create milestone badges
+            updateMilestoneBadges();
+            
+            // Start first lesson
+            printToTerminal('🐍 Witaj w kursie "Python dla Początkujących"! 🐍');
+            printToTerminal('W tym kursie nauczysz się podstaw programowania w Pythonie.');
+            printToTerminal('Wykonuj zadania krok po kroku, aby zdobywać nowe umiejętności!');
+            
+            showNextLesson();
+        }
+        
+        initialize();
+    </script>
+</body>
+</html>
