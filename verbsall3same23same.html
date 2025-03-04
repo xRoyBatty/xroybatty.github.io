@@ -52,14 +52,6 @@
             font-weight: normal;
         }
 
-        .group-1 {
-            background-color: #d4f1f9;
-        }
-
-        .group-2 {
-            background-color: #d4e6f9;
-        }
-
         .mode-selector {
             display: flex;
             justify-content: center;
@@ -112,6 +104,39 @@
         .question-container p {
             font-size: 20px;
             margin-bottom: 20px;
+        }
+
+        .verb-group-indicator {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .group-1 {
+            border-left: 5px solid #4dabf7;  /* niebieski */
+            background-color: #e7f5ff;
+        }
+
+        .group-2 {
+            border-left: 5px solid #40c057;  /* zielony */
+            background-color: #ebfbee;
+        }
+
+        .group-3 {
+            border-left: 5px solid #ff6b6b;  /* czerwony */
+            background-color: #fff5f5;
+        }
+
+        .group-4 {
+            border-left: 5px solid #cc5de8;  /* fioletowy */
+            background-color: #f3f0ff;
+        }
+
+        .group-5 {
+            border-left: 5px solid #fcc419;  /* żółty */
+            background-color: #fff9db;
         }
 
         .options-container {
@@ -169,7 +194,7 @@
 
         .input-container {
             display: flex;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .input-container input {
@@ -198,7 +223,8 @@
         .hint {
             font-style: italic;
             color: #6c757d;
-            margin-top: 15px;
+            margin-top: 8px;
+            margin-bottom: 15px;
             font-size: 18px;
             letter-spacing: 3px;
         }
@@ -307,15 +333,15 @@
         }
 
         .verb-item.known {
-            border-left: 5px solid #28a745;
+            border-right: 5px solid #28a745;
         }
 
         .verb-item.easy {
-            border-left: 5px solid #17a2b8;
+            border-right: 5px solid #17a2b8;
         }
 
         .verb-item.hard {
-            border-left: 5px solid #dc3545;
+            border-right: 5px solid #dc3545;
         }
 
         .translation {
@@ -366,6 +392,41 @@
             color: #6c757d;
         }
 
+        /* Styl dla podgrup w grupie 4 */
+        .subgroup-badge {
+            display: inline-block;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            background-color: #dee2e6;
+            margin-right: 5px;
+        }
+
+        /* Style dla dwóch pól wejściowych w zadaniu 2 dla grup 3-5 */
+        .dual-input-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .dual-input-container .input-wrapper {
+            position: relative;
+        }
+
+        .dual-input-container input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .dual-input-container input:focus {
+            outline: none;
+            border-color: #4361ee;
+        }
+
         @media (max-width: 768px) {
             .options-container {
                 grid-template-columns: 1fr;
@@ -395,6 +456,10 @@
             .mode-selector {
                 flex-direction: column;
             }
+            
+            .dual-input-container {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -417,6 +482,7 @@
         
         <div id="multipleChoiceSection" class="exercise-section active">
             <div class="question-container">
+                <div id="mcGroupIndicator" class="verb-group-indicator"></div>
                 <p id="mcQuestion"></p>
                 <div id="mcOptions" class="options-container"></div>
                 <div id="mcFeedback" class="feedback"></div>
@@ -428,12 +494,33 @@
         
         <div id="letterByLetterSection" class="exercise-section">
             <div class="question-container">
+                <div id="lblGroupIndicator" class="verb-group-indicator"></div>
                 <p id="lblQuestion"></p>
-                <div class="input-container">
+                
+                <!-- Container dla standardowego wpisywania (grupy 1-2) -->
+                <div id="standardInputContainer" class="input-container">
                     <input type="text" id="lblInput" placeholder="Wpisz odpowiedź...">
                     <button id="lblHintBtn">Podpowiedź</button>
                 </div>
                 <p id="lblHint" class="hint"></p>
+                
+                <!-- Container dla podwójnego wpisywania (grupy 3-5) -->
+                <div id="dualInputContainer" class="dual-input-container" style="display: none;">
+                    <div class="input-wrapper">
+                        <label class="input-label">Past Simple:</label>
+                        <input type="text" id="lblInputPS" placeholder="Past Simple...">
+                        <p id="lblHintPS" class="hint"></p>
+                    </div>
+                    <div class="input-wrapper">
+                        <label class="input-label">Past Participle:</label>
+                        <input type="text" id="lblInputPP" placeholder="Past Participle...">
+                        <p id="lblHintPP" class="hint"></p>
+                    </div>
+                </div>
+                <div class="input-container" id="dualHintContainer" style="display: none;">
+                    <button id="lblHintBtnDual">Podpowiedź</button>
+                </div>
+                
                 <div id="lblFeedback" class="feedback"></div>
             </div>
             <div class="controls">
@@ -444,6 +531,7 @@
         
         <div id="translationSection" class="exercise-section">
             <div class="question-container">
+                <div id="trGroupIndicator" class="verb-group-indicator"></div>
                 <p id="trQuestion"></p>
                 <div class="translation-inputs">
                     <div>
@@ -485,14 +573,18 @@
                 <button id="showEasyBtn">Łatwe</button>
                 <button id="showHardBtn">Trudne</button>
                 <button id="showUnmarkedBtn">Nieoznaczone</button>
+                <button id="showGroup1Btn">Grupa 1</button>
+                <button id="showGroup2Btn">Grupa 2</button>
+                <button id="showGroup3Btn">Grupa 3</button>
+                <button id="showGroup4Btn">Grupa 4</button>
+                <button id="showGroup5Btn">Grupa 5</button>
             </div>
             <div class="verb-list" id="verbList"></div>
         </div>
     </div>
     
     <script>
-// Baza czasowników - połączone dwie grupy
-        const verbs = [
+     const verbs = [
             // Grupa 1: Czasowniki o identycznej formie we wszystkich trzech kolumnach
             { 
                 infinitive: 'cut', 
@@ -547,6 +639,14 @@
                 pastSimple: 'hurt', 
                 pastParticiple: 'hurt', 
                 translation: 'ranić',
+                group: 1,
+                status: 'unmarked'
+            },
+                        { 
+                infinitive: 'read', 
+                pastSimple: 'read', 
+                pastParticiple: 'read', 
+                translation: 'czytać',
                 group: 1,
                 status: 'unmarked'
             },
@@ -653,6 +753,14 @@
                 pastSimple: 'lent', 
                 pastParticiple: 'lent', 
                 translation: 'pożyczyć (komuś)',
+                group: 2,
+                status: 'unmarked'
+            },
+                        { 
+                infinitive: 'read', 
+                pastSimple: 'read', 
+                pastParticiple: 'read', 
+                translation: 'czytać',
                 group: 2,
                 status: 'unmarked'
             },
@@ -768,6 +876,38 @@
                 group: 2,
                 status: 'unmarked'
             },
+                        { 
+                infinitive: 'feed', 
+                pastSimple: 'fed', 
+                pastParticiple: 'fed', 
+                translation: 'karmic',
+                group: 2,
+                status: 'unmarked'
+            },
+                        { 
+                infinitive: 'hang', 
+                pastSimple: 'hung', 
+                pastParticiple: 'hung', 
+                translation: 'wisieć',
+                group: 2,
+                status: 'unmarked'
+            },
+                        { 
+                infinitive: 'get', 
+                pastSimple: 'got', 
+                pastParticiple: 'got', 
+                translation: 'dostawać',
+                group: 2,
+                status: 'unmarked'
+            },
+                        { 
+                infinitive: 'sit', 
+                pastSimple: 'sat', 
+                pastParticiple: 'sat', 
+                translation: 'siedzieć',
+                group: 2,
+                status: 'unmarked'
+            },
             { 
                 infinitive: 'understand', 
                 pastSimple: 'understood', 
@@ -783,7 +923,81 @@
                 translation: 'wygrywać',
                 group: 2,
                 status: 'unmarked'
-            }
+            },
+            
+            // Grupa 3: Wzór "i → a → u"
+{ 
+    infinitive: 'begin', pastSimple: 'began', pastParticiple: 'begun', 
+    translation: 'zaczynać (się)', group: 3, status: 'unmarked'
+},
+{ 
+    infinitive: 'drink', pastSimple: 'drank', pastParticiple: 'drunk', 
+    translation: 'pić', group: 3, status: 'unmarked'
+},
+{ 
+    infinitive: 'ring', pastSimple: 'rang', pastParticiple: 'rung', 
+    translation: 'dzwonić', group: 3, status: 'unmarked'
+},
+{ 
+    infinitive: 'sing', pastSimple: 'sang', pastParticiple: 'sung', 
+    translation: 'śpiewać', group: 3, status: 'unmarked'
+},
+{ 
+    infinitive: 'swim', pastSimple: 'swam', pastParticiple: 'swum', 
+    translation: 'pływać', group: 3, status: 'unmarked'
+},
+
+// Grupa 4: Różne wzorce zmiany samogłoski
+{ 
+    infinitive: 'break', pastSimple: 'broke', pastParticiple: 'broken', 
+    translation: 'łamać, psuć (się)', group: 4, subgroup: 'eak-oke-oken', status: 'unmarked'
+},
+{ 
+    infinitive: 'speak', pastSimple: 'spoke', pastParticiple: 'spoken', 
+    translation: 'mówić', group: 4, subgroup: 'eak-oke-oken', status: 'unmarked'
+},
+{ 
+    infinitive: 'steal', pastSimple: 'stole', pastParticiple: 'stolen', 
+    translation: 'kraść', group: 4, subgroup: 'eal-ole-olen', status: 'unmarked'
+},
+{ 
+    infinitive: 'give', pastSimple: 'gave', pastParticiple: 'given', 
+    translation: 'dawać', group: 4, subgroup: 'i-a-i', status: 'unmarked'
+},
+{ 
+    infinitive: 'forgive', pastSimple: 'forgave', pastParticiple: 'forgiven', 
+    translation: 'wybaczać', group: 4, subgroup: 'i-a-i', status: 'unmarked'
+},
+{ 
+    infinitive: 'drive', pastSimple: 'drove', pastParticiple: 'driven', 
+    translation: 'prowadzić samochód', group: 4, subgroup: 'i-o-i', status: 'unmarked'
+},
+{ 
+    infinitive: 'ride', pastSimple: 'rode', pastParticiple: 'ridden', 
+    translation: 'jeździć (na)', group: 4, subgroup: 'i-o-i', status: 'unmarked'
+},
+{ 
+    infinitive: 'write', pastSimple: 'wrote', pastParticiple: 'written', 
+    translation: 'pisać', group: 4, subgroup: 'i-o-i', status: 'unmarked'
+},
+{ 
+    infinitive: 'take', pastSimple: 'took', pastParticiple: 'taken', 
+    translation: 'brać', group: 4, subgroup: 'a-oo-a', status: 'unmarked'
+},
+
+// Grupa 5: Czasowniki z tą samą formą w Infinitive i Past Participle
+{ 
+    infinitive: 'become', pastSimple: 'became', pastParticiple: 'become', 
+    translation: 'stawać się', group: 5, status: 'unmarked'
+},
+{ 
+    infinitive: 'come', pastSimple: 'came', pastParticiple: 'come', 
+    translation: 'przychodzić', group: 5, status: 'unmarked'
+},
+{ 
+    infinitive: 'run', pastSimple: 'ran', pastParticiple: 'run', 
+    translation: 'biegać', group: 5, status: 'unmarked'
+}
         ];        
         // Zmienne globalne
         let currentMode = 'multipleChoice';
@@ -791,6 +1005,8 @@
         let answeredCorrectly = 0;
         let totalAnswered = 0;
         let currentHintIndex = 0;
+        let currentHintIndexPS = 0;
+        let currentHintIndexPP = 0;
         
         // Elementy DOM - Multiple Choice
         const multipleChoiceBtn = document.getElementById('multipleChoiceBtn');
@@ -802,21 +1018,37 @@
         const letterByLetterSection = document.getElementById('letterByLetterSection');
         const translationSection = document.getElementById('translationSection');
         
+        const mcGroupIndicator = document.getElementById('mcGroupIndicator');
         const mcQuestion = document.getElementById('mcQuestion');
         const mcOptions = document.getElementById('mcOptions');
         const mcFeedback = document.getElementById('mcFeedback');
         const mcNextBtn = document.getElementById('mcNextBtn');
         
         // Elementy DOM - Letter by Letter
+        const lblGroupIndicator = document.getElementById('lblGroupIndicator');
         const lblQuestion = document.getElementById('lblQuestion');
+        
+        // Standardowe wejście dla grup 1-2
+        const standardInputContainer = document.getElementById('standardInputContainer');
         const lblInput = document.getElementById('lblInput');
         const lblHintBtn = document.getElementById('lblHintBtn');
         const lblHint = document.getElementById('lblHint');
+        
+        // Podwójne wejście dla grup 3-5
+        const dualInputContainer = document.getElementById('dualInputContainer');
+        const dualHintContainer = document.getElementById('dualHintContainer');
+        const lblInputPS = document.getElementById('lblInputPS');
+        const lblInputPP = document.getElementById('lblInputPP');
+        const lblHintPS = document.getElementById('lblHintPS');
+        const lblHintPP = document.getElementById('lblHintPP');
+        const lblHintBtnDual = document.getElementById('lblHintBtnDual');
+        
         const lblFeedback = document.getElementById('lblFeedback');
         const lblCheckBtn = document.getElementById('lblCheckBtn');
         const lblNextBtn = document.getElementById('lblNextBtn');
         
         // Elementy DOM - Translation
+        const trGroupIndicator = document.getElementById('trGroupIndicator');
         const trQuestion = document.getElementById('trQuestion');
         const trInfinitive = document.getElementById('trInfinitive');
         const trPastSimple = document.getElementById('trPastSimple');
@@ -837,6 +1069,11 @@
         const showEasyBtn = document.getElementById('showEasyBtn');
         const showHardBtn = document.getElementById('showHardBtn');
         const showUnmarkedBtn = document.getElementById('showUnmarkedBtn');
+        const showGroup1Btn = document.getElementById('showGroup1Btn');
+        const showGroup2Btn = document.getElementById('showGroup2Btn');
+        const showGroup3Btn = document.getElementById('showGroup3Btn');
+        const showGroup4Btn = document.getElementById('showGroup4Btn');
+        const showGroup5Btn = document.getElementById('showGroup5Btn');
         
         // Inicjalizacja
         function init() {
@@ -863,23 +1100,47 @@
                     if (filter === 'easy' && verb.status !== 'easy') return;
                     if (filter === 'hard' && verb.status !== 'hard') return;
                     if (filter === 'unmarked' && verb.status !== 'unmarked') return;
+                    if (filter === 'group1' && verb.group !== 1) return;
+                    if (filter === 'group2' && verb.group !== 2) return;
+                    if (filter === 'group3' && verb.group !== 3) return;
+                    if (filter === 'group4' && verb.group !== 4) return;
+                    if (filter === 'group5' && verb.group !== 5) return;
                 }
                 
                 const verbItem = document.createElement('div');
-                verbItem.className = `verb-item ${verb.status}`;
+                verbItem.className = `verb-item group-${verb.group} ${verb.status}`;
                 verbItem.dataset.index = index;
                 
-                verbItem.innerHTML = `
+                let verbItemHTML = `
                     <div class="verb-info">
                         <strong>${verb.infinitive}</strong> → ${verb.pastSimple} → ${verb.pastParticiple}
                         <div class="translation">${verb.translation}</div>
                     </div>
+                `;
+                
+                // Dodaj informację o podgrupie dla grupy 4
+                if (verb.group === 4 && verb.subgroup) {
+                    const subgroupMap = {
+                        'eak-oke-oken': 'ea→o→o',
+                        'eal-ole-olen': 'ea→o→o',
+                        'i-a-i': 'i→a→i',
+                        'i-o-i': 'i→o→i',
+                        'a-oo-a': 'a→oo→a'
+                    };
+                    
+                    const subgroupName = subgroupMap[verb.subgroup] || verb.subgroup;
+                    verbItemHTML += `<span class="subgroup-badge">${subgroupName}</span>`;
+                }
+                
+                verbItemHTML += `
                     <div class="verb-actions">
                         <button class="known-btn ${verb.status === 'known' ? 'active' : ''}">Umiem</button>
                         <button class="easy-btn ${verb.status === 'easy' ? 'active' : ''}">Łatwe</button>
                         <button class="hard-btn ${verb.status === 'hard' ? 'active' : ''}">Trudne</button>
                     </div>
                 `;
+                
+                verbItem.innerHTML = verbItemHTML;
                 
                 verbList.appendChild(verbItem);
                 
@@ -920,7 +1181,12 @@
                 'showKnownBtn': 'known',
                 'showEasyBtn': 'easy',
                 'showHardBtn': 'hard',
-                'showUnmarkedBtn': 'unmarked'
+                'showUnmarkedBtn': 'unmarked',
+                'showGroup1Btn': 'group1',
+                'showGroup2Btn': 'group2',
+                'showGroup3Btn': 'group3',
+                'showGroup4Btn': 'group4',
+                'showGroup5Btn': 'group5'
             };
             
             generateVerbList(filterMap[activeFilter]);
@@ -936,12 +1202,25 @@
             
             const currentVerb = verbs[currentVerbIndex];
             
+            // Ustawienie odpowiedniego stylu dla grupy czasownika
+            setGroupIndicatorStyle(mcGroupIndicator, currentVerb.group);
+            setGroupIndicatorStyle(lblGroupIndicator, currentVerb.group);
+            setGroupIndicatorStyle(trGroupIndicator, currentVerb.group);
+            
             switch (currentMode) {
                 case 'multipleChoice':
-                    prepareMCQuestion(currentVerb);
+                    if (currentVerb.group <= 2) {
+                        prepareMCQuestionBasic(currentVerb);
+                    } else {
+                        prepareMCQuestionAdvanced(currentVerb);
+                    }
                     break;
                 case 'letterByLetter':
-                    prepareLBLQuestion(currentVerb);
+                    if (currentVerb.group <= 2) {
+                        prepareLBLQuestionBasic(currentVerb);
+                    } else {
+                        prepareLBLQuestionAdvanced(currentVerb);
+                    }
                     break;
                 case 'translation':
                     prepareTranslationQuestion(currentVerb);
@@ -949,8 +1228,23 @@
             }
         }
         
-        // Przygotowanie pytania wielokrotnego wyboru
-        function prepareMCQuestion(verb) {
+        // Ustawienie stylu wskaźnika grupy
+        function setGroupIndicatorStyle(element, groupNumber) {
+            element.className = `verb-group-indicator group-${groupNumber}`;
+            
+            const groupNames = {
+                1: "Grupa 1: Formy identyczne",
+                2: "Grupa 2: PS = PP",
+                3: "Grupa 3: Wzór i→a→u",
+                4: "Grupa 4: Różne wzorce",
+                5: "Grupa 5: Inf = PP"
+            };
+            
+            element.textContent = groupNames[groupNumber] || `Grupa ${groupNumber}`;
+        }
+        
+        // Przygotowanie podstawowego pytania wielokrotnego wyboru (grupy 1-2)
+        function prepareMCQuestionBasic(verb) {
             // Losowo wybierz, jakiej formy pytamy (Past Simple lub Past Participle)
             const askingForPastSimple = Math.random() > 0.5;
             
@@ -984,7 +1278,7 @@
                 optionElement.className = 'option';
                 optionElement.textContent = option;
                 optionElement.addEventListener('click', () => {
-                    handleMCAnswer(option, correctAnswer, askingForPastSimple);
+                    handleMCAnswerBasic(option, correctAnswer, askingForPastSimple);
                 });
                 mcOptions.appendChild(optionElement);
             });
@@ -995,8 +1289,46 @@
             mcNextBtn.disabled = true;
         }
         
-        // Obsługa odpowiedzi wielokrotnego wyboru
-        function handleMCAnswer(selectedOption, correctAnswer, askingForPastSimple) {
+        // Przygotowanie zaawansowanego pytania wielokrotnego wyboru (grupy 3-5)
+        function prepareMCQuestionAdvanced(verb) {
+            mcQuestion.textContent = `Jakie są formy Past Simple i Past Participle dla "${verb.infinitive}" (${verb.translation})?`;
+            
+            // Przygotuj opcje
+            const correctAnswer = `${verb.pastSimple} → ${verb.pastParticiple}`;
+            const options = [correctAnswer];
+            
+            // Dodaj 3 niepoprawne opcje
+            const incorrectOptions = [
+                `${verb.pastSimple} → ${getRandomForm(verb.pastParticiple)}`,
+                `${getRandomForm(verb.pastSimple)} → ${verb.pastParticiple}`,
+                `${getRandomForm(verb.pastSimple)} → ${getRandomForm(verb.pastParticiple)}`
+            ];
+            
+            options.push(...incorrectOptions);
+            
+            // Pomieszaj opcje
+            shuffleArray(options);
+            
+            // Renderuj opcje
+            mcOptions.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.addEventListener('click', () => {
+                    handleMCAnswerAdvanced(option, correctAnswer);
+                });
+                mcOptions.appendChild(optionElement);
+            });
+            
+            // Zresetuj feedback
+            mcFeedback.textContent = '';
+            mcFeedback.className = 'feedback';
+            mcNextBtn.disabled = true;
+        }
+        
+        // Obsługa odpowiedzi wielokrotnego wyboru dla grup 1-2
+        function handleMCAnswerBasic(selectedOption, correctAnswer, askingForPastSimple) {
             const options = mcOptions.querySelectorAll('.option');
             let isCorrect = selectedOption === correctAnswer;
             
@@ -1029,8 +1361,47 @@
             updateProgress();
         }
         
-        // Przygotowanie pytania wpisywania po literze
-        function prepareLBLQuestion(verb) {
+        // Obsługa odpowiedzi wielokrotnego wyboru dla grup 3-5
+        function handleMCAnswerAdvanced(selectedOption, correctAnswer) {
+            const options = mcOptions.querySelectorAll('.option');
+            let isCorrect = selectedOption === correctAnswer;
+            
+            // Zablokuj wszystkie opcje
+            options.forEach(option => {
+                option.style.pointerEvents = 'none';
+                
+                if (option.textContent === correctAnswer) {
+                    option.classList.add('correct');
+                } else if (option.textContent === selectedOption && selectedOption !== correctAnswer) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            // Aktualizuj feedback
+            if (isCorrect) {
+                mcFeedback.textContent = 'Poprawna odpowiedź!';
+                mcFeedback.className = 'feedback correct';
+                answeredCorrectly++;
+            } else {
+                mcFeedback.textContent = `Niepoprawna odpowiedź. Poprawna to: ${correctAnswer}`;
+                mcFeedback.className = 'feedback incorrect';
+            }
+            
+            // Włącz przycisk "Następne"
+            mcNextBtn.disabled = false;
+            
+            // Aktualizuj licznik
+            totalAnswered++;
+            updateProgress();
+        }
+        
+        // Przygotowanie podstawowego pytania wpisywania po literze (grupy 1-2)
+        function prepareLBLQuestionBasic(verb) {
+            // Pokaż standardowy input, ukryj podwójny
+            standardInputContainer.style.display = 'flex';
+            dualInputContainer.style.display = 'none';
+            dualHintContainer.style.display = 'none';
+            
             // Losowo wybierz, jakiej formy pytamy (Past Simple lub Past Participle)
             const askingForPastSimple = Math.random() > 0.5;
             
@@ -1056,8 +1427,42 @@
             lblNextBtn.disabled = true;
         }
         
-        // Obsługa sprawdzania odpowiedzi wpisywanej po literze
-        function checkLBLAnswer() {
+        // Przygotowanie zaawansowanego pytania wpisywania po literze (grupy 3-5)
+        function prepareLBLQuestionAdvanced(verb) {
+            // Pokaż podwójny input, ukryj standardowy
+            standardInputContainer.style.display = 'none';
+            dualInputContainer.style.display = 'grid';
+            dualHintContainer.style.display = 'flex';
+            
+            lblQuestion.textContent = `Wpisz formy Past Simple i Past Participle dla "${verb.infinitive}" (${verb.translation}):`;
+            
+            // Ustawienie odpowiedzi do sprawdzenia
+            lblInputPS.dataset.answer = verb.pastSimple;
+            lblInputPP.dataset.answer = verb.pastParticiple;
+            
+            // Zresetuj inputy, hinty i feedback
+            lblInputPS.value = '';
+            lblInputPP.value = '';
+            lblHintPS.textContent = '';
+            lblHintPP.textContent = '';
+            lblFeedback.textContent = '';
+            lblFeedback.className = 'feedback';
+            
+            // Dodanie informacji o liczbie liter
+            lblHintPS.textContent = '_ '.repeat(verb.pastSimple.length).trim();
+            lblHintPP.textContent = '_ '.repeat(verb.pastParticiple.length).trim();
+            
+            // Zresetuj indeksy podpowiedzi
+            currentHintIndexPS = 0;
+            currentHintIndexPP = 0;
+            
+            // Zresetuj przyciski
+            lblCheckBtn.disabled = false;
+            lblNextBtn.disabled = true;
+        }
+        
+        // Obsługa sprawdzania odpowiedzi wpisywanej po literze dla grup 1-2
+        function checkLBLAnswerBasic() {
             const correctAnswer = lblInput.dataset.answer;
             const userAnswer = lblInput.value.trim().toLowerCase();
             
@@ -1078,13 +1483,63 @@
             updateProgress();
         }
         
-        // Podpowiedź dla wpisywania po literze
-        function showNextHint() {
+        // Obsługa sprawdzania odpowiedzi wpisywanej po literze dla grup 3-5
+        function checkLBLAnswerAdvanced() {
+            const correctPS = lblInputPS.dataset.answer;
+            const correctPP = lblInputPP.dataset.answer;
+            const userPS = lblInputPS.value.trim().toLowerCase();
+            const userPP = lblInputPP.value.trim().toLowerCase();
+            
+            const psCorrect = userPS === correctPS.toLowerCase();
+            const ppCorrect = userPP === correctPP.toLowerCase();
+            
+            // Wizualne oznaczenie poprawności
+            lblInputPS.style.borderColor = psCorrect ? '#28a745' : '#dc3545';
+            lblInputPP.style.borderColor = ppCorrect ? '#28a745' : '#dc3545';
+            
+            if (psCorrect && ppCorrect) {
+                lblFeedback.textContent = 'Obydwie formy poprawne!';
+                lblFeedback.className = 'feedback correct';
+                answeredCorrectly++;
+            } else if (psCorrect) {
+                lblFeedback.textContent = `Past Simple poprawne, ale Past Participle powinno być: ${correctPP}`;
+                lblFeedback.className = 'feedback incorrect';
+            } else if (ppCorrect) {
+                lblFeedback.textContent = `Past Participle poprawne, ale Past Simple powinno być: ${correctPS}`;
+                lblFeedback.className = 'feedback incorrect';
+            } else {
+                lblFeedback.textContent = `Obydwie formy niepoprawne. Powinno być: ${correctPS} → ${correctPP}`;
+                lblFeedback.className = 'feedback incorrect';
+            }
+            
+            lblCheckBtn.disabled = true;
+            lblNextBtn.disabled = false;
+            totalAnswered++;
+            updateProgress();
+        }
+        
+        // Podpowiedź dla wpisywania po literze dla grup 1-2
+        function showNextHintBasic() {
             const correctAnswer = lblInput.dataset.answer;
             
             if (currentHintIndex < correctAnswer.length) {
                 lblHint.textContent = correctAnswer.substring(0, currentHintIndex + 1).padEnd(correctAnswer.length, '_');
                 currentHintIndex++;
+            }
+        }
+        
+        // Podpowiedź dla wpisywania po literze dla grup 3-5
+        function showNextHintAdvanced() {
+            const correctPS = lblInputPS.dataset.answer;
+            const correctPP = lblInputPP.dataset.answer;
+            
+            // Najpierw dajemy podpowiedzi dla Past Simple, potem dla Past Participle
+            if (currentHintIndexPS < correctPS.length) {
+                lblHintPS.textContent = correctPS.substring(0, currentHintIndexPS + 1).padEnd(correctPS.length, '_');
+                currentHintIndexPS++;
+            } else if (currentHintIndexPP < correctPP.length) {
+                lblHintPP.textContent = correctPP.substring(0, currentHintIndexPP + 1).padEnd(correctPP.length, '_');
+                currentHintIndexPP++;
             }
         }
         
@@ -1168,7 +1623,7 @@
                     currentInstruction.textContent = 'Wybierz poprawną formę czasownika';
                     break;
                 case 'letterByLetter':
-                    currentInstruction.textContent = 'Wpisz poprawną formę czasownika (litera po literze)';
+                    currentInstruction.textContent = 'Wpisz poprawną formę czasownika';
                     break;
                 case 'translation':
                     currentInstruction.textContent = 'Podaj trzy formy czasownika na podstawie tłumaczenia';
@@ -1188,6 +1643,22 @@
             return array;
         }
         
+        // Pomocnicza funkcja do generowania losowej formy
+        function getRandomForm(originalForm) {
+            // Zmodyfikuj trochę oryginalną formę, żeby wyglądała wiarygodnie ale była błędna
+            if (originalForm.endsWith('en')) {
+                return originalForm.replace(/en$/, 'ed');
+            } else if (originalForm.endsWith('ed')) {
+                return originalForm.replace(/ed$/, 'en');
+            } else if (originalForm.includes('a')) {
+                return originalForm.replace('a', 'e');
+            } else if (originalForm.includes('o')) {
+                return originalForm.replace('o', 'a');
+            } else {
+                return originalForm + 'ed';
+            }
+        }
+        
         // Konfiguracja nasłuchiwaczy zdarzeń
         function setupEventListeners() {
             // Przyciski trybów
@@ -1201,8 +1672,18 @@
             });
             
             // Przyciski dla trybu wpisywania po literze
-            lblCheckBtn.addEventListener('click', checkLBLAnswer);
-            lblHintBtn.addEventListener('click', showNextHint);
+            lblCheckBtn.addEventListener('click', () => {
+                const currentVerb = verbs[currentVerbIndex];
+                if (currentVerb.group <= 2) {
+                    checkLBLAnswerBasic();
+                } else {
+                    checkLBLAnswerAdvanced();
+                }
+            });
+            
+            lblHintBtn.addEventListener('click', showNextHintBasic);
+            lblHintBtnDual.addEventListener('click', showNextHintAdvanced);
+            
             lblNextBtn.addEventListener('click', () => {
                 prepareNextQuestion();
             });
@@ -1210,7 +1691,13 @@
             // Enter dla wpisywania odpowiedzi
             lblInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter' && !lblCheckBtn.disabled) {
-                    checkLBLAnswer();
+                    checkLBLAnswerBasic();
+                }
+            });
+            
+            lblInputPP.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !lblCheckBtn.disabled) {
+                    checkLBLAnswerAdvanced();
                 }
             });
             
@@ -1252,6 +1739,31 @@
                 setActiveFilterButton(showUnmarkedBtn);
                 generateVerbList('unmarked');
             });
+            
+            showGroup1Btn.addEventListener('click', () => {
+                setActiveFilterButton(showGroup1Btn);
+                generateVerbList('group1');
+            });
+            
+            showGroup2Btn.addEventListener('click', () => {
+                setActiveFilterButton(showGroup2Btn);
+                generateVerbList('group2');
+            });
+            
+            showGroup3Btn.addEventListener('click', () => {
+                setActiveFilterButton(showGroup3Btn);
+                generateVerbList('group3');
+            });
+            
+            showGroup4Btn.addEventListener('click', () => {
+                setActiveFilterButton(showGroup4Btn);
+                generateVerbList('group4');
+            });
+            
+            showGroup5Btn.addEventListener('click', () => {
+                setActiveFilterButton(showGroup5Btn);
+                generateVerbList('group5');
+            });
         }
         
         // Ustawianie aktywnego przycisku filtra
@@ -1264,7 +1776,7 @@
         // Uruchom inicjalizację po załadowaniu strony
         window.addEventListener('DOMContentLoaded', init);
         
-        // Tutaj będzie dodana tablica verbs
+        // Tutaj będzie dodana tablica verbs z grupami 1-5
     </script>
 </body>
 </html>
