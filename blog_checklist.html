@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checklista do bloga - Egzamin ósmoklasisty</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 850px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #e74c3c;
+      padding-bottom: 10px;
+    }
+    h2 {
+      color: #e74c3c;
+      margin-top: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .counter {
+      font-size: 0.8em;
+      background-color: #e74c3c;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+    .section {
+      margin-bottom: 30px;
+      border: 1px solid #eee;
+      border-radius: 5px;
+      padding: 15px;
+      background-color: #fdfdfd;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: flex-start;
+    }
+    input[type="checkbox"] {
+      margin-right: 10px;
+      margin-top: 4px;
+    }
+    .phrase {
+      font-weight: bold;
+      color: #2c3e50;
+    }
+    .example {
+      color: #7f8c8d;
+      font-style: italic;
+      display: block;
+      padding-left: 30px;
+      font-size: 0.9em;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #f2f2f2;
+      color: #333;
+    }
+    .print-btn {
+      display: block;
+      margin: 20px auto;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+    .print-btn:hover {
+      background-color: #c0392b;
+    }
+    .progress {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #3498db;
+      color: white;
+      text-align: center;
+      border-radius: 5px;
+    }
+    
+    @media print {
+      body {
+        background-color: white;
+        padding: 0;
+      }
+      .container {
+        box-shadow: none;
+        padding: 0;
+      }
+      .counter, .progress, .print-btn {
+        display: none;
+      }
+      h1 {
+        font-size: 18px;
+      }
+      h2 {
+        font-size: 16px;
+      }
+      .example {
+        font-size: 8px;
+      }
+      li, td, th, .phrase {
+        font-size: 10px;
+      }
+      .section {
+        border: none;
+        padding: 5px;
+        margin-bottom: 10px;
+      }
+      input[type="checkbox"] {
+        margin-right: 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Checklista zwrotów i struktur do bloga - Egzamin ósmoklasisty</h1>
+    
+    <div class="progress">
+      Postęp: <span id="totalChecked">0</span> z <span id="totalItems">0</span> elementów zaznaczonych
+    </div>
+    
+    <div class="section" id="intro-section">
+      <h2>1. Zwroty wprowadzające <span class="counter">0/6</span></h2>
+      <ul id="intro-phrases">
+        <li>
+          <input type="checkbox" class="check-item" data-section="intro">
+          <div>
+            <span class="phrase">Hi everyone!</span>
+            <span class="example">Uniwersalne powitanie do każdego tematu</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="intro">
+          <div>
+            <span class="phrase">I've got news for you!</span>
+            <span class="example">"I've got news for you! Last weekend I visited..." / "I've got news for you! I've just learned how to..."</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="intro">
+          <div>
+            <span class="phrase">Guess what happened!</span>
+            <span class="example">Idealne wprowadzenie do opowiadania o zaskakującym wydarzeniu</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="intro">
+          <div>
+            <span class="phrase">I'm writing this post to tell you about...</span>
+            <span class="example">"I'm writing this post to tell you about my trip/new hobby/interesting experience"</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="intro">
+          <div>
+            <span class="phrase">Today, I'd like to write about...</span>
+            <span class="example">"Today, I'd like to write about my recent discovery/adventure/school project"</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="intro">
+          <div>
+            <span class="phrase">You won't believe what I experienced recently!</span>
+            <span class="example">Dobre wprowadzenie do każdej niespodziewanej sytuacji</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="section" id="opinion-section">
+      <h2>2. Wyrażanie opinii <span class="counter">0/6</span></h2>
+      <ul id="opinion-phrases">
+        <li>
+          <input type="checkbox" class="check-item" data-section="opinion">
+          <div>
+            <span class="phrase">In my opinion...</span>
+            <span class="example">"In my opinion, this was the best decision I've ever made"</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="opinion">
+          <div>
+            <span class="phrase">As far as I'm concerned...</span>
+            <span class="example">"As far as I'm concerned, winter holidays are better than summer ones"</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="opinion">
+          <div>
+            <span class="phrase">I think that...</span>
+            <span class="example">Można dodać do każdej opinii na dowolny temat</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="opinion">
+          <div>
+            <span class="phrase">I believe (that)...</span>
+            <span class="example">"I believe that everyone should try this at least once"</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="opinion">
+          <div>
+            <span class="phrase">Personally, I feel...</span>
+            <span class="example">"Personally, I feel this experience changed me a lot"</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="opinion">
+          <div>
+            <span class="phrase">I couldn't agree more that...</span>
+            <span class="example">"I couldn't agree more that learning languages is important"</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="section" id="connecting-section">
+      <h2>3. Wyrażenia łączące <span class="counter">0/6</span></h2>
+      <ul id="connecting-phrases">
+        <li>
+          <input type="checkbox" class="check-item" data-section="connecting">
+          <div>
+            <span class="phrase">First(ly)... / Second(ly)... / Finally...</span>
+            <span class="example">Numerowanie punktów/etapów w każdym opisie</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="connecting">
+          <div>
+            <span class="phrase">At the beginning... / In the end...</span>
+            <span class="example">Porządkowanie chronologiczne wydarzeń</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="connecting">
+          <div>
+            <span class="phrase">However, ... / Nevertheless, ...</span>
+            <span class="example">Wprowadzanie kontrastu w każdej sytuacji</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="connecting">
+          <div>
+            <span class="phrase">Fortunately, ... / Unfortunately, ...</span>
+            <span class="example">Wartościowanie pozytywne/negatywne dowolnych wydarzeń</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="connecting">
+          <div>
+            <span class="phrase">On the one hand... / On the other hand...</span>
+            <span class="example">Przedstawianie dwóch stron w każdej sytuacji</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="connecting">
+          <div>
+            <span class="phrase">As a result... / Consequently...</span>
+            <span class="example">Pokazywanie skutków wydarzeń</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="section" id="interactive-section">
+      <h2>4. Zwroty interakcyjne <span class="counter">0/6</span></h2>
+      <ul id="interactive-phrases">
+        <li>
+          <input type="checkbox" class="check-item" data-section="interactive">
+          <div>
+            <span class="phrase">What do you think about...?</span>
+            <span class="example">"What do you think about trying new sports?" / "What do you think about visiting this place?"</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="interactive">
+          <div>
+            <span class="phrase">Have you ever...?</span>
+            <span class="example">"Have you ever been to the mountains in winter?" / "Have you ever tried cooking pasta from scratch?"</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="interactive">
+          <div>
+            <span class="phrase">Do you agree that...?</span>
+            <span class="example">"Do you agree that books are better than their film adaptations?"</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="interactive">
+          <div>
+            <span class="phrase">What would you do if...?</span>
+            <span class="example">"What would you do if you were in my situation?"</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="interactive">
+          <div>
+            <span class="phrase">I'd love to hear your experiences.</span>
+            <span class="example">Uniwersalne zakończenie każdego wpisu</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="interactive">
+          <div>
+            <span class="phrase">Leave a comment.</span>
+            <span class="example">Standardowe zakończenie każdego bloga</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="section" id="closing-section">
+      <h2>5. Wyrażenia kończące <span class="counter">0/6</span></h2>
+      <ul id="closing-phrases">
+        <li>
+          <input type="checkbox" class="check-item" data-section="closing">
+          <div>
+            <span class="phrase">Thanks for visiting my blog.</span>
+            <span class="example">Uniwersalne podziękowanie</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="closing">
+          <div>
+            <span class="phrase">Till the next time!</span>
+            <span class="example">Pożegnanie pasujące do każdego tematu</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="closing">
+          <div>
+            <span class="phrase">I'll be waiting for your comments.</span>
+            <span class="example">Zachęta do interakcji</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="closing">
+          <div>
+            <span class="phrase">I hope you found this interesting.</span>
+            <span class="example">Dobre zamknięcie dla każdego tematu</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="closing">
+          <div>
+            <span class="phrase">That's all for today.</span>
+            <span class="example">Proste i uniwersalne zakończenie</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" class="check-item" data-section="closing">
+          <div>
+            <span class="phrase">I must be going now.</span>
+            <span class="example">Naturalne pożegnanie</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="section" id="grammar-section">
+      <h2>6. Kluczowe struktury gramatyczne <span class="counter">0/7</span></h2>
+      <table>
+        <tr>
+          <th>Struktura</th>
+          <th>Przykład</th>
+          <th>Punkty za zakres</th>
+          <th>✓</th>
+        </tr>
+        <tr>
+          <td><strong>Strona bierna (Passive Voice)</strong></td>
+          <td>"The event was organized by our school." / "The hotel was built last year."</td>
+          <td>+++++</td>
+          <td><input type="checkbox" class="check-item" data-section="grammar"></td>
+        </tr>
+        <tr>
+          <td><strong>Zdania warunkowe (Conditionals)</strong></td>
+          <td>"If I went there again, I would visit the museum." / "If you ever travel there, you should try local food."</td>
+          <td>+++++</td>
+          <td><input type="checkbox" class="check-item" data-section="grammar"></td>
+        </tr>
+        <tr>
+          <td><strong>Zdania z "which/who/that"</strong></td>
+          <td>"The place which I visited was amazing." / "The people who helped us were very friendly."</td>
+          <td>+++</td>
+          <td><input type="checkbox" class="check-item" data-section="grammar"></td>
+        </tr>
+        <tr>
+          <td><strong>Present Perfect</strong></td>
+          <td>"I have never seen such beautiful views before." / "She has just called me with good news."</td>
+          <td>++++</td>
+          <td><input type="checkbox" class="check-item" data-section="grammar"></td>
+        </tr>
+        <tr>
+          <td><strong>Konstrukcje z "-ing"</strong></td>
+          <td>"I enjoy visiting new places." / "After spending the whole day outside, I was exhausted."</td>
+          <td>++</td>
+          <td><input type="checkbox" class="check-item" data-section="grammar"></td>
+        </tr>
+        <tr>
+          <td><strong>Konstrukcje z "too/enough"</strong></td>
+          <td>"The weather was too cold for swimming." / "The room wasn't big enough for all of us."</td>
+          <td>+++</td>
+          <td><input type="checkbox" class="check-item" data-section="grammar"></td>
+        </tr>
+        <tr>
+          <td><strong>Stopniowanie przymiotników</strong></td>
+          <td>"It was the most exciting day of my life." / "This trip was better than the previous one."</td>
+          <td>++</td>
+          <td><input type="checkbox" class="check-item" data-section="grammar"></td>
+        </tr>
+      </table>
+    </div>
+    
+    <div class="section" id="vocabulary-section">
+      <h2>7. Wzbogacanie słownictwa <span class="counter">0/8</span></h2>
+      <table>
+        <tr>
+          <th>Prosty wyraz</th>
+          <th>Lepsze alternatywy</th>
+          <th>✓</th>
+        </tr>
+        <tr>
+          <td>good</td>
+          <td>excellent, fantastic, wonderful, incredible</td>
+          <td><input type="checkbox" class="check-item" data-section="vocabulary"></td>
+        </tr>
+        <tr>
+          <td>bad</td>
+          <td>terrible, awful, disappointing, dreadful</td>
+          <td><input type="checkbox" class="check-item" data-section="vocabulary"></td>
+        </tr>
+        <tr>
+          <td>nice</td>
+          <td>pleasant, delightful, charming, lovely</td>
+          <td><input type="checkbox" class="check-item" data-section="vocabulary"></td>
+        </tr>
+        <tr>
+          <td>happy</td>
+          <td>delighted, thrilled, overjoyed, ecstatic</td>
+          <td><input type="checkbox" class="check-item" data-section="vocabulary"></td>
+        </tr>
+        <tr>
+          <td>sad</td>
+          <td>upset, devastated, heartbroken, miserable</td>
+          <td><input type="checkbox" class="check-item" data-section="vocabulary"></td>
+        </tr>
+        <tr>
+          <td>big</td>
+          <td>enormous, massive, huge, gigantic</td>
+          <td><input type="checkbox" class="check-item" data-section="vocabulary"></td>
+        </tr>
+        <tr>
+          <td>small</td>
+          <td>tiny, miniature, petite, microscopic</td>
+          <td><input type="checkbox" class="check-item" data-section="vocabulary"></td>
+        </tr>
+        <tr>
+          <td>interesting</td>
+          <td>fascinating, captivating, intriguing, engaging</td>
+          <td><input type="checkbox" class="check-item" data-section="vocabulary"></td>
+        </tr>
+      </table>
+    </div>
+    
+    <div class="section" id="idioms-section">
+      <h2>8. Idiomatyczne wyrażenia emocjonalne <span class="counter">0/6</span></h2>
+      <table>
+        <tr>
+          <th>Wyrażenie</th>
+          <th>Zastosowanie</th>
+          <th>✓</th>
+        </tr>
+        <tr>
+          <td>I was over the moon when...</td>
+          <td>Wyrażanie wielkiej radości z dowolnego wydarzenia</td>
+          <td><input type="checkbox" class="check-item" data-section="idioms"></td>
+        </tr>
+        <tr>
+          <td>It took my breath away.</td>
+          <td>Opisywanie zachwytu (widokami, przeżyciami)</td>
+          <td><input type="checkbox" class="check-item" data-section="idioms"></td>
+        </tr>
+        <tr>
+          <td>I couldn't believe my eyes when...</td>
+          <td>Wyrażanie zaskoczenia w każdej sytuacji</td>
+          <td><input type="checkbox" class="check-item" data-section="idioms"></td>
+        </tr>
+        <tr>
+          <td>It made my day.</td>
+          <td>Opisywanie pozytywnego wpływu wydarzeń</td>
+          <td><input type="checkbox" class="check-item" data-section="idioms"></td>
+        </tr>
+        <tr>
+          <td>I was on cloud nine.</td>
+          <td>Wyrażanie szczęścia z dowolnego powodu</td>
+          <td><input type="checkbox" class="check-item" data-section="idioms"></td>
+        </tr>
+        <tr>
+          <td>I'll never forget it.</td>
+          <td>Uniwersalne dla każdego ważnego doświadczenia</td>
+          <td><input type="checkbox" class="check-item" data-section="idioms"></td>
+        </tr>
+      </table>
+    </div>
+    
+    <button class="print-btn" onclick="window.print()">Drukuj checklistę</button>
+    
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const checkboxes = document.querySelectorAll('.check-item');
+      const totalItemsElement = document.getElementById('totalItems');
+      const totalCheckedElement = document.getElementById('totalChecked');
+      const sections = {
+        'intro': { count: 0, total: 6 },
+        'opinion': { count: 0, total: 6 },
+        'connecting': { count: 0, total: 6 },
+        'interactive': { count: 0, total: 6 },
+        'closing': { count: 0, total: 6 },
+        'grammar': { count: 0, total: 7 },
+        'vocabulary': { count: 0, total: 8 },
+        'idioms': { count: 0, total: 6 }
+      };
+      
+      // Set initial total
+      let totalItems = checkboxes.length;
+      totalItemsElement.textContent = totalItems;
+      
+      // Add event listeners to checkboxes
+      checkboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', updateCounts);
+      });
+      
+      function updateCounts() {
+        let totalChecked = 0;
+        
+        // Reset section counts
+        Object.keys(sections).forEach(key => {
+          sections[key].count = 0;
+        });
+        
+        // Count checked boxes by section
+        checkboxes.forEach(function(checkbox) {
+          if (checkbox.checked) {
+            totalChecked++;
+            const section = checkbox.getAttribute('data-section');
+            if (section && sections[section]) {
+              sections[section].count++;
+            }
+          }
+        });
+        
+        // Update counters
+        totalCheckedElement.textContent = totalChecked;
+        
+        // Update section counters
+        Object.keys(sections).forEach(key => {
+          const sectionElement = document.getElementById(key + "-section");
+          if (sectionElement) {
+            const counter = sectionElement.querySelector('.counter');
+            if (counter) {
+              counter.textContent = `${sections[key].count}/${sections[key].total}`;
+            }
+          }
+        });
+        
+        // Update progress
+        const progressPercentage = Math.round((totalChecked / totalItems) * 100);
+        document.querySelector('.progress').style.background = 
+          `linear-gradient(to right, #3498db ${progressPercentage}%, #f5f5f5 ${progressPercentage}%)`;
+      }
+    });
+  </script>
+</body>
+</html>
