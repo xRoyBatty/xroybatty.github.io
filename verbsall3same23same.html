@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktywna nauka czasowników nieregularnych</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .grouped-heading {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .grouped-heading h2 {
+            margin-right: 10px;
+        }
+
+        .group-badge {
+            background-color: #e9ecef;
+            border-radius: 20px;
+            padding: 3px 10px;
+            font-size: 14px;
+            font-weight: normal;
+        }
+
+        .group-1 {
+            background-color: #d4f1f9;
+        }
+
+        .group-2 {
+            background-color: #d4e6f9;
+        }
+
+        .mode-selector {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        .mode-selector button {
+            padding: 12px 20px;
+            background-color: #e9ecef;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+
+        .mode-selector button.active {
+            background-color: #4361ee;
+            color: white;
+            font-weight: bold;
+        }
+
+        .instruction {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+
+        .exercise-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .exercise-section.active {
+            display: block;
+        }
+
+        .question-container {
+            margin-bottom: 20px;
+        }
+
+        .question-container p {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-size: 17px;
+        }
+
+        .option:hover {
+            background-color: #dee2e6;
+        }
+
+        .option.correct {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .option.incorrect {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        .controls button {
+            padding: 10px 20px;
+            background-color: #4361ee;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+
+        .controls button:disabled {
+            background-color: #dee2e6;
+            cursor: not-allowed;
+        }
+
+        .input-container {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .input-container input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 5px 0 0 5px;
+            font-size: 18px;
+        }
+
+        .input-container input:focus {
+            outline: none;
+            border-color: #4361ee;
+        }
+
+        .input-container button {
+            padding: 12px 20px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .hint {
+            font-style: italic;
+            color: #6c757d;
+            margin-top: 15px;
+            font-size: 18px;
+            letter-spacing: 3px;
+        }
+
+        .progress-container {
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background-color: #e9ecef;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        #progressFill {
+            height: 100%;
+            background-color: #4361ee;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        #progressInfo {
+            text-align: right;
+            font-size: 16px;
+            color: #6c757d;
+        }
+
+        .verb-list-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+
+        .verb-list-container h2 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-size: 24px;
+        }
+
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-container button {
+            padding: 8px 15px;
+            background-color: #e9ecef;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-container button.active {
+            background-color: #4361ee;
+            color: white;
+        }
+
+        .verb-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .verb-item {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .verb-item:hover {
+            background-color: #e9ecef;
+        }
+
+        .verb-info {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .verb-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .verb-actions button {
+            padding: 5px 10px;
+            background-color: #e9ecef;
+            border: none;
+            border-radius: 3px;
+            font-size: 14px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .verb-actions button.active {
+            background-color: #4361ee;
+            color: white;
+        }
+
+        .verb-item.known {
+            border-left: 5px solid #28a745;
+        }
+
+        .verb-item.easy {
+            border-left: 5px solid #17a2b8;
+        }
+
+        .verb-item.hard {
+            border-left: 5px solid #dc3545;
+        }
+
+        .translation {
+            color: #666;
+            font-style: italic;
+            margin-top: 5px;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .feedback.correct {
+            color: #28a745;
+        }
+
+        .feedback.incorrect {
+            color: #dc3545;
+        }
+
+        .translation-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .translation-inputs input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .translation-inputs input:focus {
+            outline: none;
+            border-color: #4361ee;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #6c757d;
+        }
+
+        @media (max-width: 768px) {
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .verb-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .input-container {
+                flex-direction: column;
+            }
+            
+            .input-container input {
+                border-radius: 5px;
+                margin-bottom: 10px;
+            }
+            
+            .input-container button {
+                border-radius: 5px;
+            }
+            
+            .translation-inputs {
+                grid-template-columns: 1fr;
+            }
+            
+            .mode-selector {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Nauka angielskich czasowników nieregularnych</h1>
+            <p>Zdobywaj wiedzę krok po kroku i śledź swoje postępy w nauce</p>
+        </header>
+        
+        <div class="mode-selector">
+            <button id="multipleChoiceBtn" class="active">Test wielokrotnego wyboru</button>
+            <button id="letterByLetterBtn">Wpisywanie po literze</button>
+            <button id="translationBtn">Tłumaczenie z polskiego</button>
+        </div>
+        
+        <div class="instruction">
+            <p id="currentInstruction">Wybierz poprawną formę czasownika</p>
+        </div>
+        
+        <div id="multipleChoiceSection" class="exercise-section active">
+            <div class="question-container">
+                <p id="mcQuestion"></p>
+                <div id="mcOptions" class="options-container"></div>
+                <div id="mcFeedback" class="feedback"></div>
+            </div>
+            <div class="controls">
+                <button id="mcNextBtn">Następne pytanie</button>
+            </div>
+        </div>
+        
+        <div id="letterByLetterSection" class="exercise-section">
+            <div class="question-container">
+                <p id="lblQuestion"></p>
+                <div class="input-container">
+                    <input type="text" id="lblInput" placeholder="Wpisz odpowiedź...">
+                    <button id="lblHintBtn">Podpowiedź</button>
+                </div>
+                <p id="lblHint" class="hint"></p>
+                <div id="lblFeedback" class="feedback"></div>
+            </div>
+            <div class="controls">
+                <button id="lblCheckBtn">Sprawdź</button>
+                <button id="lblNextBtn" disabled>Następne pytanie</button>
+            </div>
+        </div>
+        
+        <div id="translationSection" class="exercise-section">
+            <div class="question-container">
+                <p id="trQuestion"></p>
+                <div class="translation-inputs">
+                    <div>
+                        <label class="input-label" for="trInfinitive">Infinitive:</label>
+                        <input type="text" id="trInfinitive" placeholder="Bezokolicznik...">
+                    </div>
+                    <div>
+                        <label class="input-label" for="trPastSimple">Past Simple:</label>
+                        <input type="text" id="trPastSimple" placeholder="Czas przeszły prosty...">
+                    </div>
+                    <div>
+                        <label class="input-label" for="trPastParticiple">Past Participle:</label>
+                        <input type="text" id="trPastParticiple" placeholder="Imiesłów bierny...">
+                    </div>
+                </div>
+                <div id="trFeedback" class="feedback"></div>
+            </div>
+            <div class="controls">
+                <button id="trCheckBtn">Sprawdź</button>
+                <button id="trNextBtn" disabled>Następne pytanie</button>
+            </div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div id="progressFill"></div>
+            </div>
+            <p id="progressInfo">Postęp: 0/0 (0.0%)</p>
+        </div>
+        
+        <div class="verb-list-container">
+            <div class="grouped-heading">
+                <h2>Lista czasowników</h2>
+                <span id="verbCounter" class="group-badge">36 czasowników</span>
+            </div>
+            <div class="filter-container">
+                <button id="showAllBtn" class="active">Wszystkie</button>
+                <button id="showKnownBtn">Umiem</button>
+                <button id="showEasyBtn">Łatwe</button>
+                <button id="showHardBtn">Trudne</button>
+                <button id="showUnmarkedBtn">Nieoznaczone</button>
+            </div>
+            <div class="verb-list" id="verbList"></div>
+        </div>
+    </div>
+    
+    <script>
+// Baza czasowników - połączone dwie grupy
+        const verbs = [
+            // Grupa 1: Czasowniki o identycznej formie we wszystkich trzech kolumnach
+            { 
+                infinitive: 'cut', 
+                pastSimple: 'cut', 
+                pastParticiple: 'cut', 
+                translation: 'ciąć',
+                group: 1,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'hit', 
+                pastSimple: 'hit', 
+                pastParticiple: 'hit', 
+                translation: 'uderzać',
+                group: 1,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'put', 
+                pastSimple: 'put', 
+                pastParticiple: 'put', 
+                translation: 'kłaść',
+                group: 1,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'set', 
+                pastSimple: 'set', 
+                pastParticiple: 'set', 
+                translation: 'ustawić',
+                group: 1,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'let', 
+                pastSimple: 'let', 
+                pastParticiple: 'let', 
+                translation: 'pozwolić',
+                group: 1,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'cost', 
+                pastSimple: 'cost', 
+                pastParticiple: 'cost', 
+                translation: 'kosztować',
+                group: 1,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'hurt', 
+                pastSimple: 'hurt', 
+                pastParticiple: 'hurt', 
+                translation: 'ranić',
+                group: 1,
+                status: 'unmarked'
+            },
+            
+            // Grupa 2: Czasowniki z tą samą formą w Past Simple i Past Participle
+            { 
+                infinitive: 'bring', 
+                pastSimple: 'brought', 
+                pastParticiple: 'brought', 
+                translation: 'przynosić',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'build', 
+                pastSimple: 'built', 
+                pastParticiple: 'built', 
+                translation: 'budować',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'buy', 
+                pastSimple: 'bought', 
+                pastParticiple: 'bought', 
+                translation: 'kupować',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'catch', 
+                pastSimple: 'caught', 
+                pastParticiple: 'caught', 
+                translation: 'łapać',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'feel', 
+                pastSimple: 'felt', 
+                pastParticiple: 'felt', 
+                translation: 'czuć (się)',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'find', 
+                pastSimple: 'found', 
+                pastParticiple: 'found', 
+                translation: 'znajdować',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'fight', 
+                pastSimple: 'fought', 
+                pastParticiple: 'fought', 
+                translation: 'walczyć',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'have', 
+                pastSimple: 'had', 
+                pastParticiple: 'had', 
+                translation: 'mieć',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'hear', 
+                pastSimple: 'heard', 
+                pastParticiple: 'heard', 
+                translation: 'słyszeć',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'hold', 
+                pastSimple: 'held', 
+                pastParticiple: 'held', 
+                translation: 'trzymać',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'keep', 
+                pastSimple: 'kept', 
+                pastParticiple: 'kept', 
+                translation: '(za)trzymać',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'leave', 
+                pastSimple: 'left', 
+                pastParticiple: 'left', 
+                translation: 'opuszczać',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'lend', 
+                pastSimple: 'lent', 
+                pastParticiple: 'lent', 
+                translation: 'pożyczyć (komuś)',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'lose', 
+                pastSimple: 'lost', 
+                pastParticiple: 'lost', 
+                translation: 'gubić, stracić',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'make', 
+                pastSimple: 'made', 
+                pastParticiple: 'made', 
+                translation: 'robić',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'meet', 
+                pastSimple: 'met', 
+                pastParticiple: 'met', 
+                translation: 'spotykać',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'pay', 
+                pastSimple: 'paid', 
+                pastParticiple: 'paid', 
+                translation: 'płacić',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'say', 
+                pastSimple: 'said', 
+                pastParticiple: 'said', 
+                translation: 'mówić',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'sell', 
+                pastSimple: 'sold', 
+                pastParticiple: 'sold', 
+                translation: 'sprzedawać',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'send', 
+                pastSimple: 'sent', 
+                pastParticiple: 'sent', 
+                translation: 'wysyłać',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'sleep', 
+                pastSimple: 'slept', 
+                pastParticiple: 'slept', 
+                translation: 'spać',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'spend', 
+                pastSimple: 'spent', 
+                pastParticiple: 'spent', 
+                translation: 'spędzać, wydawać',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'stand', 
+                pastSimple: 'stood', 
+                pastParticiple: 'stood', 
+                translation: 'stać',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'sweep', 
+                pastSimple: 'swept', 
+                pastParticiple: 'swept', 
+                translation: 'zamiatać',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'teach', 
+                pastSimple: 'taught', 
+                pastParticiple: 'taught', 
+                translation: 'uczyć (kogoś)',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'tell', 
+                pastSimple: 'told', 
+                pastParticiple: 'told', 
+                translation: 'powiedzieć, opowiadać',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'think', 
+                pastSimple: 'thought', 
+                pastParticiple: 'thought', 
+                translation: 'myśleć',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'understand', 
+                pastSimple: 'understood', 
+                pastParticiple: 'understood', 
+                translation: 'rozumieć',
+                group: 2,
+                status: 'unmarked'
+            },
+            { 
+                infinitive: 'win', 
+                pastSimple: 'won', 
+                pastParticiple: 'won', 
+                translation: 'wygrywać',
+                group: 2,
+                status: 'unmarked'
+            }
+        ];        
+        // Zmienne globalne
+        let currentMode = 'multipleChoice';
+        let currentVerbIndex = -1;
+        let answeredCorrectly = 0;
+        let totalAnswered = 0;
+        let currentHintIndex = 0;
+        
+        // Elementy DOM - Multiple Choice
+        const multipleChoiceBtn = document.getElementById('multipleChoiceBtn');
+        const letterByLetterBtn = document.getElementById('letterByLetterBtn');
+        const translationBtn = document.getElementById('translationBtn');
+        const currentInstruction = document.getElementById('currentInstruction');
+        
+        const multipleChoiceSection = document.getElementById('multipleChoiceSection');
+        const letterByLetterSection = document.getElementById('letterByLetterSection');
+        const translationSection = document.getElementById('translationSection');
+        
+        const mcQuestion = document.getElementById('mcQuestion');
+        const mcOptions = document.getElementById('mcOptions');
+        const mcFeedback = document.getElementById('mcFeedback');
+        const mcNextBtn = document.getElementById('mcNextBtn');
+        
+        // Elementy DOM - Letter by Letter
+        const lblQuestion = document.getElementById('lblQuestion');
+        const lblInput = document.getElementById('lblInput');
+        const lblHintBtn = document.getElementById('lblHintBtn');
+        const lblHint = document.getElementById('lblHint');
+        const lblFeedback = document.getElementById('lblFeedback');
+        const lblCheckBtn = document.getElementById('lblCheckBtn');
+        const lblNextBtn = document.getElementById('lblNextBtn');
+        
+        // Elementy DOM - Translation
+        const trQuestion = document.getElementById('trQuestion');
+        const trInfinitive = document.getElementById('trInfinitive');
+        const trPastSimple = document.getElementById('trPastSimple');
+        const trPastParticiple = document.getElementById('trPastParticiple');
+        const trFeedback = document.getElementById('trFeedback');
+        const trCheckBtn = document.getElementById('trCheckBtn');
+        const trNextBtn = document.getElementById('trNextBtn');
+        
+        // Elementy DOM - Progress i Lista
+        const progressFill = document.getElementById('progressFill');
+        const progressInfo = document.getElementById('progressInfo');
+        const verbCounter = document.getElementById('verbCounter');
+        const verbList = document.getElementById('verbList');
+        
+        // Elementy DOM - Filtry
+        const showAllBtn = document.getElementById('showAllBtn');
+        const showKnownBtn = document.getElementById('showKnownBtn');
+        const showEasyBtn = document.getElementById('showEasyBtn');
+        const showHardBtn = document.getElementById('showHardBtn');
+        const showUnmarkedBtn = document.getElementById('showUnmarkedBtn');
+        
+        // Inicjalizacja
+        function init() {
+            // Ustaw licznik czasowników
+            verbCounter.textContent = `${verbs.length} czasowników`;
+            
+            // Generuj listę czasowników
+            generateVerbList();
+            
+            // Przygotuj pierwsze pytanie
+            prepareNextQuestion();
+            
+            // Dodaj nasłuchiwacze zdarzeń
+            setupEventListeners();
+        }
+        
+        // Generowanie listy czasowników
+        function generateVerbList(filter = 'all') {
+            verbList.innerHTML = '';
+            
+            verbs.forEach((verb, index) => {
+                if (filter !== 'all') {
+                    if (filter === 'known' && verb.status !== 'known') return;
+                    if (filter === 'easy' && verb.status !== 'easy') return;
+                    if (filter === 'hard' && verb.status !== 'hard') return;
+                    if (filter === 'unmarked' && verb.status !== 'unmarked') return;
+                }
+                
+                const verbItem = document.createElement('div');
+                verbItem.className = `verb-item ${verb.status}`;
+                verbItem.dataset.index = index;
+                
+                verbItem.innerHTML = `
+                    <div class="verb-info">
+                        <strong>${verb.infinitive}</strong> → ${verb.pastSimple} → ${verb.pastParticiple}
+                        <div class="translation">${verb.translation}</div>
+                    </div>
+                    <div class="verb-actions">
+                        <button class="known-btn ${verb.status === 'known' ? 'active' : ''}">Umiem</button>
+                        <button class="easy-btn ${verb.status === 'easy' ? 'active' : ''}">Łatwe</button>
+                        <button class="hard-btn ${verb.status === 'hard' ? 'active' : ''}">Trudne</button>
+                    </div>
+                `;
+                
+                verbList.appendChild(verbItem);
+                
+                // Dodaj nasłuchiwacze zdarzeń dla przycisków
+                const knownBtn = verbItem.querySelector('.known-btn');
+                const easyBtn = verbItem.querySelector('.easy-btn');
+                const hardBtn = verbItem.querySelector('.hard-btn');
+                
+                knownBtn.addEventListener('click', () => {
+                    updateVerbStatus(index, 'known');
+                });
+                
+                easyBtn.addEventListener('click', () => {
+                    updateVerbStatus(index, 'easy');
+                });
+                
+                hardBtn.addEventListener('click', () => {
+                    updateVerbStatus(index, 'hard');
+                });
+            });
+        }
+        
+        // Aktualizacja statusu czasownika
+        function updateVerbStatus(index, status) {
+            const currentStatus = verbs[index].status;
+            
+            // Jeśli ten sam status został kliknięty, usuń go
+            if (currentStatus === status) {
+                verbs[index].status = 'unmarked';
+            } else {
+                verbs[index].status = status;
+            }
+            
+            // Odśwież listę
+            const activeFilter = document.querySelector('.filter-container button.active').id;
+            const filterMap = {
+                'showAllBtn': 'all',
+                'showKnownBtn': 'known',
+                'showEasyBtn': 'easy',
+                'showHardBtn': 'hard',
+                'showUnmarkedBtn': 'unmarked'
+            };
+            
+            generateVerbList(filterMap[activeFilter]);
+        }
+        
+        // Przygotowanie następnego pytania
+        function prepareNextQuestion() {
+            // Wybierz losowy czasownik
+            const previousIndex = currentVerbIndex;
+            do {
+                currentVerbIndex = Math.floor(Math.random() * verbs.length);
+            } while (verbs.length > 1 && currentVerbIndex === previousIndex);
+            
+            const currentVerb = verbs[currentVerbIndex];
+            
+            switch (currentMode) {
+                case 'multipleChoice':
+                    prepareMCQuestion(currentVerb);
+                    break;
+                case 'letterByLetter':
+                    prepareLBLQuestion(currentVerb);
+                    break;
+                case 'translation':
+                    prepareTranslationQuestion(currentVerb);
+                    break;
+            }
+        }
+        
+        // Przygotowanie pytania wielokrotnego wyboru
+        function prepareMCQuestion(verb) {
+            // Losowo wybierz, jakiej formy pytamy (Past Simple lub Past Participle)
+            const askingForPastSimple = Math.random() > 0.5;
+            
+            if (askingForPastSimple) {
+                mcQuestion.textContent = `Jaka jest forma Past Simple dla "${verb.infinitive}" (${verb.translation})?`;
+            } else {
+                mcQuestion.textContent = `Jaka jest forma Past Participle dla "${verb.infinitive}" (${verb.translation})?`;
+            }
+            
+            // Przygotuj opcje
+            const correctAnswer = askingForPastSimple ? verb.pastSimple : verb.pastParticiple;
+            const options = [correctAnswer];
+            
+            // Dodaj 3 niepoprawne opcje
+            while (options.length < 4) {
+                const randomVerb = verbs[Math.floor(Math.random() * verbs.length)];
+                const randomOption = askingForPastSimple ? randomVerb.pastSimple : randomVerb.pastParticiple;
+                
+                if (!options.includes(randomOption) && randomOption !== correctAnswer) {
+                    options.push(randomOption);
+                }
+            }
+            
+            // Pomieszaj opcje
+            shuffleArray(options);
+            
+            // Renderuj opcje
+            mcOptions.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.addEventListener('click', () => {
+                    handleMCAnswer(option, correctAnswer, askingForPastSimple);
+                });
+                mcOptions.appendChild(optionElement);
+            });
+            
+            // Zresetuj feedback
+            mcFeedback.textContent = '';
+            mcFeedback.className = 'feedback';
+            mcNextBtn.disabled = true;
+        }
+        
+        // Obsługa odpowiedzi wielokrotnego wyboru
+        function handleMCAnswer(selectedOption, correctAnswer, askingForPastSimple) {
+            const options = mcOptions.querySelectorAll('.option');
+            let isCorrect = selectedOption === correctAnswer;
+            
+            // Zablokuj wszystkie opcje
+            options.forEach(option => {
+                option.style.pointerEvents = 'none';
+                
+                if (option.textContent === correctAnswer) {
+                    option.classList.add('correct');
+                } else if (option.textContent === selectedOption && selectedOption !== correctAnswer) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            // Aktualizuj feedback
+            if (isCorrect) {
+                mcFeedback.textContent = 'Poprawna odpowiedź!';
+                mcFeedback.className = 'feedback correct';
+                answeredCorrectly++;
+            } else {
+                mcFeedback.textContent = `Niepoprawna odpowiedź. Poprawna to: ${correctAnswer}`;
+                mcFeedback.className = 'feedback incorrect';
+            }
+            
+            // Włącz przycisk "Następne"
+            mcNextBtn.disabled = false;
+            
+            // Aktualizuj licznik
+            totalAnswered++;
+            updateProgress();
+        }
+        
+        // Przygotowanie pytania wpisywania po literze
+        function prepareLBLQuestion(verb) {
+            // Losowo wybierz, jakiej formy pytamy (Past Simple lub Past Participle)
+            const askingForPastSimple = Math.random() > 0.5;
+            
+            if (askingForPastSimple) {
+                lblQuestion.textContent = `Wpisz formę Past Simple dla "${verb.infinitive}" (${verb.translation}):`;
+                lblInput.dataset.answer = verb.pastSimple;
+            } else {
+                lblQuestion.textContent = `Wpisz formę Past Participle dla "${verb.infinitive}" (${verb.translation}):`;
+                lblInput.dataset.answer = verb.pastParticiple;
+            }
+            
+            // Zresetuj input, hint i feedback
+            lblInput.value = '';
+            lblHint.textContent = '';
+            lblFeedback.textContent = '';
+            lblFeedback.className = 'feedback';
+            
+            // Zresetuj indeks podpowiedzi
+            currentHintIndex = 0;
+            
+            // Zresetuj przyciski
+            lblCheckBtn.disabled = false;
+            lblNextBtn.disabled = true;
+        }
+        
+        // Obsługa sprawdzania odpowiedzi wpisywanej po literze
+        function checkLBLAnswer() {
+            const correctAnswer = lblInput.dataset.answer;
+            const userAnswer = lblInput.value.trim().toLowerCase();
+            
+            if (userAnswer === correctAnswer.toLowerCase()) {
+                lblFeedback.textContent = 'Poprawna odpowiedź!';
+                lblFeedback.className = 'feedback correct';
+                lblCheckBtn.disabled = true;
+                lblNextBtn.disabled = false;
+                answeredCorrectly++;
+            } else {
+                lblFeedback.textContent = `Niepoprawna odpowiedź. Poprawna to: ${correctAnswer}`;
+                lblFeedback.className = 'feedback incorrect';
+                lblCheckBtn.disabled = true;
+                lblNextBtn.disabled = false;
+            }
+            
+            totalAnswered++;
+            updateProgress();
+        }
+        
+        // Podpowiedź dla wpisywania po literze
+        function showNextHint() {
+            const correctAnswer = lblInput.dataset.answer;
+            
+            if (currentHintIndex < correctAnswer.length) {
+                lblHint.textContent = correctAnswer.substring(0, currentHintIndex + 1).padEnd(correctAnswer.length, '_');
+                currentHintIndex++;
+            }
+        }
+        
+        // Przygotowanie pytania z tłumaczenia
+        function prepareTranslationQuestion(verb) {
+            trQuestion.textContent = `Podaj trzy formy czasownika dla "${verb.translation}":`;
+            
+            // Zresetuj inputy i feedback
+            trInfinitive.value = '';
+            trPastSimple.value = '';
+            trPastParticiple.value = '';
+            trFeedback.textContent = '';
+            trFeedback.className = 'feedback';
+            
+            // Zresetuj przyciski
+            trCheckBtn.disabled = false;
+            trNextBtn.disabled = true;
+        }
+        
+        // Obsługa sprawdzania odpowiedzi z tłumaczenia
+        function checkTranslationAnswer() {
+            const currentVerb = verbs[currentVerbIndex];
+            const userInfinitive = trInfinitive.value.trim().toLowerCase();
+            const userPastSimple = trPastSimple.value.trim().toLowerCase();
+            const userPastParticiple = trPastParticiple.value.trim().toLowerCase();
+            
+            const correctInfinitive = currentVerb.infinitive.toLowerCase();
+            const correctPastSimple = currentVerb.pastSimple.toLowerCase();
+            const correctPastParticiple = currentVerb.pastParticiple.toLowerCase();
+            
+            const infinitiveCorrect = userInfinitive === correctInfinitive;
+            const pastSimpleCorrect = userPastSimple === correctPastSimple;
+            const pastParticipleCorrect = userPastParticiple === correctPastParticiple;
+            
+            // Highlight inputs based on correctness
+            trInfinitive.style.borderColor = infinitiveCorrect ? '#28a745' : '#dc3545';
+            trPastSimple.style.borderColor = pastSimpleCorrect ? '#28a745' : '#dc3545';
+            trPastParticiple.style.borderColor = pastParticipleCorrect ? '#28a745' : '#dc3545';
+            
+            const allCorrect = infinitiveCorrect && pastSimpleCorrect && pastParticipleCorrect;
+            
+            if (allCorrect) {
+                trFeedback.textContent = 'Wszystkie formy poprawne!';
+                trFeedback.className = 'feedback correct';
+                answeredCorrectly++;
+            } else {
+                trFeedback.textContent = `Poprawne formy: ${correctInfinitive} → ${correctPastSimple} → ${correctPastParticiple}`;
+                trFeedback.className = 'feedback incorrect';
+            }
+            
+            trCheckBtn.disabled = true;
+            trNextBtn.disabled = false;
+            totalAnswered++;
+            updateProgress();
+        }
+        
+        // Aktualizacja paska postępu
+        function updateProgress() {
+            const percentage = totalAnswered ? (answeredCorrectly / totalAnswered) * 100 : 0;
+            progressFill.style.width = `${percentage}%`;
+            progressInfo.textContent = `Postęp: ${answeredCorrectly}/${totalAnswered} (${percentage.toFixed(1)}%)`;
+        }
+        
+        // Zmiana trybu nauki
+        function changeMode(mode) {
+            currentMode = mode;
+            
+            // Aktualizuj przyciski trybów
+            multipleChoiceBtn.classList.toggle('active', mode === 'multipleChoice');
+            letterByLetterBtn.classList.toggle('active', mode === 'letterByLetter');
+            translationBtn.classList.toggle('active', mode === 'translation');
+            
+            // Aktualizuj sekcje ćwiczeń
+            multipleChoiceSection.classList.toggle('active', mode === 'multipleChoice');
+            letterByLetterSection.classList.toggle('active', mode === 'letterByLetter');
+            translationSection.classList.toggle('active', mode === 'translation');
+            
+            // Aktualizuj instrukcję
+            switch (mode) {
+                case 'multipleChoice':
+                    currentInstruction.textContent = 'Wybierz poprawną formę czasownika';
+                    break;
+                case 'letterByLetter':
+                    currentInstruction.textContent = 'Wpisz poprawną formę czasownika (litera po literze)';
+                    break;
+                case 'translation':
+                    currentInstruction.textContent = 'Podaj trzy formy czasownika na podstawie tłumaczenia';
+                    break;
+            }
+            
+            // Przygotuj nowe pytanie
+            prepareNextQuestion();
+        }
+        
+        // Pomocnicza funkcja do mieszania tablic
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+        
+        // Konfiguracja nasłuchiwaczy zdarzeń
+        function setupEventListeners() {
+            // Przyciski trybów
+            multipleChoiceBtn.addEventListener('click', () => changeMode('multipleChoice'));
+            letterByLetterBtn.addEventListener('click', () => changeMode('letterByLetter'));
+            translationBtn.addEventListener('click', () => changeMode('translation'));
+            
+            // Przycisk "Następne" dla trybu wielokrotnego wyboru
+            mcNextBtn.addEventListener('click', () => {
+                prepareNextQuestion();
+            });
+            
+            // Przyciski dla trybu wpisywania po literze
+            lblCheckBtn.addEventListener('click', checkLBLAnswer);
+            lblHintBtn.addEventListener('click', showNextHint);
+            lblNextBtn.addEventListener('click', () => {
+                prepareNextQuestion();
+            });
+            
+            // Enter dla wpisywania odpowiedzi
+            lblInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !lblCheckBtn.disabled) {
+                    checkLBLAnswer();
+                }
+            });
+            
+            // Przyciski dla trybu tłumaczenia
+            trCheckBtn.addEventListener('click', checkTranslationAnswer);
+            trNextBtn.addEventListener('click', () => {
+                prepareNextQuestion();
+            });
+            
+            // Enter dla inputów tłumaczenia
+            trPastParticiple.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !trCheckBtn.disabled) {
+                    checkTranslationAnswer();
+                }
+            });
+            
+            // Przyciski filtrów
+            showAllBtn.addEventListener('click', () => {
+                setActiveFilterButton(showAllBtn);
+                generateVerbList('all');
+            });
+            
+            showKnownBtn.addEventListener('click', () => {
+                setActiveFilterButton(showKnownBtn);
+                generateVerbList('known');
+            });
+            
+            showEasyBtn.addEventListener('click', () => {
+                setActiveFilterButton(showEasyBtn);
+                generateVerbList('easy');
+            });
+            
+            showHardBtn.addEventListener('click', () => {
+                setActiveFilterButton(showHardBtn);
+                generateVerbList('hard');
+            });
+            
+            showUnmarkedBtn.addEventListener('click', () => {
+                setActiveFilterButton(showUnmarkedBtn);
+                generateVerbList('unmarked');
+            });
+        }
+        
+        // Ustawianie aktywnego przycisku filtra
+        function setActiveFilterButton(button) {
+            const filterButtons = document.querySelectorAll('.filter-container button');
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+        }
+        
+        // Uruchom inicjalizację po załadowaniu strony
+        window.addEventListener('DOMContentLoaded', init);
+        
+        // Tutaj będzie dodana tablica verbs
+    </script>
+</body>
+</html>
