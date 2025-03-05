@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nauka słownictwa - Jedzenie</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .grouped-heading {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .grouped-heading h2 {
+            margin-right: 10px;
+        }
+
+        .group-badge {
+            background-color: #e9ecef;
+            border-radius: 20px;
+            padding: 3px 10px;
+            font-size: 14px;
+            font-weight: normal;
+        }
+
+        .mode-selector {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        .mode-selector button {
+            padding: 12px 20px;
+            background-color: #e9ecef;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+
+        .mode-selector button.active {
+            background-color: #4361ee;
+            color: white;
+            font-weight: bold;
+        }
+
+        .instruction {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+
+        .exercise-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .exercise-section.active {
+            display: block;
+        }
+
+        .question-container {
+            margin-bottom: 20px;
+        }
+
+        .question-container p {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .word-category-indicator {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .category-1 {
+            border-left: 5px solid #4dabf7;  /* niebieski */
+            background-color: #e7f5ff;
+        }
+
+        .category-2 {
+            border-left: 5px solid #40c057;  /* zielony */
+            background-color: #ebfbee;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-size: 17px;
+        }
+
+        .option:hover {
+            background-color: #dee2e6;
+        }
+
+        .option.correct {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .option.incorrect {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        .controls button {
+            padding: 10px 20px;
+            background-color: #4361ee;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+
+        .controls button:disabled {
+            background-color: #dee2e6;
+            cursor: not-allowed;
+        }
+
+        .input-container {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .input-container input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 5px 0 0 5px;
+            font-size: 18px;
+        }
+
+        .input-container input:focus {
+            outline: none;
+            border-color: #4361ee;
+        }
+
+        .input-container button {
+            padding: 12px 20px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .hint {
+            font-style: italic;
+            color: #6c757d;
+            margin-top: 8px;
+            margin-bottom: 15px;
+            font-size: 18px;
+            letter-spacing: 3px;
+        }
+
+        .progress-container {
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background-color: #e9ecef;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        #progressFill {
+            height: 100%;
+            background-color: #4361ee;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        #progressInfo {
+            text-align: right;
+            font-size: 16px;
+            color: #6c757d;
+        }
+
+        .vocabulary-list-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+
+        .vocabulary-list-container h2 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-size: 24px;
+        }
+
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-container button {
+            padding: 8px 15px;
+            background-color: #e9ecef;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-container button.active {
+            background-color: #4361ee;
+            color: white;
+        }
+
+        .vocabulary-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .word-item {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .word-item:hover {
+            background-color: #e9ecef;
+        }
+
+        .word-info {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .word-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .word-actions button {
+            padding: 5px 10px;
+            background-color: #e9ecef;
+            border: none;
+            border-radius: 3px;
+            font-size: 14px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .word-actions button.active {
+            background-color: #4361ee;
+            color: white;
+        }
+
+        .word-item.known {
+            border-right: 5px solid #28a745;
+        }
+
+        .word-item.easy {
+            border-right: 5px solid #17a2b8;
+        }
+
+        .word-item.hard {
+            border-right: 5px solid #dc3545;
+        }
+
+        .translation {
+            color: #666;
+            font-style: italic;
+            margin-top: 5px;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .feedback.correct {
+            color: #28a745;
+        }
+
+        .feedback.incorrect {
+            color: #dc3545;
+        }
+
+        /* Styl dla trybu dopasowywania par */
+        .matching-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .matching-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .matching-item {
+            padding: 12px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .matching-item:hover {
+            background-color: #dee2e6;
+        }
+
+        .matching-item.selected {
+            background-color: #4361ee;
+            color: white;
+        }
+
+        .matching-item.matched {
+            background-color: #28a745;
+            color: white;
+            cursor: default;
+        }
+
+        .direction-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .direction-toggle button {
+            padding: 8px 15px;
+            background-color: #e9ecef;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .direction-toggle button.active {
+            background-color: #4361ee;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .vocabulary-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .input-container {
+                flex-direction: column;
+            }
+            
+            .input-container input {
+                border-radius: 5px;
+                margin-bottom: 10px;
+            }
+            
+            .input-container button {
+                border-radius: 5px;
+            }
+            
+            .mode-selector {
+                flex-direction: column;
+            }
+            
+            .matching-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Nauka słownictwa - Jedzenie</h1>
+            <p>Poznaj angielskie nazwy produktów spożywczych, warzyw i owoców</p>
+        </header>
+        
+        <div class="mode-selector">
+            <button id="multipleChoiceBtn" class="active">Test wielokrotnego wyboru</button>
+            <button id="letterByLetterBtn">Wpisywanie po literze</button>
+            <button id="matchingBtn">Dopasowywanie par</button>
+        </div>
+        
+        <div class="instruction">
+            <p id="currentInstruction">Wybierz poprawne tłumaczenie</p>
+        </div>
+        
+        <div id="multipleChoiceSection" class="exercise-section active">
+            <div class="direction-toggle">
+                <button id="engToPolBtn" class="active">Angielski → Polski</button>
+                <button id="polToEngBtn">Polski → Angielski</button>
+            </div>
+            <div class="question-container">
+                <div id="mcCategoryIndicator" class="word-category-indicator"></div>
+                <p id="mcQuestion"></p>
+                <div id="mcOptions" class="options-container"></div>
+                <div id="mcFeedback" class="feedback"></div>
+            </div>
+            <div class="controls">
+                <button id="mcNextBtn">Następne pytanie</button>
+            </div>
+        </div>
+        
+        <div id="letterByLetterSection" class="exercise-section">
+            <div class="question-container">
+                <div id="lblCategoryIndicator" class="word-category-indicator"></div>
+                <p id="lblQuestion"></p>
+                <div class="input-container">
+                    <input type="text" id="lblInput" placeholder="Wpisz odpowiedź...">
+                    <button id="lblHintBtn">Podpowiedź</button>
+                </div>
+                <p id="lblHint" class="hint"></p>
+                <div id="lblFeedback" class="feedback"></div>
+            </div>
+            <div class="controls">
+                <button id="lblCheckBtn">Sprawdź</button>
+                <button id="lblNextBtn" disabled>Następne pytanie</button>
+            </div>
+        </div>
+        
+        <div id="matchingSection" class="exercise-section">
+            <div class="question-container">
+                <div id="matchCategoryIndicator" class="word-category-indicator"></div>
+                <p>Dopasuj angielskie słowa z polskimi tłumaczeniami:</p>
+                <div class="matching-container">
+                    <div class="matching-column" id="englishColumn">
+                        <!-- Tu będą dodane angielskie słowa -->
+                    </div>
+                    <div class="matching-column" id="polishColumn">
+                        <!-- Tu będą dodane polskie tłumaczenia -->
+                    </div>
+                </div>
+                <div id="matchFeedback" class="feedback"></div>
+            </div>
+            <div class="controls">
+                <button id="matchResetBtn">Resetuj</button>
+                <button id="matchNextBtn" disabled>Następna runda</button>
+            </div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div id="progressFill"></div>
+            </div>
+            <p id="progressInfo">Postęp: 0/0 (0.0%)</p>
+        </div>
+        
+        <div class="vocabulary-list-container">
+            <div class="grouped-heading">
+                <h2>Lista słownictwa</h2>
+                <span id="wordCounter" class="group-badge">0 słów</span>
+            </div>
+            <div class="filter-container">
+                <button id="showAllBtn" class="active">Wszystkie</button>
+                <button id="showKnownBtn">Umiem</button>
+                <button id="showEasyBtn">Łatwe</button>
+                <button id="showHardBtn">Trudne</button>
+                <button id="showUnmarkedBtn">Nieoznaczone</button>
+                <button id="showCategory1Btn">Produkty spożywcze</button>
+                <button id="showCategory2Btn">Warzywa i owoce</button>
+            </div>
+            <div class="vocabulary-list" id="vocabularyList"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Dane słownictwa
+        const words = [
+            // Kategoria 1: Produkty spożywcze
+            { 
+                english: 'biscuits', 
+                polish: 'herbatniki', 
+                category: 1, 
+                status: 'unmarked' 
+            },
+            { 
+                english: 'bread', 
+                polish: 'chleb', 
+                category: 1, 
+                status: 'unmarked' 
+            },
+            { 
+                english: 'cereal', 
+                polish: 'płatki zbożowe', 
+                category: 1, 
+                status: 'unmarked' 
+            },
+            { 
+                english: 'cheese', 
+                polish: 'ser', 
+                category: 1, 
+                status: 'unmarked' 
+            },
+            { 
+                english: 'chips', 
+                polish: 'frytki', 
+                category: 1, 
+                status: 'unmarked' 
+            },
+            { 
+                english: 'egg', 
+                polish: 'jajko', 
+                category: 1, 
+                status: 'unmarked' 
+            },
+            { 
+                english: 'milk', 
+                polish: 'mleko', 
+                category: 1, 
+                status: 'unmarked' 
+            },
+            { 
+                english: 'pasta', 
+                polish: 'makaron', 
+                category: 1, 
+                status: 'unmarked' 
+            },
+            { 
+                english: 'rice', 
+                polish: 'ryż', 
+                category: 1, 
+                status: 'unmarked' 
+            },
+            { 
+                english: 'salad', 
+                polish: 'sałatka', 
+                category: 1, 
+                status: 'unmarked' 
+            },
+            { 
+                english: 'smoothie', 
+                polish: 'koktajl', 
+                category: 1, 
+                status: 'unmarked' 
+            },
+            { 
+                english: 'strawberry', 
+                polish: 'truskawka', 
+                category: 1, 
+                status: 'unmarked' 
+            },
+            { 
+                english: 'toast', 
+                polish: 'tost', 
+                category: 1, 
+                status: 'unmarked' 
+            },
+            
+            // Kategoria 2: Warzywa i owoce
+            { 
+                english: 'bean', 
+                polish: 'fasola', 
+                category: 2, 
+                status: 'unmarked' 
+            },
+            { 
+                english: 'broccoli', 
+                polish: 'brokuł', 
+                category: 2, 
+                status: 'unmarked' 
+            },
+            { 
+                english: 'carrot', 
+                polish: 'marchew', 
+                category: 2, 
+                status: 'unmarked' 
+            },
+            { 
+                english: 'cucumber', 
+                polish: 'ogórek', 
+                category: 2, 
+                status: 'unmarked' 
+            },
+            { 
+                english: 'grape', 
+                polish: 'winogrono', 
+                category: 2, 
+                status: 'unmarked' 
+            },
+            { 
+                english: 'kiwi fruit', 
+                polish: 'kiwi', 
+                category: 2, 
+                status: 'unmarked' 
+            },
+            { 
+                english: 'mushroom', 
+                polish: 'grzyb', 
+                category: 2, 
+                status: 'unmarked' 
+            },
+            { 
+                english: 'onion', 
+                polish: 'cebula', 
+                category: 2, 
+                status: 'unmarked' 
+            },
+            { 
+                english: 'pineapple', 
+                polish: 'ananas', 
+                category: 2, 
+                status: 'unmarked' 
+            },
+            { 
+                english: 'potato', 
+                polish: 'ziemniak', 
+                category: 2, 
+                status: 'unmarked' 
+            },
+            { 
+                english: 'red pepper', 
+                polish: 'czerwona papryka', 
+                category: 2, 
+                status: 'unmarked' 
+            },
+            { 
+                english: 'spinach', 
+                polish: 'szpinak', 
+                category: 2, 
+                status: 'unmarked' 
+            }
+        ];
+        
+        // Zmienne globalne
+        let currentMode = 'multipleChoice';
+        let currentDirection = 'engToPol';
+        let currentWordIndex = -1;
+        let answeredCorrectly = 0;
+        let totalAnswered = 0;
+        let currentHintIndex = 0;
+        let firstSelectedItem = null;
+        let matchedPairs = 0;
+        let currentPairs = [];
+        
+        // Elementy DOM - Tryby
+        const multipleChoiceBtn = document.getElementById('multipleChoiceBtn');
+        const letterByLetterBtn = document.getElementById('letterByLetterBtn');
+        const matchingBtn = document.getElementById('matchingBtn');
+        const currentInstruction = document.getElementById('currentInstruction');
+        
+        // Elementy DOM - Sekcje
+        const multipleChoiceSection = document.getElementById('multipleChoiceSection');
+        const letterByLetterSection = document.getElementById('letterByLetterSection');
+        const matchingSection = document.getElementById('matchingSection');
+        
+        // Elementy DOM - Kierunek tłumaczenia
+        const engToPolBtn = document.getElementById('engToPolBtn');
+        const polToEngBtn = document.getElementById('polToEngBtn');
+        
+        // Elementy DOM - Multiple Choice
+        const mcCategoryIndicator = document.getElementById('mcCategoryIndicator');
+        const mcQuestion = document.getElementById('mcQuestion');
+        const mcOptions = document.getElementById('mcOptions');
+        const mcFeedback = document.getElementById('mcFeedback');
+        const mcNextBtn = document.getElementById('mcNextBtn');
+        
+        // Elementy DOM - Letter by Letter
+        const lblCategoryIndicator = document.getElementById('lblCategoryIndicator');
+        const lblQuestion = document.getElementById('lblQuestion');
+        const lblInput = document.getElementById('lblInput');
+        const lblHintBtn = document.getElementById('lblHintBtn');
+        const lblHint = document.getElementById('lblHint');
+        const lblFeedback = document.getElementById('lblFeedback');
+        const lblCheckBtn = document.getElementById('lblCheckBtn');
+        const lblNextBtn = document.getElementById('lblNextBtn');
+        
+        // Elementy DOM - Matching
+        const matchCategoryIndicator = document.getElementById('matchCategoryIndicator');
+        const englishColumn = document.getElementById('englishColumn');
+        const polishColumn = document.getElementById('polishColumn');
+        const matchFeedback = document.getElementById('matchFeedback');
+        const matchResetBtn = document.getElementById('matchResetBtn');
+        const matchNextBtn = document.getElementById('matchNextBtn');
+        
+        // Elementy DOM - Progress i Lista
+        const progressFill = document.getElementById('progressFill');
+        const progressInfo = document.getElementById('progressInfo');
+        const wordCounter = document.getElementById('wordCounter');
+        const vocabularyList = document.getElementById('vocabularyList');
+        
+        // Elementy DOM - Filtry
+        const showAllBtn = document.getElementById('showAllBtn');
+        const showKnownBtn = document.getElementById('showKnownBtn');
+        const showEasyBtn = document.getElementById('showEasyBtn');
+        const showHardBtn = document.getElementById('showHardBtn');
+        const showUnmarkedBtn = document.getElementById('showUnmarkedBtn');
+        const showCategory1Btn = document.getElementById('showCategory1Btn');
+        const showCategory2Btn = document.getElementById('showCategory2Btn');
+        
+        // Inicjalizacja
+        function init() {
+            // Ustaw licznik słów
+            wordCounter.textContent = `${words.length} słów`;
+            
+            // Generuj listę słownictwa
+            generateVocabularyList();
+            
+            // Przygotuj pierwsze pytanie
+            prepareNextQuestion();
+            
+            // Dodaj nasłuchiwacze zdarzeń
+            setupEventListeners();
+        }
+        
+        // Generowanie listy słownictwa
+        function generateVocabularyList(filter = 'all') {
+            vocabularyList.innerHTML = '';
+            
+            words.forEach((word, index) => {
+                if (filter !== 'all') {
+                    if (filter === 'known' && word.status !== 'known') return;
+                    if (filter === 'easy' && word.status !== 'easy') return;
+                    if (filter === 'hard' && word.status !== 'hard') return;
+                    if (filter === 'unmarked' && word.status !== 'unmarked') return;
+                    if (filter === 'category1' && word.category !== 1) return;
+                    if (filter === 'category2' && word.category !== 2) return;
+                }
+                
+                const wordItem = document.createElement('div');
+                wordItem.className = `word-item category-${word.category} ${word.status}`;
+                wordItem.dataset.index = index;
+                
+                wordItem.innerHTML = `
+                    <div class="word-info">
+                        <strong>${word.english}</strong>
+                        <div class="translation">${word.polish}</div>
+                    </div>
+                    <div class="word-actions">
+                        <button class="known-btn ${word.status === 'known' ? 'active' : ''}">Umiem</button>
+                        <button class="easy-btn ${word.status === 'easy' ? 'active' : ''}">Łatwe</button>
+                        <button class="hard-btn ${word.status === 'hard' ? 'active' : ''}">Trudne</button>
+                    </div>
+                `;
+                
+                vocabularyList.appendChild(wordItem);
+                
+                // Dodaj nasłuchiwacze zdarzeń dla przycisków
+                const knownBtn = wordItem.querySelector('.known-btn');
+                const easyBtn = wordItem.querySelector('.easy-btn');
+                const hardBtn = wordItem.querySelector('.hard-btn');
+                
+                knownBtn.addEventListener('click', () => {
+                    updateWordStatus(index, 'known');
+                });
+                
+                easyBtn.addEventListener('click', () => {
+                    updateWordStatus(index, 'easy');
+                });
+                
+                hardBtn.addEventListener('click', () => {
+                    updateWordStatus(index, 'hard');
+                });
+            });
+        }
+        
+        // Aktualizacja statusu słowa
+        function updateWordStatus(index, status) {
+            const currentStatus = words[index].status;
+            
+            // Jeśli ten sam status został kliknięty, usuń go
+            if (currentStatus === status) {
+                words[index].status = 'unmarked';
+            } else {
+                words[index].status = status;
+            }
+            
+            // Odśwież listę
+            const activeFilter = document.querySelector('.filter-container button.active').id;
+            const filterMap = {
+                'showAllBtn': 'all',
+                'showKnownBtn': 'known',
+                'showEasyBtn': 'easy',
+                'showHardBtn': 'hard',
+                'showUnmarkedBtn': 'unmarked',
+                'showCategory1Btn': 'category1',
+                'showCategory2Btn': 'category2'
+            };
+            
+            generateVocabularyList(filterMap[activeFilter]);
+        }
+        
+        // Przygotowanie następnego pytania
+        function prepareNextQuestion() {
+            // Wybierz losowe słowo
+            const previousIndex = currentWordIndex;
+            do {
+                currentWordIndex = Math.floor(Math.random() * words.length);
+            } while (words.length > 1 && currentWordIndex === previousIndex);
+            
+            const currentWord = words[currentWordIndex];
+            
+            // Ustawienie odpowiedniego stylu dla kategorii słowa
+            setCategoryIndicatorStyle(mcCategoryIndicator, currentWord.category);
+            setCategoryIndicatorStyle(lblCategoryIndicator, currentWord.category);
+            
+            switch (currentMode) {
+                case 'multipleChoice':
+                    prepareMultipleChoiceQuestion(currentWord);
+                    break;
+                case 'letterByLetter':
+                    prepareLetterByLetterQuestion(currentWord);
+                    break;
+                case 'matching':
+                    prepareMatchingRound();
+                    break;
+            }
+        }
+        
+        // Ustawienie stylu wskaźnika kategorii
+        function setCategoryIndicatorStyle(element, categoryNumber) {
+            element.className = `word-category-indicator category-${categoryNumber}`;
+            
+            const categoryNames = {
+                1: "Produkty spożywcze",
+                2: "Warzywa i owoce"
+            };
+            
+            element.textContent = categoryNames[categoryNumber] || `Kategoria ${categoryNumber}`;
+        }
+        
+        // Przygotowanie pytania wielokrotnego wyboru
+        function prepareMultipleChoiceQuestion(word) {
+            // Ustaw pytanie w zależności od kierunku tłumaczenia
+            if (currentDirection === 'engToPol') {
+                mcQuestion.textContent = `Co oznacza "${word.english}"?`;
+                prepareEngToPolOptions(word);
+            } else {
+                mcQuestion.textContent = `Jak powiedzieć po angielsku "${word.polish}"?`;
+                preparePolToEngOptions(word);
+            }
+            
+            // Zresetuj feedback
+            mcFeedback.textContent = '';
+            mcFeedback.className = 'feedback';
+            mcNextBtn.disabled = true;
+        }
+        
+        // Przygotowanie opcji dla kierunku angielski -> polski
+        function prepareEngToPolOptions(word) {
+            const correctAnswer = word.polish;
+            const options = [correctAnswer];
+            
+            // Dodaj 3 niepoprawne opcje
+            while (options.length < 4) {
+                const randomWord = words[Math.floor(Math.random() * words.length)];
+                
+                if (!options.includes(randomWord.polish) && randomWord.polish !== correctAnswer) {
+                    options.push(randomWord.polish);
+                }
+            }
+            
+            // Pomieszaj opcje
+            shuffleArray(options);
+            
+            // Renderuj opcje
+            mcOptions.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.addEventListener('click', () => {
+                    handleMultipleChoiceAnswer(option, correctAnswer);
+                });
+                mcOptions.appendChild(optionElement);
+            });
+        }
+        
+        // Przygotowanie opcji dla kierunku polski -> angielski
+        function preparePolToEngOptions(word) {
+            const correctAnswer = word.english;
+            const options = [correctAnswer];
+            
+            // Dodaj 3 niepoprawne opcje
+            while (options.length < 4) {
+                const randomWord = words[Math.floor(Math.random() * words.length)];
+                
+                if (!options.includes(randomWord.english) && randomWord.english !== correctAnswer) {
+                    options.push(randomWord.english);
+                }
+            }
+            
+            // Pomieszaj opcje
+            shuffleArray(options);
+            
+            // Renderuj opcje
+            mcOptions.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.addEventListener('click', () => {
+                    handleMultipleChoiceAnswer(option, correctAnswer);
+                });
+                mcOptions.appendChild(optionElement);
+            });
+        }
+        
+        // Obsługa odpowiedzi wielokrotnego wyboru
+        function handleMultipleChoiceAnswer(selectedOption, correctAnswer) {
+            const options = mcOptions.querySelectorAll('.option');
+            let isCorrect = selectedOption === correctAnswer;
+            
+            // Zablokuj wszystkie opcje
+            options.forEach(option => {
+                option.style.pointerEvents = 'none';
+                
+                if (option.textContent === correctAnswer) {
+                    option.classList.add('correct');
+                } else if (option.textContent === selectedOption && selectedOption !== correctAnswer) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            // Aktualizuj feedback
+            if (isCorrect) {
+                mcFeedback.textContent = 'Poprawna odpowiedź!';
+                mcFeedback.className = 'feedback correct';
+                answeredCorrectly++;
+            } else {
+                mcFeedback.textContent = `Niepoprawna odpowiedź. Poprawna to: ${correctAnswer}`;
+                mcFeedback.className = 'feedback incorrect';
+            }
+            
+            // Włącz przycisk "Następne"
+            mcNextBtn.disabled = false;
+            
+            // Aktualizuj licznik
+            totalAnswered++;
+            updateProgress();
+        }
+        
+        // Przygotowanie pytania wpisywania po literze
+        function prepareLetterByLetterQuestion(word) {
+            // Zawsze pytamy o angielskie słowo na podstawie polskiego
+            lblQuestion.textContent = `Jak powiedzieć po angielsku "${word.polish}"?`;
+            lblInput.dataset.answer = word.english;
+            
+            // Zresetuj input, hint i feedback
+            lblInput.value = '';
+            lblHint.textContent = '_ '.repeat(word.english.length).trim();
+            lblFeedback.textContent = '';
+            lblFeedback.className = 'feedback';
+            
+            // Zresetuj indeks podpowiedzi
+            currentHintIndex = 0;
+            
+            // Zresetuj przyciski
+            lblCheckBtn.disabled = false;
+            lblNextBtn.disabled = true;
+        }
+        
+        // Obsługa sprawdzania odpowiedzi wpisywanej po literze
+        function checkLetterByLetterAnswer() {
+            const correctAnswer = lblInput.dataset.answer;
+            const userAnswer = lblInput.value.trim().toLowerCase();
+            
+            if (userAnswer === correctAnswer.toLowerCase()) {
+                lblFeedback.textContent = 'Poprawna odpowiedź!';
+                lblFeedback.className = 'feedback correct';
+                lblCheckBtn.disabled = true;
+                lblNextBtn.disabled = false;
+                answeredCorrectly++;
+            } else {
+                lblFeedback.textContent = `Niepoprawna odpowiedź. Poprawna to: ${correctAnswer}`;
+                lblFeedback.className = 'feedback incorrect';
+                lblCheckBtn.disabled = true;
+                lblNextBtn.disabled = false;
+            }
+            
+            totalAnswered++;
+            updateProgress();
+        }
+        
+        // Podpowiedź dla wpisywania po literze
+        function showNextHint() {
+            const correctAnswer = lblInput.dataset.answer;
+            
+            if (currentHintIndex < correctAnswer.length) {
+                let hintText = '';
+                for (let i = 0; i < correctAnswer.length; i++) {
+                    if (i <= currentHintIndex) {
+                        hintText += correctAnswer[i] + ' ';
+                    } else {
+                        hintText += '_ ';
+                    }
+                }
+                lblHint.textContent = hintText.trim();
+                currentHintIndex++;
+            }
+        }
+        
+        // Przygotowanie rundy dopasowywania par
+        function prepareMatchingRound() {
+            // Wybierz 5 losowych słów
+            const randomWords = getRandomItems(words, 5);
+            currentPairs = randomWords;
+            
+            // Ustaw odpowiedni styl kategorii (użyj pierwszego słowa jako przykładu)
+            if (randomWords.length > 0) {
+                setCategoryIndicatorStyle(matchCategoryIndicator, randomWords[0].category);
+            }
+            
+            // Przygotuj kolumny
+            const englishWords = randomWords.map(word => word.english);
+            const polishWords = randomWords.map(word => word.polish);
+            
+            // Pomieszaj obie kolumny
+            shuffleArray(englishWords);
+            shuffleArray(polishWords);
+            
+            // Renderuj kolumny
+            englishColumn.innerHTML = '';
+            polishColumn.innerHTML = '';
+            
+            englishWords.forEach(word => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'matching-item';
+                itemElement.textContent = word;
+                itemElement.dataset.value = word;
+                itemElement.addEventListener('click', () => {
+                    handleMatchingItemClick(itemElement, 'english');
+                });
+                englishColumn.appendChild(itemElement);
+            });
+            
+            polishWords.forEach(word => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'matching-item';
+                itemElement.textContent = word;
+                itemElement.dataset.value = word;
+                itemElement.addEventListener('click', () => {
+                    handleMatchingItemClick(itemElement, 'polish');
+                });
+                polishColumn.appendChild(itemElement);
+            });
+            
+            // Zresetuj zmienne i feedback
+            firstSelectedItem = null;
+            matchedPairs = 0;
+            matchFeedback.textContent = '';
+            matchFeedback.className = 'feedback';
+            matchNextBtn.disabled = true;
+        }
+        
+        // Obsługa kliknięcia elementu dopasowywania
+        function handleMatchingItemClick(element, language) {
+            // Ignoruj kliknięcie jeśli element jest już dopasowany
+            if (element.classList.contains('matched')) {
+                return;
+            }
+            
+            // Jeśli to pierwszy wybór
+            if (firstSelectedItem === null) {
+                element.classList.add('selected');
+                firstSelectedItem = { element, language };
+                return;
+            }
+            
+            // Jeśli kliknięto ten sam element
+            if (element === firstSelectedItem.element) {
+                element.classList.remove('selected');
+                firstSelectedItem = null;
+                return;
+            }
+            
+            // Jeśli kliknięto element z tej samej kolumny
+            if (language === firstSelectedItem.language) {
+                firstSelectedItem.element.classList.remove('selected');
+                element.classList.add('selected');
+                firstSelectedItem = { element, language };
+                return;
+            }
+            
+            // Sprawdź czy dopasowanie jest poprawne
+            const isMatch = checkMatch(firstSelectedItem.element.dataset.value, element.dataset.value);
+            
+            if (isMatch) {
+                // Poprawne dopasowanie
+                firstSelectedItem.element.classList.remove('selected');
+                firstSelectedItem.element.classList.add('matched');
+                element.classList.add('matched');
+                
+                matchedPairs++;
+                
+                // Sprawdź czy wszystkie pary zostały dopasowane
+                if (matchedPairs === 5) {
+                    matchFeedback.textContent = 'Wszystkie pary zostały poprawnie dopasowane!';
+                    matchFeedback.className = 'feedback correct';
+                    matchNextBtn.disabled = false;
+                    
+                    // Dodaj do statystyk
+                    answeredCorrectly++;
+                    totalAnswered++;
+                    updateProgress();
+                }
+            } else {
+                // Niepoprawne dopasowanie
+                firstSelectedItem.element.classList.remove('selected');
+            }
+            
+            firstSelectedItem = null;
+        }
+        
+        // Sprawdzenie dopasowania
+        function checkMatch(value1, value2) {
+            for (const pair of currentPairs) {
+                if ((pair.english === value1 && pair.polish === value2) || 
+                    (pair.english === value2 && pair.polish === value1)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        // Aktualizacja paska postępu
+        function updateProgress() {
+            const percentage = totalAnswered ? (answeredCorrectly / totalAnswered) * 100 : 0;
+            progressFill.style.width = `${percentage}%`;
+            progressInfo.textContent = `Postęp: ${answeredCorrectly}/${totalAnswered} (${percentage.toFixed(1)}%)`;
+        }
+        
+        // Zmiana trybu nauki
+        function changeMode(mode) {
+            currentMode = mode;
+            
+            // Aktualizuj przyciski trybów
+            multipleChoiceBtn.classList.toggle('active', mode === 'multipleChoice');
+            letterByLetterBtn.classList.toggle('active', mode === 'letterByLetter');
+            matchingBtn.classList.toggle('active', mode === 'matching');
+            
+            // Aktualizuj sekcje ćwiczeń
+            multipleChoiceSection.classList.toggle('active', mode === 'multipleChoice');
+            letterByLetterSection.classList.toggle('active', mode === 'letterByLetter');
+            matchingSection.classList.toggle('active', mode === 'matching');
+            
+            // Aktualizuj instrukcję
+            switch (mode) {
+                case 'multipleChoice':
+                    currentInstruction.textContent = 'Wybierz poprawne tłumaczenie';
+                    break;
+                case 'letterByLetter':
+                    currentInstruction.textContent = 'Wpisz angielskie słowo na podstawie polskiego tłumaczenia';
+                    break;
+                case 'matching':
+                    currentInstruction.textContent = 'Dopasuj angielskie słowa do polskich tłumaczeń';
+                    break;
+            }
+            
+            // Przygotuj nowe pytanie
+            prepareNextQuestion();
+        }
+        
+        // Zmiana kierunku tłumaczenia
+        function changeDirection(direction) {
+            currentDirection = direction;
+            
+            // Aktualizuj przyciski kierunku
+            engToPolBtn.classList.toggle('active', direction === 'engToPol');
+            polToEngBtn.classList.toggle('active', direction === 'polToEng');
+            
+            // Przygotuj nowe pytanie
+            prepareNextQuestion();
+        }
+        
+        // Pomocnicza funkcja do mieszania tablic
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+        
+        // Pomocnicza funkcja do pobierania losowych elementów z tablicy
+        function getRandomItems(array, count) {
+            const shuffled = [...array].sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, count);
+        }
+        
+        // Konfiguracja nasłuchiwaczy zdarzeń
+        function setupEventListeners() {
+            // Przyciski trybów
+            multipleChoiceBtn.addEventListener('click', () => changeMode('multipleChoice'));
+            letterByLetterBtn.addEventListener('click', () => changeMode('letterByLetter'));
+            matchingBtn.addEventListener('click', () => changeMode('matching'));
+            
+            // Przyciski kierunku tłumaczenia
+            engToPolBtn.addEventListener('click', () => changeDirection('engToPol'));
+            polToEngBtn.addEventListener('click', () => changeDirection('polToEng'));
+            
+            // Przycisk "Następne" dla trybu wielokrotnego wyboru
+            mcNextBtn.addEventListener('click', () => {
+                prepareNextQuestion();
+            });
+            
+            // Przyciski dla trybu wpisywania po literze
+            lblCheckBtn.addEventListener('click', checkLetterByLetterAnswer);
+            lblHintBtn.addEventListener('click', showNextHint);
+            lblNextBtn.addEventListener('click', () => {
+                prepareNextQuestion();
+            });
+            
+            // Enter dla wpisywania odpowiedzi
+            lblInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !lblCheckBtn.disabled) {
+                    checkLetterByLetterAnswer();
+                }
+            });
+            
+            // Przyciski dla trybu dopasowywania
+            matchResetBtn.addEventListener('click', prepareMatchingRound);
+            matchNextBtn.addEventListener('click', () => {
+                prepareNextQuestion();
+            });
+            
+            // Przyciski filtrów
+            showAllBtn.addEventListener('click', () => {
+                setActiveFilterButton(showAllBtn);
+                generateVocabularyList('all');
+            });
+            
+            showKnownBtn.addEventListener('click', () => {
+                setActiveFilterButton(showKnownBtn);
+                generateVocabularyList('known');
+            });
+            
+            showEasyBtn.addEventListener('click', () => {
+                setActiveFilterButton(showEasyBtn);
+                generateVocabularyList('easy');
+            });
+            
+            showHardBtn.addEventListener('click', () => {
+                setActiveFilterButton(showHardBtn);
+                generateVocabularyList('hard');
+            });
+            
+            showUnmarkedBtn.addEventListener('click', () => {
+                setActiveFilterButton(showUnmarkedBtn);
+                generateVocabularyList('unmarked');
+            });
+            
+            showCategory1Btn.addEventListener('click', () => {
+                setActiveFilterButton(showCategory1Btn);
+                generateVocabularyList('category1');
+            });
+            
+            showCategory2Btn.addEventListener('click', () => {
+                setActiveFilterButton(showCategory2Btn);
+                generateVocabularyList('category2');
+            });
+        }
+        
+        // Ustawianie aktywnego przycisku filtra
+        function setActiveFilterButton(button) {
+            const filterButtons = document.querySelectorAll('.filter-container button');
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+        }
+        
+        // Uruchom inicjalizację po załadowaniu strony
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
