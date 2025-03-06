@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F&S English School - Pronunciation Evaluator</title>
+    <!-- Add jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary: #1e4b8e;
+            --primary-light: #2a6eca;
+            --secondary: #e63946;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --border-radius: 8px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: var(--font-main);
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .app-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0;
+            border-bottom: 1px solid #e1e5eb;
+            margin-bottom: 30px;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo {
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 28px;
+            margin-right: 15px;
+        }
+        
+        .title-container h1 {
+            color: var(--primary);
+            font-size: 24px;
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .title-container p {
+            color: var(--gray);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .card-title {
+            color: var(--primary);
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e1e5eb;
+        }
+        
+        .record-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .timer {
+            font-size: 2.5em;
+            font-weight: 300;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+        
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 200px;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(30, 75, 142, 0.2);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            background-color: var(--gray);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn.recording {
+            background-color: var(--danger);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .btn.secondary {
+            background-color: #f8f9fa;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            margin-top: 15px;
+        }
+        
+        .btn.secondary:hover {
+            background-color: #edf2f7;
+        }
+        
+        .btn-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .record-icon {
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background-color: white;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+            70% { opacity: 0.9; box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+            100% { opacity: 1; box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+        }
+        
+        .status {
+            margin: 10px 0;
+            color: var(--gray);
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .criteria-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            list-style-type: none;
+            margin: 15px 0;
+        }
+        
+        .criteria-item {
+            background-color: #f8f9fa;
+            padding: 12px;
+            border-radius: var(--border-radius);
+            border-left: 3px solid var(--primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .criteria-item:hover {
+            background-color: #edf2f7;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .criteria-item:after {
+            content: "+";
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-size: 18px;
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        .criteria-item.expanded:after {
+            content: "−";
+        }
+        
+        .criteria-item h4 {
+            color: var(--primary);
+            margin-bottom: 5px;
+            font-size: 16px;
+            padding-right: 20px;
+        }
+        
+        .criteria-item p {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+        
+        .criteria-details {
+            display: none;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #e1e5eb;
+            font-size: 13px;
+        }
+        
+        .criteria-item.expanded .criteria-details {
+            display: block;
+        }
+        
+        .loader {
+            display: none;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            margin: 20px auto;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .results-header h2 {
+            color: var(--primary);
+            font-size: 22px;
+            font-weight: 600;
+        }
+        
+        .download-btn {
+            background-color: var(--success);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        
+        .download-btn:hover {
+            background-color: #218838;
+        }
+        
+        .download-btn svg {
+            margin-right: 8px;
+        }
+        
+        .evaluation-content {
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 20px;
+        }
+        
+        .cefr-level {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .cefr-level h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+            font-weight: 400;
+        }
+        
+        .cefr-level-value {
+            font-size: 36px;
+            font-weight: bold;
+        }
+        
+        .cefr-level-desc {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .score-item {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .score-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .score-item:after {
+            content: "↓";
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 14px;
+            color: var(--primary);
+        }
+        
+        .score-item.expanded:after {
+            content: "↑";
+        }
+        
+        .score-item h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: var(--primary);
+            padding-right: 20px;
+        }
+        
+        .score-bar {
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .score-fill {
+            height: 100%;
+            background-color: var(--primary);
+            border-radius: 4px;
+        }
+        
+        .score-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .score-details {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #e1e5eb;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .score-item.expanded .score-details {
+            display: block;
+        }
+        
+        .score-details p {
+            margin-bottom: 5px;
+        }
+        
+        .suggestions h3, .feedback h3 {
+            font-size: 18px;
+            color: var(--primary);
+            margin: 20px 0 10px 0;
+        }
+        
+        .suggestion-list, .feedback-list {
+            list-style-type: none;
+            margin-left: 0;
+        }
+        
+        .suggestion-list li, .feedback-list li {
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: var(--border-radius);
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .suggestion-list li:last-child, .feedback-list li:last-child {
+            margin-bottom: 0;
+        }
+        
+        .suggestion-list li:before, .feedback-list li:before {
+            content: "•";
+            color: var(--primary);
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 18px;
+            line-height: 1;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            padding: 20px 0;
+            border-top: 1px solid #e1e5eb;
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .certified {
+            display: inline-block;
+            background-color: #f8f9fa;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--primary);
+            margin-top: 10px;
+        }
+        
+        .certified svg {
+            width: 14px;
+            height: 14px;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+        
+        .usage-counter {
+            background-color: #f8f9fa;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 14px;
+            color: var(--gray);
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .usage-counter svg {
+            margin-right: 8px;
+        }
+        
+        /* PDF specific styling */
+        .pdf-wrapper {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm;
+            margin: 10mm auto;
+            background: white;
+            box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+        
+        .pdf-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .pdf-logo {
+            margin-bottom: 15px;
+        }
+        
+        .pdf-title {
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .pdf-date {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .pdf-content {
+            margin: 20px 0;
+        }
+        
+        .pdf-footer {
+            position: absolute;
+            bottom: 20mm;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: var(--gray);
+            font-size: 12px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        /* Modal for usage limit */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        
+        .modal-title {
+            color: var(--primary);
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+        
+        .modal-message {
+            margin-bottom: 20px;
+            color: var(--gray);
+        }
+        
+        .modal-icon {
+            font-size: 48px;
+            color: var(--warning);
+            margin-bottom: 20px;
+        }
+        
+        .close-modal {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 24px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .close-modal:hover {
+            background-color: var(--primary-light);
+        }
+        
+        /* Hidden container for PDF generation */
+        #pdfContentContainer {
+            display: none;
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <div class="logo-container">
+                <div class="logo">F&S</div>
+                <div class="title-container">
+                    <h1>Pronunciation Evaluator</h1>
+                    <p>Powered by F&S English School</p>
+                </div>
+            </div>
+            <div class="usage-counter" id="usageCounter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+                <span id="usageCount">0/3</span> evaluations today
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2 class="card-title">Evaluation Criteria</h2>
+            <p>Our advanced evaluation technology assesses your spoken English against these professional criteria:</p>
+            <ul class="criteria-list">
+                <li class="criteria-item" onclick="toggleCriteriaDetails(this)">
+                    <h4>Pronunciation Accuracy</h4>
+                    <p>Correct pronunciation of individual sounds and words</p>
+                    <div class="criteria-details">
+                        Measures how accurately you produce English phonemes (sounds), including vowels, consonants, and diphthongs. Considers issues like voicing, aspiration, and proper sound formation. Identifies patterns of errors that may be influenced by your native language.
+                    </div>
+                </li>
+                <li class="criteria-item" onclick="toggleCriteriaDetails(this)">
+                    <h4>Speech Clarity</h4>
+                    <p>Clear articulation and understandable delivery</p>
+                    <div class="criteria-details">
+                        Evaluates how easily understandable your speech is to native and non-native listeners. Considers factors like mumbling, slurring, or dropping syllables. Assesses whether your pronunciation issues impact overall comprehensibility.
+                    </div>
+                </li>
+                <li class="criteria-item" onclick="toggleCriteriaDetails(this)">
+                    <h4>Fluency & Flow</h4>
+                    <p>Natural speech flow without excessive pauses</p>
+                    <div class="criteria-details">
+                        Measures the smoothness and continuity of your speech. Evaluates factors like appropriate speaking rate, natural pausing, and use of fillers (um, uh). Considers whether you speak in complete phrases or word-by-word.
+                    </div>
+                </li>
+                <li class="criteria-item" onclick="toggleCriteriaDetails(this)">
+                    <h4>Rhythm & Intonation</h4>
+                    <p>Natural patterns of stress and melody in speech</p>
+                    <div class="criteria-details">
+                        Assesses your command of English prosody, including word stress, sentence stress, and intonation patterns. Evaluates rising/falling tones for questions and statements. Considers how effectively you use emphasis to convey meaning.
+                    </div>
+                </li>
+                <li class="criteria-item" onclick="toggleCriteriaDetails(this)">
+                    <h4>Vocabulary Usage</h4>
+                    <p>Appropriate word choice and language use</p>
+                    <div class="criteria-details">
+                        Evaluates the range, accuracy, and appropriateness of your vocabulary. Considers your ability to use colloquial expressions naturally. Assesses whether vocabulary choices match the context and purpose of communication.
+                    </div>
+                </li>
+                <li class="criteria-item" onclick="toggleCriteriaDetails(this)">
+                    <h4>CEFR Level</h4>
+                    <p>Overall proficiency according to international standards</p>
+                    <div class="criteria-details">
+                        Provides an estimate of your speaking proficiency according to the Common European Framework of Reference for Languages (CEFR), ranging from A1 (beginner) to C2 (mastery). This assessment considers all aspects of your speaking performance.
+                    </div>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <h2 class="card-title">Record Your Speech</h2>
+            <div class="record-container">
+                <div class="timer" id="timer">00:00</div>
+                <button id="recordButton" class="btn">
+                    <div class="btn-icon">
+                        <span class="record-icon"></span>
+                    </div>
+                    Start Recording
+                </button>
+                <p class="status" id="status">Click to begin your speech evaluation (30-60 seconds recommended)</p>
+            </div>
+            <div class="loader" id="loader"></div>
+        </div>
+        
+        <div class="card results" id="results">
+            <div class="results-header">
+                <h2>Your Pronunciation Evaluation</h2>
+                <button id="downloadPDF" class="download-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Download PDF
+                </button>
+            </div>
+            <div class="evaluation-content" id="evaluationContent">
+                <div id="cefrLevelContainer" class="cefr-level">
+                    <h3>CEFR Level Assessment</h3>
+                    <div class="cefr-level-value" id="cefrValue">--</div>
+                    <div class="cefr-level-desc" id="cefrDesc">Evaluation pending</div>
+                </div>
+                
+                <div id="scoresContainer" class="score-grid">
+                    <!-- Scores will be inserted here dynamically -->
+                </div>
+                
+                <div class="suggestions">
+                    <h3>Improvement Suggestions</h3>
+                    <ul id="suggestionList" class="suggestion-list">
+                        <!-- Suggestions will be inserted here dynamically -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2025 F&S English School. All rights reserved.</p>
+            <div class="certified">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9 12l2 2 4-4"></path>
+                </svg>
+                Certified by Leszek Gielniak F&S English School
+            </div>
+        </div>
+    </div>
+    
+    <!-- Usage Limit Modal -->
+    <div class="modal" id="usageModal">
+        <div class="modal-content">
+            <div class="modal-icon">⚠️</div>
+            <h2 class="modal-title">Daily Limit Reached</h2>
+            <p class="modal-message">You've reached your daily limit of 3 evaluations. Please try again tomorrow or contact F&S English School for premium access.</p>
+            <button class="close-modal" id="closeModal">OK, I Understand</button>
+        </div>
+    </div>
+    
+    <!-- Hidden container for PDF generation -->
+    <div id="pdfContentContainer"></div>
+    
+    <script>
+        // Global variables
+        let mediaRecorder;
+        let audioChunks = [];
+        let recording = false;
+        let timer;
+        let seconds = 0;
+        let minutes = 0;
+        let evaluationData = null;
+        
+        // DOM elements
+        const recordButton = document.getElementById('recordButton');
+        const timerElement = document.getElementById('timer');
+        const statusElement = document.getElementById('status');
+        const resultsElement = document.getElementById('results');
+        const evaluationContent = document.getElementById('evaluationContent');
+        const cefrValue = document.getElementById('cefrValue');
+        const cefrDesc = document.getElementById('cefrDesc');
+        const scoresContainer = document.getElementById('scoresContainer');
+        const suggestionList = document.getElementById('suggestionList');
+        const loader = document.getElementById('loader');
+        const downloadPDFButton = document.getElementById('downloadPDF');
+        const usageCountElement = document.getElementById('usageCount');
+        const usageModal = document.getElementById('usageModal');
+        const closeModalButton = document.getElementById('closeModal');
+        const pdfContentContainer = document.getElementById('pdfContentContainer');
+        
+        // API Key (will be removed later by the user)
+        const API_KEY = "AIzaSyDxZu00D5DpbWi1DtT06N1L5FLSmE8bIUM";
+        
+        // CEFR Level descriptions
+        const cefrDescriptions = {
+            'A1': 'Basic beginner level - Can use very simple phrases and expressions',
+            'A2': 'Elementary level - Can communicate in simple, routine situations',
+            'B1': 'Intermediate level - Can deal with most situations while traveling',
+            'B2': 'Upper intermediate - Can interact with a degree of fluency with native speakers',
+            'C1': 'Advanced level - Can use language flexibly and effectively for social and professional purposes',
+            'C2': 'Mastery level - Can express themselves spontaneously, very fluently and precisely'
+        };
+        
+        // Usage tracking
+        const today = new Date().toLocaleDateString();
+        let usageCount = 0;
+        
+        // Initialize usage counter from localStorage
+        function initializeUsageCounter() {
+            const storedDate = localStorage.getItem('fs_eval_date');
+            
+            // If it's a new day, reset the counter
+            if (storedDate !== today) {
+                localStorage.setItem('fs_eval_date', today);
+                localStorage.setItem('fs_eval_count', '0');
+                usageCount = 0;
+            } else {
+                // Get current count
+                usageCount = parseInt(localStorage.getItem('fs_eval_count') || '0');
+            }
+            
+            // Update UI
+            updateUsageCounter();
+        }
+        
+        // Update usage counter display
+        function updateUsageCounter() {
+            usageCountElement.textContent = `${usageCount}/3`;
+        }
+        
+        // Increment usage counter
+        function incrementUsageCounter() {
+            usageCount++;
+            localStorage.setItem('fs_eval_count', usageCount.toString());
+            updateUsageCounter();
+        }
+        
+        // Check if daily limit reached
+        function checkUsageLimit() {
+            return usageCount >= 3;
+        }
+        
+        // Show usage limit modal
+        function showUsageLimitModal() {
+            usageModal.style.display = 'flex';
+        }
+        
+        // Toggle criteria details visibility
+        function toggleCriteriaDetails(element) {
+            element.classList.toggle('expanded');
+        }
+        
+        // Toggle score details visibility
+        function toggleScoreDetails(element) {
+            element.classList.toggle('expanded');
+        }
+        
+        // Close modal event
+        closeModalButton.addEventListener('click', () => {
+            usageModal.style.display = 'none';
+        });
+        
+        // Check for browser microphone support
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            alert('Your browser does not support microphone recording. Please try using Chrome, Firefox, or Edge.');
+            recordButton.disabled = true;
+            statusElement.textContent = 'Recording not supported in this browser';
+        }
+        
+        // Initialize usage counter
+        initializeUsageCounter();
+        
+        // Event listener for record button
+        recordButton.addEventListener('click', toggleRecording);
+        
+        // Event listener for PDF download
+        downloadPDFButton.addEventListener('click', generatePDF);
+        
+        // Function to toggle recording state
+        function toggleRecording() {
+            if (!recording) {
+                // Check usage limit
+                if (checkUsageLimit()) {
+                    showUsageLimitModal();
+                    return;
+                }
+                
+                startRecording();
+            } else {
+                stopRecording();
+            }
+        }
+        
+        // Start recording function
+        function startRecording() {
+            // Reset variables
+            audioChunks = [];
+            seconds = 0;
+            minutes = 0;
+            
+            // Update UI
+            recordButton.classList.add('recording');
+            recordButton.innerHTML = `
+                <div class="btn-icon">
+                    <span class="record-icon"></span>
+                </div>
+                Stop Recording
+            `;
+            statusElement.textContent = 'Recording... speak clearly for 30-60 seconds';
+            timerElement.textContent = '00:00';
+            
+            // Hide previous results
+            resultsElement.style.display = 'none';
+            
+            // Access the microphone
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    recording = true;
+                    
+                    // Create the media recorder
+                    mediaRecorder = new MediaRecorder(stream);
+                    
+                    // Start the timer
+                    startTimer();
+                    
+                    // Record the audio
+                    mediaRecorder.start();
+                    
+                    // Store audio chunks
+                    mediaRecorder.addEventListener('dataavailable', event => {
+                        audioChunks.push(event.data);
+                    });
+                    
+                    // When recording stops
+                    mediaRecorder.addEventListener('stop', () => {
+                        // Combine audio chunks into a blob
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
+                        
+                        // Increment usage counter
+                        incrementUsageCounter();
+                        
+                        // Process the recording
+                        processRecording(audioBlob);
+                        
+                        // Stop all tracks in the stream
+                        stream.getTracks().forEach(track => track.stop());
+                    });
+                })
+                .catch(error => {
+                    console.error('Error accessing microphone:', error);
+                    alert('Error accessing microphone. Please ensure you have granted microphone permissions.');
+                    recordButton.classList.remove('recording');
+                    recordButton.innerHTML = `
+                        <div class="btn-icon">
+                            <span class="record-icon"></span>
+                        </div>
+                        Start Recording
+                    `;
+                    statusElement.textContent = 'Error: Could not access microphone';
+                });
+        }
+        
+        // Stop recording function
+        function stopRecording() {
+            if (mediaRecorder && recording) {
+                recording = false;
+                mediaRecorder.stop();
+                clearInterval(timer);
+                
+                // Update UI
+                recordButton.classList.remove('recording');
+                recordButton.innerHTML = `
+                    <div class="btn-icon">
+                        <span class="record-icon"></span>
+                    </div>
+                    Start Recording
+                `;
+                statusElement.textContent = 'Processing your speech...';
+                loader.style.display = 'block';
+            }
+        }
+        
+        // Timer function
+        function startTimer() {
+            timer = setInterval(() => {
+                seconds++;
+                if (seconds >= 60) {
+                    seconds = 0;
+                    minutes++;
+                }
+                
+                timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Auto-stop after 2 minutes to prevent very large files
+                if (minutes >= 2) {
+                    stopRecording();
+                }
+            }, 1000);
+        }
+        
+        // Process the recording and send to Gemini API
+        function processRecording(audioBlob) {
+            // Create a FormData object to send the audio file
+            const formData = new FormData();
+            formData.append('file', audioBlob, 'speech.mp3');
+            
+            // First, upload the file to get a fileUri
+            fetch('https://generativelanguage.googleapis.com/upload/v1beta/files', {
+                method: 'POST',
+                headers: {
+                    'X-goog-api-key': API_KEY
+                },
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(fileData => {
+                // Use the fileUri for content generation
+                const fileUri = fileData.file.uri;
+                const mimeType = fileData.file.mimeType;
+                
+                // Prepare the request body
+                const requestBody = {
+                    contents: [{
+                        parts: [
+                            {
+                                text: `As a professional pronunciation and fluency evaluator from F&S English School, please evaluate this audio recording with a detailed professional assessment.
+
+I need your response in a specific JSON format for easy parsing. Please evaluate using these criteria:
+
+1. Pronunciation Accuracy: How correctly the speaker pronounces sounds and words
+2. Speech Clarity: How clearly articulated and understandable the speech is
+3. Fluency & Flow: Natural speech flow, appropriate pacing, minimal hesitation
+4. Rhythm & Intonation: Natural stress patterns and voice modulation
+5. Vocabulary Usage: Appropriateness and correctness of language use
+6. CEFR Level: Overall proficiency according to CEFR standards (A1, A2, B1, B2, C1, or C2)
+
+Return your evaluation in the following JSON format:
+
+{
+  "cefr_level": "B1", // One of: A1, A2, B1, B2, C1, C2
+  "scores": {
+    "pronunciation_accuracy": 75, // Score from 0-100
+    "speech_clarity": 80, // Score from 0-100
+    "fluency_flow": 70, // Score from 0-100
+    "rhythm_intonation": 65, // Score from 0-100
+    "vocabulary_usage": 75 // Score from 0-100
+  },
+  "feedback": {
+    "pronunciation_accuracy": "Detailed specific feedback with examples...",
+    "speech_clarity": "Detailed specific feedback with examples...",
+    "fluency_flow": "Detailed specific feedback with examples...",
+    "rhythm_intonation": "Detailed specific feedback with examples...",
+    "vocabulary_usage": "Detailed specific feedback with examples..."
+  },
+  "improvement_suggestions": [
+    "Specific actionable suggestion 1...",
+    "Specific actionable suggestion 2...",
+    "Specific actionable suggestion 3..."
+  ]
+}
+
+IMPORTANT: Ensure your response is ONLY this JSON object without any additional text before or after it.`
+                            },
+                            {
+                                fileData: {
+                                    fileUri: fileUri,
+                                    mimeType: mimeType
+                                }
+                            }
+                        ]
+                    }]
+                };
+                
+                // Send the content generation request - using gemini-2.0-flash as requested
+                return fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Parse and display the results
+                const evaluationText = data.candidates[0].content.parts[0].text;
+                
+                try {
+                    // Try to parse the JSON response
+                    // First, find JSON content (in case there's any non-JSON text)
+                    const jsonMatch = evaluationText.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        evaluationData = JSON.parse(jsonMatch[0]);
+                        displayEvaluationResults(evaluationData);
+                    } else {
+                        throw new Error("Could not extract JSON from response");
+                    }
+                } catch (error) {
+                    console.error("JSON parsing error:", error);
+                    // Fallback to text-based parsing if JSON parsing fails
+                    statusElement.textContent = "Error parsing results. Please try again.";
+                    loader.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                statusElement.textContent = `Error: ${error.message}`;
+                loader.style.display = 'none';
+            });
+        }
+        
+        // Display evaluation results
+        function displayEvaluationResults(data) {
+            // Clear previous results
+            scoresContainer.innerHTML = '';
+            suggestionList.innerHTML = '';
+            
+            try {
+                // Display CEFR level
+                cefrValue.textContent = data.cefr_level;
+                cefrDesc.textContent = cefrDescriptions[data.cefr_level] || 
+                    "Level indicates speaker's overall proficiency in English";
+                
+                // Display scores and feedback
+                const criteriaLabels = {
+                    pronunciation_accuracy: "Pronunciation Accuracy",
+                    speech_clarity: "Speech Clarity",
+                    fluency_flow: "Fluency & Flow",
+                    rhythm_intonation: "Rhythm & Intonation",
+                    vocabulary_usage: "Vocabulary Usage"
+                };
+                
+                for (const [key, label] of Object.entries(criteriaLabels)) {
+                    const score = data.scores[key];
+                    const feedback = data.feedback[key];
+                    
+                    const scoreItem = document.createElement('div');
+                    scoreItem.className = 'score-item';
+                    scoreItem.onclick = function() { toggleScoreDetails(this); };
+                    
+                    scoreItem.innerHTML = `
+                        <h3>${label}</h3>
+                        <div class="score-bar">
+                            <div class="score-fill" style="width: ${score}%"></div>
+                        </div>
+                        <div class="score-value">${score}%</div>
+                        <div class="score-details">
+                            <p>${feedback}</p>
+                        </div>
+                    `;
+                    
+                    scoresContainer.appendChild(scoreItem);
+                }
+                
+                // Display improvement suggestions
+                data.improvement_suggestions.forEach(suggestion => {
+                    const li = document.createElement('li');
+                    li.textContent = suggestion;
+                    suggestionList.appendChild(li);
+                });
+                
+                // Show results
+                resultsElement.style.display = 'block';
+                loader.style.display = 'none';
+                statusElement.textContent = 'Evaluation complete! View your detailed results below.';
+                
+            } catch (error) {
+                console.error('Error displaying results:', error);
+                statusElement.textContent = 'Error displaying evaluation results.';
+                loader.style.display = 'none';
+            }
+        }
+        
+        // Generate PDF from results
+        function generatePDF() {
+            if (!evaluationData) {
+                alert('No evaluation data available');
+                return;
+            }
+            
+            // Import jsPDF
+            const { jsPDF } = window.jspdf;
+            
+            // Prepare PDF content container
+            pdfContentContainer.innerHTML = '';
+            
+            // Create PDF content with fixed dimensions
+            const pdfContent = document.createElement('div');
+            pdfContent.className = 'pdf-wrapper';
+            pdfContent.style.width = '210mm';
+            pdfContent.style.height = 'auto';
+            pdfContent.style.padding = '20mm';
+            pdfContent.style.background = 'white';
+            
+            // Add header
+            const header = document.createElement('div');
+            header.className = 'pdf-header';
+            header.innerHTML = `
+                <div class="pdf-logo">
+                    <div style="width: 60px; height: 60px; background-color: #1e4b8e; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 28px; margin: 0 auto;">F&S</div>
+                </div>
+                <div class="pdf-title">F&S English School Pronunciation Evaluation</div>
+                <div class="pdf-date">Evaluation Date: ${new Date().toLocaleDateString()}</div>
+            `;
+            pdfContent.appendChild(header);
+            
+            // Add CEFR level
+            const cefrSection = document.createElement('div');
+            cefrSection.style.backgroundColor = '#1e4b8e';
+            cefrSection.style.color = 'white';
+            cefrSection.style.padding = '15px';
+            cefrSection.style.borderRadius = '8px';
+            cefrSection.style.marginBottom = '20px';
+            cefrSection.style.textAlign = 'center';
+            
+            cefrSection.innerHTML = `
+                <h3 style="font-size: 16px; margin-bottom: 5px; font-weight: 400;">CEFR Level Assessment</h3>
+                <div style="font-size: 36px; font-weight: bold;">${evaluationData.cefr_level}</div>
+                <div style="font-size: 14px; opacity: 0.9; margin-top: 5px;">${cefrDescriptions[evaluationData.cefr_level] || "Level indicates speaker's overall proficiency in English"}</div>
+            `;
+            pdfContent.appendChild(cefrSection);
+            
+            // Add scores
+            const scoresSection = document.createElement('div');
+            scoresSection.style.marginBottom = '20px';
+            
+            const criteriaLabels = {
+                pronunciation_accuracy: "Pronunciation Accuracy",
+                speech_clarity: "Speech Clarity",
+                fluency_flow: "Fluency & Flow",
+                rhythm_intonation: "Rhythm & Intonation",
+                vocabulary_usage: "Vocabulary Usage"
+            };
+            
+            for (const [key, label] of Object.entries(criteriaLabels)) {
+                const score = evaluationData.scores[key];
+                const feedback = evaluationData.feedback[key];
+                
+                const scoreItem = document.createElement('div');
+                scoreItem.style.backgroundColor = 'white';
+                scoreItem.style.borderRadius = '8px';
+                scoreItem.style.padding = '15px';
+                scoreItem.style.marginBottom = '15px';
+                scoreItem.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.05)';
+                
+                scoreItem.innerHTML = `
+                    <h3 style="font-size: 16px; margin-bottom: 10px; color: #1e4b8e;">${label}</h3>
+                    <div style="height: 8px; background-color: #e9ecef; border-radius: 4px; overflow: hidden; margin-bottom: 10px;">
+                        <div style="height: 100%; width: ${score}%; background-color: #1e4b8e; border-radius: 4px;"></div>
+                    </div>
+                    <div style="font-size: 20px; font-weight: bold; color: #1e4b8e; margin-bottom: 10px;">${score}%</div>
+                    <div style="font-size: 14px; border-top: 1px solid #e1e5eb; padding-top: 10px;">
+                        <p>${feedback}</p>
+                    </div>
+                `;
+                
+                scoresSection.appendChild(scoreItem);
+            }
+            pdfContent.appendChild(scoresSection);
+            
+            // Add suggestions
+            const suggestionsSection = document.createElement('div');
+            suggestionsSection.style.marginBottom = '20px';
+            
+            const suggestionsTitle = document.createElement('h3');
+            suggestionsTitle.style.fontSize = '18px';
+            suggestionsTitle.style.color = '#1e4b8e';
+            suggestionsTitle.style.marginBottom = '10px';
+            suggestionsTitle.textContent = 'Improvement Suggestions';
+            suggestionsSection.appendChild(suggestionsTitle);
+            
+            const suggestionsList = document.createElement('ul');
+            suggestionsList.style.listStyleType = 'none';
+            suggestionsList.style.marginLeft = '0';
+            suggestionsList.style.paddingLeft = '0';
+            
+            evaluationData.improvement_suggestions.forEach(suggestion => {
+                const li = document.createElement('li');
+                li.style.padding = '12px';
+                li.style.marginBottom = '10px';
+                li.style.borderRadius = '8px';
+                li.style.backgroundColor = 'white';
+                li.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.05)';
+                li.style.display = 'flex';
+                li.style.alignItems = 'flex-start';
+                
+                const bullet = document.createElement('span');
+                bullet.textContent = '•';
+                bullet.style.color = '#1e4b8e';
+                bullet.style.fontWeight = 'bold';
+                bullet.style.marginRight = '10px';
+                bullet.style.fontSize = '18px';
+                bullet.style.lineHeight = '1';
+                
+                li.appendChild(bullet);
+                li.appendChild(document.createTextNode(suggestion));
+                suggestionsList.appendChild(li);
+            });
+            
+            suggestionsSection.appendChild(suggestionsList);
+            pdfContent.appendChild(suggestionsSection);
+            
+            // Add footer
+            const footer = document.createElement('div');
+            footer.style.marginTop = '30px';
+            footer.style.textAlign = 'center';
+            footer.style.borderTop = '1px solid #e1e5eb';
+            footer.style.paddingTop = '15px';
+            footer.style.color = '#6c757d';
+            footer.style.fontSize = '12px';
+            
+            footer.innerHTML = `
+                <p>© 2025 F&S English School. All rights reserved.</p>
+                <div style="margin-top: 10px;">
+                    <span style="display: inline-block; background-color: #f8f9fa; padding: 8px 15px; border-radius: 20px; font-size: 12px; font-weight: 500; color: #1e4b8e;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px; vertical-align: middle;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9 12l2 2 4-4"></path>
+                        </svg>
+                        Certified by Leszek Gielniak F&S English School
+                    </span>
+                </div>
+            `;
+            pdfContent.appendChild(footer);
+            
+            // Add content to container
+            pdfContentContainer.appendChild(pdfContent);
+            document.body.appendChild(pdfContentContainer);
+            
+            // Generate PDF with html2canvas and jsPDF
+            html2canvas(pdfContent, {
+                scale: 1,
+                useCORS: true,
+                logging: false
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+                
+                const imgWidth = 210; // A4 width in mm
+                const pageHeight = 297; // A4 height in mm
+                const imgHeight = canvas.height * imgWidth / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 0;
+                
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+                
+                // Add additional pages if needed
+                while (heightLeft > 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+                
+                pdf.save('FS_Pronunciation_Evaluation.pdf');
+                
+                // Clean up
+                pdfContentContainer.innerHTML = '';
+            });
+        }
+    </script>
+</body>
+</html>
