@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Praktyka Czasowników Angielskich</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #6f9ceb;
+            --correct-color: #4CAF50;
+            --incorrect-color: #f44336;
+            --neutral-color: #f0f2f5;
+            --dark-text: #333;
+            --light-text: #fff;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            color: var(--dark-text);
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #555;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            background-color: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .progress-container {
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background-color: var(--neutral-color);
+            height: 15px;
+            border-radius: 10px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: var(--secondary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            background-color: var(--neutral-color);
+            padding: 15px;
+            border-radius: var(--border-radius);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .question-container {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: var(--neutral-color);
+            border-radius: var(--border-radius);
+        }
+
+        .prompt {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            text-align: center;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .option {
+            padding: 15px;
+            background-color: white;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .option:hover {
+            background-color: #f5f5f5;
+            border-color: var(--secondary-color);
+        }
+
+        .selected {
+            background-color: var(--secondary-color) !important;
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .correct {
+            background-color: var(--correct-color) !important;
+            color: white;
+            border-color: var(--correct-color);
+        }
+
+        .incorrect {
+            background-color: var(--incorrect-color) !important;
+            color: white;
+            border-color: var(--incorrect-color);
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: none;
+        }
+
+        .feedback.correct {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: var(--correct-color);
+            border: 1px solid var(--correct-color);
+        }
+
+        .feedback.incorrect {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: var(--incorrect-color);
+            border: 1px solid var(--incorrect-color);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+
+        button {
+            padding: 12px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .settings-panel {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .settings-heading {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
+
+        .setting-group {
+            margin-bottom: 15px;
+        }
+
+        .setting-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .mode-selector {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .mode-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .mode-button {
+            padding: 10px 15px;
+            background-color: var(--neutral-color);
+            color: var(--dark-text);
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mode-button.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        @media (max-width: 600px) {
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Praktyka Czasowników Angielskich</h1>
+        <div class="subtitle">Ćwicz formy teraźniejsze, przeszłe i przeczące</div>
+    </header>
+
+    <div class="container">
+        <div class="mode-selector">
+            <div class="setting-label">Wybierz tryb:</div>
+            <div class="mode-buttons">
+                <button class="mode-button active" data-mode="present-past">Teraźniejszy ➡ Przeszły</button>
+                <button class="mode-button" data-mode="past-present">Przeszły ➡ Teraźniejszy</button>
+                <button class="mode-button" data-mode="negative">Formy Przeczące</button>
+            </div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-info">Postęp: <span id="progress-text">0%</span></div>
+            <div class="progress-bar">
+                <div class="progress" id="progress-bar"></div>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="correct-count">0</div>
+                <div class="stat-label">Poprawnych</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="total-count">0</div>
+                <div class="stat-label">Ukończonych</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="accuracy">0%</div>
+                <div class="stat-label">Dokładność</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="current-level">1</div>
+                <div class="stat-label">Poziom</div>
+            </div>
+        </div>
+
+        <div class="question-container">
+            <div class="prompt" id="prompt">Ładowanie...</div>
+            <div class="verb-form" id="verb-form">Forma czasownika: <span id="form-type">teraźniejsza ➡ przeszła</span></div>
+            <div class="options-container" id="options-container">
+                <!-- Options will be generated dynamically -->
+            </div>
+            <div class="feedback" id="feedback"></div>
+        </div>
+
+        <div class="controls">
+            <button id="check-button" disabled>Sprawdź</button>
+            <button id="next-button" disabled>Następne</button>
+        </div>
+    </div>
+
+    <div class="settings-panel">
+        <h2 class="settings-heading">Ustawienia</h2>
+        
+        <div class="setting-group">
+            <span class="setting-label">Poziom trudności:</span>
+            <div class="radio-group">
+                <label class="radio-option">
+                    <input type="radio" name="difficulty" value="easy" checked> Łatwy
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="difficulty" value="medium"> Średni
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="difficulty" value="hard"> Trudny
+                </label>
+            </div>
+        </div>
+        
+        <div class="setting-group">
+            <button id="reset-progress">Zresetuj postęp</button>
+        </div>
+    </div>
+
+    <script>
+        // Dane czasowników z tłumaczeniami polskimi
+        const verbData = [
+            {
+                base: "ask for help",
+                past: "asked for help",
+                negative: {
+                    present: "don't ask for help",
+                    past: "didn't ask for help"
+                },
+                translation: "prosić o pomoc"
+            },
+            {
+                base: "explain to me",
+                past: "explained to me",
+                negative: {
+                    present: "don't explain to me",
+                    past: "didn't explain to me"
+                },
+                translation: "wyjaśnić mi"
+            },
+            {
+                base: "work at",
+                past: "worked at",
+                negative: {
+                    present: "don't work at",
+                    past: "didn't work at"
+                },
+                translation: "pracować w/na"
+            },
+            {
+                base: "want to go/have/buy",
+                past: "wanted to go/have/buy",
+                negative: {
+                    present: "don't want to go/have/buy",
+                    past: "didn't want to go/have/buy"
+                },
+                translation: "chcieć iść/mieć/kupić"
+            },
+            {
+                base: "learn how to swim/speak English",
+                past: "learned how to swim/speak English",
+                negative: {
+                    present: "don't learn how to swim/speak English",
+                    past: "didn't learn how to swim/speak English"
+                },
+                translation: "uczyć się pływać/mówić po angielsku"
+            },
+            {
+                base: "live in",
+                past: "lived in",
+                negative: {
+                    present: "don't live in",
+                    past: "didn't live in"
+                },
+                translation: "mieszkać w"
+            },
+            {
+                base: "invite to",
+                past: "invited to",
+                negative: {
+                    present: "don't invite to",
+                    past: "didn't invite to"
+                },
+                translation: "zapraszać do"
+            },
+            {
+                base: "look",
+                past: "looked",
+                negative: {
+                    present: "don't look",
+                    past: "didn't look"
+                },
+                translation: "patrzeć (look at, look after)"
+            },
+            {
+                base: "call the police",
+                past: "called the police",
+                negative: {
+                    present: "don't call the police",
+                    past: "didn't call the police"
+                },
+                translation: "dzwonić na policję"
+            },
+            {
+                base: "help him/her/them to",
+                past: "helped him/her/them to",
+                negative: {
+                    present: "don't help him/her/them to",
+                    past: "didn't help him/her/them to"
+                },
+                translation: "pomagać mu/jej/im w"
+            },
+            {
+                base: "use",
+                past: "used",
+                negative: {
+                    present: "don't use",
+                    past: "didn't use"
+                },
+                translation: "używać"
+            },
+            {
+                base: "need to",
+                past: "needed to",
+                negative: {
+                    present: "don't need to",
+                    past: "didn't need to"
+                },
+                translation: "potrzebować"
+            },
+            {
+                base: "try to/on/out",
+                past: "tried to/on/out",
+                negative: {
+                    present: "don't try to/on/out",
+                    past: "didn't try to/on/out"
+                },
+                translation: "próbować/przymierzać/testować"
+            },
+            {
+                base: "like it",
+                past: "liked it",
+                negative: {
+                    present: "don't like it",
+                    past: "didn't like it"
+                },
+                translation: "lubić to"
+            },
+            {
+                base: "decide to",
+                past: "decided to",
+                negative: {
+                    present: "don't decide to",
+                    past: "didn't decide to"
+                },
+                translation: "zdecydować się na"
+            },
+            {
+                base: "suggest -ing",
+                past: "suggested -ing",
+                negative: {
+                    present: "don't suggest -ing",
+                    past: "didn't suggest -ing"
+                },
+                translation: "sugerować -ing"
+            },
+            {
+                base: "start -ing",
+                past: "started -ing",
+                negative: {
+                    present: "don't start -ing",
+                    past: "didn't start -ing"
+                },
+                translation: "zaczynać -ing"
+            },
+            {
+                base: "walk",
+                past: "walked",
+                negative: {
+                    present: "don't walk",
+                    past: "didn't walk"
+                },
+                translation: "chodzić"
+            },
+            {
+                base: "travel from ... to ...",
+                past: "travelled from ... to ...",
+                negative: {
+                    present: "don't travel from ... to ...",
+                    past: "didn't travel from ... to ..."
+                },
+                translation: "podróżować z ... do ..."
+            },
+            {
+                base: "believe it",
+                past: "believed it",
+                negative: {
+                    present: "don't believe it",
+                    past: "didn't believe it"
+                },
+                translation: "wierzyć w to"
+            }
+        ];
+
+        // Zmienne stanu gry
+        let currentQuestion = null;
+        let selectedOption = null;
+        let currentMode = 'present-past'; // present-past, past-present, negative
+        let currentQuestionIndex = 0;
+        let correctCount = 0;
+        let totalAnswered = 0;
+        let currentLevel = 1;
+        let maxLevel = 3;
+        let userProgress = {};
+        let shuffledVerbs = [];
+
+        // Elementy DOM
+        const promptElement = document.getElementById('prompt');
+        const optionsContainer = document.getElementById('options-container');
+        const checkButton = document.getElementById('check-button');
+        const nextButton = document.getElementById('next-button');
+        const feedbackElement = document.getElementById('feedback');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const correctCountElement = document.getElementById('correct-count');
+        const totalCountElement = document.getElementById('total-count');
+        const accuracyElement = document.getElementById('accuracy');
+        const currentLevelElement = document.getElementById('current-level');
+        const formTypeElement = document.getElementById('form-type');
+        const resetButton = document.getElementById('reset-progress');
+        const modeButtons = document.querySelectorAll('.mode-button');
+        const difficultyRadios = document.querySelectorAll('input[name="difficulty"]');
+
+        // Inicjalizacja
+        function init() {
+            loadUserProgress();
+            updateStats();
+            setupEventListeners();
+            setMode('present-past');
+            shuffleVerbs();
+            setNextQuestion();
+        }
+
+        // Ładowanie postępów użytkownika
+        function loadUserProgress() {
+            const savedProgress = localStorage.getItem('verbPracticeProgress');
+            if (savedProgress) {
+                userProgress = JSON.parse(savedProgress);
+                correctCount = userProgress.correctCount || 0;
+                totalAnswered = userProgress.totalAnswered || 0;
+                currentLevel = userProgress.currentLevel || 1;
+            } else {
+                userProgress = {
+                    verbStats: {},
+                    correctCount: 0,
+                    totalAnswered: 0,
+                    currentLevel: 1
+                };
+            }
+        }
+
+        // Zapisywanie postępów użytkownika
+        function saveUserProgress() {
+            userProgress.correctCount = correctCount;
+            userProgress.totalAnswered = totalAnswered;
+            userProgress.currentLevel = currentLevel;
+            localStorage.setItem('verbPracticeProgress', JSON.stringify(userProgress));
+        }
+
+        // Aktualizacja statystyk
+        function updateStats() {
+            correctCountElement.textContent = correctCount;
+            totalCountElement.textContent = totalAnswered;
+            const accuracy = totalAnswered > 0 ? Math.round((correctCount / totalAnswered) * 100) : 0;
+            accuracyElement.textContent = `${accuracy}%`;
+            currentLevelElement.textContent = currentLevel;
+            
+            // Aktualizacja paska postępu
+            const progress = Math.min(100, Math.round((totalAnswered / 20) * 100));
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = `${progress}%`;
+        }
+
+        // Ustawienia słuchaczy zdarzeń
+        function setupEventListeners() {
+            checkButton.addEventListener('click', checkAnswer);
+            nextButton.addEventListener('click', setNextQuestion);
+            resetButton.addEventListener('click', resetProgress);
+
+            // Słuchacze dla przycisków trybu
+            modeButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const mode = e.target.dataset.mode;
+                    setMode(mode);
+                });
+            });
+
+            // Słuchacze dla przycisków trudności
+            difficultyRadios.forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    setDifficulty(e.target.value);
+                });
+            });
+        }
+
+        // Ustawienie trybu
+        function setMode(mode) {
+            currentMode = mode;
+            
+            // Aktualizacja aktywnego przycisku
+            modeButtons.forEach(button => {
+                button.classList.toggle('active', button.dataset.mode === mode);
+            });
+
+            // Aktualizacja typu formularza
+            switch(mode) {
+                case 'present-past':
+                    formTypeElement.textContent = 'teraźniejsza ➡ przeszła';
+                    break;
+                case 'past-present':
+                    formTypeElement.textContent = 'przeszła ➡ teraźniejsza';
+                    break;
+                case 'negative':
+                    formTypeElement.textContent = 'przecząca';
+                    break;
+            }
+
+            // Resetuj pytanie
+            shuffleVerbs();
+            setNextQuestion();
+        }
+
+        // Ustawienie trudności
+        function setDifficulty(level) {
+            // Możesz dostosować zachowanie w zależności od poziomu trudności
+            // Na razie tylko zapisujemy wybór
+            userProgress.difficulty = level;
+            saveUserProgress();
+        }
+
+        // Tasowanie czasowników
+        function shuffleVerbs() {
+            shuffledVerbs = [...verbData];
+            
+            // Sortowanie według trudności
+            shuffledVerbs.sort((a, b) => {
+                const statsA = userProgress.verbStats[a.base] || { attempts: 0, correct: 0 };
+                const statsB = userProgress.verbStats[b.base] || { attempts: 0, correct: 0 };
+                
+                const scoreA = statsA.attempts > 0 ? statsA.correct / statsA.attempts : 0;
+                const scoreB = statsB.attempts > 0 ? statsB.correct / statsB.attempts : 0;
+                
+                // Trudniejsze czasowniki (niższy współczynnik poprawności) na początku dla wyższych poziomów
+                return currentLevel > 1 ? scoreA - scoreB : Math.random() - 0.5;
+            });
+            
+            // Dla poziomu 1, po prostu tasujemy losowo
+            if (currentLevel === 1) {
+                for (let i = shuffledVerbs.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffledVerbs[i], shuffledVerbs[j]] = [shuffledVerbs[j], shuffledVerbs[i]];
+                }
+            }
+            
+            currentQuestionIndex = 0;
+        }
+
+        // Ustawienie następnego pytania
+        function setNextQuestion() {
+            // Wyczyść poprzednie stany
+            feedbackElement.style.display = 'none';
+            selectedOption = null;
+            checkButton.disabled = true;
+            nextButton.disabled = true;
+            
+            // Jeśli przerobiliśmy wszystkie czasowniki, przetasuj ponownie
+            if (currentQuestionIndex >= shuffledVerbs.length) {
+                shuffleVerbs();
+            }
+            
+            currentQuestion = shuffledVerbs[currentQuestionIndex];
+            currentQuestionIndex++;
+            
+            promptElement.textContent = currentQuestion.translation;
+            
+            createOptions();
+        }
+
+        // Tworzenie opcji odpowiedzi
+        function createOptions() {
+            optionsContainer.innerHTML = '';
+            
+            let correctAnswer = '';
+            let options = [];
+            
+            switch(currentMode) {
+                case 'present-past':
+                    correctAnswer = currentQuestion.past;
+                    options = generateOptions(currentQuestion.past, 'past');
+                    break;
+                case 'past-present':
+                    correctAnswer = currentQuestion.base;
+                    options = generateOptions(currentQuestion.base, 'present');
+                    break;
+                case 'negative':
+                    // Losowo wybierz przeczącą formę teraźniejszą lub przeszłą
+                    const isPresent = Math.random() > 0.5;
+                    correctAnswer = isPresent ? 
+                        currentQuestion.negative.present : 
+                        currentQuestion.negative.past;
+                    options = generateNegativeOptions(correctAnswer, isPresent ? 'present' : 'past');
+                    break;
+            }
+            
+            // Tasowanie opcji
+            for (let i = options.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [options[i], options[j]] = [options[j], options[i]];
+            }
+            
+            // Tworzenie przycisków opcji
+            options.forEach(option => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.addEventListener('click', () => selectOption(optionElement, option, correctAnswer));
+                optionsContainer.appendChild(optionElement);
+            });
+        }
+
+        // Generowanie opcji dla trybu zwykłego
+        function generateOptions(correctAnswer, formType) {
+            const options = [correctAnswer];
+            
+            // Dodawanie niepoprawnych opcji z podobnych czasowników
+            const otherVerbs = verbData.filter(verb => verb !== currentQuestion);
+            
+            // Wybierz 3 losowe czasowniki jako dystraktory
+            const distractors = [];
+            while (distractors.length < 3 && otherVerbs.length > 0) {
+                const randomIndex = Math.floor(Math.random() * otherVerbs.length);
+                const distractor = formType === 'past' ? 
+                    otherVerbs[randomIndex].past : 
+                    otherVerbs[randomIndex].base;
+                
+                if (!distractors.includes(distractor) && distractor !== correctAnswer) {
+                    distractors.push(distractor);
+                }
+                
+                // Usuń wykorzystany czasownik aby uniknąć duplikatów
+                otherVerbs.splice(randomIndex, 1);
+            }
+            
+            return [...options, ...distractors];
+        }
+
+        // Generowanie opcji dla form przeczących
+        function generateNegativeOptions(correctAnswer, tense) {
+            const options = [correctAnswer];
+            
+            // Generuj błędne wersje oparte na typowych błędach
+            let incorrectOptions = [];
+            
+            if (tense === 'present') {
+                // Typowe błędy dla form przeczących teraźniejszych
+                incorrectOptions = [
+                    correctAnswer.replace("don't", "not"),
+                    correctAnswer.replace("don't", "doesn't"),
+                    "am not " + correctAnswer.replace("don't ", "")
+                ];
+            } else {
+                // Typowe błędy dla form przeczących przeszłych
+                incorrectOptions = [
+                    correctAnswer.replace("didn't", "don't"),
+                    correctAnswer.replace("didn't", "not"),
+                    correctAnswer.replace("didn't", "wasn't")
+                ];
+            }
+            
+            return [...options, ...incorrectOptions];
+        }
+
+        // Wybór opcji
+        function selectOption(element, option, correctAnswer) {
+            // Usuń poprzednie zaznaczenie
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            
+            // Zaznacz nową opcję
+            element.classList.add('selected');
+            selectedOption = option;
+            
+            // Aktywacja przycisku sprawdzenia
+            checkButton.disabled = false;
+        }
+
+        // Sprawdzenie odpowiedzi
+        function checkAnswer() {
+            if (!selectedOption) return;
+            
+            let correctAnswer = '';
+            
+            switch(currentMode) {
+                case 'present-past':
+                    correctAnswer = currentQuestion.past;
+                    break;
+                case 'past-present':
+                    correctAnswer = currentQuestion.base;
+                    break;
+                case 'negative':
+                    // Sprawdź zarówno wersję teraźniejszą, jak i przeszłą
+                    const isPresentNegative = selectedOption.includes("don't");
+                    correctAnswer = isPresentNegative ? 
+                        currentQuestion.negative.present : 
+                        currentQuestion.negative.past;
+                    break;
+            }
+            
+            const isCorrect = selectedOption === correctAnswer;
+            
+            // Aktualizacja statystyk czasownika
+            if (!userProgress.verbStats[currentQuestion.base]) {
+                userProgress.verbStats[currentQuestion.base] = { attempts: 0, correct: 0 };
+            }
+            
+            userProgress.verbStats[currentQuestion.base].attempts++;
+            if (isCorrect) {
+                userProgress.verbStats[currentQuestion.base].correct++;
+                correctCount++;
+            }
+            
+            totalAnswered++;
+            
+            // Wyświetlanie informacji zwrotnej
+            feedbackElement.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedbackElement.textContent = isCorrect ? 
+                'Poprawnie!' : 
+                `Niepoprawnie. Poprawna odpowiedź to: ${correctAnswer}`;
+            feedbackElement.style.display = 'block';
+            
+            // Podświetl poprawną i niepoprawną opcję
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => {
+                if (opt.textContent === correctAnswer) {
+                    opt.classList.add('correct');
+                } else if (opt.textContent === selectedOption && !isCorrect) {
+                    opt.classList.add('incorrect');
+                }
+            });
+            
+            // Aktywuj przycisk następnego pytania
+            checkButton.disabled = true;
+            nextButton.disabled = false;
+            
+            // Aktualizacja poziomu trudności
+            if (totalAnswered % 10 === 0) {
+                // Sprawdź czy należy zwiększyć poziom trudności
+                const lastTenAccuracy = calculateRecentAccuracy(10);
+                
+                if (lastTenAccuracy > 80 && currentLevel < maxLevel) {
+                    currentLevel++;
+                    feedbackElement.textContent += ` Awans na poziom ${currentLevel}!`;
+                } else if (lastTenAccuracy < 40 && currentLevel > 1) {
+                    currentLevel--;
+                    feedbackElement.textContent += ` Powrót do poziomu ${currentLevel}.`;
+                }
+            }
+            
+            // Zapisz postępy
+            saveUserProgress();
+            
+            // Aktualizuj statystyki
+            updateStats();
+        }
+
+        // Obliczanie dokładności z ostatnich n odpowiedzi
+        function calculateRecentAccuracy(n) {
+            const verbs = Object.values(userProgress.verbStats);
+            if (verbs.length === 0) return 0;
+            
+            // Sortuj według czasu ostatniej próby (jeśli mamy tę informację)
+            // Na razie po prostu bierzemy ostatnie n czasowników
+            let totalRecent = 0;
+            let correctRecent = 0;
+            
+            const recentVerbs = verbs.slice(-n);
+            
+            recentVerbs.forEach(verb => {
+                totalRecent += verb.attempts;
+                correctRecent += verb.correct;
+            });
+            
+            return totalRecent > 0 ? (correctRecent / totalRecent) * 100 : 0;
+        }
+
+        // Resetowanie postępu
+        function resetProgress() {
+            if (confirm('Czy na pewno chcesz zresetować cały swój postęp?')) {
+                localStorage.removeItem('verbPracticeProgress');
+                correctCount = 0;
+                totalAnswered = 0;
+                currentLevel = 1;
+                userProgress = {
+                    verbStats: {},
+                    correctCount: 0,
+                    totalAnswered: 0,
+                    currentLevel: 1
+                };
+                
+                updateStats();
+                shuffleVerbs();
+                setNextQuestion();
+            }
+        }
+
+        // Inicjalizacja aplikacji
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
