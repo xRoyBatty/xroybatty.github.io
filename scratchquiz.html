@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Podstawy Programowania</title>
+    <!-- Style CSS -->
+    <style>
+        /* Zmienne CSS */
+        :root {
+            --primary-color: #4a2aae;
+            --secondary-color: #5E63BA;
+            --accent-color: #7f47dd;
+            --background-color: #f0f8ff;
+            --correct-color: #28a745;
+            --wrong-color: #dc3545;
+            --neutral-color: #f8f9fa;
+            --text-color: #333;
+            --white: #fff;
+            --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Ogólne style */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.8) 10%, transparent 10%);
+            background-size: 30px 30px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        /* Header */
+        .quiz-header {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .quiz-header h1 {
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .quiz-header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* Progress bar */
+        .progress-container {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: var(--accent-color);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        /* Question section */
+        .question-container {
+            padding: 30px;
+            min-height: 400px;
+        }
+
+        .question {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: var(--primary-color);
+        }
+
+        /* Options */
+        .options {
+            list-style: none;
+        }
+
+        .option {
+            background-color: var(--neutral-color);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .option:hover {
+            background-color: rgba(94, 99, 186, 0.1);
+            transform: translateX(5px);
+        }
+
+        .option.correct {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: var(--correct-color);
+        }
+
+        .option.incorrect {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: var(--wrong-color);
+        }
+
+        .option.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .option-label {
+            margin-right: 10px;
+            background: var(--secondary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .option-text {
+            flex: 1;
+        }
+
+        /* Hint system */
+        .hint-container {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: rgba(79, 185, 227, 0.1);
+            border-left: 4px solid #4FB9E3;
+            display: none;
+        }
+
+        .hint-text {
+            font-style: italic;
+            color: #1a6985;
+        }
+
+        .show-hint {
+            display: block;
+        }
+
+        /* Navigation */
+        .quiz-nav {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 30px;
+            background-color: rgba(0, 0, 0, 0.02);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-color);
+        }
+
+        .btn-secondary {
+            background-color: #f8f9fa;
+            color: var(--text-color);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background-color: #e9ecef;
+        }
+
+        .btn-hint {
+            background-color: transparent;
+            color: var(--secondary-color);
+            padding: 5px 10px;
+            margin-right: auto;
+        }
+
+        .btn-hint:hover {
+            background-color: rgba(94, 99, 186, 0.1);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Results */
+        .results {
+            text-align: center;
+            padding: 30px;
+            display: none;
+        }
+
+        .results h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 28px;
+        }
+
+        .score {
+            font-size: 48px;
+            color: var(--accent-color);
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .result-message {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .result-emoji {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        /* Feedback */
+        .feedback {
+            font-weight: bold;
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .feedback.correct {
+            color: var(--correct-color);
+            background-color: rgba(40, 167, 69, 0.1);
+        }
+
+        .feedback.incorrect {
+            color: var(--wrong-color);
+            background-color: rgba(220, 53, 69, 0.1);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s forwards;
+        }
+
+        /* Responsive Styles */
+        @media screen and (max-width: 768px) {
+            .container {
+                max-width: 100%;
+                border-radius: 0;
+            }
+
+            .question {
+                font-size: 18px;
+            }
+
+            .option {
+                padding: 12px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .quiz-header h1 {
+                font-size: 22px;
+            }
+
+            .quiz-nav {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .btn-hint {
+                margin-bottom: 10px;
+                order: -1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="quiz-header">
+            <h1>Quiz: Podstawy Programowania</h1>
+            <p>Sprawdź swoją wiedzę z podstaw programowania wizualnego</p>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress"></div>
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <p class="question" id="question">Pytanie pojawi się tutaj</p>
+            <ul class="options" id="options">
+                <!-- Opcje zostaną dodane dynamicznie przez JavaScript -->
+            </ul>
+            <div class="feedback" id="feedback">Informacja zwrotna</div>
+            <div class="hint-container" id="hint-container">
+                <p class="hint-text" id="hint-text">Podpowiedź pojawi się tutaj</p>
+            </div>
+        </div>
+        
+        <div class="results" id="results">
+            <div class="result-emoji" id="result-emoji">🚀</div>
+            <h2>Twój wynik</h2>
+            <div class="score" id="score">0/0</div>
+            <p class="result-message" id="result-message">Wiadomość z wynikiem</p>
+            <button class="btn-primary" id="restart-btn">Rozpocznij jeszcze raz</button>
+        </div>
+        
+        <div class="quiz-nav" id="quiz-nav">
+            <button class="btn-hint" id="hint-btn">Pokaż podpowiedź</button>
+            <button class="btn-secondary" id="prev-btn" disabled>Poprzednie</button>
+            <button class="btn-primary" id="next-btn" disabled>Następne</button>
+        </div>
+    </div>
+
+    <!-- Script JS -->
+    <script>
+        // Lista pytań quizu
+        const quizQuestions = [
+            {
+                question: "Który blok służy do poruszania duszkiem w górę po naciśnięciu klawisza strzałki w górę?",
+                options: [
+                    "gdy klawisz [strzałka w górę] naciśnięty, zmień y o 10",
+                    "gdy klawisz [strzałka w górę] naciśnięty, zmień x o 10",
+                    "gdy klawisz [strzałka w górę] naciśnięty, przesuń o 10 kroków",
+                    "gdy klawisz [strzałka w górę] naciśnięty, obróć o 10 stopni"
+                ],
+                correctAnswer: 0,
+                hint: "Zastanów się, która oś odpowiada za ruch w górę i w dół."
+            },
+            {
+                question: "Jak sprawić, aby duszek poruszał się losowo po scenie?",
+                options: [
+                    "zawsze, obróć o 90 stopni, przesuń o 10 kroków",
+                    "zawsze, obróć o losową liczbę od -15 do 15 stopni, przesuń o 10 kroków",
+                    "zawsze, ustaw x na losowa liczba od -240 do 240, ustaw y na losowa liczba od -180 do 180",
+                    "zawsze, zmień x o 10, zmień y o 10"
+                ],
+                correctAnswer: 1,
+                hint: "Pomyśl, co nadaje ruchowi nieprzewidywalny charakter."
+            },
+            {
+                question: "Co należy zrobić, aby duszek zmienił swój wygląd?",
+                options: [
+                    "zmień kostium na [nazwa kostiumu]",
+                    "zmień tło na [nazwa tła]",
+                    "ukryj duszka",
+                    "ustaw efekt kolor na 50"
+                ],
+                correctAnswer: 0,
+                hint: "Duszek może mieć kilka różnych wersji wyglądu."
+            },
+            {
+                question: "Jak utworzyć zmienną, która będzie przechowywać liczbę punktów w grze?",
+                options: [
+                    "utwórz zmienną \"punkty\" dla wszystkich duszków",
+                    "utwórz zmienną \"punkty\" tylko dla tego duszka",
+                    "utwórz komunikat \"punkty\"",
+                    "utwórz blok \"punkty\""
+                ],
+                correctAnswer: 0,
+                hint: "Zmienne służą do przechowywania danych, które mogą się zmieniać podczas działania programu."
+            },
+            {
+                question: "Który blok wykrywa kolizję (dotknięcie) między dwoma duszkami?",
+                options: [
+                    "jeżeli < dotyka [nazwa duszka] ? > to",
+                    "jeżeli < dotyka koloru [kolor] ? > to",
+                    "jeżeli < klawisz [spacja] naciśnięty ? > to",
+                    "jeżeli < x > 0 ? > to"
+                ],
+                correctAnswer: 0,
+                hint: "Musisz sprawdzić, czy jeden duszek fizycznie styka się z drugim."
+            },
+            {
+                question: "Jak zwiększyć wartość zmiennej \"punkty\" o 1?",
+                options: [
+                    "ustaw [punkty] na 1",
+                    "zmień [punkty] o 1",
+                    "ustaw [punkty] na (punkty) + 1",
+                    "pokaż zmienną [punkty]"
+                ],
+                correctAnswer: 1,
+                hint: "Chcesz dodać 1 do aktualnej wartości, a nie ustawiać konkretną wartość."
+            },
+            {
+                question: "Jak spowodować, aby duszek pojawił się w losowym miejscu na scenie?",
+                options: [
+                    "idź do x: (losowa liczba od -240 do 240) y: (losowa liczba od -180 do 180)",
+                    "idź do x: 0 y: 0",
+                    "idź do [losowe położenie]",
+                    "przesuń o (losowa liczba od 1 do 10) kroków"
+                ],
+                correctAnswer: 0,
+                hint: "Scena w Scratch ma określone wymiary i współrzędne."
+            },
+            {
+                question: "Który blok sprawdza, czy wartość zmiennej jest mniejsza od 20?",
+                options: [
+                    "jeżeli < [zmienna] < 20 > to",
+                    "jeżeli < [zmienna] = 20 > to",
+                    "jeżeli < [zmienna] > 20 > to",
+                    "jeżeli < [zmienna] <= 20 > to"
+                ],
+                correctAnswer: 0,
+                hint: "Symbol \"<\" oznacza \"mniejsze niż\"."
+            },
+            {
+                question: "Jak wysłać komunikat do wszystkich duszków?",
+                options: [
+                    "nadaj komunikat [nazwa]",
+                    "odbierz komunikat [nazwa]",
+                    "powiedz [nazwa]",
+                    "zapytaj [nazwa] i czekaj"
+                ],
+                correctAnswer: 0,
+                hint: "Komunikaty służą do koordynacji działań między duszkami."
+            },
+            {
+                question: "Który blok pozwala duszkowi zareagować na otrzymany komunikat?",
+                options: [
+                    "gdy klawisz [spacja] naciśnięty",
+                    "gdy otrzymam komunikat [nazwa]",
+                    "gdy ten duszek kliknięty",
+                    "gdy zmieniono tło na [nazwa tła]"
+                ],
+                correctAnswer: 1,
+                hint: "Duszek \"słucha\" określonych wiadomości i wykonuje akcje po ich otrzymaniu."
+            },
+            {
+                question: "Jak sprawić, aby duszek zniknął z ekranu?",
+                options: [
+                    "zmień efekt ducha na 100",
+                    "ukryj",
+                    "przesuń o -100 kroków",
+                    "zmień rozmiar na 0%"
+                ],
+                correctAnswer: 1,
+                hint: "Istnieje specjalny blok, który sprawia, że duszek przestaje być widoczny."
+            },
+            {
+                question: "Jak pokazać ukrytego wcześniej duszka?",
+                options: [
+                    "pokaż",
+                    "zmień efekt ducha na 0",
+                    "zmień rozmiar na 100%",
+                    "przesuń na wierzch"
+                ],
+                correctAnswer: 0,
+                hint: "Jest to przeciwieństwo ukrywania."
+            },
+            {
+                question: "Który blok służy do zatrzymania wszystkich skryptów duszka?",
+                options: [
+                    "zatrzymaj [wszystko]",
+                    "zatrzymaj [inne skrypty duszka]",
+                    "zatrzymaj [ten skrypt]",
+                    "zatrzymaj [inne skrypty sceny]"
+                ],
+                correctAnswer: 0,
+                hint: "Czasem potrzebujemy zakończyć działanie wszystkich procesów naraz."
+            },
+            {
+                question: "Jak ustawić wartość początkową zmiennej \"paliwo\" na 100?",
+                options: [
+                    "zmień [paliwo] o 100",
+                    "ustaw [paliwo] na 100",
+                    "powiedz [paliwo] przez 2 sekundy",
+                    "czekaj [paliwo] sekund"
+                ],
+                correctAnswer: 1,
+                hint: "Na początku gry często musimy zainicjować zmienne określonymi wartościami."
+            },
+            {
+                question: "Który blok sprawdza, czy duszek dotyka krawędzi sceny?",
+                options: [
+                    "jeżeli < dotyka [krawędź] ? > to",
+                    "jeżeli < dotyka [mysz] ? > to",
+                    "jeżeli < dotyka [inny duszek] ? > to",
+                    "jeżeli < na brzegu, odbij > to"
+                ],
+                correctAnswer: 0,
+                hint: "Duszek może wykrywać różne elementy, w tym granice ekranu."
+            },
+            {
+                question: "Jak zatrzymać działanie skryptu na 2 sekundy?",
+                options: [
+                    "ustaw [czas] na 2",
+                    "czekaj 2 sekundy",
+                    "zatrzymaj [skrypt] na 2 sekundy",
+                    "powtórz 2 razy"
+                ],
+                correctAnswer: 1,
+                hint: "Czasem potrzebujemy wprowadzić pauzę w działaniu programu."
+            },
+            {
+                question: "Który blok wyświetla wiadomość \"Koniec gry\" na ekranie?",
+                options: [
+                    "nadaj komunikat [Koniec gry]",
+                    "ustaw [wiadomość] na [Koniec gry]",
+                    "powiedz [Koniec gry] przez 2 sekundy",
+                    "zapytaj [Koniec gry?] i czekaj"
+                ],
+                correctAnswer: 2,
+                hint: "Chodzi o pokazanie tekstu wypowiadanego przez duszka."
+            },
+            {
+                question: "Jak sprawdzić, czy zmienna \"paliwo\" jest równa 0?",
+                options: [
+                    "jeżeli < [paliwo] = 0 > to",
+                    "jeżeli < [paliwo] < 0 > to",
+                    "jeżeli < [paliwo] > 0 > to",
+                    "jeżeli < [paliwo] <= 0 > to"
+                ],
+                correctAnswer: 0,
+                hint: "Chcesz dokładnie sprawdzić, czy wartość wynosi zero, nie mniej ani więcej."
+            },
+            {
+                question: "Który blok powtarza określone działania w nieskończoność?",
+                options: [
+                    "powtórz 10 razy",
+                    "powtórz aż < warunek >",
+                    "zawsze",
+                    "zawsze jeżeli < warunek > to"
+                ],
+                correctAnswer: 2,
+                hint: "W grach często potrzebujemy pętli, która działa bez przerwy."
+            },
+            {
+                question: "Jak zmienić kostium duszka na następny?",
+                options: [
+                    "zmień kostium na [następny kostium]",
+                    "ustaw kostium na [nazwa kostiumu]",
+                    "zmień kostium na [poprzedni kostium]",
+                    "pokaż następny kostium"
+                ],
+                correctAnswer: 0,
+                hint: "Możesz przechodzić sekwencyjnie przez dostępne kostiumy duszka."
+            },
+            {
+                question: "Który blok służy do odbicia duszka od krawędzi sceny?",
+                options: [
+                    "jeżeli < dotyka [krawędź] ? > to, odbij się",
+                    "odbij się od brzegu",
+                    "jeżeli < dotyka [krawędź] ? > to, obróć o 180 stopni",
+                    "zawsze, gdy na brzegu, odbij"
+                ],
+                correctAnswer: 1,
+                hint: "Istnieje specjalny blok, który automatycznie obsługuje odbicia."
+            },
+            {
+                question: "Jak zmniejszyć wartość zmiennej \"paliwo\" o 1?",
+                options: [
+                    "ustaw [paliwo] na (paliwo) - 1",
+                    "zmień [paliwo] o -1",
+                    "ustaw [paliwo] na 1",
+                    "zmień [paliwo] o 1"
+                ],
+                correctAnswer: 1,
+                hint: "Chcesz odjąć 1 od aktualnej wartości."
+            },
+            {
+                question: "Który blok sprawdza jednocześnie dwa warunki (np. czy paliwo < 20 ORAZ punkty > 10)?",
+                options: [
+                    "jeżeli < < [paliwo] < 20 > lub < [punkty] > 10 > > to",
+                    "jeżeli < < [paliwo] < 20 > i < [punkty] > 10 > > to",
+                    "jeżeli < [paliwo] < 20 > to, jeżeli < [punkty] > 10 > to",
+                    "jeżeli < nie < [paliwo] < 20 > > to"
+                ],
+                correctAnswer: 1,
+                hint: "Potrzebujesz operatora logicznego, który wymaga spełnienia obu warunków jednocześnie."
+            },
+            {
+                question: "Jak sprawić, aby duszek migał (pojawiał się i znikał naprzemiennie)?",
+                options: [
+                    "powtórz 10 razy { ukryj, czekaj 0.2 sekundy, pokaż, czekaj 0.2 sekundy }",
+                    "zawsze { ukryj, pokaż }",
+                    "ukryj, czekaj 1 sekundę, pokaż",
+                    "zmień efekt ducha o 25, czekaj 0.1 sekundy"
+                ],
+                correctAnswer: 0,
+                hint: "Miganie wymaga naprzemiennego pokazywania i ukrywania z krótkimi przerwami."
+            },
+            {
+                question: "Który blok pozwala duszkowi poruszać się w kierunku, w którym jest zwrócony?",
+                options: [
+                    "przesuń o 10 kroków",
+                    "zmień x o 10",
+                    "zmień y o 10",
+                    "idź do x: 0 y: 0"
+                ],
+                correctAnswer: 0,
+                hint: "Duszek ma kierunek, w którym jest zwrócony, i może się poruszać wzdłuż tego kierunku."
+            },
+            {
+                question: "Jak sprawdzić, czy wciśnięto klawisz spacji?",
+                options: [
+                    "jeżeli < klawisz [spacja] naciśnięty ? > to",
+                    "gdy klawisz [spacja] naciśnięty",
+                    "jeżeli < dotyka [klawisz spacji] ? > to",
+                    "gdy otrzymam komunikat [spacja]"
+                ],
+                correctAnswer: 0,
+                hint: "Musisz sprawdzić stan klawisza w danym momencie."
+            },
+            {
+                question: "Który blok pozwala na wykonanie różnych działań w zależności od spełnienia warunku?",
+                options: [
+                    "jeżeli < warunek > to, w przeciwnym razie",
+                    "jeżeli < warunek > to",
+                    "zawsze jeżeli < warunek > to",
+                    "powtórz aż < warunek >"
+                ],
+                correctAnswer: 0,
+                hint: "Czasami chcemy wykonać jedne działania, gdy warunek jest spełniony, a inne, gdy nie jest."
+            },
+            {
+                question: "Jak obrócić duszka w kierunku innego duszka?",
+                options: [
+                    "obróć w kierunku [nazwa duszka]",
+                    "ustaw kierunek na [nazwa duszka]",
+                    "obróć o [nazwa duszka] stopni",
+                    "idź do [nazwa duszka]"
+                ],
+                correctAnswer: 0,
+                hint: "Duszek może być skierowany w stronę innego obiektu."
+            },
+            {
+                question: "Który blok służy do wyświetlania wartości zmiennej na scenie?",
+                options: [
+                    "powiedz [zmienna]",
+                    "pokaż zmienną [nazwa zmiennej]",
+                    "ustaw [zmienna] na [widoczna]",
+                    "nadaj komunikat [zmienna]"
+                ],
+                correctAnswer: 1,
+                hint: "Zmienne mogą być widoczne lub niewidoczne na scenie."
+            },
+            {
+                question: "Jak sprawić, aby duszek powiedział \"Zatankowano!\" przez 2 sekundy?",
+                options: [
+                    "ustaw [wiadomość] na [Zatankowano!]",
+                    "nadaj komunikat [Zatankowano!]",
+                    "powiedz [Zatankowano!] przez 2 sekundy",
+                    "zapytaj [Zatankowano?] i czekaj"
+                ],
+                correctAnswer: 2,
+                hint: "Duszek może \"wypowiadać\" tekst przez określony czas."
+            }
+        ];
+
+        // Elementy DOM
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        const progressEl = document.getElementById('progress');
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const hintBtn = document.getElementById('hint-btn');
+        const hintContainerEl = document.getElementById('hint-container');
+        const hintTextEl = document.getElementById('hint-text');
+        const quizNavEl = document.getElementById('quiz-nav');
+        const resultsEl = document.getElementById('results');
+        const scoreEl = document.getElementById('score');
+        const resultMessageEl = document.getElementById('result-message');
+        const resultEmojiEl = document.getElementById('result-emoji');
+        const restartBtn = document.getElementById('restart-btn');
+        const feedbackEl = document.getElementById('feedback');
+
+        // Zmienne stanu
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answeredQuestions = [];
+        let shuffledQuestions = [];
+        let userAnswers = [];
+
+        // Inicjalizacja quizu
+        function initQuiz() {
+            // Resetowanie stanu
+            currentQuestionIndex = 0;
+            score = 0;
+            answeredQuestions = [];
+            userAnswers = [];
+
+            // Mieszanie pytań
+            shuffledQuestions = [...quizQuestions];
+            shuffleArray(shuffledQuestions);
+
+            // Inicjalizacja odpowiedzi użytkownika
+            userAnswers = Array(shuffledQuestions.length).fill(null);
+
+            // Ukrycie elementów, które powinny być ukryte na początku
+            resultsEl.style.display = 'none';
+            document.querySelector('.question-container').style.display = 'block';
+            quizNavEl.style.display = 'flex';
+
+            // Wyświetlenie pierwszego pytania
+            showQuestion(currentQuestionIndex);
+
+            // Dodanie obsługi zdarzeń
+            nextBtn.addEventListener('click', nextQuestion);
+            prevBtn.addEventListener('click', prevQuestion);
+            hintBtn.addEventListener('click', toggleHint);
+            restartBtn.addEventListener('click', initQuiz);
+        }
+
+        // Funkcja pokazująca pytanie
+        function showQuestion(index) {
+            const currentQuestion = shuffledQuestions[index];
+            
+            // Aktualizacja tekstu pytania
+            questionEl.textContent = `${index + 1}. ${currentQuestion.question}`;
+            
+            // Czyszczenie listy opcji
+            optionsEl.innerHTML = '';
+            
+            // Tworzenie kopii opcji dla mieszania
+            let shuffledOptions = [...currentQuestion.options];
+            let correctOptionIndex = currentQuestion.correctAnswer;
+            let correctOption = shuffledOptions[correctOptionIndex];
+            
+            // Mieszanie opcji
+            shuffleArray(shuffledOptions);
+            
+            // Znajdowanie nowego indeksu poprawnej odpowiedzi po mieszaniu
+            correctOptionIndex = shuffledOptions.indexOf(correctOption);
+            
+            // Tworzenie elementów opcji
+            const labels = ['A', 'B', 'C', 'D'];
+            shuffledOptions.forEach((option, i) => {
+                const li = document.createElement('li');
+                li.className = 'option';
+                li.dataset.index = i;
+                
+                // Sprawdzenie, czy użytkownik już odpowiedział na to pytanie
+                if (answeredQuestions.includes(index)) {
+                    if (i === correctOptionIndex) {
+                        li.classList.add('correct');
+                    } else if (userAnswers[index] === i) {
+                        li.classList.add('incorrect');
+                    }
+                    li.classList.add('disabled');
+                } else {
+                    li.addEventListener('click', () => selectOption(i, correctOptionIndex));
+                }
+                
+                li.innerHTML = `
+                    <span class="option-label">${labels[i]}</span>
+                    <span class="option-text">${option}</span>
+                `;
+                
+                optionsEl.appendChild(li);
+            });
+            
+            // Aktualizacja podpowiedzi
+            hintTextEl.textContent = currentQuestion.hint;
+            hintContainerEl.classList.remove('show-hint');
+            
+            // Aktualizacja przycisków nawigacji
+            prevBtn.disabled = index === 0;
+            nextBtn.disabled = !answeredQuestions.includes(index);
+            
+            // Aktualizacja paska postępu
+            updateProgress();
+            
+            // Ukrycie feedbacku
+            feedbackEl.style.display = 'none';
+        }
+
+        // Funkcja wyboru opcji
+        function selectOption(selectedIndex, correctIndex) {
+            // Zaznaczenie opcji w interfejsie
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                const optionIndex = parseInt(option.dataset.index);
+                
+                if (optionIndex === selectedIndex) {
+                    if (selectedIndex === correctIndex) {
+                        option.classList.add('correct');
+                        feedbackEl.textContent = 'Poprawna odpowiedź!';
+                        feedbackEl.className = 'feedback correct';
+                        score++;
+                    } else {
+                        option.classList.add('incorrect');
+                        options[correctIndex].classList.add('correct');
+                        feedbackEl.textContent = 'Niepoprawna odpowiedź!';
+                        feedbackEl.className = 'feedback incorrect';
+                    }
+                }
+                
+                option.classList.add('disabled');
+            });
+            
+            // Wyświetlenie feedbacku
+            feedbackEl.style.display = 'block';
+            
+            // Zapisanie odpowiedzi użytkownika
+            userAnswers[currentQuestionIndex] = selectedIndex;
+            answeredQuestions.push(currentQuestionIndex);
+            
+            // Włączenie przycisku Następne
+            nextBtn.disabled = false;
+            
+            // Automatyczne przejście do następnego pytania po krótkiej pauzie
+            setTimeout(() => {
+                if (currentQuestionIndex < shuffledQuestions.length - 1) {
+                    nextQuestion();
+                } else {
+                    // Jeśli to ostatnie pytanie, pozwól użytkownikowi zobaczyć odpowiedź przez chwilę
+                    setTimeout(() => {
+                        showResults();
+                    }, 1500);
+                }
+            }, 1500);
+        }
+
+        // Funkcja przejścia do następnego pytania
+        function nextQuestion() {
+            if (currentQuestionIndex < shuffledQuestions.length - 1) {
+                currentQuestionIndex++;
+                showQuestion(currentQuestionIndex);
+            } else {
+                showResults();
+            }
+        }
+
+        // Funkcja przejścia do poprzedniego pytania
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showQuestion(currentQuestionIndex);
+            }
+        }
+
+        // Funkcja przełączania podpowiedzi
+        function toggleHint() {
+            hintContainerEl.classList.toggle('show-hint');
+            if (hintContainerEl.classList.contains('show-hint')) {
+                hintBtn.textContent = 'Ukryj podpowiedź';
+            } else {
+                hintBtn.textContent = 'Pokaż podpowiedź';
+            }
+        }
+
+        // Funkcja aktualizacji paska postępu
+        function updateProgress() {
+            const percent = (answeredQuestions.length / shuffledQuestions.length) * 100;
+            progressEl.style.width = `${percent}%`;
+        }
+
+        // Funkcja wyświetlająca wyniki
+        function showResults() {
+            document.querySelector('.question-container').style.display = 'none';
+            quizNavEl.style.display = 'none';
+            resultsEl.style.display = 'block';
+            
+            scoreEl.textContent = `${score} / ${shuffledQuestions.length}`;
+            
+            const percentage = (score / shuffledQuestions.length) * 100;
+            let message = '';
+            let emoji = '';
+            
+            if (percentage >= 90) {
+                message = 'Świetnie! Jesteś mistrzem programowania!';
+                emoji = '🏆';
+            } else if (percentage >= 75) {
+                message = 'Bardzo dobry wynik! Masz solidne podstawy!';
+                emoji = '🚀';
+            } else if (percentage >= 60) {
+                message = 'Dobra robota! Warto jeszcze poćwiczyć niektóre koncepcje.';
+                emoji = '👍';
+            } else if (percentage >= 40) {
+                message = 'Nie jest źle, ale warto powtórzyć materiał.';
+                emoji = '🤔';
+            } else {
+                message = 'Wygląda na to, że potrzebujesz więcej praktyki. Nie poddawaj się!';
+                emoji = '📚';
+            }
+            
+            resultMessageEl.textContent = message;
+            resultEmojiEl.textContent = emoji;
+        }
+
+        // Funkcja mieszająca tablicę
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Inicjalizacja quizu po załadowaniu strony
+        window.onload = initQuiz;
+    </script>
+</body>
+</html>
