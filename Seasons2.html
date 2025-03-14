@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESL Vocabulary Typing Game</title>
+    <style>
+        :root {
+            --primary-color: #4a6da7;
+            --secondary-color: #ffa500;
+            --correct-color: #2ecc71;
+            --wrong-color: #e74c3c;
+            --background-color: #f0f8ff;
+            --border-radius: 15px;
+            --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        h1, h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .welcome, .category-selection, .game-container, .results, .achievements-screen {
+            display: none;
+        }
+        
+        .welcome.active, .category-selection.active, .game-container.active, .results.active, .achievements-screen.active {
+            display: block;
+        }
+        
+        .button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        
+        .button:hover {
+            transform: scale(1.05);
+            background-color: #3a5d97;
+        }
+        
+        .category-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 200px;
+            height: 200px;
+            margin: 10px;
+            background-color: white;
+            border: 3px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        
+        .category-button:hover {
+            transform: scale(1.05);
+            border-color: var(--secondary-color);
+        }
+        
+        .category-button .icon {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+        
+        .category-button .name {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .category-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 20px;
+            background-color: #eee;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--secondary-color);
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        .feedback {
+            font-size: 24px;
+            font-weight: bold;
+            height: 40px;
+            margin: 10px 0;
+        }
+        
+        .image-container {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+        }
+        
+        .typing-container {
+            margin: 20px 0;
+        }
+        
+        .input-field {
+            padding: 10px 15px;
+            font-size: 18px;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            width: 250px;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .input-field.correct {
+            border-color: var(--correct-color);
+            background-color: #e6ffe6;
+        }
+        
+        .input-field.wrong {
+            border-color: var(--wrong-color);
+            background-color: #ffe6e6;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .hint-button {
+            background-color: #f8d568;
+            color: #333;
+        }
+        
+        .check-button {
+            background-color: var(--correct-color);
+        }
+        
+        .next-button {
+            background-color: var(--secondary-color);
+        }
+        
+        .instructions {
+            color: #555;
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        
+        .score-container {
+            font-size: 24px;
+            margin: 20px 0;
+        }
+        
+        .instructions-polish {
+            font-style: italic;
+            color: #777;
+            margin-bottom: 20px;
+        }
+        
+        .lives-container {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin: 10px 0;
+        }
+        
+        .life {
+            width: 30px;
+            height: 30px;
+            transition: opacity 0.3s;
+        }
+        
+        .life.lost {
+            opacity: 0.3;
+        }
+        
+        .achievements {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .achievement {
+            width: 150px;
+            height: 150px;
+            border-radius: 10px;
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            position: relative;
+        }
+        
+        .achievement .icon {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+        
+        .achievement .title {
+            font-weight: bold;
+            font-size: 14px;
+            text-align: center;
+            color: #333;
+        }
+        
+        .achievement .description {
+            font-size: 12px;
+            text-align: center;
+            color: #555;
+        }
+        
+        .achievement.unlocked {
+            background-color: #fff6e6;
+            border: 2px solid var(--secondary-color);
+        }
+        
+        .achievement.locked {
+            filter: grayscale(1);
+        }
+        
+        .achievement .badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 30px;
+            height: 30px;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .current-word {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+            min-height: 27px;
+        }
+        
+        .achievement-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #fff6e6;
+            border: 2px solid var(--secondary-color);
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            transform: translateX(150%);
+            transition: transform 0.5s;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .achievement-notification.show {
+            transform: translateX(0);
+        }
+        
+        .achievement-notification .icon {
+            width: 40px;
+            height: 40px;
+        }
+        
+        .achievement-notification .text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .achievement-notification .title {
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        
+        .category-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .category-name {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 24px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .category-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .category-button {
+                width: 160px;
+                height: 160px;
+            }
+            
+            .image-container {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .achievement {
+                width: 130px;
+                height: 130px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div class="welcome active">
+            <h1>Vocabulary Typing Game</h1>
+            <div class="image-container">
+                <svg viewBox="0 0 100 100">
+                    <!-- Keyboard -->
+                    <rect x="10" y="40" width="80" height="40" rx="5" fill="#e6e6e6" stroke="#333" stroke-width="1"/>
+                    <rect x="15" y="45" width="10" height="10" rx="2" fill="#fff" stroke="#333" stroke-width="1"/>
+                    <rect x="30" y="45" width="10" height="10" rx="2" fill="#fff" stroke="#333" stroke-width="1"/>
+                    <rect x="45" y="45" width="10" height="10" rx="2" fill="#fff" stroke="#333" stroke-width="1"/>
+                    <rect x="60" y="45" width="10" height="10" rx="2" fill="#fff" stroke="#333" stroke-width="1"/>
+                    <rect x="75" y="45" width="10" height="10" rx="2" fill="#fff" stroke="#333" stroke-width="1"/>
+                    <rect x="15" y="60" width="10" height="10" rx="2" fill="#fff" stroke="#333" stroke-width="1"/>
+                    <rect x="30" y="60" width="10" height="10" rx="2" fill="#fff" stroke="#333" stroke-width="1"/>
+                    <rect x="45" y="60" width="40" height="10" rx="2" fill="#fff" stroke="#333" stroke-width="1"/>
+                    
+                    <!-- Thought bubble -->
+                    <circle cx="25" cy="20" r="3" fill="#99ccff"/>
+                    <circle cx="30" cy="15" r="4" fill="#99ccff"/>
+                    <path d="M35,15 Q55,5 75,15 Q85,25 75,35 Q55,45 35,35 Q25,25 35,15" fill="#99ccff" stroke="#6699cc" stroke-width="1"/>
+                    <text x="55" y="28" font-size="10" text-anchor="middle" fill="#333">ABC</text>
+                </svg>
+            </div>
+            <h2>WITAJ! / WELCOME!</h2>
+            <p class="instructions-polish">Naucz się słówek z języka angielskiego przez wpisywanie!</p>
+            <p class="instructions">Learn English vocabulary by typing!</p>
+            <button class="button" id="start-button">ZACZNIJ GRĘ / START GAME</button>
+        </div>
+        
+        <!-- Category Selection Screen -->
+        <div class="category-selection">
+            <h1>Wybierz kategorię / Choose a category</h1>
+            <div class="category-buttons">
+                <div class="category-button" data-category="days">
+                    <div class="icon">
+                        <svg viewBox="0 0 100 100">
+                            <rect x="10" y="10" width="80" height="80" rx="5" fill="#fff" stroke="#333" stroke-width="2"/>
+                            <rect x="10" y="10" width="80" height="20" rx="5" fill="#4a6da7" stroke="#333" stroke-width="2"/>
+                            <line x1="25" y1="50" x2="75" y2="50" stroke="#333" stroke-width="1"/>
+                            <line x1="25" y1="65" x2="75" y2="65" stroke="#333" stroke-width="1"/>
+                            <line x1="25" y1="80" x2="75" y2="80" stroke="#333" stroke-width="1"/>
+                            <circle cx="20" cy="50" r="3" fill="#e74c3c"/>
+                            <circle cx="20" cy="65" r="3" fill="#3498db"/>
+                            <circle cx="20" cy="80" r="3" fill="#2ecc71"/>
+                            <text x="50" y="25" font-size="12" text-anchor="middle" fill="#fff">DAYS</text>
+                        </svg>
+                    </div>
+                    <div class="name">Dni Tygodnia / Days of the Week</div>
+                </div>
+                
+                <div class="category-button" data-category="months">
+                    <div class="icon">
+                        <svg viewBox="0 0 100 100">
+                            <rect x="10" y="10" width="80" height="80" rx="5" fill="#fff" stroke="#333" stroke-width="2"/>
+                            <rect x="10" y="10" width="80" height="20" rx="5" fill="#e74c3c" stroke="#333" stroke-width="2"/>
+                            <text x="50" y="25" font-size="12" text-anchor="middle" fill="#fff">2025</text>
+                            
+                            <!-- Grid lines for calendar -->
+                            <line x1="10" y1="45" x2="90" y2="45" stroke="#eee" stroke-width="1"/>
+                            <line x1="10" y1="60" x2="90" y2="60" stroke="#eee" stroke-width="1"/>
+                            <line x1="10" y1="75" x2="90" y2="75" stroke="#eee" stroke-width="1"/>
+                            <line x1="23" y1="30" x2="23" y2="90" stroke="#eee" stroke-width="1"/>
+                            <line x1="36" y1="30" x2="36" y2="90" stroke="#eee" stroke-width="1"/>
+                            <line x1="49" y1="30" x2="49" y2="90" stroke="#eee" stroke-width="1"/>
+                            <line x1="62" y1="30" x2="62" y2="90" stroke="#eee" stroke-width="1"/>
+                            <line x1="75" y1="30" x2="75" y2="90" stroke="#eee" stroke-width="1"/>
+                            
+                            <!-- Month names -->
+                            <text x="17" y="38" font-size="6" text-anchor="middle" fill="#333">JAN</text>
+                            <text x="30" y="38" font-size="6" text-anchor="middle" fill="#333">FEB</text>
+                            <text x="43" y="38" font-size="6" text-anchor="middle" fill="#333">MAR</text>
+                            <text x="56" y="38" font-size="6" text-anchor="middle" fill="#333">APR</text>
+                            <text x="69" y="38" font-size="6" text-anchor="middle" fill="#333">MAY</text>
+                            <text x="82" y="38" font-size="6" text-anchor="middle" fill="#333">JUN</text>
+                            
+                            <!-- Highlighted month -->
+                            <rect x="36" y="30" width="13" height="15" fill="#ffcccc" opacity="0.5"/>
+                        </svg>
+                    </div>
+                    <div class="name">Miesiące / Months</div>
+                </div>
+                
+                <div class="category-button" data-category="seasons">
+                    <div class="icon">
+                        <svg viewBox="0 0 100 100">
+                            <!-- Four season quadrants -->
+                            <rect x="10" y="10" width="40" height="40" fill="#f0faff"/>
+                            <rect x="50" y="10" width="40" height="40" fill="#ccffcc"/>
+                            <rect x="10" y="50" width="40" height="40" fill="#ffe6cc"/>
+                            <rect x="50" y="50" width="40" height="40" fill="#ffcccc"/>
+                            
+                            <!-- Winter (top left) -->
+                            <path d="M30,20 L35,15 L40,20 L35,25 Z" fill="#99ccff"/>
+                            <path d="M20,25 L25,20 L30,25 L25,30 Z" fill="#99ccff"/>
+                            
+                            <!-- Spring (top right) -->
+                            <circle cx="60" cy="30" r="3" fill="#ff9999"/>
+                            <circle cx="70" cy="25" r="3" fill="#ff9999"/>
+                            <circle cx="75" cy="35" r="3" fill="#ff9999"/>
+                            <path d="M60,30 L60,35 M55,25 L60,30 L65,25" stroke="#6dac7f" stroke-width="1"/>
+                            <path d="M70,25 L70,30 M65,20 L70,25 L75,20" stroke="#6dac7f" stroke-width="1"/>
+                            <path d="M75,35 L75,40 M70,30 L75,35 L80,30" stroke="#6dac7f" stroke-width="1"/>
+                            
+                            <!-- Autumn (bottom left) -->
+                            <path d="M20,65 L30,60 L25,70 Z" fill="#ff9900"/>
+                            <path d="M35,75 L40,65 L45,75 Z" fill="#cc6600"/>
+                            
+                            <!-- Summer (bottom right) -->
+                            <circle cx="70" cy="70" r="10" fill="#ffcc00"/>
+                            <path d="M70,58 L70,55 M82,70 L85,70 M70,82 L70,85 M58,70 L55,70" stroke="#ffcc00" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <div class="name">Pory Roku / Seasons</div>
+                </div>
+                
+                <div class="category-button" data-category="weather">
+                    <div class="icon">
+                        <svg viewBox="0 0 100 100">
+                            <!-- Background -->
+                            <rect x="0" y="0" width="100" height="100" fill="#e6f7ff"/>
+                            
+                            <!-- Sun -->
+                            <circle cx="25" cy="25" r="12" fill="#ffcc00"/>
+                            
+                            <!-- Cloud with rain -->
+                            <path d="M60,35 Q70,25 80,35 Q90,45 80,55 Q70,65 60,55 Q50,45 60,35" fill="#fff" stroke="#ccc"/>
+                            <path d="M60,55 L55,65 M70,55 L65,65 M80,55 L75,65" stroke="#99ccff" stroke-width="2"/>
+                            
+                            <!-- Snow -->
+                            <path d="M20,75 L20,85 M15,80 L25,80" stroke="#fff" stroke-width="2"/>
+                            <path d="M35,75 L35,85 M30,80 L40,80" stroke="#fff" stroke-width="2"/>
+                            
+                            <!-- Wind -->
+                            <path d="M70,80 Q80,75 85,80 L95,80" fill="none" stroke="#ccc" stroke-width="2"/>
+                            <path d="M60,90 Q70,85 75,90 L85,90" fill="none" stroke="#ccc" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <div class="name">Pogoda / Weather</div>
+                </div>
+            </div>
+            <button class="button" id="achievements-button">OSIĄGNIĘCIA / ACHIEVEMENTS</button>
+        </div>
+        
+        <!-- Game Container -->
+        <div class="game-container">
+            <div class="category-info">
+                <div class="category-name" id="current-category">Days of the Week</div>
+                <div class="lives-container" id="lives-container">
+                    <svg class="life" viewBox="0 0 100 100">
+                        <path d="M50,90 L15,55 Q0,40 15,25 Q30,10 50,30 Q70,10 85,25 Q100,40 85,55 Z" fill="#e74c3c"/>
+                    </svg>
+                    <svg class="life" viewBox="0 0 100 100">
+                        <path d="M50,90 L15,55 Q0,40 15,25 Q30,10 50,30 Q70,10 85,25 Q100,40 85,55 Z" fill="#e74c3c"/>
+                    </svg>
+                    <svg class="life" viewBox="0 0 100 100">
+                        <path d="M50,90 L15,55 Q0,40 15,25 Q30,10 50,30 Q70,10 85,25 Q100,40 85,55 Z" fill="#e74c3c"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            
+            <div class="image-container" id="question-image"></div>
+            
+            <div class="current-word" id="current-word"></div>
+            
+            <div class="typing-container">
+                <p class="instructions" id="typing-instructions">Type the correct word!</p>
+                <p class="instructions-polish" id="typing-instructions-polish">Wpisz poprawne słowo!</p>
+                <input type="text" class="input-field" id="answer-input" autocomplete="off" placeholder="Type here...">
+            </div>
+            
+            <div class="feedback" id="feedback"></div>
+            
+            <div class="controls">
+                <button class="button hint-button" id="hint-button">Podpowiedź / Hint</button>
+                <button class="button check-button" id="check-button">Sprawdź / Check</button>
+                <button class="button next-button" id="next-button" style="display: none;">Dalej / Next</button>
+            </div>
+            
+            <button class="button" id="back-button">Wróć do kategorii / Back to Categories</button>
+        </div>
+        
+        <!-- Results Screen -->
+        <div class="results">
+            <h1>Wyniki / Results</h1>
+            <div class="image-container">
+                <svg viewBox="0 0 100 100">
+                    <!-- Trophy -->
+                    <path d="M35,20 L65,20 L65,35 Q65,45 60,50 Q55,55 50,55 Q45,55 40,50 Q35,45 35,35 Z" fill="#FFD700"/>
+                    <rect x="45" y="55" width="10" height="15" fill="#FFD700"/>
+                    <rect x="35" y="70" width="30" height="5" fill="#FFD700"/>
+                    <path d="M35,20 L25,20 Q25,35 30,40 L35,40 L35,20" fill="#FFD700"/>
+                    <path d="M65,20 L75,20 Q75,35 70,40 L65,40 L65,20" fill="#FFD700"/>
+                    <!-- Stars -->
+                    <path d="M30,10 L32,15 L38,15 L33,19 L35,24 L30,20 L25,24 L27,19 L22,15 L28,15 Z" fill="#FFD700"/>
+                    <path d="M50,5 L52,10 L58,10 L53,14 L55,19 L50,15 L45,19 L47,14 L42,10 L48,10 Z" fill="#FFD700"/>
+                    <path d="M70,10 L72,15 L78,15 L73,19 L75,24 L70,20 L65,24 L67,19 L62,15 L68,15 Z" fill="#FFD700"/>
+                </svg>
+            </div>
+            <div class="score-container">
+                <p><span id="result-category">Category</span>: <span id="result-score">0</span> / <span id="result-total">0</span></p>
+            </div>
+            <p id="result-message">Świetna robota! / Great job!</p>
+            <button class="button" id="retry-button">Spróbuj ponownie / Try Again</button>
+            <button class="button" id="categories-button">Wróć do kategorii / Back to Categories</button>
+        </div>
+        
+        <!-- Achievements Screen -->
+        <div class="achievements-screen">
+            <h1>Osiągnięcia / Achievements</h1>
+            <div class="achievements" id="achievements-list">
+                <!-- Dynamically filled -->
+            </div>
+            <button class="button" id="back-to-categories">Wróć do kategorii / Back to Categories</button>
+        </div>
+        
+        <!-- Achievement Notification -->
+        <div class="achievement-notification" id="achievement-notification">
+            <div class="icon">
+                <svg viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="#FFD700" opacity="0.7"/>
+                    <path d="M25,50 L40,65 L75,30" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div class="text">
+                <div class="title">Nowe osiągnięcie! / New Achievement!</div>
+                <div class="description" id="notification-description"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Game data
+        const vocabulary = {
+            days: [
+                {word: "Monday", translation: "Poniedziałek", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><rect x="20" y="20" width="60" height="15" rx="5" fill="#4a6da7" stroke="#333" stroke-width="2"/><text x="50" y="32" font-size="12" text-anchor="middle" fill="#fff">Mon</text><text x="50" y="65" font-size="24" text-anchor="middle" fill="#333">1</text><circle cx="75" cy="25" r="8" fill="#FFD700"/><path d="M75,17 L75,13 M83,25 L87,25 M75,33 L75,37 M67,25 L63,25" stroke="#FFD700" stroke-width="2"/></svg>'},
+                {word: "Tuesday", translation: "Wtorek", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><rect x="20" y="20" width="60" height="15" rx="5" fill="#4a6da7" stroke="#333" stroke-width="2"/><text x="50" y="32" font-size="12" text-anchor="middle" fill="#fff">Tue</text><text x="50" y="65" font-size="24" text-anchor="middle" fill="#333">2</text><circle cx="30" cy="25" r="5" fill="#e74c3c"/></svg>'},
+                {word: "Wednesday", translation: "Środa", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><rect x="20" y="20" width="60" height="15" rx="5" fill="#4a6da7" stroke="#333" stroke-width="2"/><text x="50" y="32" font-size="12" text-anchor="middle" fill="#fff">Wed</text><text x="50" y="65" font-size="24" text-anchor="middle" fill="#333">3</text><rect x="30" y="25" width="40" height="2" fill="#fff" stroke="#fff" stroke-width="1"/></svg>'},
+                {word: "Thursday", translation: "Czwartek", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><rect x="20" y="20" width="60" height="15" rx="5" fill="#4a6da7" stroke="#333" stroke-width="2"/><text x="50" y="32" font-size="12" text-anchor="middle" fill="#fff">Thu</text><text x="50" y="65" font-size="24" text-anchor="middle" fill="#333">4</text><path d="M70,25 L75,23 L77,28" stroke="#f39c12" stroke-width="1.5" fill="none"/></svg>'},
+                {word: "Friday", translation: "Piątek", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><rect x="20" y="20" width="60" height="15" rx="5" fill="#4a6da7" stroke="#333" stroke-width="2"/><text x="50" y="32" font-size="12" text-anchor="middle" fill="#fff">Fri</text><text x="50" y="65" font-size="24" text-anchor="middle" fill="#333">5</text><path d="M70,30 L75,20 L80,30" fill="#e74c3c"/></svg>'},
+                {word: "Saturday", translation: "Sobota", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><rect x="20" y="20" width="60" height="15" rx="5" fill="#6dac7f" stroke="#333" stroke-width="2"/><text x="50" y="32" font-size="12" text-anchor="middle" fill="#fff">Sat</text><text x="50" y="65" font-size="24" text-anchor="middle" fill="#333">6</text><path d="M65,25 L70,20 L75,25 L70,30 Z" fill="#FFD700"/><circle cx="30" cy="25" r="5" fill="#3498db"/></svg>'},
+                {word: "Sunday", translation: "Niedziela", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><rect x="20" y="20" width="60" height="15" rx="5" fill="#6dac7f" stroke="#333" stroke-width="2"/><text x="50" y="32" font-size="12" text-anchor="middle" fill="#fff">Sun</text><text x="50" y="65" font-size="24" text-anchor="middle" fill="#333">7</text><circle cx="70" cy="25" r="6" fill="#FFD700"/><path d="M70,19 L70,16 M76,25 L79,25 M70,31 L70,34 M64,25 L61,25" stroke="#FFD700" stroke-width="1.5"/></svg>'}
+            ],
+            months: [
+                {word: "January", translation: "Styczeń", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">JAN</text><path d="M30,30 L35,25 L40,30 L35,35 Z M60,30 L65,25 L70,30 L65,35 Z M45,60 L50,55 L55,60 L50,65 Z" fill="#99ccff"/></svg>'},
+                {word: "February", translation: "Luty", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">FEB</text><path d="M45,55 C45,50 55,50 55,55 C55,60 45,60 45,55 Z" fill="#ff6b6b"/><path d="M30,30 L35,25 L40,30 L35,35 Z" fill="#99ccff"/></svg>'},
+                {word: "March", translation: "Marzec", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">MAR</text><path d="M45,65 C45,50 55,50 55,65" fill="none" stroke="#6dac7f" stroke-width="2"/><circle cx="50" cy="50" r="3" fill="#6dac7f"/></svg>'},
+                {word: "April", translation: "Kwiecień", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">APR</text><path d="M30,30 Q50,25 70,30 Q60,40 50,35 Q40,40 30,30" fill="#99ccff"/><path d="M35,45 L30,65 M50,45 L45,65 M65,45 L60,65" stroke="#99ccff" stroke-width="1.5"/><circle cx="50" cy="45" r="5" fill="#ff6b6b"/></svg>'},
+                {word: "May", translation: "Maj", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">MAY</text><circle cx="40" cy="55" r="6" fill="#ff6b6b"/><circle cx="50" cy="55" r="6" fill="#ff9800"/><circle cx="60" cy="55" r="6" fill="#6dac7f"/><path d="M40,45 L40,55 M50,45 L50,55 M60,45 L60,55" stroke="#333" stroke-width="1"/></svg>'},
+                {word: "June", translation: "Czerwiec", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">JUN</text><circle cx="50" cy="60" r="10" fill="#ff6b6b"/><path d="M50,50 L50,60 M45,55 L50,50 L55,55" stroke="#6dac7f" stroke-width="2"/><circle cx="70" cy="30" r="8" fill="#FFD700"/><path d="M70,22 L70,18 M78,30 L82,30 M70,38 L70,42 M62,30 L58,30" stroke="#FFD700" stroke-width="1.5"/></svg>'},
+                {word: "July", translation: "Lipiec", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">JUL</text><path d="M40,55 L35,65 C30,65 30,60 40,60 C50,60 50,55 60,55 C70,55 70,60 65,65 L60,55" fill="#f8f8f8" stroke="#333"/><circle cx="70" cy="30" r="8" fill="#FFD700"/><path d="M70,22 L70,18 M78,30 L82,30 M70,38 L70,42 M62,30 L58,30" stroke="#FFD700" stroke-width="1.5"/></svg>'},
+                {word: "August", translation: "Sierpień", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">AUG</text><circle cx="50" cy="60" r="12" fill="#ff9800" stroke="#333"/><path d="M44,58 L56,62 M44,62 L56,58 M50,54 L50,66" stroke="#333"/><circle cx="70" cy="30" r="8" fill="#FFD700"/><path d="M70,22 L70,18 M78,30 L82,30 M70,38 L70,42 M62,30 L58,30" stroke="#FFD700" stroke-width="1.5"/></svg>'},
+                {word: "September", translation: "Wrzesień", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">SEP</text><path d="M40,55 L50,45 L60,55 L55,60 L45,60 Z" fill="#ff6b6b"/><rect x="40" y="60" width="20" height="5" fill="#6dac7f"/><path d="M30,30 L40,40 M60,40 L70,30" stroke="#ff9800" stroke-width="1"/></svg>'},
+                {word: "October", translation: "Październik", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">OCT</text><path d="M50,60 C40,60 40,50 50,50 C60,50 60,60 50,60 Z" fill="#ff9800"/><path d="M48,50 L48,45 M52,50 L52,45" stroke="#6dac7f" stroke-width="2"/><path d="M30,25 L40,35 M60,35 L70,25" fill="none" stroke="#ff6b6b" stroke-width="2"/><path d="M30,45 L40,35 M60,35 L70,45" fill="none" stroke="#ff9800" stroke-width="1"/></svg>'},
+                {word: "November", translation: "Listopad", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">NOV</text><path d="M30,45 Q50,40 70,45 L65,65 L35,65 Z" fill="#c19a6b"/><path d="M40,45 L35,30 M50,45 L55,30 M60,45 L50,35" stroke="#c19a6b" stroke-width="2"/><path d="M45,50 L40,60 M55,50 L60,60" stroke="#ff6b6b" stroke-width="1"/></svg>'},
+                {word: "December", translation: "Grudzień", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">DEC</text><rect x="40" y="50" width="20" height="20" fill="#ff9800" stroke="#c19a6b" stroke-width="2"/><path d="M40,50 L50,40 L60,50" fill="#ff9800" stroke="#c19a6b" stroke-width="2"/><path d="M30,30 L35,25 L40,30 L35,35 Z M60,30 L65,25 L70,30 L65,35 Z" fill="#99ccff"/><path d="M50,40 L50,35 L55,35" stroke="#ff6b6b" stroke-width="1" fill="none"/></svg>'}
+            ],
+            seasons: [
+                {word: "Spring", translation: "Wiosna", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#e6f7ff"/><path d="M30,50 Q50,30 70,50" fill="none" stroke="#6dac7f" stroke-width="2"/><path d="M50,70 L50,50" stroke="#6dac7f" stroke-width="4"/><path d="M30,50 C30,30 70,30 70,50 C70,70 30,70 30,50" fill="#6dac7f"/><path d="M20,70 L80,70" fill="none" stroke="#8b5a2b" stroke-width="4"/><circle cx="35" cy="35" r="5" fill="#ff6b6b"/><circle cx="45" cy="30" r="5" fill="#ff9800"/><circle cx="55" cy="30" r="5" fill="#ff6b6b"/><circle cx="65" cy="35" r="5" fill="#ff9800"/><path d="M35,35 L35,25 M45,30 L45,20 M55,30 L55,20 M65,35 L65,25" stroke="#6dac7f" stroke-width="1"/></svg>'},
+                {word: "Summer", translation: "Lato", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#ffeb99"/><circle cx="75" cy="25" r="15" fill="#FFD700"/><path d="M75,10 L75,5 M90,25 L95,25 M75,40 L75,45 M60,25 L55,25 M63,13 L58,8 M87,13 L92,8 M87,37 L92,42 M63,37 L58,42" stroke="#FFD700" stroke-width="2"/><path d="M50,70 L50,40" stroke="#6dac7f" stroke-width="4"/><path d="M30,40 C30,20 70,20 70,40 C70,60 30,60 30,40" fill="#6dac7f"/><path d="M20,70 L80,70" fill="none" stroke="#8b5a2b" stroke-width="4"/><ellipse cx="25" cy="85" rx="15" ry="5" fill="#c19a6b"/><path d="M25,85 C25,75 30,75 30,85" fill="none" stroke="#99ccff" stroke-width="2"/><circle cx="15" cy="80" r="5" fill="#ff9800"/><path d="M40,40 C45,30 55,30 60,40" fill="none" stroke="#8b5a2b" stroke-width="1"/></svg>'},
+                {word: "Autumn", translation: "Jesień", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#fff7e6"/><path d="M50,70 L50,40" stroke="#8b5a2b" stroke-width="4"/><path d="M30,40 C30,30 70,30 70,40" fill="#ff9800"/><path d="M35,35 L30,20 M45,35 L50,20 M55,35 L60,20 M65,35 L70,20" stroke="#ff6b6b" stroke-width="2"/><path d="M20,70 L80,70" fill="none" stroke="#8b5a2b" stroke-width="4"/><path d="M35,75 L42,68 M45,75 L52,68 M55,75 L62,68" stroke="#c19a6b" stroke-width="2"/><path d="M38,35 L35,25 M48,35 L52,25 M58,35 L55,25 M68,35 L65,25" stroke="#ff9800" stroke-width="1.5"/></svg>'},
+                {word: "Winter", translation: "Zima", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#e6f9ff"/><path d="M50,70 L50,40" stroke="#8b5a2b" stroke-width="4"/><path d="M30,40 C30,20 70,20 70,40" fill="#fff"/><path d="M20,70 L80,70" fill="none" stroke="#8b5a2b" stroke-width="4"/><path d="M30,25 L35,20 L40,25 L35,30 Z M60,25 L65,20 L70,25 L65,30 Z M45,50 L50,45 L55,50 L50,55 Z" fill="#99ccff"/><rect x="0" y="70" width="100" height="30" fill="#fff"/><path d="M20,80 L20,90 M15,85 L25,85 M40,80 L40,90 M35,85 L45,85 M60,80 L60,90 M55,85 L65,85 M80,80 L80,90 M75,85 L85,85" stroke="#99ccff" stroke-width="2"/></svg>'},
+                {word: "Fall", translation: "Jesień", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#fff7e6"/><path d="M50,70 L50,40" stroke="#8b5a2b" stroke-width="4"/><path d="M30,40 C30,30 70,30 70,40" fill="#ff9800"/><path d="M35,35 L30,20 M45,35 L50,20 M55,35 L60,20 M65,35 L70,20" stroke="#ff6b6b" stroke-width="2"/><path d="M20,70 L80,70" fill="none" stroke="#8b5a2b" stroke-width="4"/><path d="M35,75 L42,68 M45,75 L52,68 M55,75 L62,68" stroke="#c19a6b" stroke-width="2"/><path d="M38,35 L35,25 M48,35 L52,25 M58,35 L55,25 M68,35 L65,25" stroke="#ff9800" stroke-width="1.5"/></svg>'}
+            ],
+            weather: [
+                {word: "Sunny", translation: "Słonecznie", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#e6f7ff"/><circle cx="50" cy="50" r="20" fill="#FFD700"/><path d="M50,20 L50,10 M50,90 L50,80 M20,50 L10,50 M90,50 L80,50 M29,29 L22,22 M71,29 L78,22 M29,71 L22,78 M71,71 L78,78" stroke="#FFD700" stroke-width="3"/><text x="50" y="85" font-size="10" text-anchor="middle" fill="#333">Sunny</text></svg>'},
+                {word: "Rainy", translation: "Deszczowo", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#e6f7ff"/><path d="M30,40 Q40,30 50,40 Q60,30 70,40 Q80,50 70,60 Q60,70 50,60 Q40,70 30,60 Q20,50 30,40" fill="#99ccff"/><path d="M30,70 L25,85 M40,70 L35,85 M50,70 L45,85 M60,70 L55,85 M70,70 L65,85" stroke="#99ccff" stroke-width="2"/><text x="50" y="30" font-size="10" text-anchor="middle" fill="#333">Rainy</text></svg>'},
+                {word: "Snowy", translation: "Śnieżnie", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#e6f9ff"/><path d="M30,40 Q40,30 50,40 Q60,30 70,40 Q80,50 70,60 Q60,70 50,60 Q40,70 30,60 Q20,50 30,40" fill="#f8f8f8" stroke="#eee"/><path d="M30,70 L30,80 M25,75 L35,75 M40,70 L40,80 M35,75 L45,75 M50,70 L50,80 M45,75 L55,75 M60,70 L60,80 M55,75 L65,75 M70,70 L70,80 M65,75 L75,75" stroke="#f8f8f8" stroke-width="2"/><text x="50" y="30" font-size="10" text-anchor="middle" fill="#333">Snowy</text></svg>'},
+                {word: "Windy", translation: "Wietrznie", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#e6f7ff"/><path d="M20,30 Q30,20 40,30 L70,30" fill="none" stroke="#99ccff" stroke-width="3"/><path d="M20,50 Q30,40 40,50 L80,50" fill="none" stroke="#99ccff" stroke-width="3"/><path d="M20,70 Q30,60 40,70 L60,70" fill="none" stroke="#99ccff" stroke-width="3"/><circle cx="75" cy="30" r="5" fill="#6dac7f"/><circle cx="85" cy="50" r="5" fill="#ff9800"/><circle cx="65" cy="70" r="5" fill="#ff6b6b"/><path d="M75,30 C80,25 85,30 80,35" fill="none" stroke="#6dac7f" stroke-width="1"/><path d="M85,50 C90,45 95,50 90,55" fill="none" stroke="#ff9800" stroke-width="1"/><path d="M65,70 C70,65 75,70 70,75" fill="none" stroke="#ff6b6b" stroke-width="1"/><text x="50" y="90" font-size="10" text-anchor="middle" fill="#333">Windy</text></svg>'},
+                {word: "Cloudy", translation: "Pochmurno", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#e6f7ff"/><path d="M30,40 Q40,30 50,40 Q60,30 70,40 Q80,50 70,60 Q60,70 50,60 Q40,70 30,60 Q20,50 30,40" fill="#f8f8f8" stroke="#ddd"/><path d="M60,65 Q70,55 80,65 Q90,75 80,85 Q70,95 60,85 Q50,75 60,65" fill="#e6e6e6" stroke="#ddd"/><text x="50" y="30" font-size="10" text-anchor="middle" fill="#333">Cloudy</text></svg>'},
+                {word: "Foggy", translation: "Mgliście", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#f2f2f2"/><path d="M20,40 L80,40" stroke="#e6e6e6" stroke-width="5"/><path d="M30,50 L70,50" stroke="#e6e6e6" stroke-width="5"/><path d="M20,60 L80,60" stroke="#e6e6e6" stroke-width="5"/><path d="M30,70 L70,70" stroke="#e6e6e6" stroke-width="5"/><path d="M20,30 L80,30" stroke="#e6e6e6" stroke-width="3"/><path d="M25,35 L75,35" stroke="#e6e6e6" stroke-width="4"/><text x="50" y="90" font-size="10" text-anchor="middle" fill="#333">Foggy</text></svg>'},
+                {word: "Hot", translation: "Gorąco", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#ffe6e6"/><circle cx="30" cy="30" r="15" fill="#ff6b6b"/><path d="M30,10 L30,5 M45,30 L50,30 M30,50 L30,55 M15,30 L10,30 M18,18 L13,13 M42,18 L47,13 M42,42 L47,47 M18,42 L13,47" stroke="#ff6b6b" stroke-width="2"/><rect x="60" y="30" width="10" height="40" rx="5" fill="#fff" stroke="#333"/><circle cx="65" cy="65" r="8" fill="#ff6b6b"/><rect x="63" y="30" width="4" height="30" fill="#ff6b6b"/><text x="50" y="90" font-size="10" text-anchor="middle" fill="#333">Hot</text></svg>'},
+                {word: "Cold", translation: "Zimno", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#e6f9ff"/><path d="M30,30 L35,25 L40,30 L35,35 Z M20,40 L25,35 L30,40 L25,45 Z M40,40 L45,35 L50,40 L45,45 Z" fill="#99ccff"/><rect x="60" y="30" width="10" height="40" rx="5" fill="#fff" stroke="#333"/><circle cx="65" cy="65" r="8" fill="#99ccff"/><rect x="63" y="30" width="4" height="15" fill="#99ccff"/><path d="M50,50 C45,45 55,40 50,35 C45,30 55,25 50,20" fill="none" stroke="#99ccff" stroke-width="2"/><path d="M30,60 L30,70 M25,65 L35,65" stroke="#99ccff" stroke-width="2"/><text x="50" y="90" font-size="10" text-anchor="middle" fill="#333">Cold</text></svg>'}
+            ]
+        };
+        
+        // Achievements
+        const achievements = [
+            {
+                id: "days_master",
+                title: "Mistrz Dni Tygodnia",
+                description: "Ukończ wszystkie dni tygodnia bez błędu",
+                icon: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#4a6da7" opacity="0.2"/><text x="50" y="40" font-size="40" text-anchor="middle" fill="#4a6da7">7</text><path d="M30,60 L45,75 L70,40" fill="none" stroke="#4a6da7" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+                unlocked: false
+            },
+            {
+                id: "months_master",
+                title: "Ekspert Miesięcy",
+                description: "Ukończ wszystkie miesiące bez pomocy",
+                icon: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#e74c3c" opacity="0.2"/><text x="50" y="40" font-size="40" text-anchor="middle" fill="#e74c3c">12</text><path d="M30,60 L45,75 L70,40" fill="none" stroke="#e74c3c" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+                unlocked: false
+            },
+            {
+                id: "seasons_master",
+                title: "Znawca Pór Roku",
+                description: "Zgadnij wszystkie pory roku bezbłędnie",
+                icon: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#f39c12" opacity="0.2"/><text x="50" y="40" font-size="40" text-anchor="middle" fill="#f39c12">4</text><path d="M30,60 L45,75 L70,40" fill="none" stroke="#f39c12" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+                unlocked: false
+            },
+            {
+                id: "weather_master",
+                title: "Pogodowy Ekspert",
+                description: "Rozpoznaj wszystkie rodzaje pogody",
+                icon: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#3498db" opacity="0.2"/><text x="50" y="40" font-size="40" text-anchor="middle" fill="#3498db">8</text><path d="M30,60 L45,75 L70,40" fill="none" stroke="#3498db" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+                unlocked: false
+            },
+            {
+                id: "perfect_score",
+                title: "Doskonały Wynik",
+                description: "Ukończ zadanie z idealnym wynikiem",
+                icon: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#2ecc71" opacity="0.2"/><text x="50" y="55" font-size="50" text-anchor="middle" fill="#2ecc71">★</text></svg>',
+                unlocked: false
+            },
+            {
+                id: "comeback",
+                title: "Wielki Powrót",
+                description: "Ukończ zadanie po utracie wszystkich szans",
+                icon: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#9b59b6" opacity="0.2"/><path d="M50,30 L60,50 L40,50 Z" fill="#9b59b6"/><path d="M30,70 C30,55 70,55 70,70" fill="none" stroke="#9b59b6" stroke-width="5" stroke-linecap="round"/></svg>',
+                unlocked: false
+            },
+            {
+                id: "speedster",
+                title: "Szybki jak Błyskawica",
+                description: "Ukończ kategorię w mniej niż 60 sekund",
+                icon: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#f1c40f" opacity="0.2"/><path d="M50,20 L55,50 L70,50" fill="none" stroke="#f1c40f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="50" cy="50" r="30" fill="none" stroke="#f1c40f" stroke-width="3"/></svg>',
+                unlocked: false
+            },
+            {
+                id: "vocabulary_champion",
+                title: "Mistrz Słownictwa",
+                description: "Ukończ wszystkie kategorie",
+                icon: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#34495e" opacity="0.2"/><path d="M30,50 L45,65 L70,30" fill="none" stroke="#34495e" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M25,70 L75,70" fill="none" stroke="#34495e" stroke-width="3"/><path d="M35,70 L35,80 L65,80 L65,70" fill="none" stroke="#34495e" stroke-width="3"/></svg>',
+                unlocked: false
+            }
+        ];
+        
+        // Game state
+        let currentCategory = null;
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let lives = 3;
+        let startTime = 0;
+        let hintsUsed = 0;
+        let isCheckingAnswer = false;
+        let gameStats = {
+            correctAnswers: 0,
+            totalAnswers: 0,
+            completedCategories: {
+                days: false,
+                months: false,
+                seasons: false,
+                weather: false
+            }
+        };
+        
+        // DOM Elements
+        const welcomeScreen = document.querySelector('.welcome');
+        const categorySelection = document.querySelector('.category-selection');
+        const gameContainer = document.querySelector('.game-container');
+        const resultsScreen = document.querySelector('.results');
+        const achievementsScreen = document.querySelector('.achievements-screen');
+        
+        const startButton = document.getElementById('start-button');
+        const categoryButtons = document.querySelectorAll('.category-button');
+        const hintButton = document.getElementById('hint-button');
+        const checkButton = document.getElementById('check-button');
+        const nextButton = document.getElementById('next-button');
+        const backButton = document.getElementById('back-button');
+        const retryButton = document.getElementById('retry-button');
+        const categoriesButton = document.getElementById('categories-button');
+        const achievementsButton = document.getElementById('achievements-button');
+        const backToCategoriesButton = document.getElementById('back-to-categories');
+        
+        const progressBar = document.getElementById('progress-bar');
+        const questionImage = document.getElementById('question-image');
+        const answerInput = document.getElementById('answer-input');
+        const feedback = document.getElementById('feedback');
+        const currentCategoryElement = document.getElementById('current-category');
+        const livesContainer = document.getElementById('lives-container');
+        const currentWordElement = document.getElementById('current-word');
+        
+        // Event Listeners
+        startButton.addEventListener('click', showCategorySelection);
+        hintButton.addEventListener('click', showHint);
+        checkButton.addEventListener('click', checkAnswer);
+        nextButton.addEventListener('click', nextQuestion);
+        backButton.addEventListener('click', backToCategories);
+        retryButton.addEventListener('click', retryCategory);
+        categoriesButton.addEventListener('click', backToCategories);
+        achievementsButton.addEventListener('click', showAchievements);
+        backToCategoriesButton.addEventListener('click', backToCategories);
+        
+        answerInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !isCheckingAnswer) {
+                checkAnswer();
+            }
+        });
+        
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const category = button.dataset.category;
+                startCategory(category);
+            });
+        });
+        
+        // Initialize game
+        loadAchievements();
+        
+        function showCategorySelection() {
+            welcomeScreen.classList.remove('active');
+            categorySelection.classList.add('active');
+        }
+        
+        function startCategory(category) {
+            currentCategory = category;
+            lives = 3;
+            hintsUsed = 0;
+            startTime = Date.now();
+            currentQuestionIndex = 0;
+            gameStats.correctAnswers = 0;
+            
+            // Get all items for the selected category
+            let allItems = [];
+            if (category === 'days') {
+                allItems = vocabulary.days;
+                currentCategoryElement.textContent = 'Dni Tygodnia / Days of the Week';
+            } else if (category === 'months') {
+                allItems = vocabulary.months;
+                currentCategoryElement.textContent = 'Miesiące / Months';
+            } else if (category === 'seasons') {
+                allItems = vocabulary.seasons;
+                currentCategoryElement.textContent = 'Pory Roku / Seasons';
+            } else if (category === 'weather') {
+                allItems = vocabulary.weather;
+                currentCategoryElement.textContent = 'Pogoda / Weather';
+            }
+            
+            // Shuffle items
+            currentQuestions = shuffleArray([...allItems]);
+            gameStats.totalAnswers = currentQuestions.length;
+            
+            categorySelection.classList.remove('active');
+            gameContainer.classList.add('active');
+            
+            updateLives();
+            renderQuestion();
+        }
+        
+        function renderQuestion() {
+            if (currentQuestionIndex >= currentQuestions.length) {
+                showResults();
+                return;
+            }
+            
+            const question = currentQuestions[currentQuestionIndex];
+            
+            // Update progress
+            progressBar.style.width = `${(currentQuestionIndex / currentQuestions.length) * 100}%`;
+            
+            // Clear previous content
+            questionImage.innerHTML = question.svg;
+            answerInput.value = '';
+            answerInput.classList.remove('correct', 'wrong');
+            feedback.textContent = '';
+            checkButton.style.display = 'inline-block';
+            nextButton.style.display = 'none';
+            currentWordElement.textContent = '';
+            
+            // Focus on input
+            setTimeout(() => answerInput.focus(), 100);
+            
+            isCheckingAnswer = false;
+        }
+        
+        function checkAnswer() {
+            if (isCheckingAnswer) return;
+            isCheckingAnswer = true;
+            
+            const question = currentQuestions[currentQuestionIndex];
+            const userAnswer = answerInput.value.trim();
+            const correctAnswer = question.word;
+            
+            if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+                // Correct answer
+                answerInput.classList.add('correct');
+                feedback.innerHTML = `<span style="color: #2ecc71">Świetnie! / Great job!</span> 👍`;
+                gameStats.correctAnswers++;
+                
+                // Show next button
+                checkButton.style.display = 'none';
+                nextButton.style.display = 'inline-block';
+                
+                // Check if all words in category are correct
+                if (currentQuestionIndex === currentQuestions.length - 1 && gameStats.correctAnswers === gameStats.totalAnswers) {
+                    unlockAchievement('perfect_score');
+                }
+                
+                // Check for speedster achievement
+                if (currentQuestionIndex === currentQuestions.length - 1 && (Date.now() - startTime) < 60000) {
+                    unlockAchievement('speedster');
+                }
+            } else {
+                // Wrong answer
+                answerInput.classList.add('wrong');
+                feedback.innerHTML = `<span style="color: #e74c3c">Spróbuj jeszcze raz! / Try again!</span> 🤔<br>
+                                      Poprawna odpowiedź / Correct answer: <strong>${correctAnswer}</strong>`;
+                
+                // Lose a life
+                lives--;
+                updateLives();
+                
+                // Show next button
+                checkButton.style.display = 'none';
+                nextButton.style.display = 'inline-block';
+                
+                // Check if game over
+                if (lives <= 0) {
+                    // Handle game over but allow to continue
+                    feedback.innerHTML += `<br><span style="color: #e74c3c">Straciłeś wszystkie życia! / You lost all lives!</span>`;
+                    unlockAchievement('comeback');
+                }
+            }
+            
+            // Display correct word
+            currentWordElement.textContent = correctAnswer;
+        }
+        
+        function nextQuestion() {
+            if (lives <= 0) {
+                // Reset lives
+                lives = 3;
+                updateLives();
+            }
+            
+            currentQuestionIndex++;
+            renderQuestion();
+        }
+        
+        function updateLives() {
+            const lifeElements = document.querySelectorAll('.life');
+            lifeElements.forEach((life, index) => {
+                life.classList.toggle('lost', index >= lives);
+            });
+        }
+        
+        function showHint() {
+            const question = currentQuestions[currentQuestionIndex];
+            feedback.textContent = question.translation;
+            hintsUsed++;
+            
+            // Hide hint after 3 seconds
+            setTimeout(() => {
+                if (feedback.textContent === question.translation) {
+                    feedback.textContent = '';
+                }
+            }, 3000);
+        }
+        
+        function showResults() {
+            gameContainer.classList.remove('active');
+            resultsScreen.classList.add('active');
+            
+            // Update results
+            document.getElementById('result-category').textContent = currentCategoryElement.textContent;
+            document.getElementById('result-score').textContent = gameStats.correctAnswers;
+            document.getElementById('result-total').textContent = gameStats.totalAnswers;
+            
+            // Update message based on score
+            const resultMessage = document.getElementById('result-message');
+            const percentage = (gameStats.correctAnswers / gameStats.totalAnswers) * 100;
+            
+            if (percentage === 100) {
+                resultMessage.textContent = "Doskonale! Jesteś mistrzem! / Perfect! You're a master!";
+                
+                // Unlock category-specific achievements
+                if (currentCategory === 'days') {
+                    unlockAchievement('days_master');
+                    gameStats.completedCategories.days = true;
+                } else if (currentCategory === 'months' && hintsUsed === 0) {
+                    unlockAchievement('months_master');
+                    gameStats.completedCategories.months = true;
+                } else if (currentCategory === 'seasons') {
+                    unlockAchievement('seasons_master');
+                    gameStats.completedCategories.seasons = true;
+                } else if (currentCategory === 'weather') {
+                    unlockAchievement('weather_master');
+                    gameStats.completedCategories.weather = true;
+                }
+                
+                // Check if all categories completed
+                if (gameStats.completedCategories.days && 
+                    gameStats.completedCategories.months && 
+                    gameStats.completedCategories.seasons && 
+                    gameStats.completedCategories.weather) {
+                    unlockAchievement('vocabulary_champion');
+                }
+            } else if (percentage >= 80) {
+                resultMessage.textContent = "Bardzo dobrze! / Very good!";
+            } else if (percentage >= 60) {
+                resultMessage.textContent = "Dobrze! Ćwicz dalej! / Good! Keep practicing!";
+            } else {
+                resultMessage.textContent = "Próbuj dalej! / Keep trying!";
+            }
+        }
+        
+        function retryCategory() {
+            startCategory(currentCategory);
+        }
+        
+        function backToCategories() {
+            gameContainer.classList.remove('active');
+            resultsScreen.classList.remove('active');
+            achievementsScreen.classList.remove('active');
+            categorySelection.classList.add('active');
+        }
+        
+        function showAchievements() {
+            categorySelection.classList.remove('active');
+            achievementsScreen.classList.add('active');
+            
+            // Populate achievements
+            const achievementsList = document.getElementById('achievements-list');
+            achievementsList.innerHTML = '';
+            
+            achievements.forEach(achievement => {
+                const achievementEl = document.createElement('div');
+                achievementEl.className = `achievement ${achievement.unlocked ? 'unlocked' : 'locked'}`;
+                
+                const iconEl = document.createElement('div');
+                iconEl.className = 'icon';
+                iconEl.innerHTML = achievement.icon;
+                
+                const titleEl = document.createElement('div');
+                titleEl.className = 'title';
+                titleEl.textContent = achievement.title;
+                
+                const descriptionEl = document.createElement('div');
+                descriptionEl.className = 'description';
+                descriptionEl.textContent = achievement.description;
+                
+                if (achievement.unlocked) {
+                    const badgeEl = document.createElement('div');
+                    badgeEl.className = 'badge';
+                    badgeEl.textContent = '✓';
+                    achievementEl.appendChild(badgeEl);
+                }
+                
+                achievementEl.appendChild(iconEl);
+                achievementEl.appendChild(titleEl);
+                achievementEl.appendChild(descriptionEl);
+                
+                achievementsList.appendChild(achievementEl);
+            });
+        }
+        
+        function unlockAchievement(id) {
+            const achievement = achievements.find(a => a.id === id);
+            if (achievement && !achievement.unlocked) {
+                achievement.unlocked = true;
+                saveAchievements();
+                showAchievementNotification(achievement);
+            }
+        }
+        
+        function showAchievementNotification(achievement) {
+            const notification = document.getElementById('achievement-notification');
+            const descriptionEl = document.getElementById('notification-description');
+            
+            notification.querySelector('.icon').innerHTML = achievement.icon;
+            descriptionEl.textContent = achievement.title;
+            
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        function saveAchievements() {
+            localStorage.setItem('vocabulary-achievements', JSON.stringify(achievements));
+        }
+        
+        function loadAchievements() {
+            const savedAchievements = localStorage.getItem('vocabulary-achievements');
+            if (savedAchievements) {
+                const loadedAchievements = JSON.parse(savedAchievements);
+                loadedAchievements.forEach((savedAch, index) => {
+                    if (index < achievements.length) {
+                        achievements[index].unlocked = savedAch.unlocked;
+                    }
+                });
+            }
+        }
+        
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+    </script>
+</body>
+</html>
