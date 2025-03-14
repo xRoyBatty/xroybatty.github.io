@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESL Time & Weather Vocabulary</title>
+    <style>
+        :root {
+            --primary-color: #4a6da7;
+            --secondary-color: #ffa500;
+            --correct-color: #2ecc71;
+            --wrong-color: #e74c3c;
+            --background-color: #f0f8ff;
+            --border-radius: 15px;
+            --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .welcome, .level-container, .results {
+            display: none;
+        }
+        
+        .welcome.active, .level-container.active, .results.active {
+            display: block;
+        }
+        
+        .button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        
+        .button:hover {
+            transform: scale(1.05);
+            background-color: #3a5d97;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 20px;
+            background-color: #eee;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--secondary-color);
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        .feedback {
+            font-size: 24px;
+            font-weight: bold;
+            height: 40px;
+            margin: 10px 0;
+        }
+        
+        .level-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .stars {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .star {
+            width: 30px;
+            height: 30px;
+            fill: #ddd;
+        }
+        
+        .star.earned {
+            fill: var(--secondary-color);
+        }
+        
+        .option {
+            background-color: white;
+            border: 2px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            padding: 10px;
+            margin: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        
+        .option:hover {
+            transform: scale(1.05);
+            background-color: #f0f0f0;
+        }
+        
+        .option.selected {
+            border-color: var(--secondary-color);
+            background-color: #fff9e6;
+        }
+        
+        .option.correct {
+            border-color: var(--correct-color);
+            background-color: #e6ffe6;
+        }
+        
+        .option.wrong {
+            border-color: var(--wrong-color);
+            background-color: #ffe6e6;
+        }
+        
+        .image-container {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+        }
+        
+        .options-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .letter-container, .word-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+            margin: 20px 0;
+            min-height: 60px;
+        }
+        
+        .letter, .word {
+            padding: 10px 15px;
+            background-color: white;
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            cursor: grab;
+            user-select: none;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .letter-slot, .word-slot {
+            width: 40px;
+            height: 40px;
+            border: 2px dashed var(--primary-color);
+            border-radius: 5px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 2px;
+        }
+        
+        .word-slot {
+            width: auto;
+            min-width: 60px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .hint-button {
+            background-color: #f8d568;
+            color: #333;
+        }
+        
+        .check-button {
+            background-color: var(--correct-color);
+        }
+        
+        .next-button {
+            background-color: var(--secondary-color);
+        }
+        
+        .dragging {
+            opacity: 0.5;
+        }
+        
+        .instructions {
+            color: #555;
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        
+        .level-heading {
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+        
+        .score-container {
+            font-size: 24px;
+            margin: 20px 0;
+        }
+        
+        .instructions-polish {
+            font-style: italic;
+            color: #777;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .image-container {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .option {
+                padding: 8px;
+                margin: 5px;
+            }
+            
+            .letter, .word {
+                padding: 8px 12px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div class="welcome active">
+            <h1>Time & Weather Vocabulary</h1>
+            <div class="image-container">
+                <svg viewBox="0 0 100 100">
+                    <!-- Sun -->
+                    <circle cx="50" cy="50" r="20" fill="#FFD700"/>
+                    <g>
+                        <line x1="50" y1="15" x2="50" y2="25" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="50" y1="75" x2="50" y2="85" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="15" y1="50" x2="25" y2="50" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="75" y1="50" x2="85" y2="50" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="25" y1="25" x2="32" y2="32" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="68" y1="68" x2="75" y2="75" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="25" y1="75" x2="32" y2="68" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="68" y1="32" x2="75" y2="25" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+                    </g>
+                    <!-- Calendar -->
+                    <rect x="20" y="30" width="30" height="30" fill="#fff" stroke="#333" stroke-width="1"/>
+                    <line x1="20" y1="38" x2="50" y2="38" stroke="#333" stroke-width="1"/>
+                    <text x="35" y="50" font-size="12" text-anchor="middle" fill="#333">7</text>
+                    <!-- Cloud -->
+                    <path d="M75,40 Q80,30 90,35 Q100,30 100,40 Q105,38 105,45 Q105,55 95,55 Q95,65 85,60 Q80,65 75,60 Q65,60 70,50 Q60,45 75,40" fill="#99ccff"/>
+                    <path d="M75,43 L78,55 L72,50 L80,50 L74,55" fill="#fff" stroke="#99ccff"/>
+                </svg>
+            </div>
+            <h2>WITAJ! / WELCOME!</h2>
+            <p class="instructions-polish">Zagrajmy w grę do nauki słownictwa z języka angielskiego!</p>
+            <p class="instructions">Let's play an English vocabulary game!</p>
+            <button class="button" id="start-button">ZACZNIJ GRĘ / START GAME</button>
+        </div>
+        
+        <!-- Level Container -->
+        <div class="level-container">
+            <div class="level-info">
+                <div>
+                    <h2 class="level-heading">Level <span id="current-level">1</span></h2>
+                    <p class="instructions" id="level-instructions">Click the correct word!</p>
+                    <p class="instructions-polish" id="level-instructions-polish">Kliknij właściwe słowo!</p>
+                </div>
+                <div class="stars">
+                    <svg class="star" viewBox="0 0 24 24">
+                        <path d="M12,1.5 L14.4,8.5 L22,9.1 L16.5,14 L18,21.5 L12,17.3 L6,21.5 L7.5,14 L2,9.1 L9.6,8.5 Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24">
+                        <path d="M12,1.5 L14.4,8.5 L22,9.1 L16.5,14 L18,21.5 L12,17.3 L6,21.5 L7.5,14 L2,9.1 L9.6,8.5 Z"/>
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24">
+                        <path d="M12,1.5 L14.4,8.5 L22,9.1 L16.5,14 L18,21.5 L12,17.3 L6,21.5 L7.5,14 L2,9.1 L9.6,8.5 Z"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            
+            <!-- Content Area - dynamically filled -->
+            <div id="question-container">
+                <div class="image-container" id="question-image"></div>
+                <div id="question-content"></div>
+            </div>
+            
+            <div class="feedback" id="feedback"></div>
+            
+            <div class="controls">
+                <button class="button hint-button" id="hint-button">Podpowiedź / Hint</button>
+                <button class="button check-button" id="check-button">Sprawdź / Check</button>
+                <button class="button next-button" id="next-button" style="display: none;">Dalej / Next</button>
+            </div>
+        </div>
+        
+        <!-- Results Screen -->
+        <div class="results">
+            <h1>Gratulacje! / Congratulations!</h1>
+            <div class="image-container">
+                <svg viewBox="0 0 100 100">
+                    <!-- Trophy -->
+                    <path d="M30,20 L70,20 L70,35 Q70,45 65,50 Q60,55 50,55 Q40,55 35,50 Q30,45 30,35 Z" fill="#FFD700"/>
+                    <rect x="45" y="55" width="10" height="15" fill="#FFD700"/>
+                    <rect x="35" y="70" width="30" height="5" fill="#FFD700"/>
+                    <path d="M30,20 L20,20 Q20,35 25,40 L30,40 L30,20" fill="#FFD700"/>
+                    <path d="M70,20 L80,20 Q80,35 75,40 L70,40 L70,20" fill="#FFD700"/>
+                    <!-- Stars -->
+                    <path d="M30,10 L32,15 L38,15 L33,19 L35,24 L30,20 L25,24 L27,19 L22,15 L28,15 Z" fill="#FFD700"/>
+                    <path d="M50,5 L52,10 L58,10 L53,14 L55,19 L50,15 L45,19 L47,14 L42,10 L48,10 Z" fill="#FFD700"/>
+                    <path d="M70,10 L72,15 L78,15 L73,19 L75,24 L70,20 L65,24 L67,19 L62,15 L68,15 Z" fill="#FFD700"/>
+                </svg>
+            </div>
+            <div class="score-container">
+                <p>Twój wynik / Your score: <span id="final-score">0</span> / <span id="total-questions">0</span></p>
+            </div>
+            <div class="stars" id="result-stars">
+                <svg class="star" viewBox="0 0 24 24">
+                    <path d="M12,1.5 L14.4,8.5 L22,9.1 L16.5,14 L18,21.5 L12,17.3 L6,21.5 L7.5,14 L2,9.1 L9.6,8.5 Z"/>
+                </svg>
+                <svg class="star" viewBox="0 0 24 24">
+                    <path d="M12,1.5 L14.4,8.5 L22,9.1 L16.5,14 L18,21.5 L12,17.3 L6,21.5 L7.5,14 L2,9.1 L9.6,8.5 Z"/>
+                </svg>
+                <svg class="star" viewBox="0 0 24 24">
+                    <path d="M12,1.5 L14.4,8.5 L22,9.1 L16.5,14 L18,21.5 L12,17.3 L6,21.5 L7.5,14 L2,9.1 L9.6,8.5 Z"/>
+                </svg>
+            </div>
+            <button class="button" id="play-again-button">Zagraj ponownie / Play Again</button>
+        </div>
+    </div>
+    
+    <script>
+        // Game data
+        const vocabulary = {
+            days: [
+                {word: "Monday", translation: "Poniedziałek", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><rect x="20" y="20" width="60" height="15" rx="5" fill="#4a6da7" stroke="#333" stroke-width="2"/><text x="50" y="32" font-size="12" text-anchor="middle" fill="#fff">Mon</text><text x="50" y="65" font-size="24" text-anchor="middle" fill="#333">1</text><circle cx="75" cy="25" r="8" fill="#FFD700"/><path d="M75,17 L75,13 M83,25 L87,25 M75,33 L75,37 M67,25 L63,25" stroke="#FFD700" stroke-width="2"/></svg>'},
+                {word: "Tuesday", translation: "Wtorek", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><rect x="20" y="20" width="60" height="15" rx="5" fill="#4a6da7" stroke="#333" stroke-width="2"/><text x="50" y="32" font-size="12" text-anchor="middle" fill="#fff">Tue</text><text x="50" y="65" font-size="24" text-anchor="middle" fill="#333">2</text></svg>'},
+                {word: "Wednesday", translation: "Środa", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><rect x="20" y="20" width="60" height="15" rx="5" fill="#4a6da7" stroke="#333" stroke-width="2"/><text x="50" y="32" font-size="12" text-anchor="middle" fill="#fff">Wed</text><text x="50" y="65" font-size="24" text-anchor="middle" fill="#333">3</text><line x1="50" y1="40" x2="50" y2="50" stroke="#ff6b6b" stroke-width="3" stroke-dasharray="2"/></svg>'},
+                {word: "Thursday", translation: "Czwartek", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><rect x="20" y="20" width="60" height="15" rx="5" fill="#4a6da7" stroke="#333" stroke-width="2"/><text x="50" y="32" font-size="12" text-anchor="middle" fill="#fff">Thu</text><text x="50" y="65" font-size="24" text-anchor="middle" fill="#333">4</text></svg>'},
+                {word: "Friday", translation: "Piątek", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><rect x="20" y="20" width="60" height="15" rx="5" fill="#4a6da7" stroke="#333" stroke-width="2"/><text x="50" y="32" font-size="12" text-anchor="middle" fill="#fff">Fri</text><text x="50" y="65" font-size="24" text-anchor="middle" fill="#333">5</text><path d="M65,25 L70,20 L75,25" fill="none" stroke="#ff6b6b" stroke-width="2"/></svg>'},
+                {word: "Saturday", translation: "Sobota", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><rect x="20" y="20" width="60" height="15" rx="5" fill="#6dac7f" stroke="#333" stroke-width="2"/><text x="50" y="32" font-size="12" text-anchor="middle" fill="#fff">Sat</text><text x="50" y="65" font-size="24" text-anchor="middle" fill="#333">6</text><path d="M65,25 L70,20 L75,25 L70,30 Z" fill="#FFD700"/></svg>'},
+                {word: "Sunday", translation: "Niedziela", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><rect x="20" y="20" width="60" height="15" rx="5" fill="#6dac7f" stroke="#333" stroke-width="2"/><text x="50" y="32" font-size="12" text-anchor="middle" fill="#fff">Sun</text><text x="50" y="65" font-size="24" text-anchor="middle" fill="#333">7</text><circle cx="70" cy="25" r="6" fill="#FFD700"/></svg>'}
+            ],
+            months: [
+                {word: "January", translation: "Styczeń", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">JAN</text><path d="M50,60 L50,50 M45,55 L50,60 L55,55" stroke="#333" stroke-width="1"/><path d="M30,30 L35,25 L40,30 L35,35 Z M60,30 L65,25 L70,30 L65,35 Z" fill="#99ccff"/></svg>'},
+                {word: "February", translation: "Luty", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">FEB</text><path d="M45,55 C45,50 55,50 55,55 C55,60 45,60 45,55 Z" fill="#ff6b6b"/><path d="M30,30 L35,25 L40,30 L35,35 Z" fill="#99ccff"/></svg>'},
+                {word: "March", translation: "Marzec", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">MAR</text><path d="M45,65 C45,50 55,50 55,65" fill="none" stroke="#6dac7f" stroke-width="2"/><circle cx="50" cy="50" r="3" fill="#6dac7f"/></svg>'},
+                {word: "April", translation: "Kwiecień", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">APR</text><path d="M30,30 Q50,25 70,30 Q60,40 50,35 Q40,40 30,30" fill="#99ccff"/><path d="M45,45 L43,65 M55,45 L57,65 M43,55 L57,55" fill="none" stroke="#6dac7f" stroke-width="2"/><circle cx="50" cy="45" r="5" fill="#ff6b6b"/></svg>'},
+                {word: "May", translation: "Maj", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">MAY</text><circle cx="40" cy="55" r="6" fill="#ff6b6b"/><circle cx="50" cy="55" r="6" fill="#ff9800"/><circle cx="60" cy="55" r="6" fill="#6dac7f"/><path d="M40,45 L40,55 M50,45 L50,55 M60,45 L60,55" stroke="#333" stroke-width="1"/></svg>'},
+                {word: "June", translation: "Czerwiec", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">JUN</text><circle cx="50" cy="60" r="10" fill="#ff6b6b"/><path d="M50,50 L50,60 M45,55 L50,50 L55,55" stroke="#6dac7f" stroke-width="2"/><circle cx="70" cy="30" r="8" fill="#FFD700"/></svg>'},
+                {word: "July", translation: "Lipiec", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">JUL</text><path d="M45,55 L43,65 C40,65 40,60 45,60 C50,60 50,55 55,55 C60,55 60,60 57,65 L55,55" fill="#f8f8f8" stroke="#333"/><circle cx="70" cy="30" r="8" fill="#FFD700"/></svg>'},
+                {word: "August", translation: "Sierpień", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">AUG</text><circle cx="50" cy="60" r="10" fill="#ff9800" stroke="#333"/><path d="M45,58 L55,62 M45,62 L55,58" stroke="#333"/><circle cx="70" cy="30" r="8" fill="#FFD700"/></svg>'},
+                {word: "September", translation: "Wrzesień", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">SEP</text><path d="M40,55 L50,45 L60,55 L55,60 L45,60 Z" fill="#ff6b6b"/><rect x="40" y="60" width="20" height="5" fill="#6dac7f"/></svg>'},
+                {word: "October", translation: "Październik", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">OCT</text><path d="M50,60 C40,60 40,50 50,50 C60,50 60,60 50,60 Z" fill="#ff9800"/><path d="M48,50 L48,45 M52,50 L52,45" stroke="#6dac7f" stroke-width="2"/><path d="M30,25 L40,35 M60,35 L70,25" fill="none" stroke="#ff6b6b" stroke-width="2"/></svg>'},
+                {word: "November", translation: "Listopad", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">NOV</text><path d="M30,45 Q50,40 70,45 L65,65 L35,65 Z" fill="#c19a6b"/><path d="M40,45 L35,30 M50,45 L55,30 M60,45 L50,35" stroke="#c19a6b" stroke-width="2"/></svg>'},
+                {word: "December", translation: "Grudzień", svg: '<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><text x="50" y="40" font-size="14" text-anchor="middle" fill="#333">DEC</text><rect x="40" y="50" width="20" height="20" fill="#ff9800" stroke="#c19a6b" stroke-width="2"/><path d="M40,50 L50,40 L60,50" fill="#ff9800" stroke="#c19a6b" stroke-width="2"/><path d="M30,30 L35,25 L40,30 L35,35 Z M60,30 L65,25 L70,30 L65,35 Z" fill="#99ccff"/></svg>'}
+            ],
+            seasons: [
+                {word: "Spring", translation: "Wiosna", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#e6f7ff"/><path d="M50,70 L50,40" stroke="#6dac7f" stroke-width="4"/><path d="M30,40 C30,20 70,20 70,40 C70,60 30,60 30,40" fill="#6dac7f"/><path d="M20,70 L80,70" fill="none" stroke="#8b5a2b" stroke-width="4"/><circle cx="35" cy="35" r="5" fill="#ff6b6b"/><circle cx="45" cy="30" r="5" fill="#ff9800"/><circle cx="55" cy="30" r="5" fill="#ff6b6b"/><circle cx="65" cy="35" r="5" fill="#ff9800"/></svg>'},
+                {word: "Summer", translation: "Lato", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#ffeb99"/><circle cx="75" cy="25" r="15" fill="#FFD700"/><path d="M75,10 L75,5 M90,25 L95,25 M75,40 L75,45 M60,25 L55,25 M63,13 L58,8 M87,13 L92,8 M87,37 L92,42 M63,37 L58,42" stroke="#FFD700" stroke-width="2"/><path d="M50,70 L50,40" stroke="#6dac7f" stroke-width="4"/><path d="M30,40 C30,20 70,20 70,40 C70,60 30,60 30,40" fill="#6dac7f"/><path d="M20,70 L80,70" fill="none" stroke="#8b5a2b" stroke-width="4"/><ellipse cx="25" cy="85" rx="15" ry="5" fill="#c19a6b"/><path d="M25,85 C25,75 30,75 30,85" fill="none" stroke="#99ccff" stroke-width="2"/><circle cx="15" cy="80" r="5" fill="#ff9800"/></svg>'},
+                {word: "Autumn", translation: "Jesień", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#fff7e6"/><path d="M50,70 L50,40" stroke="#8b5a2b" stroke-width="4"/><path d="M30,40 C30,30 70,30 70,40" fill="#ff9800"/><path d="M35,35 L30,20 M45,35 L50,20 M55,35 L60,20 M65,35 L70,20" stroke="#ff6b6b" stroke-width="2"/><path d="M20,70 L80,70" fill="none" stroke="#8b5a2b" stroke-width="4"/><path d="M35,75 L42,68 M45,75 L52,68 M55,75 L62,68" stroke="#c19a6b" stroke-width="2"/></svg>'},
+                {word: "Winter", translation: "Zima", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#e6f9ff"/><path d="M50,70 L50,40" stroke="#8b5a2b" stroke-width="4"/><path d="M30,40 C30,20 70,20 70,40" fill="#fff"/><path d="M20,70 L80,70" fill="none" stroke="#8b5a2b" stroke-width="4"/><path d="M30,25 L35,20 L40,25 L35,30 Z M60,25 L65,20 L70,25 L65,30 Z M45,50 L50,45 L55,50 L50,55 Z" fill="#99ccff"/><rect x="0" y="70" width="100" height="30" fill="#fff"/></svg>'},
+                {word: "Fall", translation: "Jesień", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#fff7e6"/><path d="M50,70 L50,40" stroke="#8b5a2b" stroke-width="4"/><path d="M30,40 C30,30 70,30 70,40" fill="#ff9800"/><path d="M35,35 L30,20 M45,35 L50,20 M55,35 L60,20 M65,35 L70,20" stroke="#ff6b6b" stroke-width="2"/><path d="M20,70 L80,70" fill="none" stroke="#8b5a2b" stroke-width="4"/><path d="M35,75 L42,68 M45,75 L52,68 M55,75 L62,68" stroke="#c19a6b" stroke-width="2"/></svg>'}
+            ],
+            weather: [
+                {word: "Sunny", translation: "Słonecznie", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#e6f7ff"/><circle cx="50" cy="50" r="20" fill="#FFD700"/><path d="M50,20 L50,10 M50,90 L50,80 M20,50 L10,50 M90,50 L80,50 M29,29 L22,22 M71,29 L78,22 M29,71 L22,78 M71,71 L78,78" stroke="#FFD700" stroke-width="3"/></svg>'},
+                {word: "Rainy", translation: "Deszczowo", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#e6f7ff"/><path d="M30,40 Q40,30 50,40 Q60,30 70,40 Q80,50 70,60 Q60,70 50,60 Q40,70 30,60 Q20,50 30,40" fill="#99ccff"/><path d="M30,70 L25,85 M40,70 L35,85 M50,70 L45,85 M60,70 L55,85 M70,70 L65,85" stroke="#99ccff" stroke-width="2"/></svg>'},
+                {word: "Snowy", translation: "Śnieżnie", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#e6f9ff"/><path d="M30,40 Q40,30 50,40 Q60,30 70,40 Q80,50 70,60 Q60,70 50,60 Q40,70 30,60 Q20,50 30,40" fill="#f8f8f8"/><path d="M30,70 L30,80 M25,75 L35,75 M40,70 L40,80 M35,75 L45,75 M50,70 L50,80 M45,75 L55,75 M60,70 L60,80 M55,75 L65,75 M70,70 L70,80 M65,75 L75,75" stroke="#f8f8f8" stroke-width="2"/></svg>'},
+                {word: "Windy", translation: "Wietrznie", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#e6f7ff"/><path d="M20,30 Q30,20 40,30 L70,30" fill="none" stroke="#99ccff" stroke-width="3"/><path d="M20,50 Q30,40 40,50 L80,50" fill="none" stroke="#99ccff" stroke-width="3"/><path d="M20,70 Q30,60 40,70 L60,70" fill="none" stroke="#99ccff" stroke-width="3"/><circle cx="75" cy="30" r="5" fill="#6dac7f"/><circle cx="85" cy="50" r="5" fill="#ff9800"/><circle cx="65" cy="70" r="5" fill="#ff6b6b"/></svg>'},
+                {word: "Cloudy", translation: "Pochmurno", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#e6f7ff"/><path d="M30,40 Q40,30 50,40 Q60,30 70,40 Q80,50 70,60 Q60,70 50,60 Q40,70 30,60 Q20,50 30,40" fill="#f8f8f8"/><path d="M60,65 Q70,55 80,65 Q90,75 80,85 Q70,95 60,85 Q50,75 60,65" fill="#e6e6e6"/></svg>'},
+                {word: "Foggy", translation: "Mgliście", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#f2f2f2"/><path d="M20,40 L80,40" stroke="#e6e6e6" stroke-width="5"/><path d="M30,50 L70,50" stroke="#e6e6e6" stroke-width="5"/><path d="M20,60 L80,60" stroke="#e6e6e6" stroke-width="5"/><path d="M30,70 L70,70" stroke="#e6e6e6" stroke-width="5"/></svg>'},
+                {word: "Hot", translation: "Gorąco", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#ffe6e6"/><circle cx="30" cy="30" r="15" fill="#ff6b6b"/><path d="M30,10 L30,5 M45,30 L50,30 M30,50 L30,55 M15,30 L10,30" stroke="#ff6b6b" stroke-width="2"/><rect x="60" y="30" width="10" height="40" rx="5" fill="#fff" stroke="#333"/><circle cx="65" cy="65" r="8" fill="#ff6b6b"/><rect x="63" y="30" width="4" height="30" fill="#ff6b6b"/></svg>'},
+                {word: "Cold", translation: "Zimno", svg: '<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="#e6f9ff"/><path d="M30,30 L35,25 L40,30 L35,35 Z" fill="#99ccff"/><rect x="60" y="30" width="10" height="40" rx="5" fill="#fff" stroke="#333"/><circle cx="65" cy="65" r="8" fill="#99ccff"/><rect x="63" y="30" width="4" height="15" fill="#99ccff"/><path d="M50,50 C45,45 55,40 50,35 C45,30 55,25 50,20" fill="none" stroke="#99ccff" stroke-width="2"/></svg>'}
+            ]
+        };
+
+        // Helper functions
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function getRandomItems(array, count) {
+            const shuffled = shuffleArray(array);
+            return shuffled.slice(0, Math.min(count, shuffled.length));
+        }
+
+        // Game state
+        let currentLevel = 1;
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let stars = 0;
+        let selectedOption = null;
+        let letterOrder = [];
+        let wordOrder = [];
+        let isCheckingAnswer = false;
+
+        // DOM Elements
+        const welcomeScreen = document.querySelector('.welcome');
+        const levelContainer = document.querySelector('.level-container');
+        const resultsScreen = document.querySelector('.results');
+        const startButton = document.getElementById('start-button');
+        const hintButton = document.getElementById('hint-button');
+        const checkButton = document.getElementById('check-button');
+        const nextButton = document.getElementById('next-button');
+        const playAgainButton = document.getElementById('play-again-button');
+        const progressBar = document.getElementById('progress-bar');
+        const questionImage = document.getElementById('question-image');
+        const questionContent = document.getElementById('question-content');
+        const feedback = document.getElementById('feedback');
+        const levelDisplay = document.getElementById('current-level');
+        const starElements = document.querySelectorAll('.level-container .star');
+
+        // Event Listeners
+        startButton.addEventListener('click', startGame);
+        hintButton.addEventListener('click', showHint);
+        checkButton.addEventListener('click', checkAnswer);
+        nextButton.addEventListener('click', nextQuestion);
+        playAgainButton.addEventListener('click', restartGame);
+
+        // Initialize game
+        function startGame() {
+            welcomeScreen.classList.remove('active');
+            levelContainer.classList.add('active');
+            generateQuestions();
+            updateLevel(1);
+            renderQuestion();
+        }
+
+        function restartGame() {
+            resultsScreen.classList.remove('active');
+            levelContainer.classList.add('active');
+            currentLevel = 1;
+            currentQuestionIndex = 0;
+            score = 0;
+            stars = 0;
+            generateQuestions();
+            updateLevel(1);
+            renderQuestion();
+        }
+
+        function generateQuestions() {
+            // Create a mix of questions from each category
+            const allCategories = [
+                ...getRandomItems(vocabulary.days, 3),
+                ...getRandomItems(vocabulary.months, 3),
+                ...getRandomItems(vocabulary.seasons, 2),
+                ...getRandomItems(vocabulary.weather, 4)
+            ];
+            
+            questions = shuffleArray(allCategories);
+        }
+
+        function updateLevel(level) {
+            currentLevel = level;
+            levelDisplay.textContent = level;
+            
+            const instructions = [
+                "Click the correct word!",
+                "Arrange the letters in the correct order!",
+                "Arrange the words to make a sentence!"
+            ];
+            
+            const instructionsPolish = [
+                "Kliknij właściwe słowo!",
+                "Ułóż litery we właściwej kolejności!",
+                "Ułóż słowa, aby utworzyć zdanie!"
+            ];
+            
+            document.getElementById('level-instructions').textContent = instructions[level - 1];
+            document.getElementById('level-instructions-polish').textContent = instructionsPolish[level - 1];
+            
+            // Update stars based on level
+            starElements.forEach((star, index) => {
+                star.classList.toggle('earned', index < level - 1);
+            });
+        }
+
+        function renderQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                showResults();
+                return;
+            }
+            
+            const question = questions[currentQuestionIndex];
+            
+            // Update progress
+            progressBar.style.width = `${(currentQuestionIndex / questions.length) * 100}%`;
+            
+            // Clear previous content
+            questionImage.innerHTML = question.svg;
+            questionContent.innerHTML = '';
+            feedback.textContent = '';
+            checkButton.style.display = 'inline-block';
+            nextButton.style.display = 'none';
+            selectedOption = null;
+            
+            // Render question based on level
+            if (currentLevel === 1) {
+                renderMultipleChoice(question);
+            } else if (currentLevel === 2) {
+                renderLetterScramble(question);
+            } else {
+                renderWordOrder(question);
+            }
+        }
+
+        function renderMultipleChoice(question) {
+            const options = getRandomOptions(question.word, 3);
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'options-container';
+            
+            options.forEach(option => {
+                const optionEl = document.createElement('div');
+                optionEl.className = 'option';
+                optionEl.textContent = option;
+                optionEl.addEventListener('click', () => {
+                    if (isCheckingAnswer) return;
+                    
+                    // Clear previous selection
+                    document.querySelectorAll('.option').forEach(el => {
+                        el.classList.remove('selected');
+                    });
+                    
+                    // Select new option
+                    optionEl.classList.add('selected');
+                    selectedOption = option;
+                });
+                optionsContainer.appendChild(optionEl);
+            });
+            
+            questionContent.appendChild(optionsContainer);
+        }
+
+        function getRandomOptions(correctAnswer, count) {
+            // Get all words from all categories
+            const allWords = [
+                ...vocabulary.days.map(item => item.word),
+                ...vocabulary.months.map(item => item.word),
+                ...vocabulary.seasons.map(item => item.word),
+                ...vocabulary.weather.map(item => item.word)
+            ];
+            
+            // Remove the correct answer from the pool
+            const filteredWords = allWords.filter(word => word !== correctAnswer);
+            
+            // Get random incorrect options
+            const incorrectOptions = getRandomItems(filteredWords, count);
+            
+            // Add correct answer and shuffle
+            const options = [...incorrectOptions, correctAnswer];
+            return shuffleArray(options);
+        }
+
+        function renderLetterScramble(question) {
+            const word = question.word;
+            
+            // Create container for slots
+            const slotsContainer = document.createElement('div');
+            slotsContainer.className = 'letter-container';
+            
+            // Create letter slots
+            for (let i = 0; i < word.length; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'letter-slot';
+                slot.dataset.index = i;
+                slotsContainer.appendChild(slot);
+            }
+            
+            // Create container for scrambled letters
+            const lettersContainer = document.createElement('div');
+            lettersContainer.className = 'letter-container';
+            
+            // Create letter elements with shuffled order
+            letterOrder = shuffleArray(word.split('').map((letter, index) => ({ letter, originalIndex: index })));
+            
+            letterOrder.forEach((item, index) => {
+                const letterEl = document.createElement('div');
+                letterEl.className = 'letter';
+                letterEl.textContent = item.letter;
+                letterEl.dataset.index = index;
+                letterEl.draggable = true;
+                
+                letterEl.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', index);
+                    setTimeout(() => letterEl.classList.add('dragging'), 0);
+                });
+                
+                letterEl.addEventListener('dragend', () => {
+                    letterEl.classList.remove('dragging');
+                });
+                
+                lettersContainer.appendChild(letterEl);
+            });
+            
+            // Add drag and drop event listeners to slots
+            slotsContainer.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+            
+            slotsContainer.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const letterIndex = e.dataTransfer.getData('text/plain');
+                const letterEl = document.querySelector(`.letter[data-index="${letterIndex}"]`);
+                
+                if (letterEl && e.target.className === 'letter-slot') {
+                    // If slot already has a letter, swap them
+                    const existingLetter = e.target.querySelector('.letter');
+                    if (existingLetter) {
+                        lettersContainer.appendChild(existingLetter);
+                    }
+                    
+                    e.target.appendChild(letterEl);
+                }
+            });
+            
+            questionContent.appendChild(slotsContainer);
+            questionContent.appendChild(lettersContainer);
+        }
+
+        function renderWordOrder(question) {
+            // Construct a simple sentence using the word
+            let sentence = [];
+            const wordType = getWordType(question.word);
+            
+            if (wordType === 'day') {
+                sentence = ["Today", "is", question.word];
+            } else if (wordType === 'month') {
+                sentence = ["It", "is", question.word, "now"];
+            } else if (wordType === 'season') {
+                sentence = ["I", "like", question.word, "weather"];
+            } else if (wordType === 'weather') {
+                sentence = ["It", "is", question.word, "today"];
+            }
+            
+            // Create container for slots
+            const slotsContainer = document.createElement('div');
+            slotsContainer.className = 'word-container';
+            
+            // Create word slots
+            for (let i = 0; i < sentence.length; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'word-slot';
+                slot.dataset.index = i;
+                slotsContainer.appendChild(slot);
+            }
+            
+            // Create container for scrambled words
+            const wordsContainer = document.createElement('div');
+            wordsContainer.className = 'word-container';
+            
+            // Create word elements with shuffled order
+            wordOrder = shuffleArray(sentence.map((word, index) => ({ word, originalIndex: index })));
+            
+            wordOrder.forEach((item, index) => {
+                const wordEl = document.createElement('div');
+                wordEl.className = 'word';
+                wordEl.textContent = item.word;
+                wordEl.dataset.index = index;
+                wordEl.draggable = true;
+                
+                wordEl.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', index);
+                    setTimeout(() => wordEl.classList.add('dragging'), 0);
+                });
+                
+                wordEl.addEventListener('dragend', () => {
+                    wordEl.classList.remove('dragging');
+                });
+                
+                wordsContainer.appendChild(wordEl);
+            });
+            
+            // Add drag and drop event listeners to slots
+            slotsContainer.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+            
+            slotsContainer.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const wordIndex = e.dataTransfer.getData('text/plain');
+                const wordEl = document.querySelector(`.word[data-index="${wordIndex}"]`);
+                
+                if (wordEl && e.target.className === 'word-slot') {
+                    // If slot already has a word, swap them
+                    const existingWord = e.target.querySelector('.word');
+                    if (existingWord) {
+                        wordsContainer.appendChild(existingWord);
+                    }
+                    
+                    e.target.appendChild(wordEl);
+                }
+            });
+            
+            questionContent.appendChild(slotsContainer);
+            questionContent.appendChild(wordsContainer);
+        }
+
+        function getWordType(word) {
+            if (vocabulary.days.some(item => item.word === word)) return 'day';
+            if (vocabulary.months.some(item => item.word === word)) return 'month';
+            if (vocabulary.seasons.some(item => item.word === word)) return 'season';
+            return 'weather';
+        }
+
+        function checkAnswer() {
+            isCheckingAnswer = true;
+            const question = questions[currentQuestionIndex];
+            let isCorrect = false;
+            
+            if (currentLevel === 1) {
+                // Check multiple choice answer
+                isCorrect = selectedOption === question.word;
+                const selectedEl = document.querySelector('.option.selected');
+                
+                if (selectedEl) {
+                    if (isCorrect) {
+                        selectedEl.classList.add('correct');
+                    } else {
+                        selectedEl.classList.add('wrong');
+                        
+                        // Highlight correct answer
+                        document.querySelectorAll('.option').forEach(option => {
+                            if (option.textContent === question.word) {
+                                option.classList.add('correct');
+                            }
+                        });
+                    }
+                }
+            } else if (currentLevel === 2) {
+                // Check letter scramble
+                const slotElements = document.querySelectorAll('.letter-slot');
+                const userAnswer = Array.from(slotElements).map(slot => {
+                    const letter = slot.querySelector('.letter');
+                    return letter ? letter.textContent : '';
+                }).join('');
+                
+                isCorrect = userAnswer === question.word;
+                
+                // Highlight result
+                slotElements.forEach((slot, index) => {
+                    const letter = slot.querySelector('.letter');
+                    if (letter) {
+                        if (letter.textContent === question.word[index]) {
+                            letter.style.backgroundColor = '#e6ffe6';
+                            letter.style.borderColor = '#2ecc71';
+                        } else {
+                            letter.style.backgroundColor = '#ffe6e6';
+                            letter.style.borderColor = '#e74c3c';
+                        }
+                    }
+                });
+                
+                // Show correct answer if wrong
+                if (!isCorrect) {
+                    const word = question.word;
+                    feedback.innerHTML = `Correct answer: <strong>${word}</strong>`;
+                }
+            } else if (currentLevel === 3) {
+                // Check word order
+                const slotElements = document.querySelectorAll('.word-slot');
+                let isComplete = true;
+                let isInCorrectOrder = true;
+                
+                slotElements.forEach((slot, index) => {
+                    const word = slot.querySelector('.word');
+                    if (!word) {
+                        isComplete = false;
+                    } else {
+                        const wordItem = wordOrder.find(item => item.word === word.textContent);
+                        if (wordItem.originalIndex !== index) {
+                            isInCorrectOrder = false;
+                            word.style.backgroundColor = '#ffe6e6';
+                            word.style.borderColor = '#e74c3c';
+                        } else {
+                            word.style.backgroundColor = '#e6ffe6';
+                            word.style.borderColor = '#2ecc71';
+                        }
+                    }
+                });
+                
+                isCorrect = isComplete && isInCorrectOrder;
+                
+                // Show correct order if wrong and complete
+                if (!isCorrect && isComplete) {
+                    const correctOrder = wordOrder
+                        .sort((a, b) => a.originalIndex - b.originalIndex)
+                        .map(item => item.word)
+                        .join(' ');
+                    feedback.innerHTML = `Correct order: <strong>${correctOrder}</strong>`;
+                } else if (!isComplete) {
+                    feedback.textContent = "Please place all words in the slots!";
+                    isCheckingAnswer = false;
+                    return;
+                }
+            }
+            
+            // Update feedback and score
+            if (isCorrect) {
+                feedback.innerHTML = `<span style="color: #2ecc71">Świetnie! / Great!</span> 👍`;
+                score++;
+            } else {
+                feedback.innerHTML = feedback.innerHTML || `<span style="color: #e74c3c">Spróbuj jeszcze raz! / Try again!</span> 🤔`;
+            }
+            
+            // Show next button
+            checkButton.style.display = 'none';
+            nextButton.style.display = 'inline-block';
+        }
+
+        function nextQuestion() {
+            isCheckingAnswer = false;
+            currentQuestionIndex++;
+            
+            // Check if level is complete
+            if (currentQuestionIndex % Math.floor(questions.length / 3) === 0 && currentLevel < 3) {
+                stars++;
+                updateLevel(currentLevel + 1);
+            }
+            
+            renderQuestion();
+        }
+
+        function showHint() {
+            const question = questions[currentQuestionIndex];
+            feedback.textContent = question.translation;
+            
+            // Hide hint after 3 seconds
+            setTimeout(() => {
+                if (feedback.textContent === question.translation) {
+                    feedback.textContent = '';
+                }
+            }, 3000);
+        }
+
+        function showResults() {
+            levelContainer.classList.remove('active');
+            resultsScreen.classList.add('active');
+            
+            // Update final score
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('total-questions').textContent = questions.length;
+            
+            // Update stars
+            const resultStars = document.querySelectorAll('#result-stars .star');
+            const starCount = Math.ceil((score / questions.length) * 3);
+            
+            resultStars.forEach((star, index) => {
+                star.classList.toggle('earned', index < starCount);
+            });
+        }
+    </script>
+</body>
+</html>
