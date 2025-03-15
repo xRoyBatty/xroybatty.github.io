@@ -268,6 +268,21 @@
             width: 0%;
             transition: width 0.5s;
         }
+        .section-content.show {
+    padding: 20px;
+    max-height: none; /* Zamiast sztywnej wartości */
+    overflow-y: visible; /* Pozwala na wyświetlenie całej zawartości */
+}
+        .section-content {
+    transition: max-height 0.5s ease-out, padding 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    max-height: 0;
+}
+
+.section-content.show {
+    opacity: 1;
+    max-height: none;
+}
     </style>
 </head>
 <body>
