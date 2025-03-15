@@ -12,6 +12,7 @@
             --light-color: #ecf0f1;
             --dark-color: #2c3e50;
             --success-color: #2ecc71;
+            --bookmark-color: #f39c12;
         }
         
         * {
@@ -27,6 +28,8 @@
             overflow: hidden;
             height: 100vh;
             width: 100vw;
+            margin: 0;
+            padding: 0;
         }
         
         .presentation-container {
@@ -73,13 +76,13 @@
         }
         
         .slide-title {
-            font-size: 3.3rem;  /* Increased from 2.2rem */
+            font-size: calc(1.5rem + 1.5vmin);  /* Responsive font size */
             color: var(--primary-color);
             font-weight: 700;
         }
         
         .slide-number {
-            font-size: 1.5rem;  /* Increased from 1rem */
+            font-size: calc(0.8rem + 0.5vmin);  /* Responsive font size */
             color: var(--secondary-color);
             font-weight: 500;
         }
@@ -88,9 +91,11 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            font-size: 1.8rem;  /* Increased from 1.2rem */
+            justify-content: flex-start;
+            font-size: calc(1rem + 1vmin);  /* Responsive font size */
             line-height: 1.6;
+            overflow-y: auto;
+            padding-bottom: 80px; /* Space for navigation buttons */
         }
         
         .title-slide .slide-content {
@@ -100,12 +105,12 @@
         }
         
         .title-slide .slide-title {
-            font-size: 5.2rem;  /* Increased from 3.5rem */
+            font-size: calc(2rem + 2vmin);  /* Responsive font size */
             margin-bottom: 30px;
         }
         
         .title-slide .subtitle {
-            font-size: 2.7rem;  /* Increased from 1.8rem */
+            font-size: calc(1.2rem + 1vmin);  /* Responsive font size */
             color: var(--secondary-color);
             margin-bottom: 60px;
         }
@@ -118,12 +123,19 @@
             list-style-type: none;
             column-count: 2;
             column-gap: 60px;
-            font-size: 1.8rem;
+            font-size: calc(0.8rem + 0.5vmin);
+        }
+        
+        @media (max-width: 768px) {
+            .toc-list {
+                column-count: 1;
+            }
         }
         
         .toc-item {
             margin-bottom: 22px;  /* Increased from 15px */
             break-inside: avoid;
+            padding: 5px 0;
         }
         
         .toc-link {
@@ -147,20 +159,35 @@
             z-index: 10;
         }
         
+        @media (max-width: 768px) {
+            .slide-nav {
+                bottom: 10px;
+                right: 10px;
+            }
+        }
+        
         .nav-btn {
             background-color: var(--primary-color);
             color: white;
             border: none;
             border-radius: 50%;
-            width: 75px;  /* Increased from 50px */
-            height: 75px;  /* Increased from 50px */
+            width: 60px;
+            height: 60px;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            font-size: 2.2rem;  /* Increased from 1.5rem */
+            font-size: calc(1.2rem + 0.5vmin);
             transition: background-color 0.3s;
             box-shadow: 0 6px 9px rgba(0,0,0,0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .nav-btn {
+                width: 50px;
+                height: 50px;
+                font-size: calc(1rem + 0.5vmin);
+            }
         }
         
         .nav-btn:hover {
@@ -179,12 +206,134 @@
             padding: 8px 15px;
             cursor: pointer;
             font-size: 1rem;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.2s;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         
         .toc-btn:hover {
             background-color: var(--secondary-color);
+            transform: scale(1.05);
+        }
+        
+        .toc-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .bookmark-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .bookmark-btn:hover {
+            background-color: var(--secondary-color);
+            transform: scale(1.05);
+        }
+        
+        .bookmark-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .bookmark-btn.active {
+            background-color: var(--bookmark-color);
+        }
+        
+        .bookmarks-panel {
+            position: fixed;
+            top: 70px;
+            left: 20px;
+            z-index: 10;
+            background-color: white;
+            width: 250px;
+            max-height: 70vh;
+            overflow-y: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            padding: 15px;
+            display: none;
+        }
+        
+        .bookmarks-panel.active {
+            display: block;
+        }
+        
+        .bookmarks-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-color);
+            font-weight: bold;
+        }
+        
+        .bookmarks-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .bookmark-item {
+            padding: 8px 10px;
+            margin-bottom: 8px;
+            background-color: var(--light-color);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .bookmark-item:hover {
+            background-color: #e3e9eb;
+        }
+        
+        .bookmark-text {
+            flex: 1;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .bookmark-remove {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--accent-color);
+            border-radius: 50%;
+            font-size: 0.8rem;
+            transition: background-color 0.2s;
+        }
+        
+        .bookmark-remove:hover {
+            background-color: rgba(231, 76, 60, 0.4);
+        }
+        
+        .bookmark-indicator {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 20px;
+            height: 20px;
+            color: var(--bookmark-color);
+            font-size: 1.2rem;
+            display: none;
+        }
+        
+        .slide.bookmarked .bookmark-indicator {
+            display: block;
         }
         
         .definition-box {
@@ -244,13 +393,21 @@
             width: 100%;
             border-collapse: collapse;
             margin: 30px 0;
-            font-size: 1.6rem;
+            font-size: calc(0.8rem + 0.3vmin);
+            overflow-x: auto;
+            display: block;
         }
         
         th, td {
-            padding: 18px 22px;
+            padding: 10px 12px;
             text-align: left;
             border-bottom: 1px solid #ddd;
+        }
+        
+        @media (max-width: 768px) {
+            th, td {
+                padding: 8px 10px;
+            }
         }
         
         th {
@@ -265,6 +422,13 @@
         .two-column {
             display: flex;
             gap: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .two-column {
+                flex-direction: column;
+                gap: 15px;
+            }
         }
         
         .column {
@@ -291,6 +455,13 @@
             margin: 30px 0;
         }
         
+        @media (max-width: 768px) {
+            .comparison-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+        
         .comparison-item {
             flex: 1;
             background-color: #f8f9fa;
@@ -311,13 +482,281 @@
 <body>
     <div class="presentation-container">
     
+    <!-- Bookmark button and panel -->
+    <button class="bookmark-btn" id="bookmarkToggleBtn" title="Bookmark Current Slide">★</button>
+    <button class="bookmark-btn" id="bookmarkListBtn" style="left: 70px;" title="Show Bookmarked Slides">☰</button>
+    
+    <div class="bookmarks-panel" id="bookmarksPanel">
+        <div class="bookmarks-title">Bookmarked Slides</div>
+        <ul class="bookmarks-list" id="bookmarksList">
+            <!-- Bookmark items will be added here dynamically -->
+        </ul>
+    </div>
+    
     <!-- Navigation buttons -->
     <div class="slide-nav">
-        <button class="nav-btn" id="prevBtn">&larr;</button>
-        <button class="nav-btn" id="nextBtn">&rarr;</button>
+    <button class="nav-btn" id="prevBtn" onclick="goToPrevSlide()">&larr;</button>
+    <button class="nav-btn" id="nextBtn" onclick="goToNextSlide()">&rarr;</button>
     </div>
-    <button class="toc-btn" id="tocBtn">TOC</button>
-    <script src="fixed_script.js"></script>
+    <button class="toc-btn" id="tocBtn" onclick="goToTOC()" title="Table of Contents">TOC</button>
+    <script>
+        // Define navigation functions in global scope first
+        let currentSlide = 1;
+        let slides;
+
+        function updateSlideVisibility() {
+            slides.forEach((slide, index) => {
+                const slideNum = index + 1;
+                
+                if (slideNum === currentSlide) {
+                    slide.classList.add('active');
+                    slide.classList.remove('prev');
+                    slide.style.transform = 'translateX(0)';
+                    slide.style.opacity = '1';
+                    slide.style.zIndex = '2';
+                } else if (slideNum < currentSlide) {
+                    slide.classList.remove('active');
+                    slide.classList.add('prev');
+                    slide.style.transform = 'translateX(-100%)';
+                    slide.style.opacity = '0';
+                    slide.style.zIndex = '1';
+                } else {
+                    slide.classList.remove('active', 'prev');
+                    slide.style.transform = 'translateX(100%)';
+                    slide.style.opacity = '0';
+                    slide.style.zIndex = '0';
+                }
+            });
+        }
+
+        function goToSlide(slideNum) {
+            if (slideNum < 1 || slideNum > slides.length) return;
+            
+            currentSlide = slideNum;
+            updateSlideVisibility();
+            updateBookmarkButtonState();
+        }
+        
+        function goToPrevSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateSlideVisibility();
+            }
+        }
+        
+        function goToNextSlide() {
+            if (currentSlide < slides.length) {
+                currentSlide++;
+                updateSlideVisibility();
+            }
+        }
+        
+        function goToTOC() {
+            currentSlide = 2; // TOC is slide 2
+            updateSlideVisibility();
+        }
+
+        // Bookmark functionality
+        let bookmarks = [];
+        
+        function toggleBookmark(slideNum) {
+            const index = bookmarks.indexOf(slideNum);
+            if (index === -1) {
+                // Add bookmark
+                bookmarks.push(slideNum);
+                document.getElementById('bookmarkToggleBtn').classList.add('active');
+                slides[slideNum - 1].classList.add('bookmarked');
+                
+                // Clone the bookmark indicator and append it to the slide
+                const indicator = document.getElementById('bookmarkIndicatorTemplate').cloneNode(true);
+                indicator.id = `bookmark-indicator-${slideNum}`;
+                indicator.style.display = 'block';
+                slides[slideNum - 1].appendChild(indicator);
+            } else {
+                // Remove bookmark
+                bookmarks.splice(index, 1);
+                document.getElementById('bookmarkToggleBtn').classList.remove('active');
+                slides[slideNum - 1].classList.remove('bookmarked');
+                
+                // Remove the bookmark indicator
+                const indicator = document.getElementById(`bookmark-indicator-${slideNum}`);
+                if (indicator) {
+                    indicator.remove();
+                }
+            }
+            
+            // Save bookmarks to localStorage
+            localStorage.setItem('presentationBookmarks', JSON.stringify(bookmarks));
+            
+            // Update bookmarks list
+            updateBookmarksList();
+        }
+        
+        function updateBookmarksList() {
+            const bookmarksList = document.getElementById('bookmarksList');
+            bookmarksList.innerHTML = '';
+            
+            if (bookmarks.length === 0) {
+                const emptyItem = document.createElement('li');
+                emptyItem.textContent = 'No bookmarks yet';
+                emptyItem.style.fontStyle = 'italic';
+                emptyItem.style.color = '#7f8c8d';
+                emptyItem.style.padding = '10px 5px';
+                bookmarksList.appendChild(emptyItem);
+                return;
+            }
+            
+            // Sort bookmarks numerically
+            bookmarks.sort((a, b) => a - b);
+            
+            bookmarks.forEach(slideNum => {
+                const slide = slides[slideNum - 1];
+                const title = slide.querySelector('.slide-title')?.textContent || `Slide ${slideNum}`;
+                
+                const item = document.createElement('li');
+                item.className = 'bookmark-item';
+                item.setAttribute('data-slide', slideNum);
+                
+                const textSpan = document.createElement('span');
+                textSpan.className = 'bookmark-text';
+                textSpan.textContent = `${slideNum}. ${title}`;
+                item.appendChild(textSpan);
+                
+                const removeBtn = document.createElement('span');
+                removeBtn.className = 'bookmark-remove';
+                removeBtn.textContent = '×';
+                item.appendChild(removeBtn);
+                
+                item.addEventListener('click', function(e) {
+                    if (e.target !== removeBtn) {
+                        goToSlide(slideNum);
+                        document.getElementById('bookmarksPanel').classList.remove('active');
+                    }
+                });
+                
+                removeBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    toggleBookmark(slideNum);
+                });
+                
+                bookmarksList.appendChild(item);
+            });
+        }
+        
+        function toggleBookmarksPanel() {
+            const panel = document.getElementById('bookmarksPanel');
+            panel.classList.toggle('active');
+        }
+        
+        function updateBookmarkButtonState() {
+            const button = document.getElementById('bookmarkToggleBtn');
+            if (bookmarks.includes(currentSlide)) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        }
+        
+        // Initialize everything when document is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            slides = document.querySelectorAll('.slide');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const tocBtn = document.getElementById('tocBtn');
+            const bookmarkToggleBtn = document.getElementById('bookmarkToggleBtn');
+            const bookmarkListBtn = document.getElementById('bookmarkListBtn');
+            
+            // Load bookmarks from localStorage
+            const savedBookmarks = localStorage.getItem('presentationBookmarks');
+            if (savedBookmarks) {
+                bookmarks = JSON.parse(savedBookmarks);
+                
+                // Restore bookmark indicators
+                bookmarks.forEach(slideNum => {
+                    slides[slideNum - 1].classList.add('bookmarked');
+                    
+                    // Clone the bookmark indicator and append it to the slide
+                    const indicator = document.getElementById('bookmarkIndicatorTemplate').cloneNode(true);
+                    indicator.id = `bookmark-indicator-${slideNum}`;
+                    indicator.style.display = 'block';
+                    slides[slideNum - 1].appendChild(indicator);
+                });
+                
+                updateBookmarkButtonState();
+                updateBookmarksList();
+            }
+            
+            // Initialize slide visibility
+            updateSlideVisibility();
+            
+            // Event listeners
+            if (prevBtn) prevBtn.addEventListener('click', goToPrevSlide);
+            if (nextBtn) nextBtn.addEventListener('click', goToNextSlide);
+            if (tocBtn) tocBtn.addEventListener('click', goToTOC);
+            
+            if (bookmarkToggleBtn) {
+                bookmarkToggleBtn.addEventListener('click', function() {
+                    toggleBookmark(currentSlide);
+                });
+            }
+            
+            if (bookmarkListBtn) {
+                bookmarkListBtn.addEventListener('click', toggleBookmarksPanel);
+            }
+            
+            tocLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    const slideNum = parseInt(this.getAttribute('data-slide'));
+                    goToSlide(slideNum);
+                });
+            });
+            
+            // Additional event listener for clicking outside the bookmarks panel to close it
+            document.addEventListener('click', function(e) {
+                const panel = document.getElementById('bookmarksPanel');
+                const bookmarkListBtn = document.getElementById('bookmarkListBtn');
+                
+                if (panel.classList.contains('active') && 
+                    !panel.contains(e.target) && 
+                    e.target !== bookmarkListBtn) {
+                    panel.classList.remove('active');
+                }
+            });
+            
+            // Keyboard navigation - Fixed and improved
+            document.addEventListener('keydown', function(e) {
+                // Prevent default behavior for arrow keys
+                if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || 
+                    e.key === 'Home' || e.key === 'End') {
+                    e.preventDefault();
+                }
+                
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        goToPrevSlide();
+                        break;
+                    case 'ArrowRight':
+                        goToNextSlide();
+                        break;
+                    case 'Home':
+                        goToSlide(1);
+                        break;
+                    case 'End':
+                        goToSlide(slides.length);
+                        break;
+                    case 'b':
+                    case 'B':
+                        // Toggle bookmark on current slide with 'B' key
+                        toggleBookmark(currentSlide);
+                        break;
+                }
+            }, { passive: false }); // Added passive: false for preventDefault to work
+        });
+    </script>
+        <!-- Template for bookmark indicator -->
+        <div class="bookmark-indicator" id="bookmarkIndicatorTemplate">★</div>
+        
         <!-- Title Slide -->
         <div class="slide title-slide active" id="slide-1">
             <div class="slide-content">
@@ -5919,112 +6358,10 @@
         </div>
 
         <!-- Navigation Controls -->
-        <div class="slide-nav">
-            <button class="nav-btn prev-btn" onclick="prevSlide()">&#8592;</button>
-            <button class="nav-btn next-btn" onclick="nextSlide()">&#8594;</button>
-        </div>
-        
-        <button class="toc-btn" onclick="goToSlide(2)">TOC</button>
+        <!-- Navigation buttons are already defined at the top of the file -->
 
  </div>
  
-        <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const slides = document.querySelectorAll('.slide');
-            const totalSlides = slides.length;
-            const tocLinks = document.querySelectorAll('.toc-link');
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            const tocBtn = document.getElementById('tocBtn');
-            
-            let currentSlide = 1;
-            
-            // Initialize slide visibility
-            updateSlideVisibility();
-            
-            // Event listeners
-            if (prevBtn) prevBtn.addEventListener('click', prevSlide);
-            if (nextBtn) nextBtn.addEventListener('click', nextSlide);
-            if (tocBtn) tocBtn.addEventListener('click', function() {
-                goToSlide(2); // TOC is slide 2
-            });
-            
-            tocLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    const slideNum = parseInt(this.getAttribute('data-slide'));
-                    goToSlide(slideNum);
-                });
-            });
-            
-            // Navigation functions
-            function goToSlide(slideNum) {
-                if (slideNum < 1 || slideNum > totalSlides) return;
-                
-                currentSlide = slideNum;
-                updateSlideVisibility();
-            }
-            
-            function prevSlide() {
-                if (currentSlide > 1) {
-                    currentSlide--;
-                    updateSlideVisibility();
-                }
-            }
-            
-            function nextSlide() {
-                if (currentSlide < totalSlides) {
-                    currentSlide++;
-                    updateSlideVisibility();
-                }
-            }
-            
-            // Update slide visibility based on current slide
-            function updateSlideVisibility() {
-                slides.forEach((slide, index) => {
-                    const slideNum = index + 1;
-                    
-                    // First remove any existing classes
-                    slide.classList.remove('active', 'prev');
-                    
-                    if (slideNum === currentSlide) {
-                        // Current slide
-                        slide.classList.add('active');
-                        slide.style.transform = 'translateX(0)';
-                        slide.style.opacity = '1';
-                        slide.style.zIndex = '2';
-                    } else if (slideNum < currentSlide) {
-                        // Previous slides
-                        slide.classList.add('prev');
-                        slide.style.transform = 'translateX(-100%)';
-                        slide.style.opacity = '0';
-                        slide.style.zIndex = '1';
-                    } else {
-                        // Future slides
-                        slide.style.transform = 'translateX(100%)';
-                        slide.style.opacity = '0';
-                        slide.style.zIndex = '0';
-                    }
-                });
-            }
-            
-            // Keyboard navigation
-            document.addEventListener('keydown', function(e) {
-                switch(e.key) {
-                    case 'ArrowLeft':
-                        prevSlide();
-                        break;
-                    case 'ArrowRight':
-                        nextSlide();
-                        break;
-                    case 'Home':
-                        goToSlide(1);
-                        break;
-                    case 'End':
-                        goToSlide(totalSlides);
-                        break;
-                }
-            });
-        });
-    </script>
+        <!-- The main script block is already defined at the top of the file -->
         </body>
         </html>
