@@ -149,21 +149,23 @@
             cursor: pointer;
             margin-top: 1rem;
             font-weight: bold;
-            transition: background-color 0.3s ease;
+            transition: background-color: 0.3s ease;
         }
 
         .answer-button:hover {
             background-color: #e08c00;
         }
 
-        .answer {
-            display: none;
-            background-color: #f0f8ff;
-            padding: 1rem;
-            border-radius: 5px;
-            margin-top: 1rem;
-            border-left: 4px solid var(--primary-color);
-        }
+.answer {
+    display: none;
+    background-color: #f0f8ff; /* AliceBlue - Keep the light background */
+    padding: 1rem;
+    border-radius: 5px;
+    margin-top: 1rem;
+    border-left: 4px solid var(--primary-color);
+    color: var(--primary-color); /* Use the primary blue for text - HIGH CONTRAST */
+    font-weight: bold;          /* Make the text bold for better readability */
+}
 
         .conclusion {
             background-color: white;
@@ -209,7 +211,7 @@
             .methods {
                 grid-template-columns: repeat(2, 1fr);
             }
-            
+
             .intro {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
@@ -231,7 +233,7 @@
             <h1>Jak Czarodzieje Zmieniają Brudne Błotko w Coś Dobrego!</h1>
         </div>
     </header>
-    
+
     <div class="container">
         <section class="intro">
             <div>
@@ -241,7 +243,7 @@
             </div>
             <img src="https://media.istockphoto.com/id/1479422287/photo/aerial-view-of-sewage-treatment-plant.webp?a=1&b=1&s=612x612&w=0&k=20&c=7hwbjdOKUWFWPD9Y2LZqD89LHvuZtmPgSQw02mBdY3o=" alt="Oczyszczalnia ścieków" class="intro-image">
         </section>
-        
+
         <section class="methods">
             <!-- Method 1 -->
             <div class="method-card">
@@ -259,7 +261,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Method 2 -->
             <div class="method-card">
                 <img src="https://media.istockphoto.com/id/177417872/photo/bubbles.webp?a=1&b=1&s=612x612&w=0&k=20&c=xvE-wrtwesyt1Gwoh91G8UPufMSu7XbQuouIGjRIcbA=" alt="Bąbelki powietrza" class="method-image">
@@ -275,7 +277,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Method 3 -->
             <div class="method-card">
                 <img src="https://media.istockphoto.com/id/160187180/photo/waste-incinerator.webp?a=1&b=1&s=612x612&w=0&k=20&c=KcnEmc4VSOZH3quDLlWmmU83RqtwLiR47cKrtn4zp9E=" alt="Spalarnia odpadów" class="method-image">
@@ -291,7 +293,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Method 4 -->
             <div class="method-card">
                 <img src="https://media.istockphoto.com/id/1154958041/photo/taking-care-of-the-crop-aerial-view-of-a-tractor-fertilizing-a-cultivated-agricultural-field.webp?a=1&b=1&s=612x612&w=0&k=20&c=2pRgEudzIhbHqSf1Is8oGMP59QWIaTF7QW5T-HBvqlc=" alt="Pole uprawne" class="method-image">
@@ -307,7 +309,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Method 5 -->
             <div class="method-card">
                 <img src="https://media.istockphoto.com/id/1836575266/photo/overhead-drone-shot-of-landfill-in-ottawa-county-ohio.webp?a=1&b=1&s=612x612&w=0&k=20&c=6MfoBCJp0kdhaOfphz3NGgUVSYXEv9bVKDbOYWPv7E4=" alt="Składowisko odpadów" class="method-image">
@@ -323,7 +325,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Method 6 -->
             <div class="method-card">
                 <img src="https://media.istockphoto.com/id/185094673/photo/heap-of-compost.webp?a=1&b=1&s=612x612&w=0&k=20&c=UrcYtHh8ylzpJPuI5UmN3U0x6Geaep33lZizPqN7yZY=" alt="Kompost" class="method-image">
@@ -339,7 +341,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Method 7 -->
             <div class="method-card">
                 <img src="https://media.istockphoto.com/id/673394232/photo/white-clothes-hung-out-to-dry-on-a-washing-line-in-the-bright-warm-sun-background-is-a-clear.webp?a=1&b=1&s=612x612&w=0&k=20&c=tQC8VxZf4vyexgO55dt6M3D0RW8zKxiuw9ibFIuK69s=" alt="Pranie na słońcu" class="method-image">
@@ -355,7 +357,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Method 8 -->
             <div class="method-card">
                 <img src="https://media.istockphoto.com/id/649672190/photo/at-laundry-service.webp?a=1&b=1&s=612x612&w=0&k=20&c=btfpJERKSshKUvCvvVSl7TxzC5HJrI0PUf94ZfIK2dU=" alt="Suszarki przemysłowe" class="method-image">
@@ -371,7 +373,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Method 9 -->
             <div class="method-card">
                 <img src="https://media.istockphoto.com/id/892095634/photo/calcium-oxide.webp?a=1&b=1&s=612x612&w=0&k=20&c=0p56AjR1Gb7yBrVI0BGJd5b9rZ4q5Aax3BQEerBqruY=" alt="Wapno" class="method-image">
@@ -388,26 +390,26 @@
                 </div>
             </div>
         </section>
-        
+
         <section class="conclusion">
             <h2 class="magic-title">Na Koniec:</h2>
             <p>Każdy z tych sposobów ma swoje plusy i minusy. Ludzie, którzy wymyślają i budują różne rzeczy (inżynierowie), cały czas szukają najlepszego sposobu. Najważniejsze jest to, żeby zamienić coś brudnego w coś dobrego dla naszej planety! To jak czarodziejska przemiana!</p>
             <p>W Polsce (to nasz kraj!) używamy wszystkich tych sposobów, ale coraz częściej "pieczemy" błotko i suszymy je na słońcu. Prawda, że to super, że nawet z takiego błotka można zrobić coś dobrego?</p>
         </section>
     </div>
-    
+
     <footer>
         <div class="container">
             <p>© 2025 Artykuł o oczyszczaniu ścieków dla dzieci. Wszystkie obrazki pochodzą z serwisu iStock.</p>
         </div>
     </footer>
-    
+
     <script>
         // Function to toggle answer visibility
         function toggleAnswer(answerElement) {
             const answer = document.getElementById(answerElement);
             const button = answer.previousElementSibling;
-            
+
             if (answer.style.display === "block") {
                 answer.style.display = "none";
                 button.textContent = "Pokaż odpowiedź";
