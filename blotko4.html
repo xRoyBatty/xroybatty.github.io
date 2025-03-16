@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jak Czarodzieje Zmieniają Brudne Błotko w Coś Fajnego!</title>
+    <style>
+        /* (The CSS remains the same as the corrected version from the previous response) */
+        :root {
+            --primary-color: #4a95d1; /* Blue for water theme */
+            --secondary-color: #4ac486; /* Green for eco-friendly theme */
+            --text-color: #333;
+            --background-color: #f5faff;
+            --card-background: #fff;
+            --accent-color: #ff9f1c; /* Orange for emphasis and buttons */
+            --magic-color: #9c27b0; /* Purple for "magic" elements */
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', sans-serif; /* Playful font for kids */
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-top: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .intro {
+            background-color: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .intro-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .methods {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .method-card {
+            background-color: var(--card-background);
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .method-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+        }
+
+        .method-content {
+            padding: 1.5rem;
+        }
+
+        .method-title {
+            color: var(--primary-color);
+            margin-top: 0;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .method-number {
+            background-color: var(--accent-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .method-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .method-card:hover .method-image {
+            transform: scale(1.05);
+        }
+
+        .question {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            position: relative;
+        }
+
+        .question::before {
+            content: "?";
+            position: absolute;
+            right: 15px;
+            top: 5px;
+            font-size: 2rem;
+            opacity: 0.3;
+        }
+
+        .answer-button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 1rem;
+            font-weight: bold;
+            transition: background-color: 0.3s ease;
+        }
+
+        .answer-button:hover {
+            background-color: #e08c00;
+        }
+
+        .answer {
+            display: none;
+            background-color: #f0f8ff;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 1rem;
+            border-left: 4px solid var(--primary-color);
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .conclusion {
+            background-color: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-top: 5px solid var(--magic-color);
+        }
+
+        .magic-title {
+            color: var(--magic-color);
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        /* Animation classes */
+        .animated {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive design */
+        @media (min-width: 768px) {
+            .methods {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .intro {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+                align-items: center;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .methods {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Jak Czarodzieje Zmieniają Brudne Błotko w Coś Fajnego!</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="intro">
+            <div>
+                <p>Pomyśl! Kiedy siusiasz albo myjesz rączki, brudna woda idzie rurkami do takiego dużego domku.</p>
+                <p>W tym domku woda robi się czyściutka, ale zostaje błotko.  To błotko to jakby resztki jedzonka.</p>
+                <p>Błotko może być troszkę niedobre, ale ma też w sobie jedzonko dla roślinek!  Dzięki niemu roślinki rosną duże i silne!</p>
+                <p>Żeby błotko nie było fuj, czarodzieje zmieniają je w coś super! Mają na to różne sztuczki, jak różne zabawy!</p>
+            </div>
+            <img src="https://media.istockphoto.com/id/1479422287/photo/aerial-view-of-sewage-treatment-plant.webp?a=1&b=1&s=612x612&w=0&k=20&c=7hwbjdOKUWFWPD9Y2LZqD89LHvuZtmPgSQw02mBdY3o=" alt="Oczyszczalnia ścieków" class="intro-image">
+        </section>
+
+        <section class="methods">
+            <!-- Method 1 -->
+            <div class="method-card">
+                <img src="https://media.istockphoto.com/id/2146157687/photo/streptococcus.webp?a=1&b=1&s=612x612&w=0&k=20&c=kLstj3q58HG0r9ALjvLdhx1S3ZJZyLG2DDPYNaoem48=" alt="Bakterie" class="method-image">
+                <div class="method-content">
+                    <h2 class="method-title"><span class="method-number">1</span> Gotowanie w Garnuszku (Bakterie bez tlenu)</h2>
+                    <p>Wyobraź sobie duuuży garnuszek.  W środku są małe robaczki, których nie widać!  Te robaczki jedzą błotko i robią puf, puf!  Jak bąbelki w soczku!</p>
+                    <p>Te bąbelki możemy spalić, żeby było cieplutko albo żeby świeciła lampka!  Super, prawda?  Mamy ciepełko i mniej błotka!  Ale taki garnuszek jest drogi.</p>
+                    <div class="question">
+                        <p>Pytanie: Gdzie jeszcze możemy dać ciepełko z bąbelków?</p>
+                        <button class="answer-button" onclick="toggleAnswer('answer1')">Pokaż odpowiedź</button>
+                        <div id="answer1" class="answer">
+                            <p>Ciepełko z bąbelków możemy dać do domków, żeby było ciepło, albo do wody, żeby była cieplutka do mycia!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Method 2 -->
+            <div class="method-card">
+                <img src="https://media.istockphoto.com/id/177417872/photo/bubbles.webp?a=1&b=1&s=612x612&w=0&k=20&c=xvE-wrtwesyt1Gwoh91G8UPufMSu7XbQuouIGjRIcbA=" alt="Bąbelki powietrza" class="method-image">
+                <div class="method-content">
+                    <h2 class="method-title"><span class="method-number">2</span> Gotowanie z Dmuchaniem (Bakterie z tlenem)</h2>
+                    <p>To prawie tak samo, ale robaczki dostają duuużo powietrza!  Dmuchamy, dmuchamy!  Dzięki temu jedzą szybciej, ale nie robią bąbelków.  Łatwiej zrobić taki garnuszek, ale trzeba dmuchać.</p>
+                    <div class="question">
+                        <p>Pytanie: Dlaczego musimy dmuchać?</p>
+                        <button class="answer-button" onclick="toggleAnswer('answer2')">Pokaż odpowiedź</button>
+                        <div id="answer2" class="answer">
+                            <p>Musimy dmuchać, bo robaczki potrzebują powietrza, żeby oddychać, tak jak my!  Powietrze pomaga im jeść błotko.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Method 3 -->
+            <div class="method-card">
+                <img src="https://media.istockphoto.com/id/160187180/photo/waste-incinerator.webp?a=1&b=1&s=612x612&w=0&k=20&c=KcnEmc4VSOZH3quDLlWmmU83RqtwLiR47cKrtn4zp9E=" alt="Spalarnia odpadów" class="method-image">
+                <div class="method-content">
+                    <h2 class="method-title"><span class="method-number">3</span> Pieczenie w Piecyku (Spalamy)</h2>
+                    <p>Najpierw suszymy błotko, a potem hop! do gorącego piecyka!  Błotko się pali i zostaje tylko popiół, jak po ognisku.  Mamy mało błotka, ale trzeba uważać na dymek.  Taki piecyk też jest drogi.</p>
+                    <div class="question">
+                        <p>Pytanie: Co robimy z popiołem po ognisku?</p>
+                        <button class="answer-button" onclick="toggleAnswer('answer3')">Pokaż odpowiedź</button>
+                        <div id="answer3" class="answer">
+                            <p>Popiół z ogniska możemy dać roślinkom!  Roślinki lubią popiół i rosną większe!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Method 4 -->
+            <div class="method-card">
+                <img src="https://media.istockphoto.com/id/1154958041/photo/taking-care-of-the-crop-aerial-view-of-a-tractor-fertilizing-a-cultivated-agricultural-field.webp?a=1&b=1&s=612x612&w=0&k=20&c=2pRgEudzIhbHqSf1Is8oGMP59QWIaTF7QW5T-HBvqlc=" alt="Pole uprawne" class="method-image">
+                <div class="method-content">
+                    <h2 class="method-title"><span class="method-number">4</span> Jedzonko dla Roślinek</h2>
+                    <p>Błotko możemy dać roślinkom jako jedzonko!  To jak pyszny obiadek dla kwiatków!  Ale musimy uważać, żeby błotko było czyściutkie.  To tanio, ale błotko czasem brzydko pachnie.</p>
+                    <div class="question">
+                        <p>Pytanie: Czy lubisz, jak pachnie ziemia po deszczu?</p>
+                        <button class="answer-button" onclick="toggleAnswer('answer4')">Pokaż odpowiedź</button>
+                        <div id="answer4" class="answer">
+                            <p>Ten zapach jest super!  To zapach ziemi i roślinek, kiedy pada deszczyk.  Większość ludzi lubi ten zapach!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Method 5 -->
+            <div class="method-card">
+                <img src="https://media.istockphoto.com/id/1836575266/photo/overhead-drone-shot-of-landfill-in-ottawa-county-ohio.webp?a=1&b=1&s=612x612&w=0&k=20&c=6MfoBCJp0kdhaOfphz3NGgUVSYXEv9bVKDbOYWPv7E4=" alt="Składowisko odpadów" class="method-image">
+                <div class="method-content">
+                    <h2 class="method-title"><span class="method-number">5</span> Zakopywanie</h2>
+                    <p>Błotko można też zakopać w ziemi.  To łatwe i tanie, ale nie jest najlepsze, bo błotko leży i leży.  To jak chowanie zabawek pod łóżko!</p>
+                    <div class="question">
+                        <p>Pytanie: Czy chowasz zabawki pod łóżko?</p>
+                        <button class="answer-button" onclick="toggleAnswer('answer5')">Pokaż odpowiedź</button>
+                        <div id="answer5" class="answer">
+                            <p>Chowanie zabawek pod łóżko to szybkie sprzątanie, ale zabawki tam zostają!  Lepiej schować zabawki do pudełka!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Method 6 -->
+            <div class="method-card">
+                <img src="https://media.istockphoto.com/id/185094673/photo/heap-of-compost.webp?a=1&b=1&s=612x612&w=0&k=20&c=UrcYtHh8ylzpJPuI5UmN3U0x6Geaep33lZizPqN7yZY=" alt="Kompost" class="method-image">
+                <div class="method-content">
+                    <h2 class="method-title"><span class="method-number">6</span> Robienie Ziemi</h2>
+                    <p>Mieszamy błotko z listkami i drewienkami, a potem czekamy.  Robaczki robią z tego super ziemię, taką jak w doniczce!  Kwiatki bardzo lubią taką ziemię!</p>
+                    <div class="question">
+                        <p>Pytanie: Czy masz w domu kwiatki?</p>
+                        <button class="answer-button" onclick="toggleAnswer('answer6')">Pokaż odpowiedź</button>
+                        <div id="answer6" class="answer">
+                            <p>Kwiatki rosną w ziemi!  Ziemia daje im jedzonko.  Możemy zrobić dobrą ziemię z resztek jedzonka!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Method 7 -->
+            <div class="method-card">
+                <img src="https://media.istockphoto.com/id/673394232/photo/white-clothes-hung-out-to-dry-on-a-washing-line-in-the-bright-warm-sun-background-is-a-clear.webp?a=1&b=1&s=612x612&w=0&k=20&c=tQC8VxZf4vyexgO55dt6M3D0RW8zKxiuw9ibFIuK69s=" alt="Pranie na słońcu" class="method-image">
+                <div class="method-content">
+                    <h2 class="method-title"><span class="method-number">7</span> Suszenie na Słoneczku</h2>
+                    <p>Rozkładamy błotko, a słoneczko je suszy, jak mokre ubranka!  Słoneczko nic nie kosztuje!  Ale działa tylko, kiedy świeci.</p>
+                    <div class="question">
+                        <p>Pytanie: Co się dzieje z ubrankami na słoneczku?</p>
+                        <button class="answer-button" onclick="toggleAnswer('answer7')">Pokaż odpowiedź</button>
+                        <div id="answer7" class="answer">
+                            <p>Kiedy ubranka wiszą na słoneczku, woda ucieka i ubranka robią się suche!  Słoneczko pomaga wodzie uciec.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Method 8 -->
+            <div class="method-card">
+                <img src="https://media.istockphoto.com/id/649672190/photo/at-laundry-service.webp?a=1&b=1&s=612x612&w=0&k=20&c=btfpJERKSshKUvCvvVSl7TxzC5HJrI0PUf94ZfIK2dU=" alt="Suszarki przemysłowe" class="method-image">
+                <div class="method-content">
+                    <h2 class="method-title"><span class="method-number">8</span> Duża Suszarka</h2>
+                    <p>Używamy duuużej suszarki, jak do włosków, tylko większej!  Działa zawsze, ale zjada dużo prądu.</p>
+                    <div class="question">
+                        <p>Pytanie: Do czego jest suszarka do włosków?</p>
+                        <button class="answer-button" onclick="toggleAnswer('answer8')">Pokaż odpowiedź</button>
+                        <div id="answer8" class="answer">
+                            <p>Suszarka do włosków dmucha ciepłym powietrzem, żeby włoski szybciej wyschły!  Tak samo suszymy błotko dużą suszarką!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Method 9 -->
+            <div class="method-card">
+                <img src="https://media.istockphoto.com/id/892095634/photo/calcium-oxide.webp?a=1&b=1&s=612x612&w=0&k=20&c=0p56AjR1Gb7yBrVI0BGJd5b9rZ4q5Aax3BQEerBqruY=" alt="Wapno" class="method-image">
+                <div class="method-content">
+                    <h2 class="method-title"><span class="method-number">9</span> Biały Proszek</h2>
+                    <p>Dajemy do błotka biały proszek, jak kreda!  Proszek zabija małe robaczki i błotko nie śmierdzi.  Błotko jest bezpieczne, ale jest go więcej.</p>
+                    <div class="question">
+                        <p>Pytanie: Czy widziałeś/widziałaś kredę?</p>
+                        <button class="answer-button" onclick="toggleAnswer('answer9')">Pokaż odpowiedź</button>
+                        <div id="answer9" class="answer">
+                            <p>Kredą rysujemy na tablicy!  Biały proszek do błotka jest troszkę jak kreda.  Służy do różnych rzeczy!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="conclusion">
+            <h2 class="magic-title">I to wszystko!</h2>
+            <p>Każda sztuczka jest inna.  Czarodzieje szukają najlepszej sztuczki.  Najważniejsze, żeby z błotka zrobić coś dobrego dla naszej Ziemi!  To jest super magia!</p>
+            <p>W Polsce używamy wszystkich sztuczek, ale coraz częściej pieczemy błotko i suszymy je na słoneczku.  Super, że z błotka można zrobić coś fajnego, prawda?</p>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>© 2025 Bajka o czyszczeniu błotka. Obrazki z iStock.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Function to toggle answer visibility
+        function toggleAnswer(answerElement) {
+            const answer = document.getElementById(answerElement);
+            const button = answer.previousElementSibling;
+
+            if (answer.style.display === "block") {
+                answer.style.display = "none";
+                button.textContent = "Pokaż odpowiedź";
+            } else {
+                answer.style.display = "block";
+                button.textContent = "Ukryj odpowiedź";
+            }
+        }
+
+        // Add animations on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const methodCards = document.querySelectorAll('.method-card');
+            methodCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('animated');
+                }, 200 * index);
+            });
+        });
+    </script>
+</body>
+</html>
