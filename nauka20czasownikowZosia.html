@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nieregularne Czasowniki Angielskie - Nauka od Podstaw</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #6f9ceb;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: #e9ecef;
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+        
+        header {
+            background: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .card-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            font-weight: bold;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .btn {
+            display: inline-block;
+            font-weight: 500;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            cursor: pointer;
+            padding: 10px 20px;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            text-decoration: none;
+            border: none;
+            margin: 5px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #3a5a8a;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #218838;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        
+        .btn-lg {
+            padding: 12px 24px;
+            font-size: 1.2rem;
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .text-success {
+            color: var(--success-color);
+        }
+        
+        .text-danger {
+            color: var(--danger-color);
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Sections */
+        .view {
+            display: none;
+        }
+        
+        .view.active {
+            display: block;
+        }
+        
+        /* Welcome Section */
+        .welcome-section {
+            text-align: center;
+            padding: 30px 20px;
+        }
+        
+        .welcome-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .welcome-section p {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Group Information */
+        .group-info {
+            margin-bottom: 30px;
+            border-left: 5px solid var(--primary-color);
+            padding-left: 15px;
+        }
+        
+        .group-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .group-desc {
+            margin-bottom: 15px;
+        }
+        
+        .verb-example {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+        }
+        
+        .verb-infinitive, .verb-past, .verb-translation {
+            flex: 1;
+            padding: 5px 10px;
+            text-align: center;
+        }
+        
+        .verb-arrow {
+            font-size: 1.5rem;
+            margin: 0 10px;
+        }
+        
+        /* Exercise Styles */
+        .exercise-container {
+            margin-bottom: 30px;
+        }
+        
+        .question-container {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+        }
+        
+        .question-prompt {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .target-word {
+            font-weight: bold;
+            font-size: 1.3rem;
+            color: var(--primary-color);
+        }
+        
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .option-btn {
+            background-color: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 10px 15px;
+            text-align: center;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .option-btn:hover {
+            background-color: #e9ecef;
+        }
+        
+        .option-btn.selected {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .feedback-message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .feedback-correct {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: #155724;
+        }
+        
+        .feedback-incorrect {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #721c24;
+        }
+        
+        .answer-input {
+            display: block;
+            width: 100%;
+            padding: 10px 15px;
+            font-size: 1.1rem;
+            border: 2px solid #ced4da;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+        }
+        
+        .answer-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--success-color);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        
+        /* Animation for letter changes */
+        .highlight {
+            color: var(--primary-color);
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .flash {
+            animation: flash-animation 1s;
+        }
+        
+        @keyframes flash-animation {
+            0% { background-color: rgba(111, 156, 235, 0); }
+            50% { background-color: rgba(111, 156, 235, 0.5); }
+            100% { background-color: rgba(111, 156, 235, 0); }
+        }
+        
+        /* Level indicator */
+        .level-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: var(--box-shadow);
+        }
+        
+        /* Verb Card Styles */
+        .verb-cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .verb-card {
+            width: 220px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 15px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .verb-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .verb-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .verb-card-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .verb-form-display {
+            font-size: 1.2rem;
+            margin: 5px 0;
+            width: 100%;
+            text-align: center;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        
+        .verb-infinitive-display {
+            background-color: rgba(74, 111, 165, 0.1);
+        }
+        
+        .verb-past-display {
+            background-color: rgba(111, 156, 235, 0.1);
+        }
+        
+        .verb-translation-display {
+            font-style: italic;
+        }
+        
+        /* Results summary */
+        .results-summary {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .results-summary h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .results-chart {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .mastery-level {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .mastery-category {
+            flex: 1;
+            padding: 10px;
+            margin: 0 5px;
+            text-align: center;
+            border-radius: var(--border-radius);
+        }
+        
+        .mastery-beginner {
+            background-color: rgba(220, 53, 69, 0.2);
+        }
+        
+        .mastery-intermediate {
+            background-color: rgba(255, 193, 7, 0.2);
+        }
+        
+        .mastery-advanced {
+            background-color: rgba(40, 167, 69, 0.2);
+        }
+        
+        /* Typing input styles */
+        .typing-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .input-feedback {
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+        
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        /* Letter highlighting for changes */
+        .letter {
+            display: inline-block;
+            padding: 2px;
+            border-radius: 3px;
+        }
+        
+        .letter-changed {
+            background-color: rgba(111, 156, 235, 0.3);
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .letter-removed {
+            background-color: rgba(220, 53, 69, 0.2);
+            text-decoration: line-through;
+        }
+        
+        .letter-added {
+            background-color: rgba(40, 167, 69, 0.2);
+        }
+        
+        /* Dropdown select for level navigation */
+        .level-select {
+            padding: 8px 12px;
+            border-radius: var(--border-radius);
+            border: 2px solid var(--primary-color);
+            background-color: white;
+            color: var(--primary-color);
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .level-select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            margin-top: auto;
+        }
+        
+        /* Stats display */
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        .stat-box {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 15px;
+            min-width: 150px;
+            margin: 10px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--dark-color);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .verb-card {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .navigation .btn {
+                width: 100%;
+            }
+        }
+
+        /* Overlay styles */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .popup {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .popup h3 {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .popup p {
+            margin-bottom: 20px;
+        }
+
+        .emoji {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Nieregularne Czasowniki Angielskie</h1>
+        <p>Nauka od podstaw dla polskich uczniów</p>
+    </header>
+    
+    <div class="container">
+        <!-- Welcome View -->
+        <div id="welcomeView" class="view active">
+            <div class="welcome-section">
+                <h2>Witaj w aplikacji do nauki nieregularnych czasowników angielskich!</h2>
+                <p>Ta aplikacja pomoże Ci nauczyć się 20 najpopularniejszych nieregularnych czasowników angielskich, nawet jeśli dopiero zaczynasz naukę angielskiego.</p>
+                <p>Czasowniki zostały pogrupowane według wizualnych wzorców zmian między formą podstawową (bezokolicznikiem) a formą przeszłą (Past Simple).</p>
+                <p>Oto jak będzie wyglądała Twoja nauka:</p>
+                
+                <div class="card">
+                    <div class="card-header">Proces nauki</div>
+                    <div class="card-body">
+                        <p>1. Poznasz grupy czasowników i ich wzorce zmian</p>
+                        <p>2. Zaczniesz od prostych ćwiczeń z wyborem odpowiedzi</p>
+                        <p>3. Przejdziesz do trudniejszych zadań wymagających wpisywania słów</p>
+                        <p>4. Na koniec opanujesz wszystkie formy i tłumaczenia</p>
+                    </div>
+                </div>
+                
+                <div class="text-center" style="margin-top: 30px;">
+                    <button id="startLearningBtn" class="btn btn-primary btn-lg">Rozpocznij naukę</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Group Intro View -->
+        <div id="groupIntroView" class="view">
+            <h2 class="text-center">Poznaj grupy czasowników nieregularnych</h2>
+            <p class="text-center">Podział czasowników na grupy ułatwi Ci ich zapamiętanie. Poświęć chwilę, aby poznać wzorce zmian w każdej grupie.</p>
+            
+            <!-- Group 1 -->
+            <div class="group-info">
+                <h3 class="group-title">Grupa 1: Brak zmiany - identyczna forma</h3>
+                <p class="group-desc">W tych czasownikach obie formy są napisane tak samo, więc nie trzeba zapamiętywać dodatkowej różnicy wizualnej.</p>
+                
+                <div class="verb-example">
+                    <div class="verb-infinitive">cut</div>
+                    <div class="verb-arrow">→</div>
+                    <div class="verb-past">cut</div>
+                    <div class="verb-arrow">→</div>
+                    <div class="verb-translation">ciąć, skaleczyć się</div>
+                </div>
+                
+                <div class="verb-example">
+                    <div class="verb-infinitive">hit</div>
+                    <div class="verb-arrow">→</div>
+                    <div class="verb-past">hit</div>
+                    <div class="verb-arrow">→</div>
+                    <div class="verb-translation">uderzyć</div>
+                </div>
+            </div>
+            
+            <!-- Group 2 -->
+            <div class="group-info">
+                <h3 class="group-title">Grupa 2: Ta sama liczba liter - zmiany wewnętrzne</h3>
+                <p class="group-desc">Tutaj długość się nie zmienia, ale następuje modyfikacja liter wewnątrz wyrazu.</p>
+                
+                <h4>A. Minimalna zamiana (głównie pojedyncza zmiana samogłoski)</h4>
+                <div class="verb-example">
+                    <div class="verb-infinitive">c<span class="letter letter-changed">o</span>me</div>
+                    <div class="verb-arrow">→</div>
+                    <div class="verb-past">c<span class="letter letter-changed">a</span>me</div>
+                    <div class="verb-arrow">→</div>
+                    <div class="verb-translation">przychodzić</div>
+                </div>
+                
+                <h4>B. Większe zmiany przy zachowaniu długości</h4>
+                <div class="verb-example">
+                    <div class="verb-infinitive">br<span class="letter letter-changed">ea</span>k</div>
+                    <div class="verb-arrow">→</div>
+                    <div class="verb-past">br<span class="letter letter-changed">o</span>k<span class="letter letter-changed">e</span></div>
+                    <div class="verb-arrow">→</div>
+                    <div class="verb-translation">łamać, psuć</div>
+                </div>
+                
+                <h4>C. Przestawienie liter (anagram)</h4>
+                <div class="verb-example">
+                    <div class="verb-infinitive"><span class="letter letter-changed">e</span><span class="letter letter-changed">a</span>t</div>
+                    <div class="verb-arrow">→</div>
+                    <div class="verb-past"><span class="letter letter-changed">a</span>t<span class="letter letter-changed">e</span></div>
+                    <div class="verb-arrow">→</div>
+                    <div class="verb-translation">jeść</div>
+                </div>
+            </div>
+            
+            <!-- Group 3 -->
+            <div class="group-info">
+                <h3 class="group-title">Grupa 3: Dodanie litery - forma przeszła dłuższa o jedną literę</h3>
+                <p class="group-desc">Wyrazy, które w Past Simple zyskują jedną literę w stosunku do formy podstawowej.</p>
+                
+                <div class="verb-example">
+                    <div class="verb-infinitive">do</div>
+                    <div class="verb-arrow">→</div>
+                    <div class="verb-past">di<span class="letter letter-added">d</span></div>
+                    <div class="verb-arrow">→</div>
+                    <div class="verb-translation">robić</div>
+                </div>
+                
+                <div class="verb-example">
+                    <div class="verb-infinitive">f<span class="letter letter-changed">i</span>nd</div>
+                    <div class="verb-arrow">→</div>
+                    <div class="verb-past">f<span class="letter letter-changed">ou</span>nd</div>
+                    <div class="verb-arrow">→</div>
+                    <div class="verb-translation">znaleźć</div>
+                </div>
+            </div>
+            
+            <!-- Group 4 -->
+            <div class="group-info">
+                <h3 class="group-title">Grupa 4: Znaczące nieregularności - duże zmiany wizualne i/lub zmiana długości</h3>
+                <p class="group-desc">Tutaj mamy czasowniki, których forma przeszła nie tylko zmienia litery, ale często również długość wyrazu lub układ liter jest zupełnie inny.</p>
+                
+                <div class="verb-example">
+                    <div class="verb-infinitive">be</div>
+                    <div class="verb-arrow">→</div>
+                    <div class="verb-past">was/were</div>
+                    <div class="verb-arrow">→</div>
+                    <div class="verb-translation">być</div>
+                </div>
+                
+                <div class="verb-example">
+                    <div class="verb-infinitive">go</div>
+                    <div class="verb-arrow">→</div>
+                    <div class="verb-past">went</div>
+                    <div class="verb-arrow">→</div>
+                    <div class="verb-translation">iść, jechać</div>
+                </div>
+            </div>
+            
+            <div class="text-center" style="margin-top: 30px;">
+                <button id="startExercisesBtn" class="btn btn-primary btn-lg">Rozpocznij ćwiczenia</button>
+            </div>
+        </div>
+        
+        <!-- Exercise View -->
+        <div id="exerciseView" class="view">
+            <div class="level-indicator" id="currentLevel">Poziom: 1</div>
+            
+            <h2 class="text-center" id="exerciseTitle">Ćwiczenie: Rozpoznawanie znaczeń</h2>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="exerciseProgress" style="width: 0%;"></div>
+            </div>
+            
+            <div class="exercise-container">
+                <div class="question-container">
+                    <div class="question-prompt" id="questionPrompt">Co oznacza czasownik: <span class="target-word" id="targetWord">be</span>?</div>
+                    
+                    <div id="multipleChoiceContainer" class="options-container">
+                        <!-- Options will be dynamically inserted here -->
+                    </div>
+                    
+                    <div id="typingContainer" class="typing-container hidden">
+                        <input type="text" id="answerInput" class="answer-input" placeholder="Wpisz odpowiedź..." autocomplete="off">
+                        <div class="input-feedback" id="inputFeedback"></div>
+                        <button id="checkAnswerBtn" class="btn btn-primary btn-block">Sprawdź odpowiedź</button>
+                    </div>
+                    
+                    <div id="feedbackMessage" class="feedback-message hidden"></div>
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <button id="prevQuestionBtn" class="btn btn-primary" disabled>Poprzednie</button>
+                <select id="levelSelect" class="level-select">
+                    <option value="1">Poziom 1: Znaczenie → Rozpoznaj</option>
+                    <option value="2">Poziom 2: Bezokolicznik → Rozpoznaj</option>
+                    <option value="3">Poziom 3: Forma przeszła → Rozpoznaj</option>
+                    <option value="4">Poziom 4: Znaczenie → Wpisz</option>
+                    <option value="5">Poziom 5: Bezokolicznik → Wpisz przeszły</option>
+                    <option value="6">Poziom 6: Znaczenie → Wpisz obie formy</option>
+                </select>
+                <button id="nextQuestionBtn" class="btn btn-primary">Następne</button>
+            </div>
+        </div>
+        
+        <!-- Results View -->
+        <div id="resultsView" class="view">
+            <h2 class="text-center">Twój Postęp w Nauce</h2>
+            
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-label">Poziom</div>
+                    <div class="stat-value" id="resultLevel">1</div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-label">Poprawne odpowiedzi</div>
+                    <div class="stat-value" id="correctAnswers">0</div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-label">Dokładność</div>
+                    <div class="stat-value" id="accuracy">0%</div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-label">Ukończone poziomy</div>
+                    <div class="stat-value" id="completedLevels">0/6</div>
+                </div>
+            </div>
+            
+            <div class="results-summary">
+                <h3>Stopień opanowania czasowników</h3>
+                <div class="mastery-level">
+                    <div class="mastery-category mastery-beginner">
+                        <div class="mastery-label">Początkujący</div>
+                        <div class="mastery-count" id="beginnerCount">0</div>
+                    </div>
+                    
+                    <div class="mastery-category mastery-intermediate">
+                        <div class="mastery-label">Średnio zaawansowany</div>
+                        <div class="mastery-count" id="intermediateCount">0</div>
+                    </div>
+                    
+                    <div class="mastery-category mastery-advanced">
+                        <div class="mastery-label">Zaawansowany</div>
+                        <div class="mastery-count" id="advancedCount">0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card" style="margin-top: 30px;">
+                <div class="card-header">Wszystkie czasowniki</div>
+                <div class="card-body">
+                    <div class="verb-cards" id="verbCardContainer">
+                        <!-- Verb cards will be inserted here dynamically -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center" style="margin-top: 30px;">
+                <button id="continueLearningBtn" class="btn btn-primary btn-lg">Kontynuuj naukę</button>
+                <button id="resetProgressBtn" class="btn btn-danger">Resetuj postęp</button>
+            </div>
+        </div>
+        
+        <!-- Success Overlay -->
+        <div id="successOverlay" class="overlay hidden">
+            <div class="popup">
+                <div class="emoji">🎉</div>
+                <h3>Gratulacje!</h3>
+                <p id="successMessage">Pomyślnie ukończyłeś poziom!</p>
+                <button id="nextLevelBtn" class="btn btn-success">Przejdź do następnego poziomu</button>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Aplikacja do nauki nieregularnych czasowników angielskich © 2025</p>
+    </footer>
+    
+    <script>
+        // Data structure with all verb information
+        const verbGroups = {
+            // Group 1: No change - identical form
+            group1: {
+                name: "Grupa 1: Brak zmiany - identyczna forma",
+                description: "W tych czasownikach obie formy są napisane tak samo, więc nie trzeba zapamiętywać dodatkowej różnicy wizualnej.",
+                verbs: [
+                    { infinitive: "cut", pastSimple: "cut", translation: "ciąć, skaleczyć się" },
+                    { infinitive: "hit", pastSimple: "hit", translation: "uderzyć" },
+                    { infinitive: "hurt", pastSimple: "hurt", translation: "zranić" }
+                ]
+            },
+            
+            // Group 2: Same length - internal changes
+            group2: {
+                name: "Grupa 2: Ta sama liczba liter - zmiany wewnętrzne",
+                description: "Tutaj długość się nie zmienia, ale następuje modyfikacja liter wewnątrz wyrazu.",
+                subgroups: {
+                    a: {
+                        name: "A. Minimalna zamiana (głównie pojedyncza zmiana samogłoski)",
+                        verbs: [
+                            { infinitive: "come", pastSimple: "came", translation: "przychodzić" },
+                            { infinitive: "drink", pastSimple: "drank", translation: "pić" },
+                            { infinitive: "fall", pastSimple: "fell", translation: "spaść" },
+                            { infinitive: "give", pastSimple: "gave", translation: "dawać" },
+                            { infinitive: "forget", pastSimple: "forgot", translation: "zapominać" }
+                        ]
+                    },
+                    b: {
+                        name: "B. Większe zmiany przy zachowaniu długości",
+                        verbs: [
+                            { infinitive: "break", pastSimple: "broke", translation: "łamać, psuć" },
+                            { infinitive: "feel", pastSimple: "felt", translation: "czuć" }
+                        ]
+                    },
+                    c: {
+                        name: "C. Przestawienie liter (anagram)",
+                        verbs: [
+                            { infinitive: "eat", pastSimple: "ate", translation: "jeść" }
+                        ]
+                    }
+                }
+            },
+            
+            // Group 3: Adding one letter
+            group3: {
+                name: "Grupa 3: Dodanie litery - forma przeszła dłuższa o jedną literę",
+                description: "Wyrazy, które w Past Simple zyskują jedną literę w stosunku do formy podstawowej.",
+                verbs: [
+                    { infinitive: "do", pastSimple: "did", translation: "robić" },
+                    { infinitive: "fly", pastSimple: "flew", translation: "latać" },
+                    { infinitive: "find", pastSimple: "found", translation: "znaleźć" },
+                    { infinitive: "hear", pastSimple: "heard", translation: "słyszeć" },
+                    { infinitive: "burn", pastSimple: "burnt", translation: "oparzyć się, spalić" }
+                ]
+            },
+            
+            // Group 4: Significant irregularities
+            group4: {
+                name: "Grupa 4: Znaczące nieregularności - duże zmiany wizualne i/lub zmiana długości",
+                description: "Tutaj mamy czasowniki, których forma przeszła nie tylko zmienia litery, ale często również długość wyrazu lub układ liter jest zupełnie inny.",
+                verbs: [
+                    { infinitive: "be", pastSimple: "was/were", translation: "być" },
+                    { infinitive: "buy", pastSimple: "bought", translation: "kupować" },
+                    { infinitive: "go", pastSimple: "went", translation: "iść, jechać" },
+                    { infinitive: "have", pastSimple: "had", translation: "mieć" }
+                ]
+            }
+        };
+        
+        // Flatten all verbs into a single array for easier access
+        const allVerbs = [];
+        
+        // Add verbs from Group 1
+        verbGroups.group1.verbs.forEach(verb => {
+            allVerbs.push({...verb, group: 'group1'});
+        });
+        
+        // Add verbs from Group 2
+        Object.values(verbGroups.group2.subgroups).forEach(subgroup => {
+            subgroup.verbs.forEach(verb => {
+                allVerbs.push({...verb, group: 'group2'});
+            });
+        });
+        
+        // Add verbs from Group 3
+        verbGroups.group3.verbs.forEach(verb => {
+            allVerbs.push({...verb, group: 'group3'});
+        });
+        
+        // Add verbs from Group 4
+        verbGroups.group4.verbs.forEach(verb => {
+            allVerbs.push({...verb, group: 'group4'});
+        });
+        
+        // Application state
+        const appState = {
+            currentView: 'welcomeView',
+            currentLevel: 1,
+            currentQuestionIndex: 0,
+            questions: [],
+            answers: [],
+            progress: {
+                level1: { completed: false, correctAnswers: 0, totalAnswers: 0 },
+                level2: { completed: false, correctAnswers: 0, totalAnswers: 0 },
+                level3: { completed: false, correctAnswers: 0, totalAnswers: 0 },
+                level4: { completed: false, correctAnswers: 0, totalAnswers: 0 },
+                level5: { completed: false, correctAnswers: 0, totalAnswers: 0 },
+                level6: { completed: false, correctAnswers: 0, totalAnswers: 0 }
+            },
+            verbMastery: {},
+            initialize: function() {
+                // Initialize verb mastery tracking
+                allVerbs.forEach(verb => {
+                    this.verbMastery[verb.infinitive] = {
+                        recognizeInfinitive: 0,
+                        recognizePastSimple: 0,
+                        recognizeTranslation: 0,
+                        produceInfinitive: 0,
+                        producePastSimple: 0,
+                        totalCorrect: 0,
+                        totalAttempts: 0
+                    };
+                });
+                
+                // Try to load saved state from localStorage
+                this.loadProgress();
+            },
+            saveProgress: function() {
+                localStorage.setItem('irregularVerbsProgress', JSON.stringify({
+                    progress: this.progress,
+                    verbMastery: this.verbMastery,
+                    currentLevel: this.currentLevel
+                }));
+            },
+            loadProgress: function() {
+                const savedData = localStorage.getItem('irregularVerbsProgress');
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    this.progress = data.progress;
+                    this.verbMastery = data.verbMastery;
+                    this.currentLevel = data.currentLevel;
+                }
+            },
+            resetProgress: function() {
+                this.progress = {
+                    level1: { completed: false, correctAnswers: 0, totalAnswers: 0 },
+                    level2: { completed: false, correctAnswers: 0, totalAnswers: 0 },
+                    level3: { completed: false, correctAnswers: 0, totalAnswers: 0 },
+                    level4: { completed: false, correctAnswers: 0, totalAnswers: 0 },
+                    level5: { completed: false, correctAnswers: 0, totalAnswers: 0 },
+                    level6: { completed: false, correctAnswers: 0, totalAnswers: 0 }
+                };
+                
+                allVerbs.forEach(verb => {
+                    this.verbMastery[verb.infinitive] = {
+                        recognizeInfinitive: 0,
+                        recognizePastSimple: 0,
+                        recognizeTranslation: 0,
+                        produceInfinitive: 0,
+                        producePastSimple: 0,
+                        totalCorrect: 0,
+                        totalAttempts: 0
+                    };
+                });
+                
+                this.currentLevel = 1;
+                this.saveProgress();
+            },
+            getMasteryLevel: function(verb) {
+                const mastery = this.verbMastery[verb];
+                const score = 
+                    (mastery.recognizeInfinitive * 1) + 
+                    (mastery.recognizePastSimple * 1) + 
+                    (mastery.recognizeTranslation * 1) + 
+                    (mastery.produceInfinitive * 2) + 
+                    (mastery.producePastSimple * 2);
+                
+                if (score >= 12) return 'advanced';
+                if (score >= 6) return 'intermediate';
+                return 'beginner';
+            },
+            updateVerbMastery: function(verb, aspect, isCorrect) {
+                const mastery = this.verbMastery[verb];
+                if (isCorrect && mastery[aspect] < 3) {
+                    mastery[aspect]++;
+                }
+                mastery.totalAttempts++;
+                if (isCorrect) mastery.totalCorrect++;
+                this.saveProgress();
+            },
+            getCompletedLevelsCount: function() {
+                return Object.values(this.progress).filter(level => level.completed).length;
+            },
+            getTotalAccuracy: function() {
+                let totalCorrect = 0;
+                let totalAnswers = 0;
+                
+                Object.values(this.progress).forEach(level => {
+                    totalCorrect += level.correctAnswers;
+                    totalAnswers += level.totalAnswers;
+                });
+                
+                if (totalAnswers === 0) return 0;
+                return Math.round((totalCorrect / totalAnswers) * 100);
+            },
+            getVerbsByMasteryLevel: function() {
+                const result = {
+                    beginner: 0,
+                    intermediate: 0,
+                    advanced: 0
+                };
+                
+                allVerbs.forEach(verb => {
+                    result[this.getMasteryLevel(verb.infinitive)]++;
+                });
+                
+                return result;
+            }
+        };
+        
+        // Initialize the application state
+        appState.initialize();
+        
+        // DOM elements
+        const elements = {
+            views: {
+                welcomeView: document.getElementById('welcomeView'),
+                groupIntroView: document.getElementById('groupIntroView'),
+                exerciseView: document.getElementById('exerciseView'),
+                resultsView: document.getElementById('resultsView')
+            },
+            buttons: {
+                startLearningBtn: document.getElementById('startLearningBtn'),
+                startExercisesBtn: document.getElementById('startExercisesBtn'),
+                prevQuestionBtn: document.getElementById('prevQuestionBtn'),
+                nextQuestionBtn: document.getElementById('nextQuestionBtn'),
+                checkAnswerBtn: document.getElementById('checkAnswerBtn'),
+                continueLearningBtn: document.getElementById('continueLearningBtn'),
+                resetProgressBtn: document.getElementById('resetProgressBtn'),
+                nextLevelBtn: document.getElementById('nextLevelBtn')
+            },
+            exercise: {
+                exerciseTitle: document.getElementById('exerciseTitle'),
+                currentLevel: document.getElementById('currentLevel'),
+                exerciseProgress: document.getElementById('exerciseProgress'),
+                questionPrompt: document.getElementById('questionPrompt'),
+                targetWord: document.getElementById('targetWord'),
+                multipleChoiceContainer: document.getElementById('multipleChoiceContainer'),
+                typingContainer: document.getElementById('typingContainer'),
+                answerInput: document.getElementById('answerInput'),
+                inputFeedback: document.getElementById('inputFeedback'),
+                feedbackMessage: document.getElementById('feedbackMessage'),
+                levelSelect: document.getElementById('levelSelect')
+            },
+            results: {
+                resultLevel: document.getElementById('resultLevel'),
+                correctAnswers: document.getElementById('correctAnswers'),
+                accuracy: document.getElementById('accuracy'),
+                completedLevels: document.getElementById('completedLevels'),
+                beginnerCount: document.getElementById('beginnerCount'),
+                intermediateCount: document.getElementById('intermediateCount'),
+                advancedCount: document.getElementById('advancedCount'),
+                verbCardContainer: document.getElementById('verbCardContainer')
+            },
+            overlay: {
+                successOverlay: document.getElementById('successOverlay'),
+                successMessage: document.getElementById('successMessage')
+            }
+        };
+        
+        // View management
+        function showView(viewId) {
+            // Hide all views
+            Object.values(elements.views).forEach(view => {
+                view.classList.remove('active');
+            });
+            
+            // Show the requested view
+            elements.views[viewId].classList.add('active');
+            appState.currentView = viewId;
+            
+            // Special handling for specific views
+            if (viewId === 'exerciseView') {
+                initializeExercise(appState.currentLevel);
+            } else if (viewId === 'resultsView') {
+                updateResultsView();
+            }
+        }
+        
+        // Level configuration
+        const levelConfig = {
+            1: {
+                title: "Ćwiczenie: Rozpoznawanie znaczeń",
+                questionGenerator: function() {
+                    return allVerbs.map(verb => ({
+                        type: 'multipleChoice',
+                        prompt: `Co oznacza czasownik: <span class="target-word">${verb.infinitive}</span>?`,
+                        targetVerb: verb.infinitive,
+                        correctAnswer: verb.translation,
+                        options: getRandomOptions(allVerbs.map(v => v.translation), verb.translation, 3),
+                        aspect: 'recognizeTranslation'
+                    }));
+                }
+            },
+            2: {
+                title: "Ćwiczenie: Wybierz odpowiedni czasownik",
+                questionGenerator: function() {
+                    return allVerbs.map(verb => ({
+                        type: 'multipleChoice',
+                        prompt: `Jaki czasownik oznacza: <span class="target-word">${verb.translation}</span>?`,
+                        targetVerb: verb.infinitive,
+                        correctAnswer: verb.infinitive,
+                        options: getRandomOptions(allVerbs.map(v => v.infinitive), verb.infinitive, 3),
+                        aspect: 'recognizeInfinitive'
+                    }));
+                }
+            },
+            3: {
+                title: "Ćwiczenie: Dopasuj formę przeszłą",
+                questionGenerator: function() {
+                    return allVerbs.map(verb => ({
+                        type: 'multipleChoice',
+                        prompt: `Jaka jest forma przeszła czasownika: <span class="target-word">${verb.infinitive}</span>?`,
+                        targetVerb: verb.infinitive,
+                        correctAnswer: verb.pastSimple,
+                        options: getRandomOptions(allVerbs.map(v => v.pastSimple), verb.pastSimple, 3),
+                        aspect: 'recognizePastSimple'
+                    }));
+                }
+            },
+            4: {
+                title: "Ćwiczenie: Wpisz czasownik",
+                questionGenerator: function() {
+                    return allVerbs.map(verb => ({
+                        type: 'typing',
+                        prompt: `Wpisz czasownik dla polskiego słowa: <span class="target-word">${verb.translation}</span>`,
+                        targetVerb: verb.infinitive,
+                        correctAnswer: verb.infinitive,
+                        aspect: 'produceInfinitive'
+                    }));
+                }
+            },
+            5: {
+                title: "Ćwiczenie: Wpisz formę przeszłą",
+                questionGenerator: function() {
+                    return allVerbs.map(verb => ({
+                        type: 'typing',
+                        prompt: `Wpisz formę przeszłą czasownika: <span class="target-word">${verb.infinitive}</span>`,
+                        targetVerb: verb.infinitive,
+                        correctAnswer: verb.pastSimple,
+                        aspect: 'producePastSimple'
+                    }));
+                }
+            },
+            6: {
+                title: "Ćwiczenie: Wpisz obie formy",
+                questionGenerator: function() {
+                    return allVerbs.map(verb => ({
+                        type: 'typingDouble',
+                        prompt: `Wpisz czasownik i jego formę przeszłą dla słowa: <span class="target-word">${verb.translation}</span>`,
+                        targetVerb: verb.infinitive,
+                        correctAnswers: [verb.infinitive, verb.pastSimple],
+                        aspects: ['produceInfinitive', 'producePastSimple']
+                    }));
+                }
+            }
+        };
+        
+        // Helper function to get random options for multiple choice
+        function getRandomOptions(allOptions, correctOption, count) {
+            const options = [correctOption];
+            const availableOptions = allOptions.filter(option => option !== correctOption);
+            
+            // Shuffle available options
+            for (let i = availableOptions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [availableOptions[i], availableOptions[j]] = [availableOptions[j], availableOptions[i]];
+            }
+            
+            // Add random options up to count
+            for (let i = 0; i < count && i < availableOptions.length; i++) {
+                options.push(availableOptions[i]);
+            }
+            
+            // Shuffle the final options array
+            for (let i = options.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [options[i], options[j]] = [options[j], options[i]];
+            }
+            
+            return options;
+        }
+        
+        // Initialize exercise for a specific level
+        function initializeExercise(level) {
+            // Set current level
+            appState.currentLevel = level;
+            elements.exercise.currentLevel.textContent = `Poziom: ${level}`;
+            elements.exercise.levelSelect.value = level;
+            
+            // Set exercise title
+            elements.exercise.exerciseTitle.textContent = levelConfig[level].title;
+            
+            // Generate questions for this level
+            appState.questions = levelConfig[level].questionGenerator();
+            
+            // Shuffle questions
+            for (let i = appState.questions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [appState.questions[i], appState.questions[j]] = [appState.questions[j], appState.questions[i]];
+            }
+            
+            // Initialize answers array
+            appState.answers = Array(appState.questions.length).fill(null);
+            
+            // Start with the first question
+            appState.currentQuestionIndex = 0;
+            showQuestion(0);
+        }
+        
+        // Display a specific question
+        function showQuestion(index) {
+            const question = appState.questions[index];
+            
+            // Update progress bar
+            const progressPercentage = (index / appState.questions.length) * 100;
+            elements.exercise.exerciseProgress.style.width = `${progressPercentage}%`;
+            
+            // Update question prompt and target word
+            elements.exercise.questionPrompt.innerHTML = question.prompt;
+            
+            // Clear previous feedback
+            elements.exercise.feedbackMessage.classList.add('hidden');
+            
+            // Handle different question types
+            if (question.type === 'multipleChoice') {
+                elements.exercise.multipleChoiceContainer.classList.remove('hidden');
+                elements.exercise.typingContainer.classList.add('hidden');
+                
+                // Generate multiple choice options
+                elements.exercise.multipleChoiceContainer.innerHTML = '';
+                question.options.forEach(option => {
+                    const optionBtn = document.createElement('button');
+                    optionBtn.className = 'option-btn';
+                    optionBtn.textContent = option;
+                    
+                    optionBtn.addEventListener('click', () => selectOption(option));
+                    
+                    elements.exercise.multipleChoiceContainer.appendChild(optionBtn);
+                });
+                
+                // If this question was already answered, show the selection
+                if (appState.answers[index] !== null) {
+                    const buttons = elements.exercise.multipleChoiceContainer.querySelectorAll('.option-btn');
+                    buttons.forEach(btn => {
+                        if (btn.textContent === appState.answers[index].selectedAnswer) {
+                            btn.classList.add('selected');
+                        }
+                    });
+                    
+                    showFeedback(appState.answers[index].isCorrect);
+                }
+            } else if (question.type === 'typing' || question.type === 'typingDouble') {
+                elements.exercise.multipleChoiceContainer.classList.add('hidden');
+                elements.exercise.typingContainer.classList.remove('hidden');
+                
+                // Clear input field
+                elements.exercise.answerInput.value = '';
+                elements.exercise.inputFeedback.textContent = '';
+                
+                // Update placeholder based on question type
+                if (question.type === 'typing') {
+                    elements.exercise.answerInput.placeholder = 'Wpisz odpowiedź...';
+                } else if (question.type === 'typingDouble') {
+                    elements.exercise.answerInput.placeholder = 'Wpisz dwie formy oddzielone przecinkiem (np. go, went)...';
+                }
+                
+                // Focus on input field
+                setTimeout(() => {
+                    elements.exercise.answerInput.focus();
+                }, 100);
+                
+                // If this question was already answered, show the answer and feedback
+                if (appState.answers[index] !== null) {
+                    elements.exercise.answerInput.value = appState.answers[index].submittedAnswer;
+                    showFeedback(appState.answers[index].isCorrect);
+                }
+            }
+            
+            // Update navigation buttons
+            elements.buttons.prevQuestionBtn.disabled = index === 0;
+            elements.buttons.nextQuestionBtn.disabled = index === appState.questions.length - 1;
+        }
+        
+        // Handle option selection for multiple choice questions
+        function selectOption(option) {
+            const currentQuestion = appState.questions[appState.currentQuestionIndex];
+            const isCorrect = option === currentQuestion.correctAnswer;
+            
+            // Mark selected option
+            const buttons = elements.exercise.multipleChoiceContainer.querySelectorAll('.option-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('selected');
+                if (btn.textContent === option) {
+                    btn.classList.add('selected');
+                }
+            });
+            
+            // Save answer
+            appState.answers[appState.currentQuestionIndex] = {
+                selectedAnswer: option,
+                isCorrect: isCorrect,
+                submittedAnswer: option
+            };
+            
+            // Update verb mastery
+            appState.updateVerbMastery(
+                currentQuestion.targetVerb,
+                currentQuestion.aspect,
+                isCorrect
+            );
+            
+            // Update level progress
+            const levelKey = `level${appState.currentLevel}`;
+            appState.progress[levelKey].totalAnswers++;
+            if (isCorrect) {
+                appState.progress[levelKey].correctAnswers++;
+            }
+            appState.saveProgress();
+            
+            // Show feedback
+            showFeedback(isCorrect);
+            
+            // Move to next question after delay if correct
+            if (isCorrect) {
+                setTimeout(() => {
+                    if (appState.currentQuestionIndex < appState.questions.length - 1) {
+                        goToNextQuestion();
+                    } else {
+                        checkLevelCompletion();
+                    }
+                }, 1000);
+            }
+        }
+        
+        // Handle checking typed answers
+        function checkTypedAnswer() {
+            const currentQuestion = appState.questions[appState.currentQuestionIndex];
+            const userInput = elements.exercise.answerInput.value.trim().toLowerCase();
+            
+            let isCorrect = false;
+            
+            if (currentQuestion.type === 'typing') {
+                isCorrect = compareAnswers(userInput, currentQuestion.correctAnswer);
+            } else if (currentQuestion.type === 'typingDouble') {
+                const userAnswers = userInput.split(',').map(answer => answer.trim().toLowerCase());
+                isCorrect = 
+                    userAnswers.length === 2 && 
+                    compareAnswers(userAnswers[0], currentQuestion.correctAnswers[0]) && 
+                    compareAnswers(userAnswers[1], currentQuestion.correctAnswers[1]);
+            }
+            
+            // Save answer
+            appState.answers[appState.currentQuestionIndex] = {
+                submittedAnswer: userInput,
+                isCorrect: isCorrect
+            };
+            
+            // Update verb mastery
+            if (currentQuestion.type === 'typing') {
+                appState.updateVerbMastery(
+                    currentQuestion.targetVerb,
+                    currentQuestion.aspect,
+                    isCorrect
+                );
+            } else if (currentQuestion.type === 'typingDouble') {
+                // Update both aspects for double typing questions
+                appState.updateVerbMastery(
+                    currentQuestion.targetVerb,
+                    currentQuestion.aspects[0],
+                    isCorrect
+                );
+                appState.updateVerbMastery(
+                    currentQuestion.targetVerb,
+                    currentQuestion.aspects[1],
+                    isCorrect
+                );
+            }
+            
+            // Update level progress
+            const levelKey = `level${appState.currentLevel}`;
+            appState.progress[levelKey].totalAnswers++;
+            if (isCorrect) {
+                appState.progress[levelKey].correctAnswers++;
+            }
+            appState.saveProgress();
+            
+            // Show feedback
+            showFeedback(isCorrect);
+            
+            // Move to next question after delay if correct
+            if (isCorrect) {
+                setTimeout(() => {
+                    if (appState.currentQuestionIndex < appState.questions.length - 1) {
+                        goToNextQuestion();
+                    } else {
+                        checkLevelCompletion();
+                    }
+                }, 1500);
+            }
+        }
+        
+        // Compare user answer with correct answer, allowing for slight differences
+        function compareAnswers(userAnswer, correctAnswer) {
+            // Direct comparison
+            if (userAnswer === correctAnswer.toLowerCase()) return true;
+            
+            // Handle special cases
+            if (correctAnswer === "was/were" && (userAnswer === "was" || userAnswer === "were")) return true;
+            
+            // Allow for slight typos (distance of 1 for short words, 2 for longer words)
+            const maxDistance = correctAnswer.length > 5 ? 2 : 1;
+            return levenshteinDistance(userAnswer, correctAnswer.toLowerCase()) <= maxDistance;
+        }
+        
+        // Levenshtein distance calculation for fuzzy matching
+        function levenshteinDistance(a, b) {
+            if (a.length === 0) return b.length;
+            if (b.length === 0) return a.length;
+            
+            const matrix = [];
+            
+            // Initialize matrix
+            for (let i = 0; i <= b.length; i++) {
+                matrix[i] = [i];
+            }
+            
+            for (let j = 0; j <= a.length; j++) {
+                matrix[0][j] = j;
+            }
+            
+            // Calculate edit distance
+            for (let i = 1; i <= b.length; i++) {
+                for (let j = 1; j <= a.length; j++) {
+                    const cost = a[j - 1] === b[i - 1] ? 0 : 1;
+                    matrix[i][j] = Math.min(
+                        matrix[i - 1][j] + 1,        // deletion
+                        matrix[i][j - 1] + 1,        // insertion
+                        matrix[i - 1][j - 1] + cost  // substitution
+                    );
+                }
+            }
+            
+            return matrix[b.length][a.length];
+        }
+        
+        // Show feedback for an answer
+        function showFeedback(isCorrect) {
+            const feedbackMessage = elements.exercise.feedbackMessage;
+            feedbackMessage.classList.remove('hidden', 'feedback-correct', 'feedback-incorrect');
+            
+            if (isCorrect) {
+                feedbackMessage.textContent = "Poprawna odpowiedź!";
+                feedbackMessage.classList.add('feedback-correct');
+            } else {
+                const currentQuestion = appState.questions[appState.currentQuestionIndex];
+                
+                if (currentQuestion.type === 'multipleChoice') {
+                    feedbackMessage.textContent = `Niepoprawna odpowiedź. Prawidłowa odpowiedź to: ${currentQuestion.correctAnswer}`;
+                } else if (currentQuestion.type === 'typing') {
+                    feedbackMessage.textContent = `Niepoprawna odpowiedź. Prawidłowa odpowiedź to: ${currentQuestion.correctAnswer}`;
+                } else if (currentQuestion.type === 'typingDouble') {
+                    feedbackMessage.textContent = `Niepoprawna odpowiedź. Prawidłowe odpowiedzi to: ${currentQuestion.correctAnswers[0]}, ${currentQuestion.correctAnswers[1]}`;
+                }
+                
+                feedbackMessage.classList.add('feedback-incorrect');
+            }
+        }
+        
+        // Navigation functions
+        function goToPrevQuestion() {
+            if (appState.currentQuestionIndex > 0) {
+                appState.currentQuestionIndex--;
+                showQuestion(appState.currentQuestionIndex);
+            }
+        }
+        
+        function goToNextQuestion() {
+            if (appState.currentQuestionIndex < appState.questions.length - 1) {
+                appState.currentQuestionIndex++;
+                showQuestion(appState.currentQuestionIndex);
+            } else {
+                checkLevelCompletion();
+            }
+        }
+        
+        // Check if level is completed successfully
+        function checkLevelCompletion() {
+            const levelKey = `level${appState.currentLevel}`;
+            const answeredCount = appState.answers.filter(answer => answer !== null).length;
+            const correctCount = appState.answers.filter(answer => answer !== null && answer.isCorrect).length;
+            
+            // Level is complete if all questions are answered and at least 80% are correct
+            const isComplete = 
+                answeredCount === appState.questions.length && 
+                (correctCount / appState.questions.length) >= 0.8;
+            
+            if (isComplete) {
+                appState.progress[levelKey].completed = true;
+                appState.saveProgress();
+                
+                // Show success overlay
+                elements.overlay.successMessage.textContent = `Gratulacje! Ukończyłeś poziom ${appState.currentLevel} z wynikiem ${Math.round((correctCount / appState.questions.length) * 100)}% poprawnych odpowiedzi.`;
+                elements.overlay.successOverlay.classList.remove('hidden');
+            } else {
+                // Show results view with current progress
+                showView('resultsView');
+            }
+        }
+        
+        // Update the results view with current progress
+        function updateResultsView() {
+            // Update level stats
+            elements.results.resultLevel.textContent = appState.currentLevel;
+            
+            // Calculate and display correct answers for current level
+            const levelKey = `level${appState.currentLevel}`;
+            const levelProgress = appState.progress[levelKey];
+            elements.results.correctAnswers.textContent = levelProgress.correctAnswers;
+            
+            // Calculate and display accuracy
+            const accuracy = levelProgress.totalAnswers > 0 
+                ? Math.round((levelProgress.correctAnswers / levelProgress.totalAnswers) * 100) 
+                : 0;
+            elements.results.accuracy.textContent = `${accuracy}%`;
+            
+            // Display completed levels
+            elements.results.completedLevels.textContent = `${appState.getCompletedLevelsCount()}/6`;
+            
+            // Display verb mastery counts
+            const masteryLevels = appState.getVerbsByMasteryLevel();
+            elements.results.beginnerCount.textContent = masteryLevels.beginner;
+            elements.results.intermediateCount.textContent = masteryLevels.intermediate;
+            elements.results.advancedCount.textContent = masteryLevels.advanced;
+            
+            // Generate verb cards
+            generateVerbCards();
+        }
+        
+        // Generate verb cards for the results view
+        function generateVerbCards() {
+            const container = elements.results.verbCardContainer;
+            container.innerHTML = '';
+            
+            allVerbs.forEach(verb => {
+                const masteryLevel = appState.getMasteryLevel(verb.infinitive);
+                
+                const card = document.createElement('div');
+                card.className = `verb-card ${masteryLevel}`;
+                
+                const masteryEmoji = masteryLevel === 'advanced' ? '⭐' : 
+                                      masteryLevel === 'intermediate' ? '🔄' : '🆕';
+                
+                card.innerHTML = `
+                    <h3>${masteryEmoji} ${verb.infinitive}</h3>
+                    <div class="verb-card-content">
+                        <div class="verb-form-display verb-infinitive-display">${verb.infinitive}</div>
+                        <div class="verb-form-display verb-past-display">${verb.pastSimple}</div>
+                        <div class="verb-form-display verb-translation-display">${verb.translation}</div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+        
+        // Event listeners
+        function setupEventListeners() {
+            // Welcome view
+            elements.buttons.startLearningBtn.addEventListener('click', () => {
+                showView('groupIntroView');
+            });
+            
+            // Group intro view
+            elements.buttons.startExercisesBtn.addEventListener('click', () => {
+                showView('exerciseView');
+            });
+            
+            // Exercise navigation
+            elements.buttons.prevQuestionBtn.addEventListener('click', goToPrevQuestion);
+            elements.buttons.nextQuestionBtn.addEventListener('click', goToNextQuestion);
+            
+            // Check typed answer
+            elements.buttons.checkAnswerBtn.addEventListener('click', checkTypedAnswer);
+            
+            // Enter key for typing answers
+            elements.exercise.answerInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    checkTypedAnswer();
+                }
+            });
+            
+            // Level selection
+            elements.exercise.levelSelect.addEventListener('change', (e) => {
+                const newLevel = parseInt(e.target.value);
+                initializeExercise(newLevel);
+            });
+            
+            // Results view navigation
+            elements.buttons.continueLearningBtn.addEventListener('click', () => {
+                showView('exerciseView');
+            });
+            
+            // Reset progress
+            elements.buttons.resetProgressBtn.addEventListener('click', () => {
+                if (confirm('Czy na pewno chcesz zresetować cały postęp nauki? Ta operacja nie może być cofnięta.')) {
+                    appState.resetProgress();
+                    updateResultsView();
+                }
+            });
+            
+            // Next level button
+            elements.buttons.nextLevelBtn.addEventListener('click', () => {
+                elements.overlay.successOverlay.classList.add('hidden');
+                
+                // If this was the last level, go to results view
+                if (appState.currentLevel === 6) {
+                    showView('resultsView');
+                } else {
+                    // Otherwise, go to next level
+                    initializeExercise(appState.currentLevel + 1);
+                }
+            });
+        }
+        
+        // Initialize the application
+        function initApp() {
+            setupEventListeners();
+            
+            // Start with the welcome view
+            showView('welcomeView');
+        }
+        
+        // Start the app when the page is loaded
+        initApp();
+    </script>
+</body>
+</html>
