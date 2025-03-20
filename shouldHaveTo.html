@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Should & Have to - Porady zdrowotne</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #ff6b6b;
+            --accent-color: #47b8e0;
+            --light-bg: #f5f7fa;
+            --dark-bg: #34495e;
+            --success-color: #66bb6a;
+            --error-color: #e53935;
+            --neutral-color: #78909c;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+        
+        h1, h2, h3, h4 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .section {
+            display: none;
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .intro-text {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .vocabulary-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .vocab-item {
+            padding: 10px;
+            background-color: var(--light-bg);
+            border-radius: 5px;
+            border-left: 3px solid var(--primary-color);
+            transition: transform 0.2s;
+        }
+        
+        .vocab-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .eng {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .pl {
+            font-style: italic;
+            color: var(--neutral-color);
+        }
+        
+        .pronunciation {
+            color: var(--secondary-color);
+            font-size: 0.8em;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #3a5682;
+        }
+        
+        button:disabled {
+            background-color: var(--neutral-color);
+            cursor: not-allowed;
+        }
+        
+        .back-btn {
+            background-color: var(--neutral-color);
+        }
+        
+        .back-btn:hover {
+            background-color: #546e7a;
+        }
+        
+        .example-box {
+            background-color: #e3f2fd;
+            border-left: 4px solid var(--accent-color);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .grammar-point {
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .question-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .option {
+            padding: 10px 15px;
+            background-color: var(--light-bg);
+            border: 2px solid var(--neutral-color);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #e3f2fd;
+            border-color: var(--accent-color);
+        }
+        
+        .option.selected {
+            background-color: #bbdefb;
+            border-color: var(--primary-color);
+        }
+        
+        .option.correct {
+            background-color: #c8e6c9;
+            border-color: var(--success-color);
+        }
+        
+        .option.incorrect {
+            background-color: #ffcdd2;
+            border-color: var(--error-color);
+        }
+        
+        .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .feedback.correct {
+            display: block;
+            background-color: #c8e6c9;
+            color: #2e7d32;
+        }
+        
+        .feedback.incorrect {
+            display: block;
+            background-color: #ffcdd2;
+            color: #c62828;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--success-color);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-info {
+            text-align: right;
+            font-size: 14px;
+            color: var(--neutral-color);
+            margin-bottom: 5px;
+        }
+        
+        .exercise-container {
+            margin-bottom: 30px;
+        }
+        
+        input[type="text"] {
+            padding: 8px 12px;
+            border: 2px solid var(--neutral-color);
+            border-radius: 5px;
+            font-size: 16px;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        
+        .input-correct {
+            border-color: var(--success-color) !important;
+            background-color: rgba(102, 187, 106, 0.1);
+        }
+        
+        .input-incorrect {
+            border-color: var(--error-color) !important;
+            background-color: rgba(229, 57, 53, 0.1);
+        }
+        
+        .gap {
+            display: inline-block;
+            min-width: 120px;
+            border-bottom: 2px solid var(--neutral-color);
+            margin: 0 5px;
+            padding: 2px 5px;
+            text-align: center;
+        }
+        
+        .grammar-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .grammar-table th, .grammar-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        .grammar-table th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .grammar-table tr:nth-child(even) {
+            background-color: #f5f5f5;
+        }
+        
+        .dialog-container {
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .dialog-line {
+            margin-bottom: 10px;
+            display: flex;
+        }
+        
+        .dialog-speaker {
+            font-weight: bold;
+            margin-right: 10px;
+            min-width: 40px;
+        }
+        
+        .dialog-bubble {
+            background-color: white;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            flex-grow: 1;
+        }
+        
+        .check-btn {
+            background-color: var(--accent-color);
+            margin-top: 15px;
+        }
+        
+        .check-btn:hover {
+            background-color: #36a2c9;
+        }
+        
+        .result {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .result h3 {
+            color: #2e7d32;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 15px;
+            }
+            
+            .vocabulary-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Should & Have to - Porady zdrowotne</h1>
+            <p>Nauka używania "should" i "have to" do udzielania porad w problemach zdrowotnych</p>
+        </header>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progressBar"></div>
+        </div>
+        <div class="progress-info" id="progressInfo">0% ukończono</div>
+        
+        <!-- Sekcja 1: Wprowadzenie i słownictwo -->
+        <section id="section1" class="section active">
+            <h2>Wprowadzenie - Słownictwo</h2>
+            <div class="intro-text">
+                <p>Przed rozpoczęciem nauki, zapoznaj się z poniższym słownictwem. Postaraj się zapamiętać lub zapisać te zwroty, ponieważ będziemy z nich korzystać w dalszej części lekcji.</p>
+            </div>
+            
+            <h3>Problemy zdrowotne i dolegliwości:</h3>
+            <div class="vocabulary-list">
+                <div class="vocab-item">
+                    <div class="eng">a blocked nose</div>
+                    <div class="pronunciation">/ə ˌblɒkt ˈnəʊz/</div>
+                    <div class="pl">zatkany nos</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">a cold</div>
+                    <div class="pronunciation">/ə ˈkəʊld/</div>
+                    <div class="pl">przeziębienie</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">a cough</div>
+                    <div class="pronunciation">/ə ˈkɒf/</div>
+                    <div class="pl">kaszel</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">earache</div>
+                    <div class="pronunciation">/ˈɪəreɪk/</div>
+                    <div class="pl">ból ucha</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">a headache</div>
+                    <div class="pronunciation">/ə ˈhedeɪk/</div>
+                    <div class="pl">ból głowy</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">a runny nose</div>
+                    <div class="pronunciation">/ə ˌrʌni ˈnəʊz/</div>
+                    <div class="pl">katar</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">a sore throat</div>
+                    <div class="pronunciation">/ə ˌsɔː ˈθrəʊt/</div>
+                    <div class="pl">bolące gardło</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">a stomachache</div>
+                    <div class="pronunciation">/ə ˈstʌməkeɪk/</div>
+                    <div class="pl">ból brzucha</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">a temperature</div>
+                    <div class="pronunciation">/ə ˈtemprətʃə/</div>
+                    <div class="pl">temperatura</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">toothache</div>
+                    <div class="pronunciation">/ˈtuːθeɪk/</div>
+                    <div class="pl">ból zęba</div>
+                </div>
+            </div>
+            
+            <h3>Urazy:</h3>
+            <div class="vocabulary-list">
+                <div class="vocab-item">
+                    <div class="eng">broken leg</div>
+                    <div class="pronunciation">/ˌbrəʊkən ˈleg/</div>
+                    <div class="pl">złamana noga</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">bruise</div>
+                    <div class="pronunciation">/bruːz/</div>
+                    <div class="pl">stłuczenie</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">burn</div>
+                    <div class="pronunciation">/bɜːn/</div>
+                    <div class="pl">oparzenie</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">cut</div>
+                    <div class="pronunciation">/kʌt/</div>
+                    <div class="pl">skaleczenie</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">mosquito bite</div>
+                    <div class="pronunciation">/məˈskiːtəʊ baɪt/</div>
+                    <div class="pl">ugryzienie komara</div>
+                </div>
+            </div>
+            
+            <h3>Czasowniki:</h3>
+            <div class="vocabulary-list">
+                <div class="vocab-item">
+                    <div class="eng">cough</div>
+                    <div class="pronunciation">/kɒf/</div>
+                    <div class="pl">kaszleć</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">sneeze</div>
+                    <div class="pronunciation">/sniːz/</div>
+                    <div class="pl">kichać</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">lie down</div>
+                    <div class="pronunciation">/ˌlaɪ ˈdaʊn/</div>
+                    <div class="pl">położyć się</div>
+                </div>
+            </div>
+            
+            <h3>Porady i wyrażenia:</h3>
+            <div class="vocabulary-list">
+                <div class="vocab-item">
+                    <div class="eng">Get well soon!</div>
+                    <div class="pronunciation">/ˌɡet ˌwel ˈsuːn/</div>
+                    <div class="pl">Zdrowiej!</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">I think you should see the doctor/dentist.</div>
+                    <div class="pronunciation">/aɪ θɪŋk jə ʃʊd siː ðə ˈdɒktə ˈdentɪst/</div>
+                    <div class="pl">Myślę, że powinieneś iść do lekarza/dentysty.</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">Put a plaster on it.</div>
+                    <div class="pronunciation">/pʊt ə ˈplɑːstə ən ɪt/</div>
+                    <div class="pl">Przyklej plaster na ranę.</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">Put some cream on it.</div>
+                    <div class="pronunciation">/pʊt səm ˈkriːm ən ɪt/</div>
+                    <div class="pl">Posmaruj maścią.</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">Put some ice on it.</div>
+                    <div class="pronunciation">/pʊt səm aɪs ən ɪt/</div>
+                    <div class="pl">Przyłóż lód.</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">Why don't you drink some mint tea?</div>
+                    <div class="pronunciation">/waɪ dəʊnt jə drɪŋk səm mɪnt ˈtiː/</div>
+                    <div class="pl">Może napijesz się herbaty miętowej?</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">Why don't you lie down?</div>
+                    <div class="pronunciation">/waɪ dəʊnt jə laɪ ˈdəʊn/</div>
+                    <div class="pl">Może się położysz?</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">Why don't you take a painkiller?</div>
+                    <div class="pronunciation">/waɪ dəʊnt jə teɪk ə ˈpeɪnkɪlə/</div>
+                    <div class="pl">Może chcesz tabletkę przeciwbólową?</div>
+                </div>
+            </div>
+            
+            <h3>Opisywanie samopoczucia:</h3>
+            <div class="vocabulary-list">
+                <div class="vocab-item">
+                    <div class="eng">I don't feel very well.</div>
+                    <div class="pronunciation">/aɪ dəʊnt ˌfiːl veri wel/</div>
+                    <div class="pl">Nie czuję się zbyt dobrze.</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">I feel terrible.</div>
+                    <div class="pronunciation">/aɪ ˌfiːl ˈterəbəl/</div>
+                    <div class="pl">Bardzo źle się czuję.</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">I've got a cut.</div>
+                    <div class="pronunciation">/aɪv gɒt ə ˈkʌt/</div>
+                    <div class="pl">Skaleczyłem się.</div>
+                </div>
+                <div class="vocab-item">
+                    <div class="eng">I've got a headache.</div>
+                    <div class="pronunciation">/aɪv gɒt ə ˈhedeɪk/</div>
+                    <div class="pl">Boli mnie głowa.</div>
+                </div>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="back-btn" disabled>Wstecz</button>
+                <button class="next-btn" onclick="nextSection()">Dalej</button>
+            </div>
+        </section>
+        
+        <!-- Sekcja 2: Wyjaśnienie gramatyki - Should -->
+        <section id="section2" class="section">
+            <h2>Co to jest "should" i "shouldn't"</h2>
+            
+            <div class="grammar-point">
+                <h3>Znaczenie i użycie "should"</h3>
+                <p><strong>Should</strong> używamy, gdy chcemy udzielić komuś rady lub sugestii. Wyrażamy tym, co byłoby dobre zrobić w danej sytuacji.</p>
+                <p>Polskie tłumaczenie: <strong>powinien, powinieneś, powinnam</strong> itd.</p>
+            </div>
+            
+            <div class="example-box">
+                <h4>Przykłady użycia "should":</h4>
+                <ul>
+                    <li><strong>You should see a doctor.</strong> - Powinieneś pójść do lekarza.</li>
+                    <li><strong>You should put some ice on your bruise.</strong> - Powinieneś przyłożyć lód do stłuczenia.</li>
+                    <li><strong>You should drink more water.</strong> - Powinieneś pić więcej wody.</li>
+                </ul>
+            </div>
+            
+            <div class="grammar-point">
+                <h3>Znaczenie i użycie "shouldn't"</h3>
+                <p><strong>Shouldn't</strong> to forma przecząca "should". Używamy jej, gdy chcemy doradzić, aby czegoś NIE robić.</p>
+                <p>Polskie tłumaczenie: <strong>nie powinien, nie powinieneś, nie powinnam</strong> itd.</p>
+            </div>
+            
+            <div class="example-box">
+                <h4>Przykłady użycia "shouldn't":</h4>
+                <ul>
+                    <li><strong>You shouldn't go to school with a fever.</strong> - Nie powinieneś iść do szkoły z gorączką.</li>
+                    <li><strong>She shouldn't touch her cut with dirty hands.</strong> - Ona nie powinna dotykać skaleczenia brudnymi rękami.</li>
+                    <li><strong>We shouldn't stay outside with a cold.</strong> - Nie powinniśmy przebywać na zewnątrz z przeziębieniem.</li>
+                </ul>
+            </div>
+            
+            <div class="grammar-table">
+                <h3>Budowa zdań z "should" i "shouldn't"</h3>
+                <table>
+                    <tr>
+                        <th>Forma</th>
+                        <th>Struktura</th>
+                        <th>Przykład</th>
+                    </tr>
+                    <tr>
+                        <td>Twierdząca</td>
+                        <td>Podmiot + should + czasownik (podstawowa forma)</td>
+                        <td>You <strong>should</strong> take a painkiller.</td>
+                    </tr>
+                    <tr>
+                        <td>Przecząca</td>
+                        <td>Podmiot + shouldn't + czasownik (podstawowa forma)</td>
+                        <td>You <strong>shouldn't</strong> go to work with a headache.</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="grammar-point">
+                <h3>Zapamiętaj!</h3>
+                <p>Po "should" i "shouldn't" zawsze używamy podstawowej formy czasownika (bez "to", bez końcówki "-s").</p>
+                <p>Przykład: <strong>You should drink</strong> (NIE: You should to drink / You should drinks)</p>
+            </div>
+            
+            <div class="question-container">
+                <h3>Sprawdź, czy rozumiesz:</h3>
+                <p>Wybierz poprawną odpowiedź:</p>
+                <p>Jak powiedzieć po angielsku: "Powinieneś przyłożyć lód do stłuczenia"?</p>
+                
+                <div class="options">
+                    <div class="option" onclick="checkAnswer(this, 0)">You should to put some ice on your bruise.</div>
+                    <div class="option" onclick="checkAnswer(this, 1)">You should put some ice on your bruise.</div>
+                    <div class="option" onclick="checkAnswer(this, 0)">You should puts some ice on your bruise.</div>
+                    <div class="option" onclick="checkAnswer(this, 0)">You should putting some ice on your bruise.</div>
+                </div>
+                
+                <div class="feedback" id="feedback1"></div>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="back-btn" onclick="previousSection()">Wstecz</button>
+                <button class="next-btn" id="section2Next" onclick="nextSection()" disabled>Dalej</button>
+            </div>
+        </section>
+        
+        <!-- Sekcja 3: Ćwiczenia ze SHOULD -->
+        <section id="section3" class="section">
+            <h2>Ćwiczenia ze SHOULD</h2>
+            
+            <div class="exercise-container">
+                <h3>Ćwiczenie 1: Wybierz poprawną formę</h3>
+                <p>Wybierz poprawną formę: "should" czy "shouldn't".</p>
+                
+                <div id="quiz1"></div>
+            </div>
+            
+            <div class="exercise-container">
+                <h3>Ćwiczenie 2: Uzupełnij zdania</h3>
+                <p>Uzupełnij zdania używając "should" lub "shouldn't" oraz odpowiedniego wyrażenia z listy.</p>
+                
+                <div class="question-container">
+                    <p>1. You have a headache. You <input type="text" id="ex2q1"> (wziąć tabletkę przeciwbólową)</p>
+                    <div class="feedback" id="ex2q1feedback"></div>
+                    <button class="check-btn" onclick="checkExercise2('ex2q1', 'should take a painkiller')">Sprawdź</button>
+                </div>
+                
+                <div class="question-container">
+                    <p>2. You have a cut on your finger. You <input type="text" id="ex2q2"> (przyłożyć plaster)</p>
+                    <div class="feedback" id="ex2q2feedback"></div>
+                    <button class="check-btn" onclick="checkExercise2('ex2q2', 'should put a plaster on it')">Sprawdź</button>
+                </div>
+                
+                <div class="question-container">
+                    <p>3. You have a high temperature. You <input type="text" id="ex2q3"> (iść do pracy)</p>
+                    <div class="feedback" id="ex2q3feedback"></div>
+                    <button class="check-btn" onclick="checkExercise2('ex2q3', 'shouldn\\'t go to work')">Sprawdź</button>
+                </div>
+                
+                <div class="question-container">
+                    <p>4. You have a sore throat. You <input type="text" id="ex2q4"> (pić herbatę miętową)</p>
+                    <div class="feedback" id="ex2q4feedback"></div>
+                    <button class="check-btn" onclick="checkExercise2('ex2q4', 'should drink some mint tea')">Sprawdź</button>
+                </div>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="back-btn" onclick="previousSection()">Wstecz</button>
+                <button class="next-btn" id="section3Next" onclick="nextSection()">Dalej</button>
+            </div>
+        </section>
+        
+        <!-- Sekcja 4: Pytania z SHOULD -->
+        <section id="section4" class="section">
+            <h2>Pytania z SHOULD</h2>
+            
+            <div class="grammar-point">
+                <h3>Jak tworzyć pytania z "should"?</h3>
+                <p>Aby utworzyć pytanie z "should", przenosimy "should" na początek zdania, przed podmiot.</p>
+            </div>
+            
+            <div class="grammar-table">
+                <h3>Struktura pytań z "should"</h3>
+                <table>
+                    <tr>
+                        <th>Typ</th>
+                        <th>Struktura</th>
+                        <th>Przykład</th>
+                        <th>Tłumaczenie</th>
+                    </tr>
+                    <tr>
+                        <td>Pytanie</td>
+                        <td>Should + podmiot + czasownik (podstawowa forma)</td>
+                        <td><strong>Should</strong> I take a painkiller?</td>
+                        <td>Czy powinienem wziąć tabletkę przeciwbólową?</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="example-box">
+                <h4>Przykłady pytań z "should":</h4>
+                <ul>
+                    <li><strong>Should I see a doctor with this cough?</strong> - Czy powinienem pójść do lekarza z tym kaszlem?</li>
+                    <li><strong>Should she take some medicine for her headache?</strong> - Czy ona powinna wziąć jakiś lek na ból głowy?</li>
+                    <li><strong>Should we put a plaster on this cut?</strong> - Czy powinniśmy nałożyć plaster na to skaleczenie?</li>
+                </ul>
+            </div>
+            
+            <div class="grammar-point">
+                <h3>Odpowiedzi na pytania z "should"</h3>
+                <p>Na pytania z "should" odpowiadamy krótko "Yes, you should." lub "No, you shouldn't."</p>
+            </div>
+            
+            <div class="example-box">
+                <h4>Przykłady odpowiedzi:</h4>
+                <p><strong>Should I take a painkiller for my headache?</strong></p>
+                <ul>
+                    <li><strong>Yes, you should.</strong> - Tak, powinieneś.</li>
+                    <li><strong>No, you shouldn't. You should lie down instead.</strong> - Nie, nie powinieneś. Zamiast tego powinieneś się położyć.</li>
+                </ul>
+            </div>
+            
+            <div class="exercise-container">
+                <h3>Ćwiczenie 3: Porządkowanie słów w pytaniu</h3>
+                <p>Ułóż słowa we właściwej kolejności, aby utworzyć pytania z "should".</p>
+                
+                <div id="quiz3"></div>
+            </div>
+            
+            <div class="exercise-container">
+                <h3>Ćwiczenie 4: Odpowiedzi na pytania z "should"</h3>
+                <p>Wybierz poprawną odpowiedź na podane pytanie.</p>
+                
+                <div id="quiz4"></div>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="back-btn" onclick="previousSection()">Wstecz</button>
+                <button class="next-btn" id="section4Next" onclick="nextSection()">Dalej</button>
+            </div>
+        </section>
+        
+        <!-- Sekcja 5: Wyjaśnienie gramatyki - Have to/Has to -->
+        <section id="section5" class="section">
+            <h2>Co to jest "have to/has to" i "don't have to/doesn't have to"</h2>
+            
+            <div class="grammar-point">
+                <h3>Znaczenie i użycie "have to/has to"</h3>
+                <p><strong>Have to/has to</strong> używamy, gdy chcemy wyrazić konieczność lub obowiązek. Jest to silniejsza forma niż "should" - oznacza, że coś MUSI zostać zrobione.</p>
+                <p>Polskie tłumaczenie: <strong>musieć, muszę, musisz, musi</strong> itd.</p>
+            </div>
+            
+            <div class="example-box">
+                <h4>Przykłady użycia "have to/has to":</h4>
+                <ul>
+                    <li><strong>You have to take all the antibiotics.</strong> - Musisz wziąć wszystkie antybiotyki.</li>
+                    <li><strong>She has to stay in bed today.</strong> - Ona musi zostać dziś w łóżku.</li>
+                    <li><strong>I have to see a doctor immediately.</strong> - Muszę natychmiast zobaczyć się z lekarzem.</li>
+                </ul>
+            </div>
+            
+            <div class="grammar-point">
+                <h3>Znaczenie i użycie "don't have to/doesn't have to"</h3>
+                <p><strong>Don't have to/doesn't have to</strong> to forma przecząca "have to/has to". Używamy jej, gdy chcemy powiedzieć, że coś NIE jest konieczne do zrobienia.</p>
+                <p>Polskie tłumaczenie: <strong>nie musieć, nie muszę, nie musisz, nie musi</strong> itd.</p>
+            </div>
+            
+            <div class="example-box">
+                <h4>Przykłady użycia "don't have to/doesn't have to":</h4>
+                <ul>
+                    <li><strong>You don't have to stay in bed all day.</strong> - Nie musisz leżeć w łóżku cały dzień.</li>
+                    <li><strong>He doesn't have to take medicine for a small cut.</strong> - Nie musi brać leków na małe skaleczenie.</li>
+                    <li><strong>We don't have to see a doctor for a mild cold.</strong> - Nie musimy iść do lekarza z lekkim przeziębieniem.</li>
+                </ul>
+            </div>
+            
+            <div class="grammar-table">
+                <h3>Budowa zdań z "have to/has to"</h3>
+                <table>
+                    <tr>
+                        <th>Forma</th>
+                        <th>Struktura</th>
+                        <th>Przykład</th>
+                    </tr>
+                    <tr>
+                        <td>Twierdząca (I/You/We/They)</td>
+                        <td>Podmiot + have to + czasownik (podstawowa forma)</td>
+                        <td>You <strong>have to</strong> take these pills.</td>
+                    </tr>
+                    <tr>
+                        <td>Twierdząca (He/She/It)</td>
+                        <td>Podmiot + has to + czasownik (podstawowa forma)</td>
+                        <td>She <strong>has to</strong> see a doctor.</td>
+                    </tr>
+                    <tr>
+                        <td>Przecząca (I/You/We/They)</td>
+                        <td>Podmiot + don't have to + czasownik (podstawowa forma)</td>
+                        <td>You <strong>don't have to</strong> stay in bed.</td>
+                    </tr>
+                    <tr>
+                        <td>Przecząca (He/She/It)</td>
+                        <td>Podmiot + doesn't have to + czasownik (podstawowa forma)</td>
+                        <td>He <strong>doesn't have to</strong> take medicine.</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="question-container">
+                <h3>Sprawdź, czy rozumiesz:</h3>
+                <p>Wybierz poprawną odpowiedź:</p>
+                <p>Jak powiedzieć po angielsku: "Musisz wziąć wszystkie antybiotyki"?</p>
+                
+                <div class="options">
+                    <div class="option" onclick="checkAnswer(this, 0)">You must to take all the antibiotics.</div>
+                    <div class="option" onclick="checkAnswer(this, 1)">You have to take all the antibiotics.</div>
+                    <div class="option" onclick="checkAnswer(this, 0)">You having to take all the antibiotics.</div>
+                    <div class="option" onclick="checkAnswer(this, 0)">You are have to take all the antibiotics.</div>
+                </div>
+                
+                <div class="feedback" id="feedback5"></div>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="back-btn" onclick="previousSection()">Wstecz</button>
+                <button class="next-btn" id="section5Next" onclick="nextSection()" disabled>Dalej</button>
+            </div>
+        </section>
+        
+        <!-- Sekcja 6: Ćwiczenia z HAVE TO -->
+        <section id="section6" class="section">
+            <h2>Ćwiczenia z HAVE TO/HAS TO</h2>
+            
+            <div class="exercise-container">
+                <h3>Ćwiczenie 5: Wybierz poprawną formę</h3>
+                <p>Wybierz poprawną formę.</p>
+                
+                <div id="quiz5"></div>
+            </div>
+            
+            <div class="exercise-container">
+                <h3>Ćwiczenie 6: Uzupełnij zdania</h3>
+                <p>Uzupełnij zdania używając "have to", "has to", "don't have to" lub "doesn't have to".</p>
+                
+                <div class="question-container">
+                    <p>1. You <input type="text" id="ex6q1"> take this medicine three times a day. (musisz)</p>
+                    <div class="feedback" id="ex6q1feedback"></div>
+                    <button class="check-btn" onclick="checkExercise6('ex6q1', 'have to')">Sprawdź</button>
+                </div>
+                
+                <div class="question-container">
+                    <p>2. She <input type="text" id="ex6q2"> stay in bed for a week with this fever. (musi)</p>
+                    <div class="feedback" id="ex6q2feedback"></div>
+                    <button class="check-btn" onclick="checkExercise6('ex6q2', 'has to')">Sprawdź</button>
+                </div>
+                
+                <div class="question-container">
+                    <p>3. You <input type="text" id="ex6q3"> see a doctor for a small cut. (nie musisz)</p>
+                    <div class="feedback" id="ex6q3feedback"></div>
+                    <button class="check-btn" onclick="checkExercise6('ex6q3', 'don\\'t have to')">Sprawdź</button>
+                </div>
+                
+                <div class="question-container">
+                    <p>4. He <input type="text" id="ex6q4"> take a painkiller for a mild headache. (nie musi)</p>
+                    <div class="feedback" id="ex6q4feedback"></div>
+                    <button class="check-btn" onclick="checkExercise6('ex6q4', 'doesn\\'t have to')">Sprawdź</button>
+                </div>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="back-btn" onclick="previousSection()">Wstecz</button>
+                <button class="next-btn" id="section6Next" onclick="nextSection()">Dalej</button>
+            </div>
+        </section>
+        
+        <!-- Sekcja 7: Pytania z HAVE TO -->
+        <section id="section7" class="section">
+            <h2>Pytania z HAVE TO</h2>
+            
+            <div class="grammar-point">
+                <h3>Jak tworzyć pytania z "have to/has to"?</h3>
+                <p>Pytanie tworzymy używając "do/does" na początku zdania, a "have to" zostaje w formie podstawowej.</p>
+            </div>
+            
+            <div class="grammar-table">
+                <h3>Struktura pytań z "have to"</h3>
+                <table>
+                    <tr>
+                        <th>Typ</th>
+                        <th>Struktura</th>
+                        <th>Przykład</th>
+                        <th>Tłumaczenie</th>
+                    </tr>
+                    <tr>
+                        <td>Pytanie (I/You/We/They)</td>
+                        <td>Do + podmiot + have to + czasownik</td>
+                        <td><strong>Do you have to</strong> take medicine?</td>
+                        <td>Czy musisz brać lekarstwo?</td>
+                    </tr>
+                    <tr>
+                        <td>Pytanie (He/She/It)</td>
+                        <td>Does + podmiot + have to + czasownik</td>
+                        <td><strong>Does she have to</strong> see a doctor?</td>
+                        <td>Czy ona musi iść do lekarza?</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="example-box">
+                <h4>Przykłady pytań z "have to/has to":</h4>
+                <ul>
+                    <li><strong>Do I have to take this medicine every day?</strong> - Czy muszę brać to lekarstwo codziennie?</li>
+                    <li><strong>Does he have to stay in hospital?</strong> - Czy on musi zostać w szpitalu?</li>
+                    <li><strong>Do you have to put a plaster on this cut?</strong> - Czy musisz nakleić plaster na to skaleczenie?</li>
+                </ul>
+            </div>
+            
+            <div class="grammar-point">
+                <h3>Odpowiedzi na pytania z "have to/has to"</h3>
+                <p>Na pytania z "have to/has to" odpowiadamy używając "Yes" lub "No" oraz odpowiedniej formy "have to/has to".</p>
+            </div>
+            
+            <div class="example-box">
+                <h4>Przykłady odpowiedzi:</h4>
+                <p><strong>Do you have to take this medicine three times a day?</strong></p>
+                <ul>
+                    <li><strong>Yes, I do.</strong> - Tak, muszę.</li>
+                    <li><strong>No, I don't. I only have to take it once a day.</strong> - Nie, nie muszę. Muszę brać je tylko raz dziennie.</li>
+                </ul>
+                <p><strong>Does she have to see a doctor?</strong></p>
+                <ul>
+                    <li><strong>Yes, she does.</strong> - Tak, musi.</li>
+                    <li><strong>No, she doesn't.</strong> - Nie, nie musi.</li>
+                </ul>
+            </div>
+            
+            <div class="exercise-container">
+                <h3>Ćwiczenie 7: Porządkowanie słów w pytaniu</h3>
+                <p>Ułóż słowa we właściwej kolejności, aby utworzyć pytania z "have to/has to".</p>
+                
+                <div id="quiz7"></div>
+            </div>
+            
+            <div class="exercise-container">
+                <h3>Ćwiczenie 8: Odpowiedzi na pytania z "have to/has to"</h3>
+                <p>Wybierz poprawną odpowiedź na podane pytanie.</p>
+                
+                <div id="quiz8"></div>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="back-btn" onclick="previousSection()">Wstecz</button>
+                <button class="next-btn" id="section7Next" onclick="nextSection()">Dalej</button>
+            </div>
+        </section>
+        
+        <!-- Sekcja 8: Podsumowanie i test końcowy -->
+        <section id="section8" class="section">
+            <h2>Podsumowanie i test końcowy</h2>
+            
+            <div class="grammar-point">
+                <h3>Różnica między "should" a "have to"</h3>
+                <p><strong>Should</strong> - używamy do dawania porad i sugestii (co byłoby dobrze zrobić, ale nie jest to konieczne).</p>
+                <p><strong>Have to/Has to</strong> - używamy do wyrażania konieczności lub obowiązku (coś musi zostać zrobione).</p>
+                <p>Porównaj:</p>
+                <ul>
+                    <li>"You <strong>should</strong> rest more." (To byłoby dobrze dla ciebie)</li>
+                    <li>"You <strong>have to</strong> take all these antibiotics." (To jest konieczne, musisz to zrobić)</li>
+                </ul>
+            </div>
+            
+            <h3>Test końcowy</h3>
+            <p>Sprawdź swoją wiedzę rozwiązując ten test.</p>
+            
+            <div id="finalQuiz"></div>
+            
+            <button id="checkAnswers" class="check-btn" onclick="calculateFinalScore()">Sprawdź wyniki</button>
+            
+            <div class="result" id="finalResult">
+                <h3>Twój wynik:</h3>
+                <p id="scoreDisplay"></p>
+                <div id="scoreMessage"></div>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="back-btn" onclick="previousSection()">Wstecz</button>
+                <button class="next-btn" onclick="resetLesson()">Rozpocznij ponownie</button>
+            </div>
+        </section>
+    </div>
+    
+    <script>
+        let currentSection = 1;
+        const totalSections = 8;
+        
+        const quizData = {
+            quiz1: [
+                {
+                    question: "Jeśli masz ból głowy, __________ wziąć tabletkę przeciwbólową.",
+                    options: ["you should", "you shouldn't"],
+                    correctIndex: 0
+                },
+                {
+                    question: "Z gorączką __________ iść do szkoły lub pracy.",
+                    options: ["you should", "you shouldn't"],
+                    correctIndex: 1
+                },
+                {
+                    question: "Przy bólu gardła __________ pić ciepłą herbatę z miodem.",
+                    options: ["you should", "you shouldn't"],
+                    correctIndex: 0
+                },
+                {
+                    question: "Kiedy masz skaleczenie, __________ dotykać go brudnymi rękami.",
+                    options: ["you should", "you shouldn't"],
+                    correctIndex: 1
+                }
+            ],
+            quiz3: [
+                {
+                    question: "Ułóż pytanie: 'Czy powinienem iść do lekarza z tym kaszlem?'",
+                    words: ["I", "should", "see", "this", "with", "a", "doctor", "cough", "?"],
+                    correctOrder: "Should I see a doctor with this cough ?"
+                },
+                {
+                    question: "Ułóż pytanie: 'Czy powinienem wziąć tabletkę przeciwbólową na ból głowy?'",
+                    words: ["take", "should", "I", "headache", "for", "a", "painkiller", "my", "?"],
+                    correctOrder: "Should I take a painkiller for my headache ?"
+                },
+                {
+                    question: "Ułóż pytanie: 'Czy powinniśmy położyć lód na to stłuczenie?'",
+                    words: ["put", "we", "should", "on", "ice", "this", "some", "bruise", "?"],
+                    correctOrder: "Should we put some ice on this bruise ?"
+                }
+            ],
+            quiz4: [
+                {
+                    question: "Should I take a painkiller for my headache?",
+                    options: ["Yes, you should.", "Yes, you are.", "No, you shouldn't. You should lie down instead.", "No, you don't."],
+                    correctIndex: [0, 2]
+                },
+                {
+                    question: "Should she see a doctor with that sore throat?",
+                    options: ["Yes, she is.", "Yes, she should.", "No, she isn't.", "No, she shouldn't. She should drink some tea with honey."],
+                    correctIndex: [1, 3]
+                },
+                {
+                    question: "Should we put a plaster on this cut?",
+                    options: ["Yes, you should.", "Yes, we should.", "No, we don't.", "No, we shouldn't. It's too small."],
+                    correctIndex: [1, 3]
+                }
+            ],
+            quiz5: [
+                {
+                    question: "Z tą infekcją __________ wziąć wszystkie antybiotyki.",
+                    options: ["you have to", "you has to", "you having to", "you are have to"],
+                    correctIndex: 0
+                },
+                {
+                    question: "On __________ zostać w łóżku przez 2 dni.",
+                    options: ["he have to", "he has to", "he having to", "he is have to"],
+                    correctIndex: 1
+                },
+                {
+                    question: "Przy lekkiej gorączce __________ iść do lekarza.",
+                    options: ["you don't have to", "you doesn't have to", "you haven't to", "you not have to"],
+                    correctIndex: 0
+                },
+                {
+                    question: "Ona __________ brać leków na małe stłuczenie.",
+                    options: ["she don't have to", "she doesn't have to", "she haven't to", "she not have to"],
+                    correctIndex: 1
+                }
+            ],
+            quiz7: [
+                {
+                    question: "Ułóż pytanie: 'Czy muszę brać to lekarstwo trzy razy dziennie?'",
+                    words: ["I", "do", "have to", "take", "times", "medicine", "this", "three", "a day", "?"],
+                    correctOrder: "Do I have to take this medicine three times a day ?"
+                },
+                {
+                    question: "Ułóż pytanie: 'Czy ona musi iść do dentysty z bólem zęba?'",
+                    words: ["does", "she", "have to", "the", "with", "go", "to", "dentist", "toothache", "?"],
+                    correctOrder: "Does she have to go to the dentist with toothache ?"
+                },
+                {
+                    question: "Ułóż pytanie: 'Czy musimy położyć plaster na to skaleczenie?'",
+                    words: ["do", "we", "have to", "put", "a", "on", "plaster", "cut", "this", "?"],
+                    correctOrder: "Do we have to put a plaster on this cut ?"
+                }
+            ],
+            quiz8: [
+                {
+                    question: "Do you have to take this medicine every day?",
+                    options: ["Yes, I do.", "Yes, I have.", "No, I don't. I only have to take it twice a week.", "No, I haven't."],
+                    correctIndex: [0, 2]
+                },
+                {
+                    question: "Does she have to see a doctor with that cough?",
+                    options: ["Yes, she has.", "Yes, she does.", "No, she doesn't. It's just a mild cough.", "No, she hasn't."],
+                    correctIndex: [1, 2]
+                },
+                {
+                    question: "Do we have to put a plaster on this small cut?",
+                    options: ["Yes, we do.", "Yes, we have.", "No, we don't. It's very small.", "No, we haven't."],
+                    correctIndex: [0, 2]
+                }
+            ],
+            finalQuiz: [
+                {
+                    question: "Wybierz poprawną formę: 'Powinieneś iść do lekarza z tym bólem gardła.'",
+                    options: ["You should see a doctor with that sore throat.", "You have to see a doctor with that sore throat.", "You should to see a doctor with that sore throat.", "You should seeing a doctor with that sore throat."],
+                    correctIndex: 0
+                },
+                {
+                    question: "Wybierz poprawną formę: 'Nie powinieneś iść do pracy z gorączką.'",
+                    options: ["You don't have to go to work with a fever.", "You haven't to go to work with a fever.", "You shouldn't go to work with a fever.", "You not should go to work with a fever."],
+                    correctIndex: 2
+                },
+                {
+                    question: "Wybierz poprawną formę: 'Musisz wziąć te tabletki trzy razy dziennie.'",
+                    options: ["You must to take these pills three times a day.", "You should take these pills three times a day.", "You having to take these pills three times a day.", "You have to take these pills three times a day."],
+                    correctIndex: 3
+                },
+                {
+                    question: "Wybierz poprawną formę: 'Czy powinienem przyłożyć lód do stłuczenia?'",
+                    options: ["Do I should put some ice on the bruise?", "Am I should put some ice on the bruise?", "Should I put some ice on the bruise?", "Should I to put some ice on the bruise?"],
+                    correctIndex: 2
+                },
+                {
+                    question: "Wybierz poprawną formę: 'Czy ona musi iść do dentysty z bólem zęba?'",
+                    options: ["Does she has to go to the dentist with a toothache?", "Does she have to go to the dentist with a toothache?", "Has she to go to the dentist with a toothache?", "Is she has to go to the dentist with a toothache?"],
+                    correctIndex: 1
+                },
+                {
+                    question: "Uzupełnij: 'You __________ drink more water when you have a fever.' (powinieneś)",
+                    answer: "should"
+                },
+                {
+                    question: "Uzupełnij: 'She __________ stay in bed with that high temperature.' (musi)",
+                    answer: "has to"
+                },
+                {
+                    question: "Uzupełnij: 'You __________ take medicine for a small headache.' (nie musisz)",
+                    answer: "don't have to"
+                },
+                {
+                    question: "Uzupełnij: 'He __________ go to work with that cold.' (nie powinien)",
+                    answer: "shouldn't"
+                },
+                {
+                    question: "Uzupełnij: 'She __________ see a doctor about that sore throat.' (powinna)",
+                    answer: "should"
+                }
+            ]
+        };
+        
+        // Initialize the progress bar
+        updateProgress();
+        
+        // Generate quizzes
+        generateQuiz('quiz1');
+        generateQuiz('quiz3', true); // Word order quiz
+        generateQuiz('quiz4', false, true); // Multiple correct answers possible
+        generateQuiz('quiz5');
+        generateQuiz('quiz7', true); // Word order quiz
+        generateQuiz('quiz8', false, true); // Multiple correct answers possible
+        generateFinalQuiz();
+        
+        function nextSection() {
+            document.getElementById(`section${currentSection}`).classList.remove('active');
+            currentSection++;
+            document.getElementById(`section${currentSection}`).classList.add('active');
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+        
+        function previousSection() {
+            document.getElementById(`section${currentSection}`).classList.remove('active');
+            currentSection--;
+            document.getElementById(`section${currentSection}`).classList.add('active');
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+        
+        function updateProgress() {
+            const progress = ((currentSection - 1) / (totalSections - 1)) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            document.getElementById('progressInfo').textContent = `${Math.round(progress)}% ukończono`;
+        }
+        
+        function checkAnswer(element, isCorrect) {
+            const options = element.parentElement.querySelectorAll('.option');
+            options.forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+            });
+            
+            element.classList.add('selected');
+            
+            if (isCorrect) {
+                element.classList.add('correct');
+                const feedbackId = element.parentElement.nextElementSibling.id;
+                document.getElementById(feedbackId).textContent = "Poprawna odpowiedź! 👍";
+                document.getElementById(feedbackId).className = "feedback correct";
+                
+                // Enable next button based on section
+                if (currentSection === 2) {
+                    document.getElementById('section2Next').disabled = false;
+                } else if (currentSection === 5) {
+                    document.getElementById('section5Next').disabled = false;
+                }
+            } else {
+                element.classList.add('incorrect');
+                const feedbackId = element.parentElement.nextElementSibling.id;
+                document.getElementById(feedbackId).textContent = "Niepoprawna odpowiedź. Spróbuj jeszcze raz.";
+                document.getElementById(feedbackId).className = "feedback incorrect";
+            }
+        }
+        
+        function generateQuiz(quizId, isWordOrder = false, multipleCorrect = false) {
+            const quizElement = document.getElementById(quizId);
+            if (!quizElement) return;
+            
+            // Shuffle questions
+            const shuffledQuestions = [...quizData[quizId]];
+            for (let i = shuffledQuestions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffledQuestions[i], shuffledQuestions[j]] = [shuffledQuestions[j], shuffledQuestions[i]];
+            }
+            
+            shuffledQuestions.forEach((q, qIndex) => {
+                const questionContainer = document.createElement('div');
+                questionContainer.className = 'question-container';
+                
+                const questionText = document.createElement('p');
+                questionText.textContent = `${qIndex + 1}. ${q.question}`;
+                questionContainer.appendChild(questionText);
+                
+                if (isWordOrder) {
+                    // Word order quiz
+                    const wordBank = document.createElement('div');
+                    wordBank.className = 'options';
+                    wordBank.style.display = 'flex';
+                    wordBank.style.flexWrap = 'wrap';
+                    wordBank.style.gap = '5px';
+                    
+                    // Shuffle words
+                    const shuffledWords = [...q.words];
+                    for (let i = shuffledWords.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [shuffledWords[i], shuffledWords[j]] = [shuffledWords[j], shuffledWords[i]];
+                    }
+                    
+                    shuffledWords.forEach(word => {
+                        const wordOption = document.createElement('div');
+                        wordOption.className = 'option';
+                        wordOption.textContent = word;
+                        wordOption.style.margin = '5px';
+                        wordOption.style.padding = '10px';
+                        wordOption.style.cursor = 'pointer';
+                        wordOption.onclick = function() {
+                            const answerBox = questionContainer.querySelector('.answer-box');
+                            if (answerBox.textContent === 'Twoja odpowiedź: ') {
+                                answerBox.textContent += word;
+                            } else {
+                                answerBox.textContent += ' ' + word;
+                            }
+                            this.style.display = 'none';
+                        };
+                        wordBank.appendChild(wordOption);
+                    });
+                    
+                    questionContainer.appendChild(wordBank);
+                    
+                    const answerBox = document.createElement('div');
+                    answerBox.className = 'answer-box';
+                    answerBox.textContent = 'Twoja odpowiedź: ';
+                    answerBox.style.marginTop = '15px';
+                    answerBox.style.marginBottom = '15px';
+                    answerBox.style.padding = '10px';
+                    answerBox.style.border = '1px solid #ddd';
+                    answerBox.style.borderRadius = '5px';
+                    questionContainer.appendChild(answerBox);
+                    
+                    const resetBtn = document.createElement('button');
+                    resetBtn.textContent = 'Reset';
+                    resetBtn.className = 'check-btn';
+                    resetBtn.style.marginRight = '10px';
+                    resetBtn.onclick = function() {
+                        answerBox.textContent = 'Twoja odpowiedź: ';
+                        wordBank.querySelectorAll('.option').forEach(opt => {
+                            opt.style.display = 'block';
+                        });
+                        feedback.textContent = '';
+                        feedback.className = 'feedback';
+                    };
+                    questionContainer.appendChild(resetBtn);
+                    
+                    const checkBtn = document.createElement('button');
+                    checkBtn.textContent = 'Sprawdź';
+                    checkBtn.className = 'check-btn';
+                    checkBtn.onclick = function() {
+                        const userAnswer = answerBox.textContent.replace('Twoja odpowiedź: ', '');
+                        if (userAnswer.trim() === q.correctOrder.trim()) {
+                            feedback.textContent = 'Poprawna odpowiedź! 👍';
+                            feedback.className = 'feedback correct';
+                        } else {
+                            feedback.textContent = 'Niepoprawna odpowiedź. Spróbuj jeszcze raz.';
+                            feedback.className = 'feedback incorrect';
+                        }
+                    };
+                    questionContainer.appendChild(checkBtn);
+                } else {
+                    // Multiple choice quiz
+                    const options = document.createElement('div');
+                    options.className = 'options';
+                    
+                    // Shuffle options
+                    const shuffledOptions = [...q.options];
+                    for (let i = shuffledOptions.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [shuffledOptions[i], shuffledOptions[j]] = [shuffledOptions[j], shuffledOptions[i]];
+                    }
+                    
+                    shuffledOptions.forEach((option, index) => {
+                        const optionElement = document.createElement('div');
+                        optionElement.className = 'option';
+                        optionElement.textContent = option;
+                        
+                        if (multipleCorrect) {
+                            // For quizzes with multiple correct answers
+                            optionElement.onclick = function() {
+                                this.classList.toggle('selected');
+                            };
+                        } else {
+                            // For quizzes with single correct answer
+                            const isCorrect = Array.isArray(q.correctIndex) ? 
+                                q.correctIndex.includes(shuffledOptions.indexOf(option)) : 
+                                shuffledOptions.indexOf(option) === q.correctIndex;
+                                
+                            optionElement.onclick = function() {
+                                checkAnswer(this, isCorrect);
+                            };
+                        }
+                        
+                        options.appendChild(optionElement);
+                    });
+                    
+                    questionContainer.appendChild(options);
+                    
+                    if (multipleCorrect) {
+                        const checkBtn = document.createElement('button');
+                        checkBtn.textContent = 'Sprawdź';
+                        checkBtn.className = 'check-btn';
+                        checkBtn.onclick = function() {
+                            const selectedOptions = options.querySelectorAll('.option.selected');
+                            let allCorrect = true;
+                            
+                            if (selectedOptions.length === 0) {
+                                return; // Don't check if nothing selected
+                            }
+                            
+                            // Check if all selected options are correct
+                            selectedOptions.forEach(selected => {
+                                const optionIndex = Array.from(shuffledOptions).indexOf(selected.textContent);
+                                const originalIndex = shuffledOptions.indexOf(selected.textContent);
+                                
+                                if (!q.correctIndex.includes(originalIndex)) {
+                                    allCorrect = false;
+                                }
+                            });
+                            
+                            // Check if all correct options are selected
+                            if (selectedOptions.length !== q.correctIndex.length) {
+                                allCorrect = false;
+                            }
+                            
+                            // Mark options as correct/incorrect
+                            options.querySelectorAll('.option').forEach(option => {
+                                option.classList.remove('correct', 'incorrect');
+                                
+                                if (option.classList.contains('selected')) {
+                                    const optionIndex = shuffledOptions.indexOf(option.textContent);
+                                    if (q.correctIndex.includes(optionIndex)) {
+                                        option.classList.add('correct');
+                                    } else {
+                                        option.classList.add('incorrect');
+                                    }
+                                }
+                            });
+                            
+                            // Show feedback
+                            if (allCorrect) {
+                                feedback.textContent = 'Poprawna odpowiedź! 👍';
+                                feedback.className = 'feedback correct';
+                            } else {
+                                feedback.textContent = 'Niepoprawna odpowiedź. Spróbuj jeszcze raz.';
+                                feedback.className = 'feedback incorrect';
+                            }
+                        };
+                        questionContainer.appendChild(checkBtn);
+                    }
+                }
+                
+                const feedback = document.createElement('div');
+                feedback.className = 'feedback';
+                feedback.id = `${quizId}q${qIndex}feedback`;
+                questionContainer.appendChild(feedback);
+                
+                quizElement.appendChild(questionContainer);
+            });
+        }
+        
+        function generateFinalQuiz() {
+            const quizElement = document.getElementById('finalQuiz');
+            if (!quizElement) return;
+            
+            quizData.finalQuiz.forEach((q, qIndex) => {
+                const questionContainer = document.createElement('div');
+                questionContainer.className = 'question-container';
+                questionContainer.dataset.questionIndex = qIndex;
+                
+                const questionText = document.createElement('p');
+                questionText.textContent = `${qIndex + 1}. ${q.question}`;
+                questionContainer.appendChild(questionText);
+                
+                if (q.options) {
+                    // Multiple choice question
+                    const options = document.createElement('div');
+                    options.className = 'options';
+                    
+                    // Shuffle options
+                    const shuffledOptions = [...q.options];
+                    for (let i = shuffledOptions.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [shuffledOptions[i], shuffledOptions[j]] = [shuffledOptions[j], shuffledOptions[i]];
+                    }
+                    
+                    shuffledOptions.forEach((option, index) => {
+                        const optionElement = document.createElement('div');
+                        optionElement.className = 'option';
+                        optionElement.textContent = option;
+                        optionElement.dataset.value = option;
+                        
+                        optionElement.onclick = function() {
+                            options.querySelectorAll('.option').forEach(opt => {
+                                opt.classList.remove('selected');
+                            });
+                            this.classList.add('selected');
+                        };
+                        
+                        options.appendChild(optionElement);
+                    });
+                    
+                    questionContainer.appendChild(options);
+                } else {
+                    // Text input question
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.placeholder = 'Wpisz odpowiedź';
+                    questionContainer.appendChild(input);
+                }
+                
+                quizElement.appendChild(questionContainer);
+            });
+        }
+        
+        function calculateFinalScore() {
+            const questions = document.querySelectorAll('#finalQuiz .question-container');
+            let score = 0;
+            let total = questions.length;
+            
+            questions.forEach(question => {
+                const qIndex = parseInt(question.dataset.questionIndex);
+                const q = quizData.finalQuiz[qIndex];
+                
+                if (q.options) {
+                    // Multiple choice question
+                    const selectedOption = question.querySelector('.option.selected');
+                    if (selectedOption) {
+                        const selectedText = selectedOption.textContent;
+                        const correctOption = q.options[q.correctIndex];
+                        
+                        if (selectedText === correctOption) {
+                            score++;
+                            selectedOption.classList.add('correct');
+                        } else {
+                            selectedOption.classList.add('incorrect');
+                        }
+                    }
+                } else {
+                    // Text input question
+                    const input = question.querySelector('input');
+                    if (input && input.value.trim().toLowerCase() === q.answer.toLowerCase()) {
+                        score++;
+                        input.classList.add('input-correct');
+                    } else if (input.value.trim() !== '') {
+                        input.classList.add('input-incorrect');
+                    }
+                }
+            });
+            
+            // Display the result
+            document.getElementById('finalResult').style.display = 'block';
+            document.getElementById('scoreDisplay').textContent = `${score} / ${total} punktów (${Math.round((score / total) * 100)}%)`;
+            
+            // Personalized message based on score
+            let message = "";
+            const percentage = (score / total) * 100;
+            
+            if (percentage >= 90) {
+                message = "Doskonały wynik! Świetnie opanowałeś/aś używanie 'should' i 'have to' w kontekście zdrowotnym.";
+            } else if (percentage >= 75) {
+                message = "Bardzo dobry wynik! Dobrze rozumiesz zasady używania 'should' i 'have to'.";
+            } else if (percentage >= 60) {
+                message = "Dobry wynik! Rozumiesz podstawy używania 'should' i 'have to', ale warto jeszcze poćwiczyć.";
+            } else {
+                message = "Warto powtórzyć materiał. Zacznij lekcję od początku, aby lepiej zrozumieć zasady używania 'should' i 'have to'.";
+            }
+            
+            document.getElementById('scoreMessage').textContent = message;
+            document.getElementById('checkAnswers').style.display = 'none';
+        }
+        
+        function checkExercise2(inputId, correctAnswer) {
+            const input = document.getElementById(inputId);
+            const feedback = document.getElementById(`${inputId}feedback`);
+            const userInput = input.value.trim().toLowerCase();
+            
+            if (userInput === correctAnswer.toLowerCase()) {
+                input.className = "input-correct";
+                feedback.textContent = "Poprawna odpowiedź! 👍";
+                feedback.className = "feedback correct";
+            } else {
+                input.className = "input-incorrect";
+                feedback.textContent = "Niepoprawna odpowiedź. Spróbuj jeszcze raz.";
+                feedback.className = "feedback incorrect";
+            }
+        }
+        
+        function checkExercise6(inputId, correctAnswer) {
+            const input = document.getElementById(inputId);
+            const feedback = document.getElementById(`${inputId}feedback`);
+            const userInput = input.value.trim().toLowerCase();
+            
+            if (userInput === correctAnswer.toLowerCase()) {
+                input.className = "input-correct";
+                feedback.textContent = "Poprawna odpowiedź! 👍";
+                feedback.className = "feedback correct";
+            } else {
+                input.className = "input-incorrect";
+                feedback.textContent = "Niepoprawna odpowiedź. Spróbuj jeszcze raz.";
+                feedback.className = "feedback incorrect";
+            }
+        }
+        
+        function resetLesson() {
+            // Reset all variables
+            currentSection = 1;
+            
+            // Reset UI
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById('section1').classList.add('active');
+            
+            document.querySelectorAll('.next-btn').forEach(button => {
+                button.disabled = false;
+            });
+            document.getElementById('section2Next').disabled = true;
+            document.getElementById('section5Next').disabled = true;
+            
+            document.querySelectorAll('.feedback').forEach(feedback => {
+                feedback.textContent = "";
+                feedback.className = "feedback";
+            });
+            
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+            });
+            
+            document.querySelectorAll('input[type="text"]').forEach(input => {
+                input.value = "";
+                input.className = "";
+            });
+            
+            document.getElementById('finalResult').style.display = 'none';
+            document.getElementById('checkAnswers').style.display = 'block';
+            
+            // Regenerate quizzes
+            document.getElementById('quiz1').innerHTML = '';
+            document.getElementById('quiz3').innerHTML = '';
+            document.getElementById('quiz4').innerHTML = '';
+            document.getElementById('quiz5').innerHTML = '';
+            document.getElementById('quiz7').innerHTML = '';
+            document.getElementById('quiz8').innerHTML = '';
+            document.getElementById('finalQuiz').innerHTML = '';
+            
+            generateQuiz('quiz1');
+            generateQuiz('quiz3', true);
+            generateQuiz('quiz4', false, true);
+            generateQuiz('quiz5');
+            generateQuiz('quiz7', true);
+            generateQuiz('quiz8', false, true);
+            generateFinalQuiz();
+            
+            // Update progress bar
+            updateProgress();
+            
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
