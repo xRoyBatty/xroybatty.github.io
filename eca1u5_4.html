@@ -1,0 +1,2560 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nauka Angielskich Zwrotów Konwersacyjnych</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #6f9ceb;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --border-radius: 10px;
+            --box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+            --font-size-base: 18px;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: #e9ecef;
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-size: var(--font-size-base);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+        
+        header {
+            background: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 25px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .card-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .card-body {
+            padding: 25px;
+        }
+        
+        .btn {
+            display: inline-block;
+            font-weight: 500;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            cursor: pointer;
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            text-decoration: none;
+            border: none;
+            margin: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #3a5a8a;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #218838;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        
+        .btn-lg {
+            padding: 15px 30px;
+            font-size: 1.25rem;
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline:hover, .btn-outline.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .text-success {
+            color: var(--success-color);
+        }
+        
+        .text-danger {
+            color: var(--danger-color);
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Sections */
+        .view {
+            display: none;
+        }
+        
+        .view.active {
+            display: block;
+        }
+        
+        /* Welcome Section */
+        .welcome-section {
+            text-align: center;
+            padding: 30px 20px;
+        }
+        
+        .welcome-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+        
+        .welcome-section p {
+            margin-bottom: 20px;
+            font-size: 1.15rem;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Group Selection */
+        .group-selection {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .group-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            width: 270px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: var(--transition);
+            cursor: pointer;
+            border: 3px solid transparent;
+        }
+        
+        .group-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .group-card.active {
+            border-color: var(--primary-color);
+            background-color: rgba(74, 111, 165, 0.05);
+        }
+        
+        .group-card.completed {
+            border-color: var(--success-color);
+        }
+        
+        .group-card.active::before {
+            content: '✓';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        .group-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.25rem;
+        }
+        
+        .group-card p {
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            flex-grow: 1;
+        }
+        
+        .group-card .phrase-examples {
+            font-style: italic;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .group-card .progress-bar-container {
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .group-card .progress-bar {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 4px;
+        }
+        
+        /* Group Information */
+        .group-info {
+            margin-bottom: 30px;
+            border-left: 5px solid var(--primary-color);
+            padding-left: 20px;
+        }
+        
+        .group-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+        
+        .group-desc {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        
+        .phrase-example {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            flex-wrap: wrap;
+        }
+        
+        .phrase-english, .phrase-polish {
+            flex: 1;
+            padding: 8px 12px;
+            text-align: center;
+            font-size: 1.1rem;
+            min-width: 120px;
+        }
+        
+        .phrase-arrow {
+            font-size: 1.8rem;
+            margin: 0 10px;
+            color: var(--primary-color);
+        }
+        
+        /* Exercise Styles */
+        .exercise-container {
+            margin-bottom: 30px;
+        }
+        
+        .question-container {
+            margin-bottom: 25px;
+            padding: 25px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .question-prompt {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            text-align: center;
+            line-height: 1.6;
+        }
+        
+        .target-phrase {
+            font-weight: bold;
+            font-size: 1.6rem;
+            color: var(--primary-color);
+            padding: 8px 15px;
+            border-radius: 4px;
+            background-color: rgba(74, 111, 165, 0.1);
+            display: block;
+            margin: 15px auto;
+            max-width: 90%;
+            text-align: center;
+        }
+        
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .option-btn {
+            background-color: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 12px 20px;
+            text-align: center;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.1rem;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .option-btn:hover {
+            background-color: rgba(74, 111, 165, 0.1);
+        }
+        
+        .option-btn.selected {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+        }
+        
+        .feedback-message {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .feedback-correct {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: #155724;
+        }
+        
+        .feedback-incorrect {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #721c24;
+        }
+        
+        .typing-container {
+            max-width: 700px;
+            margin: 30px auto;
+        }
+        
+        .answer-input {
+            display: block;
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1.2rem;
+            border: 2px solid #ced4da;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+        }
+        
+        .answer-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.25);
+        }
+        
+        .input-feedback {
+            margin-top: 8px;
+            font-size: 1rem;
+            color: #6c757d;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 25px;
+            background-color: #e9ecef;
+            border-radius: 15px;
+            margin: 25px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--success-color);
+            border-radius: 15px;
+            transition: width 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        /* Animation for letter changes */
+        .highlight {
+            color: var(--primary-color);
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .flash {
+            animation: flash-animation 1s;
+        }
+        
+        @keyframes flash-animation {
+            0% { background-color: rgba(111, 156, 235, 0); }
+            50% { background-color: rgba(111, 156, 235, 0.5); }
+            100% { background-color: rgba(111, 156, 235, 0); }
+        }
+        
+        /* Indicators */
+        .level-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: var(--box-shadow);
+            z-index: 100;
+            font-size: 1rem;
+        }
+        
+        .indicators-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .indicator {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 10px 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .indicator-icon {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+        
+        /* Phrase Card Styles */
+        .phrase-cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .phrase-card {
+            width: 320px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .phrase-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .phrase-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.3rem;
+        }
+        
+        .phrase-card-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .phrase-text {
+            font-size: 1.2rem;
+            margin: 8px 0;
+            width: 100%;
+            text-align: center;
+            padding: 12px;
+            border-radius: 4px;
+        }
+        
+        .phrase-english-display {
+            background-color: rgba(74, 111, 165, 0.1);
+        }
+        
+        .phrase-polish-display {
+            background-color: rgba(111, 156, 235, 0.1);
+        }
+        
+        /* Results summary */
+        .results-summary {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .results-summary h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .mastery-level {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .mastery-category {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px;
+            margin: 0 8px 15px;
+            text-align: center;
+            border-radius: var(--border-radius);
+        }
+        
+        .mastery-beginner {
+            background-color: rgba(220, 53, 69, 0.2);
+        }
+        
+        .mastery-intermediate {
+            background-color: rgba(255, 193, 7, 0.2);
+        }
+        
+        .mastery-advanced {
+            background-color: rgba(40, 167, 69, 0.2);
+        }
+        
+        .mastery-label {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .mastery-count {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        /* Dropdown select for level and group navigation */
+        .navigation-select {
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            border: 2px solid var(--primary-color);
+            background-color: white;
+            color: var(--primary-color);
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.1rem;
+            min-width: 200px;
+        }
+        
+        .navigation-select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.25);
+        }
+        
+        /* Multi-level navigation */
+        .navigation-tabs {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .nav-tab {
+            padding: 12px 20px;
+            background-color: #e9ecef;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: bold;
+            min-width: 100px;
+            text-align: center;
+        }
+        
+        .nav-tab:hover {
+            background-color: #d8dfe5;
+        }
+        
+        .nav-tab.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        /* Stats display */
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 30px 0;
+            gap: 20px;
+        }
+        
+        .stat-box {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            min-width: 180px;
+            margin: 10px;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 15px 0;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: var(--dark-color);
+            font-weight: bold;
+        }
+        
+        /* Level progression panel */
+        .level-progression {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .level-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #e9ecef;
+            color: var(--dark-color);
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border: none;
+        }
+        
+        .level-button:hover {
+            transform: scale(1.1);
+        }
+        
+        .level-button.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .level-button.completed {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .level-button.locked {
+            background-color: #ced4da;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 25px;
+            background-color: var(--primary-color);
+            color: white;
+            margin-top: auto;
+            font-size: 1rem;
+        }
+        
+        /* Overlay styles */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .popup {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        .popup h3 {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+        
+        .popup p {
+            margin-bottom: 25px;
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+        
+        .popup .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .emoji {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        /* Group navigation panel */
+        .group-nav-panel {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .group-nav-title {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        
+        .group-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .group-button {
+            padding: 10px 15px;
+            background-color: #e9ecef;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+            min-width: 100px;
+            text-align: center;
+            border: none;
+        }
+        
+        .group-button:hover {
+            background-color: #d8dfe5;
+        }
+        
+        .group-button.active {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+        }
+        
+        .group-button.completed {
+            position: relative;
+        }
+        
+        .group-button.completed::after {
+            content: '✓';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            color: var(--success-color);
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            :root {
+                --font-size-base: 16px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .phrase-example {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .phrase-arrow {
+                transform: rotate(90deg);
+                margin: 10px 0;
+            }
+            
+            .phrase-english, .phrase-polish {
+                width: 100%;
+                text-align: left;
+            }
+            
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .navigation {
+                flex-direction: column;
+            }
+            
+            .navigation .btn, .navigation-select {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .group-card {
+                width: 100%;
+                max-width: 350px;
+            }
+            
+            .stat-box {
+                min-width: 140px;
+                padding: 15px;
+            }
+            
+            .stat-value {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Angielskie Zwroty Konwersacyjne</h1>
+        <p>Nauka podstawowych zwrotów komunikacyjnych</p>
+    </header>
+    
+    <div class="container">
+        <!-- Welcome View -->
+        <div id="welcomeView" class="view active">
+            <div class="welcome-section">
+                <h2>Witaj w aplikacji do nauki angielskich zwrotów konwersacyjnych!</h2>
+                <p>Ta aplikacja pomoże Ci nauczyć się przydatnych zwrotów używanych w codziennych rozmowach po angielsku, nawet jeśli dopiero zaczynasz naukę języka.</p>
+                <p>Zwroty zostały pogrupowane tematycznie, aby ułatwić ich zapamiętywanie i zastosowanie w różnych sytuacjach.</p>
+                
+                <div class="card">
+                    <div class="card-header">Proces nauki</div>
+                    <div class="card-body">
+                        <p>1. <strong>Poznaj grupy zwrotów</strong> - zobacz i zrozum zwroty w każdej grupie tematycznej</p>
+                        <p>2. <strong>Ucz się krok po kroku</strong> - przechodząc przez różne typy ćwiczeń</p>
+                        <p>3. <strong>Ćwicz każdą grupę</strong> - możesz wracać do wcześniejszych grup, aby je powtórzyć</p>
+                        <p>4. <strong>Sprawdź swój postęp</strong> - aplikacja śledzi twoje osiągnięcia dla każdego zwrotu</p>
+                        <p>5. <strong>Eksperymentuj z różnymi poziomami trudności</strong> - od wyboru prawidłowego zwrotu po jego samodzielne wpisanie</p>
+                    </div>
+                </div>
+                
+                <div class="text-center" style="margin-top: 40px;">
+                    <button id="startLearningBtn" class="btn btn-primary btn-lg">Rozpocznij naukę</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Group Selection View -->
+        <div id="groupSelectionView" class="view">
+            <h2 class="text-center">Wybierz grupę do nauki</h2>
+            <p class="text-center">Zwroty zostały podzielone na 4 grupy tematyczne. Wybierz grupę, którą chcesz się teraz uczyć.</p>
+            
+            <div class="group-selection" id="groupCards">
+                <!-- Group cards will be dynamically inserted here -->
+            </div>
+            
+            <div class="text-center" style="margin-top: 30px;">
+                <button id="startSelectedGroupBtn" class="btn btn-primary btn-lg">Rozpocznij naukę wybranej grupy</button>
+            </div>
+        </div>
+        
+        <!-- Group Introduction View -->
+        <div id="groupIntroView" class="view">
+            <div id="groupNavigation" class="group-nav-panel">
+                <div class="group-nav-title">Wybierz grupę</div>
+                <div class="group-buttons" id="groupButtonsContainer">
+                    <!-- Group buttons will be dynamically inserted here -->
+                </div>
+            </div>
+            
+            <h2 class="text-center" id="currentGroupTitle">Grupa 1: Propozycje z "Let's"</h2>
+            <p class="text-center" id="currentGroupDesc">W tej grupie znajdują się zwroty używane do proponowania wspólnych aktywności, zaczynające się od "Let's".</p>
+            
+            <div class="group-info" id="currentGroupPhrases">
+                <!-- Phrase examples will be dynamically inserted here -->
+            </div>
+            
+            <div class="level-progression" id="levelProgressionContainer">
+                <!-- Level buttons will be dynamically inserted here -->
+            </div>
+            
+            <div class="text-center" style="margin-top: 30px;">
+                <button id="startExercisesBtn" class="btn btn-primary btn-lg">Rozpocznij ćwiczenia</button>
+                <button id="backToGroupsBtn" class="btn btn-outline">Wróć do wyboru grupy</button>
+            </div>
+        </div>
+        
+        <!-- Exercise View -->
+        <div id="exerciseView" class="view">
+            <div class="level-indicator" id="currentLevelIndicator">Grupa 1: Poziom 1</div>
+            
+            <div id="exerciseNavigation" class="group-nav-panel">
+                <div class="group-buttons" id="exerciseGroupButtonsContainer">
+                    <!-- Group buttons will be dynamically inserted here -->
+                </div>
+                
+                <div class="level-progression" id="exerciseLevelProgressionContainer">
+                    <!-- Level buttons will be dynamically inserted here -->
+                </div>
+            </div>
+            
+            <h2 class="text-center" id="exerciseTitle">Ćwiczenie: Wybór tłumaczenia angielskiego</h2>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="exerciseProgress" style="width: 0%;">0%</div>
+            </div>
+            
+            <div class="indicators-container">
+                <div class="indicator">
+                    <span class="indicator-icon">📚</span>
+                    <span id="exerciseCounter">Pytanie 1 z 5</span>
+                </div>
+                <div class="indicator">
+                    <span class="indicator-icon">✓</span>
+                    <span id="correctCounter">Poprawne: 0</span>
+                </div>
+            </div>
+            
+            <div class="exercise-container">
+                <div class="question-container">
+                    <div class="question-prompt" id="questionPrompt">Co oznacza po angielsku:</div>
+                    <div class="target-phrase" id="targetPhrase">Zróbmy coś fajnego</div>
+                    
+                    <div id="multipleChoiceContainer" class="options-container">
+                        <!-- Options will be dynamically inserted here -->
+                    </div>
+                    
+                    <div id="typingContainer" class="typing-container hidden">
+                        <input type="text" id="answerInput" class="answer-input" placeholder="Wpisz odpowiedź..." autocomplete="off">
+                        <div class="input-feedback" id="inputFeedback"></div>
+                        <button id="checkAnswerBtn" class="btn btn-primary btn-block">Sprawdź odpowiedź</button>
+                    </div>
+                    
+                    <div id="feedbackMessage" class="feedback-message hidden"></div>
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <button id="prevQuestionBtn" class="btn btn-outline" disabled>Poprzednie</button>
+                <button id="nextQuestionBtn" class="btn btn-primary">Następne</button>
+            </div>
+        </div>
+        
+        <!-- Level Complete View -->
+        <div id="levelCompleteView" class="view">
+            <div class="welcome-section">
+                <h2>Gratulacje! Ukończyłeś poziom!</h2>
+                
+                <div class="stats-container">
+                    <div class="stat-box">
+                        <div class="stat-label">Grupa</div>
+                        <div class="stat-value" id="completedGroupNumber">1</div>
+                    </div>
+                    
+                    <div class="stat-box">
+                        <div class="stat-label">Poziom</div>
+                        <div class="stat-value" id="completedLevelNumber">1</div>
+                    </div>
+                    
+                    <div class="stat-box">
+                        <div class="stat-label">Poprawne odpowiedzi</div>
+                        <div class="stat-value" id="completedCorrectAnswers">4/5</div>
+                    </div>
+                    
+                    <div class="stat-box">
+                        <div class="stat-label">Dokładność</div>
+                        <div class="stat-value" id="completedAccuracy">80%</div>
+                    </div>
+                </div>
+                
+                <div class="card" style="margin-top: 30px;">
+                    <div class="card-header">Zwroty w tej grupie</div>
+                    <div class="card-body">
+                        <div class="phrase-cards" id="completedPhraseContainer">
+                            <!-- Phrase cards will be inserted here dynamically -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="navigation-tabs">
+                    <div class="nav-tab active" data-tab="next-level">Następny poziom</div>
+                    <div class="nav-tab" data-tab="retry-level">Powtórz poziom</div>
+                    <div class="nav-tab" data-tab="choose-level">Wybierz inny poziom</div>
+                    <div class="nav-tab" data-tab="choose-group">Wybierz inną grupę</div>
+                </div>
+                
+                <div id="nextLevelPanel" class="tab-panel">
+                    <p>Gotów na następny poziom? Kliknij przycisk poniżej, aby kontynuować.</p>
+                    <button id="goToNextLevelBtn" class="btn btn-primary btn-lg">Przejdź do następnego poziomu</button>
+                </div>
+                
+                <div id="retryLevelPanel" class="tab-panel hidden">
+                    <p>Chcesz powtórzyć ten poziom? Kliknij przycisk poniżej.</p>
+                    <button id="retryLevelBtn" class="btn btn-primary btn-lg">Powtórz ten poziom</button>
+                </div>
+                
+                <div id="chooseLevelPanel" class="tab-panel hidden">
+                    <p>Wybierz poziom, który chcesz kontynuować:</p>
+                    <div class="level-progression" id="chooseLevelContainer">
+                        <!-- Level buttons will be dynamically inserted here -->
+                    </div>
+                </div>
+                
+                <div id="chooseGroupPanel" class="tab-panel hidden">
+                    <p>Wybierz inną grupę do nauki:</p>
+                    <div class="group-buttons" id="chooseGroupContainer">
+                        <!-- Group buttons will be dynamically inserted here -->
+                    </div>
+                    <button id="goToSelectedGroupBtn" class="btn btn-primary btn-lg" style="margin-top: 20px;">Przejdź do wybranej grupy</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results View -->
+        <div id="resultsView" class="view">
+            <h2 class="text-center">Twój Postęp w Nauce</h2>
+            
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-label">Ukończone grupy</div>
+                    <div class="stat-value" id="completedGroups">0/4</div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-label">Ukończone poziomy</div>
+                    <div class="stat-value" id="totalCompletedLevels">0/16</div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-label">Dokładność</div>
+                    <div class="stat-value" id="totalAccuracy">0%</div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-label">Opanowane zwroty</div>
+                    <div class="stat-value" id="masteredPhrases">0/21</div>
+                </div>
+            </div>
+            
+            <div class="results-summary">
+                <h3>Poziom opanowania zwrotów</h3>
+                <div class="mastery-level">
+                    <div class="mastery-category mastery-beginner">
+                        <div class="mastery-label">Początkujący</div>
+                        <div class="mastery-count" id="beginnerCount">0</div>
+                    </div>
+                    
+                    <div class="mastery-category mastery-intermediate">
+                        <div class="mastery-label">Średnio zaawansowany</div>
+                        <div class="mastery-count" id="intermediateCount">0</div>
+                    </div>
+                    
+                    <div class="mastery-category mastery-advanced">
+                        <div class="mastery-label">Zaawansowany</div>
+                        <div class="mastery-count" id="advancedCount">0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card" style="margin-top: 30px;">
+                <div class="card-header">Wszystkie zwroty</div>
+                <div class="card-body">
+                    <div class="phrase-cards" id="allPhrasesContainer">
+                        <!-- Phrase cards will be inserted here dynamically -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center" style="margin-top: 30px;">
+                <button id="continueLearningBtn" class="btn btn-primary btn-lg">Kontynuuj naukę</button>
+                <button id="resetProgressBtn" class="btn btn-danger">Resetuj postęp</button>
+            </div>
+        </div>
+        
+        <!-- Success Overlay -->
+        <div id="successOverlay" class="overlay hidden">
+            <div class="popup">
+                <div class="emoji">🎉</div>
+                <h3>Gratulacje!</h3>
+                <p id="successMessage">Pomyślnie ukończyłeś poziom!</p>
+                <div class="buttons">
+                    <button id="continueBtn" class="btn btn-success">Kontynuuj</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Group Complete Overlay -->
+        <div id="groupCompleteOverlay" class="overlay hidden">
+            <div class="popup">
+                <div class="emoji">🏆</div>
+                <h3>Grupa ukończona!</h3>
+                <p id="groupCompleteMessage">Gratulacje! Ukończyłeś wszystkie poziomy w tej grupie!</p>
+                <div class="buttons">
+                    <button id="nextGroupBtn" class="btn btn-success">Przejdź do następnej grupy</button>
+                    <button id="backToGroupsListBtn" class="btn btn-outline">Wróć do listy grup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Aplikacja do nauki angielskich zwrotów konwersacyjnych © 2025</p>
+    </footer>
+    
+    <script>
+        // Phrase data
+        const phraseGroups = [
+            {
+                id: 1,
+                name: "Grupa 1: Propozycje z \"Let's\"",
+                description: "W tej grupie znajdują się zwroty używane do proponowania wspólnych aktywności, zaczynające się od \"Let's\".",
+                phrases: [
+                    { english: "Let's do something fun!", polish: "Zróbmy coś fajnego." },
+                    { english: "Let's go ice-skating!", polish: "Chodźmy na łyżwy." },
+                    { english: "Let's go to the beach!", polish: "Chodźmy na plażę." },
+                    { english: "Let's do that!", polish: "Zróbmy tak." },
+                    { english: "Cool. Let's do that!", polish: "Super. Zróbmy to!" }
+                ]
+            },
+            {
+                id: 2,
+                name: "Grupa 2: Propozycje z \"We can\"",
+                description: "W tej grupie znajdują się zwroty używane do sugerowania możliwych aktywności, zaczynające się od \"We can\".",
+                phrases: [
+                    { english: "We can go to the cinema!", polish: "Możemy pójść do kina." },
+                    { english: "We can play football!", polish: "Możemy zagrać w piłkę." },
+                    { english: "We can go to the park!", polish: "Możemy iść do parku!" },
+                    { english: "We can ride our bikes!", polish: "Pojeździjmy na rowerach." },
+                    { english: "I can teach you.", polish: "Mogę Cię nauczyć." }
+                ]
+            },
+            {
+                id: 3,
+                name: "Grupa 3: Reakcje na propozycje",
+                description: "W tej grupie znajdują się zwroty używane jako odpowiedzi na propozycje i sugestie.",
+                phrases: [
+                    { english: "I agree!", polish: "Zgadzam się." },
+                    { english: "Great idea!", polish: "Świetny pomysł." },
+                    { english: "It's not a good idea.", polish: "To nie jest dobry pomysł." },
+                    { english: "Any ideas?", polish: "Jakieś pomysły?" },
+                    { english: "I'm not sure.", polish: "Nie jestem pewien." },
+                    { english: "Haha. You're so funny.", polish: "Haha. Ale śmieszne." }
+                ]
+            },
+            {
+                id: 4,
+                name: "Grupa 4: Aktywności",
+                description: "W tej grupie znajdują się zwroty opisujące różne aktywności i czynności.",
+                phrases: [
+                    { english: "play the games console", polish: "zagrać w grę na konsoli" },
+                    { english: "run in the park", polish: "biegać w parku" },
+                    { english: "watch a film", polish: "oglądać film" },
+                    { english: "see", polish: "zobaczyć" },
+                    { english: "make a poster", polish: "zrobić plakat" }
+                ]
+            }
+        ];
+        
+        // Flatten all phrases into a single array for easier access
+        const allPhrases = [];
+        phraseGroups.forEach(group => {
+            group.phrases.forEach(phrase => {
+                allPhrases.push({...phrase, groupId: group.id});
+            });
+        });
+        
+        // Exercise level configuration
+        const levelConfig = [
+            {
+                id: 1,
+                name: "Wybór tłumaczenia angielskiego",
+                description: "Wybierz prawidłowe tłumaczenie angielskie dla polskiego zwrotu.",
+                questionGenerator: function(phrases) {
+                    return phrases.map(phrase => ({
+                        type: 'multipleChoice',
+                        prompt: "Co oznacza po angielsku:",
+                        targetPhrase: phrase.polish,
+                        correctAnswer: phrase.english,
+                        options: getRandomOptions(phrases.map(p => p.english), phrase.english, 3),
+                        aspect: 'englishToPolish'
+                    }));
+                }
+            },
+            {
+                id: 2,
+                name: "Wybór tłumaczenia polskiego",
+                description: "Wybierz prawidłowe tłumaczenie polskie dla angielskiego zwrotu.",
+                questionGenerator: function(phrases) {
+                    return phrases.map(phrase => ({
+                        type: 'multipleChoice',
+                        prompt: "Co oznacza po polsku:",
+                        targetPhrase: phrase.english,
+                        correctAnswer: phrase.polish,
+                        options: getRandomOptions(phrases.map(p => p.polish), phrase.polish, 3),
+                        aspect: 'polishToEnglish'
+                    }));
+                }
+            },
+            {
+                id: 3,
+                name: "Wpisz tłumaczenie angielskie",
+                description: "Wpisz prawidłowe tłumaczenie angielskie dla polskiego zwrotu.",
+                questionGenerator: function(phrases) {
+                    return phrases.map(phrase => ({
+                        type: 'typing',
+                        prompt: "Wpisz po angielsku:",
+                        targetPhrase: phrase.polish,
+                        correctAnswer: phrase.english,
+                        aspect: 'typeEnglish'
+                    }));
+                }
+            },
+            {
+                id: 4,
+                name: "Wpisz tłumaczenie polskie",
+                description: "Wpisz prawidłowe tłumaczenie polskie dla angielskiego zwrotu.",
+                questionGenerator: function(phrases) {
+                    return phrases.map(phrase => ({
+                        type: 'typing',
+                        prompt: "Wpisz po polsku:",
+                        targetPhrase: phrase.english,
+                        correctAnswer: phrase.polish,
+                        aspect: 'typePolish'
+                    }));
+                }
+            }
+        ];
+        
+        // Application state
+        const appState = {
+            currentView: 'welcomeView',
+            currentGroupId: 1,
+            currentLevelId: 1,
+            currentQuestionIndex: 0,
+            questions: [],
+            answers: [],
+            selectedGroupForNavigation: 1,
+            progress: {
+                groups: {}, // Group progress will be initialized for all groups
+                phraseMastery: {} // Phrase mastery will be initialized for all phrases
+            },
+            initialize: function() {
+                // Initialize group progress
+                phraseGroups.forEach(group => {
+                    if (!this.progress.groups[group.id]) {
+                        this.progress.groups[group.id] = {
+                            started: false,
+                            completed: false,
+                            currentLevel: 1,
+                            levels: {}
+                        };
+                        
+                        // Initialize level progress for this group
+                        levelConfig.forEach(level => {
+                            this.progress.groups[group.id].levels[level.id] = {
+                                started: false,
+                                completed: false,
+                                correctAnswers: 0,
+                                totalAnswers: 0
+                            };
+                        });
+                    }
+                });
+                
+                // Initialize phrase mastery tracking
+                allPhrases.forEach(phrase => {
+                    const key = this.getPhraseKey(phrase);
+                    if (!this.progress.phraseMastery[key]) {
+                        this.progress.phraseMastery[key] = {
+                            groupId: phrase.groupId,
+                            englishToPolish: 0,
+                            polishToEnglish: 0,
+                            typeEnglish: 0,
+                            typePolish: 0,
+                            totalCorrect: 0,
+                            totalAttempts: 0
+                        };
+                    }
+                });
+                
+                // Try to load saved state from localStorage
+                this.loadProgress();
+            },
+            // Use a consistent key for phrases
+            getPhraseKey: function(phrase) {
+                return phrase.english.toLowerCase().replace(/[.,!?;:]/g, '').trim();
+            },
+            saveProgress: function() {
+                localStorage.setItem('conversationPhrasesProgress', JSON.stringify({
+                    progress: this.progress,
+                    currentGroupId: this.currentGroupId,
+                    currentLevelId: this.currentLevelId
+                }));
+            },
+            loadProgress: function() {
+                const savedData = localStorage.getItem('conversationPhrasesProgress');
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    this.progress = data.progress;
+                    this.currentGroupId = data.currentGroupId;
+                    this.currentLevelId = data.currentLevelId;
+                }
+            },
+            resetProgress: function() {
+                // Reset all progress - re-initialize everything
+                this.progress = {
+                    groups: {},
+                    phraseMastery: {}
+                };
+                this.initialize();
+                this.currentGroupId = 1;
+                this.currentLevelId = 1;
+                this.saveProgress();
+            },
+            getMasteryLevel: function(phraseKey) {
+                const mastery = this.progress.phraseMastery[phraseKey];
+                if (!mastery) return 'beginner';
+                
+                // Calculate a score based on mastery in different aspects
+                const recognitionScore = 
+                    (mastery.englishToPolish || 0) + 
+                    (mastery.polishToEnglish || 0);
+                    
+                const productionScore = 
+                    (mastery.typeEnglish || 0) * 2 + 
+                    (mastery.typePolish || 0) * 2;
+                
+                const totalScore = recognitionScore + productionScore;
+                
+                if (totalScore >= 10) return 'advanced';
+                if (totalScore >= 5) return 'intermediate';
+                return 'beginner';
+            },
+            updatePhraseMastery: function(phrase, aspect, isCorrect) {
+                const key = this.getPhraseKey(phrase);
+                const mastery = this.progress.phraseMastery[key];
+                if (!mastery) return;
+                
+                if (isCorrect && mastery[aspect] < 3) {
+                    mastery[aspect]++;
+                }
+                mastery.totalAttempts++;
+                if (isCorrect) mastery.totalCorrect++;
+                this.saveProgress();
+            },
+            getPhrasesByMasteryLevel: function() {
+                const result = {
+                    beginner: 0,
+                    intermediate: 0,
+                    advanced: 0
+                };
+                
+                Object.keys(this.progress.phraseMastery).forEach(phraseKey => {
+                    result[this.getMasteryLevel(phraseKey)]++;
+                });
+                
+                return result;
+            },
+            getCompletedGroupsCount: function() {
+                return Object.values(this.progress.groups).filter(group => group.completed).length;
+            },
+            getCompletedLevelsCount: function() {
+                let count = 0;
+                Object.values(this.progress.groups).forEach(group => {
+                    Object.values(group.levels).forEach(level => {
+                        if (level.completed) {
+                            count++;
+                        }
+                    });
+                });
+                return count;
+            },
+            getTotalAccuracy: function() {
+                let totalCorrect = 0;
+                let totalAnswers = 0;
+                
+                Object.values(this.progress.groups).forEach(group => {
+                    Object.values(group.levels).forEach(level => {
+                        totalCorrect += level.correctAnswers;
+                        totalAnswers += level.totalAnswers;
+                    });
+                });
+                
+                if (totalAnswers === 0) return 0;
+                return Math.round((totalCorrect / totalAnswers) * 100);
+            },
+            getMasteredPhrasesCount: function() {
+                return Object.keys(this.progress.phraseMastery).filter(
+                    phraseKey => this.getMasteryLevel(phraseKey) === 'advanced'
+                ).length;
+            },
+            isLevelCompleted: function(groupId, levelId) {
+                const group = this.progress.groups[groupId];
+                if (!group) return false;
+                
+                const level = group.levels[levelId];
+                return level && level.completed;
+            },
+            isLevelAvailable: function(groupId, levelId) {
+                // First level is always available
+                if (levelId === 1) return true;
+                
+                // Check if previous level is completed
+                return this.isLevelCompleted(groupId, levelId - 1);
+            },
+            isGroupCompleted: function(groupId) {
+                const group = this.progress.groups[groupId];
+                if (!group) return false;
+                
+                return group.completed;
+            },
+            markLevelAsCompleted: function(groupId, levelId) {
+                const group = this.progress.groups[groupId];
+                if (!group) return;
+                
+                const level = group.levels[levelId];
+                if (!level) return;
+                
+                level.completed = true;
+                
+                // Check if all levels in the group are completed
+                const allLevelsCompleted = Object.values(group.levels).every(l => l.completed);
+                
+                if (allLevelsCompleted) {
+                    group.completed = true;
+                }
+                
+                // Update current level to next one if available
+                if (levelId < levelConfig.length) {
+                    group.currentLevel = levelId + 1;
+                }
+                
+                this.saveProgress();
+            }
+        };
+        
+        // DOM elements
+        const elements = {
+            views: {
+                welcomeView: document.getElementById('welcomeView'),
+                groupSelectionView: document.getElementById('groupSelectionView'),
+                groupIntroView: document.getElementById('groupIntroView'),
+                exerciseView: document.getElementById('exerciseView'),
+                levelCompleteView: document.getElementById('levelCompleteView'),
+                resultsView: document.getElementById('resultsView')
+            },
+            welcome: {
+                startLearningBtn: document.getElementById('startLearningBtn')
+            },
+            groupSelection: {
+                groupCards: document.getElementById('groupCards'),
+                startSelectedGroupBtn: document.getElementById('startSelectedGroupBtn')
+            },
+            groupIntro: {
+                groupButtonsContainer: document.getElementById('groupButtonsContainer'),
+                currentGroupTitle: document.getElementById('currentGroupTitle'),
+                currentGroupDesc: document.getElementById('currentGroupDesc'),
+                currentGroupPhrases: document.getElementById('currentGroupPhrases'),
+                levelProgressionContainer: document.getElementById('levelProgressionContainer'),
+                startExercisesBtn: document.getElementById('startExercisesBtn'),
+                backToGroupsBtn: document.getElementById('backToGroupsBtn')
+            },
+            exercise: {
+                exerciseGroupButtonsContainer: document.getElementById('exerciseGroupButtonsContainer'),
+                exerciseLevelProgressionContainer: document.getElementById('exerciseLevelProgressionContainer'),
+                currentLevelIndicator: document.getElementById('currentLevelIndicator'),
+                exerciseTitle: document.getElementById('exerciseTitle'),
+                exerciseProgress: document.getElementById('exerciseProgress'),
+                exerciseCounter: document.getElementById('exerciseCounter'),
+                correctCounter: document.getElementById('correctCounter'),
+                questionPrompt: document.getElementById('questionPrompt'),
+                targetPhrase: document.getElementById('targetPhrase'),
+                multipleChoiceContainer: document.getElementById('multipleChoiceContainer'),
+                typingContainer: document.getElementById('typingContainer'),
+                answerInput: document.getElementById('answerInput'),
+                inputFeedback: document.getElementById('inputFeedback'),
+                feedbackMessage: document.getElementById('feedbackMessage'),
+                prevQuestionBtn: document.getElementById('prevQuestionBtn'),
+                nextQuestionBtn: document.getElementById('nextQuestionBtn'),
+                checkAnswerBtn: document.getElementById('checkAnswerBtn')
+            },
+            levelComplete: {
+                completedGroupNumber: document.getElementById('completedGroupNumber'),
+                completedLevelNumber: document.getElementById('completedLevelNumber'),
+                completedCorrectAnswers: document.getElementById('completedCorrectAnswers'),
+                completedAccuracy: document.getElementById('completedAccuracy'),
+                completedPhraseContainer: document.getElementById('completedPhraseContainer'),
+                goToNextLevelBtn: document.getElementById('goToNextLevelBtn'),
+                retryLevelBtn: document.getElementById('retryLevelBtn'),
+                chooseLevelContainer: document.getElementById('chooseLevelContainer'),
+                chooseGroupContainer: document.getElementById('chooseGroupContainer'),
+                goToSelectedGroupBtn: document.getElementById('goToSelectedGroupBtn')
+            },
+            results: {
+                completedGroups: document.getElementById('completedGroups'),
+                totalCompletedLevels: document.getElementById('totalCompletedLevels'),
+                totalAccuracy: document.getElementById('totalAccuracy'),
+                masteredPhrases: document.getElementById('masteredPhrases'),
+                beginnerCount: document.getElementById('beginnerCount'),
+                intermediateCount: document.getElementById('intermediateCount'),
+                advancedCount: document.getElementById('advancedCount'),
+                allPhrasesContainer: document.getElementById('allPhrasesContainer'),
+                continueLearningBtn: document.getElementById('continueLearningBtn'),
+                resetProgressBtn: document.getElementById('resetProgressBtn')
+            },
+            overlay: {
+                successOverlay: document.getElementById('successOverlay'),
+                successMessage: document.getElementById('successMessage'),
+                continueBtn: document.getElementById('continueBtn'),
+                groupCompleteOverlay: document.getElementById('groupCompleteOverlay'),
+                groupCompleteMessage: document.getElementById('groupCompleteMessage'),
+                nextGroupBtn: document.getElementById('nextGroupBtn'),
+                backToGroupsListBtn: document.getElementById('backToGroupsListBtn')
+            },
+            navigationTabs: document.querySelectorAll('.nav-tab')
+        };
+        
+        // Initialize the application state
+        appState.initialize();
+        
+        // View management
+        function showView(viewId) {
+            // Hide all views
+            Object.values(elements.views).forEach(view => {
+                view.classList.remove('active');
+            });
+            
+            // Show the requested view
+            elements.views[viewId].classList.add('active');
+            appState.currentView = viewId;
+            
+            // Special handling for specific views
+            if (viewId === 'groupSelectionView') {
+                initializeGroupSelectionView();
+            } else if (viewId === 'groupIntroView') {
+                initializeGroupIntroView(appState.currentGroupId);
+            } else if (viewId === 'exerciseView') {
+                initializeExerciseView(appState.currentGroupId, appState.currentLevelId);
+            } else if (viewId === 'levelCompleteView') {
+                initializeLevelCompleteView();
+            } else if (viewId === 'resultsView') {
+                initializeResultsView();
+            }
+        }
+        
+        // Helper function to get random options for multiple choice
+        function getRandomOptions(allOptions, correctOption, count) {
+            const options = [correctOption];
+            const availableOptions = allOptions.filter(option => option !== correctOption);
+            
+            // Shuffle available options
+            for (let i = availableOptions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [availableOptions[i], availableOptions[j]] = [availableOptions[j], availableOptions[i]];
+            }
+            
+            // Add random options up to count
+            for (let i = 0; i < count && i < availableOptions.length; i++) {
+                options.push(availableOptions[i]);
+            }
+            
+            // Shuffle the final options array
+            for (let i = options.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [options[i], options[j]] = [options[j], options[i]];
+            }
+            
+            return options;
+        }
+        
+        // Initialize the Group Selection View
+        function initializeGroupSelectionView() {
+            const container = elements.groupSelection.groupCards;
+            container.innerHTML = '';
+            
+            phraseGroups.forEach(group => {
+                const groupProgress = appState.progress.groups[group.id];
+                const isCompleted = groupProgress && groupProgress.completed;
+                const isStarted = groupProgress && groupProgress.started;
+                
+                const completedLevels = groupProgress ? 
+                    Object.values(groupProgress.levels).filter(level => level.completed).length : 0;
+                
+                const progressPercentage = Math.round((completedLevels / levelConfig.length) * 100);
+                
+                const card = document.createElement('div');
+                card.className = `group-card ${appState.currentGroupId === group.id ? 'active' : ''} ${isCompleted ? 'completed' : ''}`;
+                card.dataset.groupId = group.id;
+                
+                // Get example phrases from this group
+                const examplePhrases = group.phrases.slice(0, 2).map(p => p.english).join(', ');
+                
+                card.innerHTML = `
+                    <h3>${group.name}</h3>
+                    <p>${group.description}</p>
+                    <div class="phrase-examples">Przykłady: ${examplePhrases}${group.phrases.length > 2 ? '...' : ''}</div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: ${progressPercentage}%;"></div>
+                    </div>
+                    <div style="text-align: right; margin-top: 5px; font-size: 0.85rem;">
+                        ${completedLevels}/${levelConfig.length} poziomów
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => {
+                    // Remove active class from all cards
+                    document.querySelectorAll('.group-card').forEach(c => {
+                        c.classList.remove('active');
+                    });
+                    
+                    // Add active class to this card
+                    card.classList.add('active');
+                    
+                    // Set the current group ID
+                    appState.currentGroupId = group.id;
+                });
+                
+                container.appendChild(card);
+            });
+        }
+        
+        // Initialize the Group Introduction View
+        function initializeGroupIntroView(groupId) {
+            const group = phraseGroups.find(g => g.id === groupId);
+            if (!group) return;
+            
+            // Set current group
+            appState.currentGroupId = groupId;
+            
+            // Mark this group as started
+            const groupProgress = appState.progress.groups[groupId];
+            if (groupProgress && !groupProgress.started) {
+                groupProgress.started = true;
+                appState.saveProgress();
+            }
+            
+            // Update group navigation buttons
+            const groupButtonsContainer = elements.groupIntro.groupButtonsContainer;
+            groupButtonsContainer.innerHTML = '';
+            
+            phraseGroups.forEach(g => {
+                const isCompleted = appState.progress.groups[g.id] && appState.progress.groups[g.id].completed;
+                const button = document.createElement('button');
+                button.className = `group-button ${g.id === groupId ? 'active' : ''} ${isCompleted ? 'completed' : ''}`;
+                button.textContent = `Grupa ${g.id}`;
+                button.dataset.groupId = g.id;
+                
+                button.addEventListener('click', () => {
+                    initializeGroupIntroView(g.id);
+                });
+                
+                groupButtonsContainer.appendChild(button);
+            });
+            
+            // Update group title and description
+            elements.groupIntro.currentGroupTitle.textContent = group.name;
+            elements.groupIntro.currentGroupDesc.textContent = group.description;
+            
+            // Update phrase examples
+            const phrasesContainer = elements.groupIntro.currentGroupPhrases;
+            phrasesContainer.innerHTML = '';
+            
+            group.phrases.forEach(phrase => {
+                const phraseExample = document.createElement('div');
+                phraseExample.className = 'phrase-example';
+                
+                phraseExample.innerHTML = `
+                    <div class="phrase-english">${phrase.english}</div>
+                    <div class="phrase-arrow">→</div>
+                    <div class="phrase-polish">${phrase.polish}</div>
+                `;
+                
+                phrasesContainer.appendChild(phraseExample);
+            });
+            
+            // Update level progression
+            const levelContainer = elements.groupIntro.levelProgressionContainer;
+            levelContainer.innerHTML = '';
+            
+            levelConfig.forEach(level => {
+                const isCompleted = appState.isLevelCompleted(groupId, level.id);
+                const isAvailable = appState.isLevelAvailable(groupId, level.id);
+                
+                const levelButton = document.createElement('button');
+                levelButton.className = `level-button ${level.id === groupProgress.currentLevel ? 'active' : ''} ${isCompleted ? 'completed' : ''} ${!isAvailable ? 'locked' : ''}`;
+                levelButton.textContent = level.id;
+                levelButton.title = level.name;
+                levelButton.dataset.levelId = level.id;
+                
+                if (isAvailable) {
+                    levelButton.addEventListener('click', () => {
+                        // Set current level
+                        appState.currentLevelId = level.id;
+                        
+                        // Remove active class from all buttons
+                        document.querySelectorAll('.level-button').forEach(btn => {
+                            btn.classList.remove('active');
+                        });
+                        
+                        // Add active class to this button
+                        levelButton.classList.add('active');
+                    });
+                }
+                
+                levelContainer.appendChild(levelButton);
+            });
+        }
+        
+        // Initialize the Exercise View
+        function initializeExerciseView(groupId, levelId) {
+            // Set current group and level
+            appState.currentGroupId = groupId;
+            appState.currentLevelId = levelId;
+            
+            // Update group navigation
+            const groupButtonsContainer = elements.exercise.exerciseGroupButtonsContainer;
+            groupButtonsContainer.innerHTML = '';
+            
+            phraseGroups.forEach(group => {
+                const isCompleted = appState.progress.groups[group.id] && appState.progress.groups[group.id].completed;
+                const button = document.createElement('button');
+                button.className = `group-button ${group.id === groupId ? 'active' : ''} ${isCompleted ? 'completed' : ''}`;
+                button.textContent = `Grupa ${group.id}`;
+                button.dataset.groupId = group.id;
+                
+                button.addEventListener('click', () => {
+                    if (confirm('Czy na pewno chcesz przejść do innej grupy? Twój obecny postęp zostanie zapisany.')) {
+                        showView('groupIntroView');
+                        initializeGroupIntroView(group.id);
+                    }
+                });
+                
+                groupButtonsContainer.appendChild(button);
+            });
+            
+            // Update level progression
+            const levelContainer = elements.exercise.exerciseLevelProgressionContainer;
+            levelContainer.innerHTML = '';
+            
+            levelConfig.forEach(level => {
+                const isCompleted = appState.isLevelCompleted(groupId, level.id);
+                const isAvailable = appState.isLevelAvailable(groupId, level.id);
+                
+                const levelButton = document.createElement('button');
+                levelButton.className = `level-button ${level.id === levelId ? 'active' : ''} ${isCompleted ? 'completed' : ''} ${!isAvailable ? 'locked' : ''}`;
+                levelButton.textContent = level.id;
+                levelButton.title = level.name;
+                levelButton.dataset.levelId = level.id;
+                
+                if (isAvailable) {
+                    levelButton.addEventListener('click', () => {
+                        if (confirm('Czy na pewno chcesz przejść do innego poziomu? Twój obecny postęp zostanie zapisany.')) {
+                            initializeExerciseView(groupId, level.id);
+                        }
+                    });
+                }
+                
+                levelContainer.appendChild(levelButton);
+            });
+            
+            // Update UI elements
+            const currentGroup = phraseGroups.find(g => g.id === groupId);
+            const currentLevel = levelConfig.find(l => l.id === levelId);
+            
+            elements.exercise.currentLevelIndicator.textContent = `Grupa ${groupId}: Poziom ${levelId}`;
+            elements.exercise.exerciseTitle.textContent = `Ćwiczenie: ${currentLevel.name}`;
+            
+            // Generate questions for this group and level
+            const groupPhrases = currentGroup.phrases;
+            appState.questions = currentLevel.questionGenerator(groupPhrases);
+            
+            // Shuffle questions
+            for (let i = appState.questions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [appState.questions[i], appState.questions[j]] = [appState.questions[j], appState.questions[i]];
+            }
+            
+            // Initialize answers array
+            appState.answers = Array(appState.questions.length).fill(null);
+            
+            // Reset counters
+            let correctCount = 0;
+            appState.questions.forEach((q, idx) => {
+                if (appState.answers[idx] && appState.answers[idx].isCorrect) {
+                    correctCount++;
+                }
+            });
+            
+            elements.exercise.exerciseCounter.textContent = `Pytanie 1 z ${appState.questions.length}`;
+            elements.exercise.correctCounter.textContent = `Poprawne: ${correctCount}`;
+            
+            // Mark this level as started
+            const levelProgress = appState.progress.groups[groupId].levels[levelId];
+            if (!levelProgress.started) {
+                levelProgress.started = true;
+                appState.saveProgress();
+            }
+            
+            // Start with the first question
+            appState.currentQuestionIndex = 0;
+            showQuestion(0);
+        }
+        
+        // Display a specific question
+        function showQuestion(index) {
+            const question = appState.questions[index];
+            if (!question) return;
+            
+            // Update progress bar
+            const progressPercentage = (index / appState.questions.length) * 100;
+            elements.exercise.exerciseProgress.style.width = `${progressPercentage}%`;
+            elements.exercise.exerciseProgress.textContent = `${Math.round(progressPercentage)}%`;
+            
+            // Update exercise counter
+            elements.exercise.exerciseCounter.textContent = `Pytanie ${index + 1} z ${appState.questions.length}`;
+            
+            // Update question prompt
+            elements.exercise.questionPrompt.innerHTML = question.prompt;
+            elements.exercise.targetPhrase.textContent = question.targetPhrase;
+            
+            // Clear previous feedback
+            elements.exercise.feedbackMessage.classList.add('hidden');
+            
+            // Handle different question types
+            if (question.type === 'multipleChoice') {
+                // Show multiple choice container and hide typing container
+                elements.exercise.multipleChoiceContainer.classList.remove('hidden');
+                elements.exercise.typingContainer.classList.add('hidden');
+                
+                // Generate multiple choice options
+                elements.exercise.multipleChoiceContainer.innerHTML = '';
+                question.options.forEach(option => {
+                    const optionBtn = document.createElement('div');
+                    optionBtn.className = 'option-btn';
+                    optionBtn.textContent = option;
+                    
+                    optionBtn.addEventListener('click', () => selectOption(option));
+                    
+                    elements.exercise.multipleChoiceContainer.appendChild(optionBtn);
+                });
+                
+                // If this question was already answered, show the selection
+                if (appState.answers[index] !== null) {
+                    const buttons = elements.exercise.multipleChoiceContainer.querySelectorAll('.option-btn');
+                    buttons.forEach(btn => {
+                        if (btn.textContent === appState.answers[index].selectedAnswer) {
+                            btn.classList.add('selected');
+                        }
+                    });
+                    
+                    showFeedback(appState.answers[index].isCorrect);
+                }
+            } else if (question.type === 'typing') {
+                // Show typing container and hide multiple choice container
+                elements.exercise.multipleChoiceContainer.classList.add('hidden');
+                elements.exercise.typingContainer.classList.remove('hidden');
+                
+                // Clear input field
+                elements.exercise.answerInput.value = '';
+                elements.exercise.inputFeedback.textContent = '';
+                
+                // Focus on input field
+                setTimeout(() => {
+                    elements.exercise.answerInput.focus();
+                }, 100);
+                
+                // If this question was already answered, show the answer and feedback
+                if (appState.answers[index] !== null) {
+                    elements.exercise.answerInput.value = appState.answers[index].submittedAnswer;
+                    showFeedback(appState.answers[index].isCorrect);
+                }
+            }
+            
+            // Update navigation buttons
+            elements.exercise.prevQuestionBtn.disabled = index === 0;
+            elements.exercise.nextQuestionBtn.disabled = index === appState.questions.length - 1;
+            
+            // Update correct counter
+            let correctCount = 0;
+            appState.questions.forEach((q, idx) => {
+                if (appState.answers[idx] && appState.answers[idx].isCorrect) {
+                    correctCount++;
+                }
+            });
+            elements.exercise.correctCounter.textContent = `Poprawne: ${correctCount}`;
+        }
+        
+        // Handle option selection for multiple choice questions
+        function selectOption(option) {
+            const currentQuestion = appState.questions[appState.currentQuestionIndex];
+            const isCorrect = option === currentQuestion.correctAnswer;
+            
+            // Get the current phrase from the target phrase
+            let phrase;
+            if (currentQuestion.aspect === 'englishToPolish') {
+                // Find phrase by Polish text
+                phrase = allPhrases.find(p => stripText(p.polish) === stripText(currentQuestion.targetPhrase));
+            } else {
+                // Find phrase by English text
+                phrase = allPhrases.find(p => stripText(p.english) === stripText(currentQuestion.targetPhrase));
+            }
+            
+            // Mark selected option
+            const buttons = elements.exercise.multipleChoiceContainer.querySelectorAll('.option-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('selected');
+                if (btn.textContent === option) {
+                    btn.classList.add('selected');
+                }
+            });
+            
+            // Save answer
+            appState.answers[appState.currentQuestionIndex] = {
+                selectedAnswer: option,
+                isCorrect: isCorrect,
+                submittedAnswer: option
+            };
+            
+            // Update phrase mastery
+            if (phrase) {
+                appState.updatePhraseMastery(
+                    phrase,
+                    currentQuestion.aspect,
+                    isCorrect
+                );
+            }
+            
+            // Update level progress
+            updateLevelProgress(isCorrect);
+            
+            // Show feedback
+            showFeedback(isCorrect);
+            
+            // Move to next question after delay if correct
+            if (isCorrect) {
+                setTimeout(() => {
+                    if (appState.currentQuestionIndex < appState.questions.length - 1) {
+                        goToNextQuestion();
+                    } else {
+                        checkLevelCompletion();
+                    }
+                }, 1200);
+            }
+        }
+        
+        // Handle checking typed answers
+        function checkTypedAnswer() {
+            const currentQuestion = appState.questions[appState.currentQuestionIndex];
+            const userInput = elements.exercise.answerInput.value.trim();
+            
+            // Get the current phrase from the target phrase
+            let phrase;
+            if (currentQuestion.aspect === 'typeEnglish') {
+                // Find phrase by Polish text
+                phrase = allPhrases.find(p => stripText(p.polish) === stripText(currentQuestion.targetPhrase));
+            } else {
+                // Find phrase by English text
+                phrase = allPhrases.find(p => stripText(p.english) === stripText(currentQuestion.targetPhrase));
+            }
+            
+            const isCorrect = compareAnswers(userInput, currentQuestion.correctAnswer);
+            
+            // Save answer
+            appState.answers[appState.currentQuestionIndex] = {
+                submittedAnswer: userInput,
+                isCorrect: isCorrect
+            };
+            
+            // Update phrase mastery
+            if (phrase) {
+                appState.updatePhraseMastery(
+                    phrase,
+                    currentQuestion.aspect,
+                    isCorrect
+                );
+            }
+            
+            // Update level progress
+            updateLevelProgress(isCorrect);
+            
+            // Show feedback
+            showFeedback(isCorrect);
+            
+            // Move to next question after delay if correct
+            if (isCorrect) {
+                setTimeout(() => {
+                    if (appState.currentQuestionIndex < appState.questions.length - 1) {
+                        goToNextQuestion();
+                    } else {
+                        checkLevelCompletion();
+                    }
+                }, 1500);
+            }
+        }
+        
+        // Update level progress
+        function updateLevelProgress(isCorrect) {
+            const levelKey = appState.currentLevelId;
+            const groupKey = appState.currentGroupId;
+            
+            const level = appState.progress.groups[groupKey].levels[levelKey];
+            level.totalAnswers++;
+            
+            if (isCorrect) {
+                level.correctAnswers++;
+            }
+            
+            appState.saveProgress();
+        }
+        
+        // Helper function to strip text of irrelevant characters for comparison
+        function stripText(text) {
+            if (!text) return '';
+            return text.toLowerCase()
+                .replace(/[.,!?;:]/g, '') // Remove punctuation
+                .replace(/\s+/g, ' ')     // Normalize whitespace
+                .trim();                  // Remove leading/trailing spaces
+        }
+        
+        // Compare user answer with correct answer, allowing for slight differences
+        function compareAnswers(userAnswer, correctAnswer) {
+            if (!userAnswer || !correctAnswer) return false;
+            
+            // Strip both texts for comparison
+            const strippedUserAnswer = stripText(userAnswer);
+            const strippedCorrectAnswer = stripText(correctAnswer);
+            
+            // Direct comparison
+            if (strippedUserAnswer === strippedCorrectAnswer) return true;
+            
+            // For longer phrases, allow for more leeway
+            const maxDistance = correctAnswer.length > 20 ? 3 : 
+                               correctAnswer.length > 10 ? 2 : 1;
+                               
+            return levenshteinDistance(strippedUserAnswer, strippedCorrectAnswer) <= maxDistance;
+        }
+        
+        // Levenshtein distance calculation for fuzzy matching
+        function levenshteinDistance(a, b) {
+            if (a.length === 0) return b.length;
+            if (b.length === 0) return a.length;
+            
+            const matrix = [];
+            
+            // Initialize matrix
+            for (let i = 0; i <= b.length; i++) {
+                matrix[i] = [i];
+            }
+            
+            for (let j = 0; j <= a.length; j++) {
+                matrix[0][j] = j;
+            }
+            
+            // Calculate edit distance
+            for (let i = 1; i <= b.length; i++) {
+                for (let j = 1; j <= a.length; j++) {
+                    const cost = a[j - 1] === b[i - 1] ? 0 : 1;
+                    matrix[i][j] = Math.min(
+                        matrix[i - 1][j] + 1,        // deletion
+                        matrix[i][j - 1] + 1,        // insertion
+                        matrix[i - 1][j - 1] + cost  // substitution
+                    );
+                }
+            }
+            
+            return matrix[b.length][a.length];
+        }
+        
+        // Show feedback for an answer
+        function showFeedback(isCorrect) {
+            const feedbackMessage = elements.exercise.feedbackMessage;
+            feedbackMessage.classList.remove('hidden', 'feedback-correct', 'feedback-incorrect');
+            
+            if (isCorrect) {
+                feedbackMessage.textContent = "Poprawna odpowiedź!";
+                feedbackMessage.classList.add('feedback-correct');
+            } else {
+                const currentQuestion = appState.questions[appState.currentQuestionIndex];
+                feedbackMessage.textContent = `Niepoprawna odpowiedź. Prawidłowa odpowiedź to: ${currentQuestion.correctAnswer}`;
+                feedbackMessage.classList.add('feedback-incorrect');
+            }
+        }
+        
+        // Navigation functions
+        function goToPrevQuestion() {
+            if (appState.currentQuestionIndex > 0) {
+                appState.currentQuestionIndex--;
+                showQuestion(appState.currentQuestionIndex);
+            }
+        }
+        
+        function goToNextQuestion() {
+            if (appState.currentQuestionIndex < appState.questions.length - 1) {
+                appState.currentQuestionIndex++;
+                showQuestion(appState.currentQuestionIndex);
+            } else {
+                checkLevelCompletion();
+            }
+        }
+        
+        // Check if level is completed successfully
+        function checkLevelCompletion() {
+            const levelId = appState.currentLevelId;
+            const groupId = appState.currentGroupId;
+            
+            const level = appState.progress.groups[groupId].levels[levelId];
+            const answeredCount = appState.answers.filter(answer => answer !== null).length;
+            const correctCount = appState.answers.filter(answer => answer !== null && answer.isCorrect).length;
+            
+            // Level is complete if all questions are answered and at least 80% are correct
+            const isComplete = 
+                answeredCount === appState.questions.length && 
+                (correctCount / appState.questions.length) >= 0.8;
+            
+            if (isComplete) {
+                // Mark level as completed
+                appState.markLevelAsCompleted(groupId, levelId);
+                
+                // Show level complete view
+                showView('levelCompleteView');
+            } else {
+                // Show incomplete level message
+                elements.overlay.successMessage.textContent = 
+                    `Ukończyłeś ten poziom z wynikiem ${Math.round((correctCount / appState.questions.length) * 100)}% poprawnych odpowiedzi. ` +
+                    `Potrzebujesz co najmniej 80%, aby zaliczyć poziom.`;
+                
+                elements.overlay.continueBtn.textContent = "Spróbuj ponownie";
+                elements.overlay.successOverlay.classList.remove('hidden');
+            }
+        }
+        
+        // Initialize Level Complete View
+        function initializeLevelCompleteView() {
+            const groupId = appState.currentGroupId;
+            const levelId = appState.currentLevelId;
+            
+            const group = phraseGroups.find(g => g.id === groupId);
+            const level = levelConfig.find(l => l.id === levelId);
+            
+            // Update stats
+            elements.levelComplete.completedGroupNumber.textContent = groupId;
+            elements.levelComplete.completedLevelNumber.textContent = levelId;
+            
+            const levelProgress = appState.progress.groups[groupId].levels[levelId];
+            elements.levelComplete.completedCorrectAnswers.textContent = 
+                `${levelProgress.correctAnswers}/${levelProgress.totalAnswers}`;
+            
+            const accuracy = levelProgress.totalAnswers > 0 ?
+                Math.round((levelProgress.correctAnswers / levelProgress.totalAnswers) * 100) : 0;
+                
+            elements.levelComplete.completedAccuracy.textContent = `${accuracy}%`;
+            
+            // Generate phrase cards for this group
+            const phraseContainer = elements.levelComplete.completedPhraseContainer;
+            phraseContainer.innerHTML = '';
+            
+            group.phrases.forEach(phrase => {
+                const masteryLevel = appState.getMasteryLevel(appState.getPhraseKey(phrase));
+                
+                const card = document.createElement('div');
+                card.className = `phrase-card ${masteryLevel}`;
+                
+                const masteryEmoji = masteryLevel === 'advanced' ? '⭐' : 
+                                    masteryLevel === 'intermediate' ? '🔄' : '🆕';
+                
+                card.innerHTML = `
+                    <h3>${masteryEmoji} ${phrase.english}</h3>
+                    <div class="phrase-card-content">
+                        <div class="phrase-text phrase-english-display">${phrase.english}</div>
+                        <div class="phrase-text phrase-polish-display">${phrase.polish}</div>
+                    </div>
+                `;
+                
+                phraseContainer.appendChild(card);
+            });
+            
+            // Update level selection buttons
+            updateLevelSelectionButtons();
+            
+            // Update group selection buttons
+            updateGroupSelectionButtons();
+            
+            // Show the next level panel by default
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.add('hidden');
+            });
+            
+            document.querySelector('.nav-tab[data-tab="next-level"]').classList.add('active');
+            document.getElementById('nextLevelPanel').classList.remove('hidden');
+        }
+        
+        // Update level selection buttons
+        function updateLevelSelectionButtons() {
+            const container = elements.levelComplete.chooseLevelContainer;
+            container.innerHTML = '';
+            
+            const groupId = appState.currentGroupId;
+            
+            levelConfig.forEach(level => {
+                const isCompleted = appState.isLevelCompleted(groupId, level.id);
+                const isAvailable = appState.isLevelAvailable(groupId, level.id);
+                
+                const levelButton = document.createElement('button');
+                levelButton.className = `level-button ${level.id === appState.currentLevelId ? 'active' : ''} ${isCompleted ? 'completed' : ''} ${!isAvailable ? 'locked' : ''}`;
+                levelButton.textContent = level.id;
+                levelButton.title = level.name;
+                levelButton.dataset.levelId = level.id;
+                
+                if (isAvailable) {
+                    levelButton.addEventListener('click', () => {
+                        // Set current level ID for navigation
+                        appState.currentLevelId = level.id;
+                        
+                        // Update buttons
+                        document.querySelectorAll('#chooseLevelContainer .level-button').forEach(btn => {
+                            btn.classList.remove('active');
+                        });
+                        
+                        levelButton.classList.add('active');
+                    });
+                }
+                
+                container.appendChild(levelButton);
+            });
+        }
+        
+        // Update group selection buttons
+        function updateGroupSelectionButtons() {
+            const container = elements.levelComplete.chooseGroupContainer;
+            container.innerHTML = '';
+            
+            phraseGroups.forEach(group => {
+                const isCompleted = appState.isGroupCompleted(group.id);
+                
+                const groupButton = document.createElement('button');
+                groupButton.className = `group-button ${group.id === appState.currentGroupId ? 'active' : ''} ${isCompleted ? 'completed' : ''}`;
+                groupButton.textContent = `Grupa ${group.id}`;
+                groupButton.dataset.groupId = group.id;
+                
+                groupButton.addEventListener('click', () => {
+                    // Set selected group for navigation
+                    appState.selectedGroupForNavigation = group.id;
+                    
+                    // Update buttons
+                    document.querySelectorAll('#chooseGroupContainer .group-button').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    groupButton.classList.add('active');
+                });
+                
+                container.appendChild(groupButton);
+            });
+        }
+        
+        // Initialize Results View
+        function initializeResultsView() {
+            // Update completion stats
+            elements.results.completedGroups.textContent = 
+                `${appState.getCompletedGroupsCount()}/${phraseGroups.length}`;
+                
+            const totalLevelsCount = phraseGroups.length * levelConfig.length;
+            elements.results.totalCompletedLevels.textContent = 
+                `${appState.getCompletedLevelsCount()}/${totalLevelsCount}`;
+                
+            elements.results.totalAccuracy.textContent = 
+                `${appState.getTotalAccuracy()}%`;
+                
+            elements.results.masteredPhrases.textContent = 
+                `${appState.getMasteredPhrasesCount()}/${allPhrases.length}`;
+                
+            // Update mastery level counts
+            const masteryLevels = appState.getPhrasesByMasteryLevel();
+            elements.results.beginnerCount.textContent = masteryLevels.beginner;
+            elements.results.intermediateCount.textContent = masteryLevels.intermediate;
+            elements.results.advancedCount.textContent = masteryLevels.advanced;
+            
+            // Generate phrase cards for all phrases
+            const container = elements.results.allPhrasesContainer;
+            container.innerHTML = '';
+            
+            allPhrases.forEach(phrase => {
+                const masteryLevel = appState.getMasteryLevel(appState.getPhraseKey(phrase));
+                
+                const card = document.createElement('div');
+                card.className = `phrase-card ${masteryLevel}`;
+                
+                const masteryEmoji = masteryLevel === 'advanced' ? '⭐' : 
+                                    masteryLevel === 'intermediate' ? '🔄' : '🆕';
+                
+                card.innerHTML = `
+                    <h3>${masteryEmoji} ${phrase.english}</h3>
+                    <div class="phrase-card-content">
+                        <div class="phrase-text phrase-english-display">${phrase.english}</div>
+                        <div class="phrase-text phrase-polish-display">${phrase.polish}</div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+        
+        // Event listeners
+        function setupEventListeners() {
+            // Welcome view
+            elements.welcome.startLearningBtn.addEventListener('click', () => {
+                showView('groupSelectionView');
+            });
+            
+            // Group selection view
+            elements.groupSelection.startSelectedGroupBtn.addEventListener('click', () => {
+                showView('groupIntroView');
+            });
+            
+            // Group intro view
+            elements.groupIntro.startExercisesBtn.addEventListener('click', () => {
+                // Start with the current level for this group
+                const groupProgress = appState.progress.groups[appState.currentGroupId];
+                appState.currentLevelId = groupProgress.currentLevel || 1;
+                
+                showView('exerciseView');
+            });
+            
+            elements.groupIntro.backToGroupsBtn.addEventListener('click', () => {
+                showView('groupSelectionView');
+            });
+            
+            // Exercise view
+            elements.exercise.prevQuestionBtn.addEventListener('click', goToPrevQuestion);
+            elements.exercise.nextQuestionBtn.addEventListener('click', goToNextQuestion);
+            elements.exercise.checkAnswerBtn.addEventListener('click', checkTypedAnswer);
+            
+            // Enter key for typing answers
+            elements.exercise.answerInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    checkTypedAnswer();
+                }
+            });
+            
+            // Level complete view
+            elements.levelComplete.goToNextLevelBtn.addEventListener('click', () => {
+                // Check if there is a next level
+                const nextLevelId = appState.currentLevelId + 1;
+                
+                if (nextLevelId <= levelConfig.length) {
+                    // Go to next level
+                    appState.currentLevelId = nextLevelId;
+                    showView('exerciseView');
+                } else {
+                    // All levels completed for this group
+                    elements.overlay.groupCompleteMessage.textContent = 
+                        `Gratulacje! Ukończyłeś wszystkie poziomy w grupie ${appState.currentGroupId}.`;
+                    
+                    elements.overlay.groupCompleteOverlay.classList.remove('hidden');
+                }
+            });
+            
+            elements.levelComplete.retryLevelBtn.addEventListener('click', () => {
+                // Retry the current level
+                showView('exerciseView');
+            });
+            
+            elements.levelComplete.goToSelectedGroupBtn.addEventListener('click', () => {
+                // Navigate to the selected group
+                appState.currentGroupId = appState.selectedGroupForNavigation;
+                showView('groupIntroView');
+            });
+            
+            // Tab navigation in level complete view
+            elements.navigationTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Hide all panels
+                    document.querySelectorAll('.tab-panel').forEach(panel => {
+                        panel.classList.add('hidden');
+                    });
+                    
+                    // Remove active class from all tabs
+                    document.querySelectorAll('.nav-tab').forEach(t => {
+                        t.classList.remove('active');
+                    });
+                    
+                    // Show selected panel
+                    const tabId = tab.dataset.tab;
+                    const panelId = tabId.replace(/-([a-z])/g, (g) => g[1].toUpperCase()) + 'Panel';
+                    document.getElementById(panelId).classList.remove('hidden');
+                    
+                    // Add active class to selected tab
+                    tab.classList.add('active');
+                });
+            });
+            
+            // Results view
+            elements.results.continueLearningBtn.addEventListener('click', () => {
+                showView('groupSelectionView');
+            });
+            
+            elements.results.resetProgressBtn.addEventListener('click', () => {
+                if (confirm('Czy na pewno chcesz zresetować cały postęp nauki? Ta operacja nie może być cofnięta.')) {
+                    appState.resetProgress();
+                    initializeResultsView();
+                }
+            });
+            
+            // Overlay buttons
+            elements.overlay.continueBtn.addEventListener('click', () => {
+                elements.overlay.successOverlay.classList.add('hidden');
+                
+                // If the button text is 'Spróbuj ponownie', reinitialize the exercise
+                if (elements.overlay.continueBtn.textContent === "Spróbuj ponownie") {
+                    showView('exerciseView');
+                }
+            });
+            
+            elements.overlay.nextGroupBtn.addEventListener('click', () => {
+                elements.overlay.groupCompleteOverlay.classList.add('hidden');
+                
+                // Find next group
+                const nextGroupId = appState.currentGroupId + 1;
+                
+                if (nextGroupId <= phraseGroups.length) {
+                    // Go to next group
+                    appState.currentGroupId = nextGroupId;
+                    appState.currentLevelId = 1; // Start with first level in the new group
+                    showView('groupIntroView');
+                } else {
+                    // All groups completed
+                    showView('resultsView');
+                }
+            });
+            
+            elements.overlay.backToGroupsListBtn.addEventListener('click', () => {
+                elements.overlay.groupCompleteOverlay.classList.add('hidden');
+                showView('groupSelectionView');
+            });
+        }
+        
+        // Initialize the application
+        function initApp() {
+            setupEventListeners();
+            
+            // Start with the welcome view
+            showView('welcomeView');
+        }
+        
+        // Start the app when the page is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            initApp();
+        });
+    </script>
+</body>
+</html>
