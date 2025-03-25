@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduTime Pro - System Rozliczania Godzin Ponadwymiarowych</title>
+    <!-- External Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!-- Internal CSS (Ideally in style.css) -->
+    <style>
+        /* --- Paste ALL the CSS from your original code here --- */
+        /* --- Add/Modify these styles --- */
+        :root {
+            --primary: #2c3e50; /* Keep original colors */
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --sidebar-width: 350px; /* Slightly wider for more inputs */
+            --header-height: 60px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        /* Styles from original code... */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background-color: #f5f7fa; color: var(--dark); line-height: 1.6; }
+        .container { display: flex; min-height: 100vh; }
+        header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-height); background-color: var(--primary); color: white; display: flex; align-items: center; padding: 0 20px; z-index: 100; box-shadow: var(--shadow); }
+        .logo { display: flex; align-items: center; font-size: 1.5rem; font-weight: 700; }
+        .logo i { margin-right: 10px; color: var(--secondary); }
+        .user-menu { margin-left: auto; display: flex; align-items: center; }
+        .user-menu .menu-item { margin-left: 20px; cursor: pointer; position: relative; }
+        .user-menu .menu-item i { font-size: 1.2rem; }
+        .notification-badge { position: absolute; top: -8px; right: -8px; background-color: var(--accent); color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; }
+        .sidebar { width: var(--sidebar-width); background-color: white; box-shadow: var(--shadow); position: fixed; top: var(--header-height); bottom: 0; left: 0; overflow-y: auto; transition: var(--transition); z-index: 90; transform: translateX(0); }
+        .sidebar.collapsed { transform: translateX(-100%); }
+        .sidebar-toggle { position: fixed; left: var(--sidebar-width); top: calc(var(--header-height) + 10px); background-color: var(--secondary); color: white; width: 30px; height: 30px; border-radius: 0 4px 4px 0; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 95; transition: var(--transition); box-shadow: var(--shadow); }
+        .sidebar-toggle.collapsed { left: 0; }
+        .sidebar-header { padding: 15px; border-bottom: 1px solid #eee; font-weight: 500; color: var(--primary); display: flex; align-items: center; justify-content: space-between; }
+        .sidebar-content { padding: 15px; }
+        .sidebar-section { margin-bottom: 20px; }
+        .sidebar-section-title { font-weight: 500; margin-bottom: 10px; color: var(--primary); display: flex; align-items: center; cursor: pointer; }
+        .sidebar-section-title i { margin-right: 8px; color: var(--secondary); }
+        .sidebar-section-title .toggle-icon { margin-left: auto; transition: var(--transition); }
+        .sidebar-section-title .toggle-icon.collapsed { transform: rotate(-90deg); }
+        .sidebar-section-content { overflow: hidden; max-height: 1000px; transition: max-height 0.3s ease; }
+        .sidebar-section-content.collapsed { max-height: 0; }
+        .input-group { margin-bottom: 12px; }
+        .input-group label { display: block; margin-bottom: 4px; font-size: 0.85rem; color: #666; }
+        .input-group input, .input-group select { width: 100%; padding: 8px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.9rem; }
+        .input-group input:focus, .input-group select:focus { border-color: var(--secondary); outline: none; }
+        .custom-select { position: relative; }
+        .custom-select select { appearance: none; padding-right: 25px; }
+        .custom-select:after { content: '\f107'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #666; pointer-events: none; }
+        .checkbox-group { display: flex; align-items: center; margin-bottom: 10px; }
+        .checkbox-group input { margin-right: 8px; width: auto; }
+        .main-content { flex-grow: 1; margin-left: var(--sidebar-width); margin-top: var(--header-height); padding: 20px; transition: var(--transition); }
+        .main-content.expanded { margin-left: 0; }
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-bottom: 20px; } /* Adjusted minmax */
+        .stat-card { background-color: white; padding: 20px; border-radius: 8px; box-shadow: var(--shadow); display: flex; flex-direction: column; }
+        .stat-card-header { display: flex; align-items: center; margin-bottom: 15px; }
+        .stat-card-icon { background-color: rgba(52, 152, 219, 0.1); color: var(--secondary); width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 10px; }
+        .stat-card-title { font-weight: 500; font-size: 0.9rem; color: #666; }
+        .stat-card-value { font-size: 1.8rem; font-weight: 700; margin-bottom: 5px; }
+        .stat-card-footer { font-size: 0.8rem; color: #888; margin-top: auto; }
+        .panel { background-color: white; border-radius: 8px; box-shadow: var(--shadow); margin-bottom: 20px; overflow: hidden; }
+        .panel-header { padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; align-items: center; background-color: #fafafa; }
+        .panel-title { font-weight: 500; color: var(--primary); }
+        .panel-actions { margin-left: auto; display: flex; gap: 10px; }
+        .panel-content { padding: 20px; }
+        .btn { padding: 8px 15px; border-radius: 4px; border: none; cursor: pointer; display: inline-flex; align-items: center; font-size: 0.9rem; transition: var(--transition); }
+        .btn i { margin-right: 5px; }
+        .btn-primary { background-color: var(--secondary); color: white; }
+        .btn-primary:hover { background-color: #2980b9; }
+        .btn-secondary { background-color: #e9ecef; color: var(--dark); }
+        .btn-secondary:hover { background-color: #dee2e6; }
+        .btn-success { background-color: var(--success); color: white; }
+        .btn-success:hover { background-color: #27ae60; }
+        .btn-danger { background-color: var(--danger); color: white; }
+        .btn-danger:hover { background-color: #c0392b; }
+        .btn-sm { padding: 5px 10px; font-size: 0.8rem; }
+        .calculation-steps { display: flex; overflow-x: auto; padding-bottom: 15px; margin-bottom: 20px; }
+        .step-card { min-width: 250px; background-color: white; border-radius: 8px; padding: 15px; margin-right: 15px; box-shadow: var(--shadow); border-left: 4px solid var(--secondary); }
+        .step-card.active { border-left-color: var(--success); background-color: rgba(46, 204, 113, 0.05); }
+        .step-title { font-weight: 500; margin-bottom: 10px; color: var(--primary); }
+        .step-formula { background-color: #f8f9fa; padding: 8px; border-radius: 4px; font-family: monospace; font-size: 0.8rem; margin-bottom: 10px; white-space: pre-wrap; word-wrap: break-word; }
+        .step-result { font-weight: 700; font-size: 1.1rem; color: var(--secondary); }
+        .step-card.active .step-result { color: var(--success); }
+        .chart-container { position: relative; height: 300px; margin-bottom: 20px; }
+        .teacher-profiles { display: grid; grid-template-columns: 1fr; /* Single column */ gap: 10px; margin-top: 15px; }
+        .profile-card { background-color: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); cursor: pointer; transition: var(--transition); border-left: 3px solid transparent; display: flex; flex-direction: column; }
+        .profile-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-left-color: var(--secondary); }
+        .profile-card.active { border-left-color: var(--success); background-color: rgba(46, 204, 113, 0.05); }
+        .profile-header { display: flex; align-items: center; margin-bottom: 10px; }
+        .profile-avatar { width: 36px; height: 36px; background-color: var(--secondary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 10px; font-weight: 500; flex-shrink: 0; }
+        .profile-name { font-weight: 500; flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .profile-details { font-size: 0.8rem; color: #666; margin-bottom: 10px; }
+        .profile-actions { display: flex; justify-content: flex-end; gap: 5px; margin-top: auto; /* Push actions to bottom */ }
+        .profile-action-btn { border: none; background: none; color: #666; cursor: pointer; font-size: 0.9rem; padding: 2px 4px; }
+        .profile-action-btn:hover { color: var(--secondary); }
+        .profile-action-btn.edit:hover { color: var(--warning); }
+        .profile-action-btn.delete:hover { color: var(--danger); }
+        .results-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .result-card { background-color: white; border-radius: 8px; padding: 20px; box-shadow: var(--shadow); }
+        .result-header { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; display: flex; align-items: center; }
+        .result-title { font-weight: 500; color: var(--primary); }
+        .result-icon { margin-right: 10px; color: var(--secondary); }
+        .result-value { font-size: 2rem; font-weight: 700; margin: 20px 0; color: var(--success); text-align: center; }
+        .result-details { background-color: #f8f9fa; padding: 15px; border-radius: 4px; font-size: 0.9rem; }
+        .result-details ul { list-style: none; padding: 0; }
+        .result-details li { margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .result-details li span:first-child { color: #666; padding-right: 10px; }
+        .result-details li span:last-child { font-weight: 500; text-align: right; }
+        .history-table { width: 100%; border-collapse: collapse; }
+        .history-table th, .history-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
+        .history-table th { background-color: #f8f9fa; font-weight: 500; color: #666; cursor: pointer; }
+        .history-table th .sort-icon { margin-left: 5px; color: #ccc; }
+        .history-table th:hover .sort-icon { color: #999; }
+        .history-table tr:hover { background-color: #f8f9fa; }
+        .status-badge { display: inline-block; padding: 3px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 500; }
+        .status-badge.pending { background-color: rgba(243, 156, 18, 0.1); color: var(--warning); }
+        .status-badge.completed { background-color: rgba(46, 204, 113, 0.1); color: var(--success); }
+        .status-badge.error { background-color: rgba(231, 76, 60, 0.1); color: var(--danger); }
+        .tooltip { position: relative; display: inline-block; margin-left: 5px; }
+        .tooltip i { color: #aaa; font-size: 0.9rem; cursor: help; }
+        .tooltip .tooltip-text { visibility: hidden; width: 220px; background-color: var(--dark); color: white; text-align: left; border-radius: 4px; padding: 10px; position: absolute; z-index: 1; bottom: 125%; left: 50%; transform: translateX(-50%); opacity: 0; transition: opacity 0.3s; font-size: 0.8rem; line-height: 1.4; }
+        .tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
+        .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: var(--dark) transparent transparent transparent; }
+        @media (max-width: 992px) { .sidebar { transform: translateX(-100%); } .sidebar.active { transform: translateX(0); } .main-content { margin-left: 0; } .sidebar-toggle { left: 0; } .sidebar-toggle.active { left: var(--sidebar-width); } .results-container { grid-template-columns: 1fr; } }
+        .calculation-type-switch { display: flex; background-color: #e9ecef; border-radius: 30px; overflow: hidden; margin-bottom: 15px; border: 1px solid #ddd; }
+        .calculation-type-option { flex: 1; padding: 8px 0; text-align: center; font-size: 0.85rem; cursor: pointer; transition: var(--transition); color: #666; }
+        .calculation-type-option.active { background-color: var(--secondary); color: white; font-weight: 500; }
+        /* Flatpickr styling */
+        .flatpickr-input { background-color: white !important; } /* Ensure background matches */
+        /* Print styles */
+        @media print {
+            body * { visibility: hidden; }
+            .print-area, .print-area * { visibility: visible; }
+            .print-area { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; }
+            header, .sidebar, .sidebar-toggle, .panel-actions, .user-menu, .btn, .dashboard, .chart-container { display: none !important; }
+            .main-content { margin: 0 !important; padding: 0 !important; }
+            .panel, .result-card { box-shadow: none; border: 1px solid #ccc; margin-bottom: 15px; }
+            .panel-header { background-color: #eee !important; }
+            .results-container { grid-template-columns: 1fr; }
+        }
+        .loaded-profile-info {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-style: italic;
+        }
+        .info-value { /* Small display for calculated values */
+            font-size: 0.8rem;
+            color: #888;
+            margin-left: 5px;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-calculator"></i> <!-- Changed icon -->
+            <span>EduTime Pro</span>
+        </div>
+        <div class="user-menu">
+            <!-- Notification and User icons -->
+            <div class="menu-item"> <i class="fas fa-bell"></i> <span class="notification-badge">!</span> </div>
+            <div class="menu-item"> <i class="fas fa-user"></i> </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <span>Panel Danych i Obliczeń</span>
+                <i class="fas fa-sliders-h"></i>
+            </div>
+            <div class="sidebar-content">
+
+                <!-- Calculation Type Section -->
+                <div class="sidebar-section">
+                     <div class="sidebar-section-title" onclick="toggleSection('calculation-type')">
+                        <i class="fas fa-cogs"></i>
+                        <span>Sposób Rozliczenia</span>
+                        <i class="fas fa-chevron-down toggle-icon" id="calculation-type-toggle"></i>
+                    </div>
+                    <div class="sidebar-section-content" id="calculation-type-content">
+                         <div class="calculation-type-switch">
+                            <div class="calculation-type-option active" data-type="wholePeriod" onclick="setCalculationType('wholePeriod')">Cały okres</div>
+                            <div class="calculation-type-option" data-type="byWeek" onclick="setCalculationType('byWeek')">Tygodniowo</div>
+                        </div>
+                        <p style="font-size: 0.8rem; color: #666; text-align: center;">Wybierz metodę obliczania godzin.</p>
+                    </div>
+                </div>
+
+                <!-- Teacher Data Section -->
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title" onclick="toggleSection('teacher-data')">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Dane Nauczyciela</span>
+                        <i class="fas fa-chevron-down toggle-icon" id="teacher-data-toggle"></i>
+                    </div>
+                    <div class="sidebar-section-content" id="teacher-data-content">
+                         <div class="input-group">
+                            <label for="profile-load">Wczytaj profil</label>
+                            <div class="custom-select">
+                                <select id="profile-load" onchange="loadSelectedProfile()">
+                                    <option value="">-- Wybierz lub wprowadź dane --</option>
+                                    <!-- Options added by JS -->
+                                </select>
+                            </div>
+                        </div>
+                        <div id="loaded-profile-info" class="loaded-profile-info" style="display: none;"></div>
+                        <div class="input-group">
+                            <label for="teacher-name">Imię i nazwisko</label>
+                            <input type="text" id="teacher-name" placeholder="Jan Kowalski">
+                        </div>
+                        <!-- Pensum Input -->
+                        <div class="input-group">
+                            <label for="weekly-hours">Tygodniowe pensum
+                                <span class="tooltip">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span class="tooltip-text">Podstawowy obowiązkowy wymiar zajęć (np. 18), zgodnie z art. 42 ust. 3 lub 7 Karty Nauczyciela.</span>
+                                </span>
+                            </label>
+                            <input type="number" id="weekly-hours" value="18" step="0.5">
+                        </div>
+                        <!-- Hour Reduction Input -->
+                         <div class="input-group">
+                            <label for="hour-reduction">Zniżka godzin
+                                 <span class="tooltip">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span class="tooltip-text">Liczba godzin zniżki przysługująca np. dyrektorowi, wicedyrektorowi. Wprowadź 0, jeśli nie dotyczy.</span>
+                                </span>
+                            </label>
+                            <input type="number" id="hour-reduction" value="0" step="0.5">
+                        </div>
+                        <!-- Max Overtime Input -->
+                        <div class="input-group">
+                            <label for="max-overtime">Maks. tyg. l. godz. ponadwym.
+                                <span class="tooltip">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span class="tooltip-text">Maksymalna liczba godzin ponadwymiarowych przydzielona w planie organizacyjnym (np. 8).</span>
+                                </span>
+                            </label>
+                            <input type="number" id="max-overtime" value="8" step="0.5">
+                        </div>
+                        <!-- Workdays per Week Input -->
+                        <div class="input-group">
+                            <label for="workdays-per-week">Liczba dni pracy w tygodniu</label>
+                            <div class="custom-select">
+                                <select id="workdays-per-week">
+                                    <option value="5">5 dni (pon-pt)</option>
+                                    <option value="4">4 dni</option>
+                                </select>
+                            </div>
+                        </div>
+                         <!-- Teacher Type (Optional/Informational) -->
+                        <div class="input-group">
+                            <label for="teacher-type">Typ nauczyciela (informacyjnie)</label>
+                            <div class="custom-select">
+                                <select id="teacher-type">
+                                     <option value="default">Nauczyciel (ogólny)</option>
+                                     <option value="specialization">Nauczyciel specjalista (świetlica, biblioteka, logopeda itp.)</option>
+                                     <option value="support">Nauczyciel wspomagający</option>
+                                     <option value="director">Dyrektor/Wicedyrektor</option>
+                                     <option value="other">Inny</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Period Data Section -->
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title" onclick="toggleSection('period-data')">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Okres Rozliczeniowy</span>
+                        <i class="fas fa-chevron-down toggle-icon" id="period-data-toggle"></i>
+                    </div>
+                    <div class="sidebar-section-content" id="period-data-content">
+                        <div class="input-group">
+                            <label for="period-start">Data początkowa</label>
+                            <input type="text" id="period-start" class="flatpickr-input" placeholder="Wybierz datę...">
+                        </div>
+                        <div class="input-group">
+                            <label for="period-end">Data końcowa</label>
+                            <input type="text" id="period-end" class="flatpickr-input" placeholder="Wybierz datę...">
+                        </div>
+                        <div class="input-group">
+                            <label>Całkowita liczba dni w okresie: <span id="total-days-display" class="info-value">--</span></label>
+                         </div>
+                        <div class="input-group">
+                            <label for="absent-dates">Dni usprawiedliwionej nieobecności
+                                 <span class="tooltip">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span class="tooltip-text">Zaznacz dni nieobecności nauczyciela w pracy (np. choroba, urlop) w wybranym okresie.</span>
+                                </span>
+                            </label>
+                            <input type="text" id="absent-dates" class="flatpickr-input" placeholder="Wybierz daty...">
+                        </div>
+                         <div class="input-group">
+                            <label for="holiday-dates">Dni ustawowo wolne od pracy / wolne od zajęć
+                                 <span class="tooltip">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span class="tooltip-text">Zaznacz dni wolne (np. święta, dni dyrektorskie) przypadające w dni robocze nauczyciela w wybranym okresie.</span>
+                                </span>
+                            </label>
+                            <input type="text" id="holiday-dates" class="flatpickr-input" placeholder="Wybierz daty...">
+                        </div>
+                        <div class="input-group">
+                            <label>Obliczone dni pracy w okresie: <span id="working-days-display" class="info-value">--</span></label>
+                         </div>
+                    </div>
+                </div>
+
+                 <!-- Hours Worked Section -->
+                 <div class="sidebar-section">
+                    <div class="sidebar-section-title" onclick="toggleSection('hours-data')">
+                        <i class="fas fa-user-clock"></i>
+                        <span>Zrealizowane Godziny</span>
+                        <i class="fas fa-chevron-down toggle-icon" id="hours-data-toggle"></i>
+                    </div>
+                    <div class="sidebar-section-content" id="hours-data-content">
+                        <div class="input-group">
+                            <label for="hours-worked">Liczba godzin zrealizowanych
+                                <span class="tooltip">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span class="tooltip-text">Suma godzin faktycznie przepracowanych przez nauczyciela w okresie (zajęcia dydaktyczne, wychowawcze, opiekuńcze). Zgodnie z VULCAN, zazwyczaj **nie wlicza się** godzin doraźnych zastępstw.</span>
+                                </span>
+                            </label>
+                            <input type="number" id="hours-worked" value="0" step="0.1">
+                        </div>
+                         <!-- Optional: More granular input could go here later -->
+                    </div>
+                </div>
+
+                <!-- Profiles Section -->
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title" onclick="toggleSection('teacher-profiles')">
+                        <i class="fas fa-users"></i>
+                        <span>Profile Nauczycieli</span>
+                        <i class="fas fa-chevron-down toggle-icon" id="teacher-profiles-toggle"></i>
+                    </div>
+                    <div class="sidebar-section-content collapsed" id="teacher-profiles-content">
+                        <div class="teacher-profiles" id="teacher-profiles-list">
+                            <div style="text-align:center; color: #888; font-size: 0.9em;">Brak zapisanych profili.</div>
+                        </div>
+                        <div style="margin-top: 15px; text-align: center;">
+                            <button class="btn btn-primary btn-sm" onclick="saveOrUpdateTeacherProfile()">
+                                <i class="fas fa-save"></i> <span id="save-profile-btn-text">Zapisz jako nowy profil</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()">
+            <i class="fas fa-chevron-left"></i> <!-- Changed icon direction -->
+        </div>
+
+        <div class="main-content print-area" id="main-content">
+            <!-- Dashboard Cards -->
+            <div class="dashboard">
+                <div class="stat-card">
+                    <div class="stat-card-header"> <div class="stat-card-icon"><i class="fas fa-chalkboard-teacher"></i></div> <div class="stat-card-title">Godziny zrealizowane</div> </div>
+                    <div class="stat-card-value" id="hours-worked-value">0</div> <div class="stat-card-footer">W okresie</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header"> <div class="stat-card-icon"><i class="fas fa-bullseye"></i></div> <div class="stat-card-title">Norma godzin obliczona</div> </div>
+                    <div class="stat-card-value" id="norm-hours-value">0</div> <div class="stat-card-footer">W okresie (po odliczeniach)</div>
+                </div>
+                <div class="stat-card">
+                     <div class="stat-card-header"> <div class="stat-card-icon"><i class="fas fa-chart-line"></i></div> <div class="stat-card-title">Godziny ponadwymiarowe</div> </div>
+                    <div class="stat-card-value" id="overtime-hours-value">0</div> <div class="stat-card-footer">Do rozliczenia</div>
+                </div>
+            </div>
+
+            <!-- Calculation Steps Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">Kalkulacja Krok po Kroku (Wg VULCAN)</div>
+                    <div class="panel-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="toggleFormulas()"> <i class="fas fa-code"></i> Wzory </button>
+                        <button class="btn btn-primary btn-sm" onclick="calculateAll()"> <i class="fas fa-sync-alt"></i> Przelicz </button>
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <div class="calculation-steps" id="calculation-steps">
+                        <!-- Step cards generated by JS -->
+                        <div style="text-align:center; color: #888; font-size: 0.9em; width: 100%;">Wprowadź dane i kliknij 'Przelicz'.</div>
+                    </div>
+                </div>
+            </div>
+
+             <!-- Visualization Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">Wizualizacja</div>
+                    <!-- <div class="panel-actions"> <button class="btn btn-secondary btn-sm" onclick="changeChartType()"> <i class="fas fa-chart-pie"></i> Zmień wykres </button> </div> -->
+                </div>
+                <div class="panel-content"> <div class="chart-container"> <canvas id="overtimeChart"></canvas> </div> </div>
+            </div>
+
+             <!-- Results & History Panel -->
+            <div class="results-container">
+                <!-- Calculation Result Card -->
+                <div class="result-card">
+                    <div class="result-header"> <div class="result-icon"><i class="fas fa-clipboard-check"></i></div> <div class="result-title">Podsumowanie Obliczeń</div> </div>
+                    <div class="result-value" id="final-result">0 godz.</div>
+                    <div class="result-details">
+                        <ul>
+                            <li><span>Tyg. pensum (po zniżce):</span> <span id="effective-pensum-value">--</span></li>
+                            <li><span>Dzienna norma (bazowa):</span> <span id="daily-norm-value">--</span></li>
+                            <li><span>Dni pracy w okresie (faktyczne):</span> <span id="actual-working-days-value">--</span></li>
+                            <li><span>Norma godzin za okres:</span> <span id="period-norm-value">--</span></li>
+                            <li><span>Wstępne godz. ponadwym.:</span> <span id="preliminary-overtime-value">--</span></li>
+                            <li><span>Max. tyg. godz. ponadwym.:</span> <span id="max-weekly-overtime-limit-value">--</span></li>
+                            <li><span>Max. godz. ponadwym. w okresie:</span> <span id="max-period-overtime-value">--</span></li>
+                        </ul>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button class="btn btn-success" onclick="saveCalculation()"> <i class="fas fa-save"></i> Zapisz Rozliczenie </button>
+                        <button class="btn btn-secondary" onclick="printReport()"> <i class="fas fa-print"></i> Drukuj Rozliczenie </button>
+                    </div>
+                </div>
+
+                <!-- History Chart Card -->
+                <div class="result-card">
+                    <div class="result-header"> <div class="result-icon"><i class="fas fa-history"></i></div> <div class="result-title">Ostatnie Godziny Ponadwymiarowe</div> </div>
+                    <div class="chart-container"> <canvas id="historyChart"></canvas> </div>
+                    <p style="font-size: 0.8rem; color: #666; text-align: center;">Wykres ostatnich zapisanych rozliczeń.</p>
+                </div>
+            </div>
+
+            <!-- Calculation History Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">Historia Rozliczeń</div>
+                    <div class="panel-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="exportData()"> <i class="fas fa-file-export"></i> Eksportuj CSV </button>
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Data zapisu <i class="fas fa-sort sort-icon"></i></th>
+                                <th>Nauczyciel <i class="fas fa-sort sort-icon"></i></th>
+                                <th>Okres <i class="fas fa-sort sort-icon"></i></th>
+                                <th>Godz. zrealiz. <i class="fas fa-sort sort-icon"></i></th>
+                                <th>Godz. ponadwym. <i class="fas fa-sort sort-icon"></i></th>
+                                <th>Status <i class="fas fa-sort sort-icon"></i></th>
+                                <th>Akcje</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                           <tr><td colspan="7" style="text-align:center; color: #888; padding: 20px;">Brak zapisanych rozliczeń.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div> <!-- End main-content -->
+    </div> <!-- End container -->
+
+    <!-- External JS Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/pl.js"></script> <!-- Polish locale for flatpickr -->
+
+    <!-- Internal JS (Ideally in script.js) -->
+    <script>
+        // --- Paste MOST of the JS from your original code here ---
+        // --- Make the following significant modifications ---
+
+        // State Object
+        let state = {
+            teacher: {
+                id: null,
+                name: '',
+                pensum: 18,
+                reduction: 0,
+                maxOvertime: 8,
+                workdaysPerWeek: 5,
+                type: 'default',
+            },
+            period: {
+                start: null,
+                end: null,
+                totalDays: 0,
+                absentDates: [],
+                holidayDates: [],
+                actualWorkDays: 0,
+            },
+            hours: {
+                worked: 0,
+            },
+            calculation: {
+                type: 'wholePeriod', // 'wholePeriod' or 'byWeek'
+                dailyNorm: 0,
+                effectivePensum: 0,
+                periodNorm: 0,
+                preliminaryOvertime: 0,
+                maxDailyOvertime: 0,
+                maxPeriodOvertime: 0,
+                finalOvertime: 0,
+                steps: [], // To store detailed steps for display
+                weeklyResults: [] // For byWeek calculation details
+            },
+            ui: {
+                showFormulas: true,
+                activeProfileId: null
+            },
+            saved: {
+                profiles: [],
+                calculations: []
+            }
+        };
+
+        // DOM Elements (Add new ones)
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const mainContent = document.getElementById('main-content');
+        const calculationStepsEl = document.getElementById('calculation-steps');
+        const teacherProfilesListEl = document.getElementById('teacher-profiles-list');
+        const historyTableBodyEl = document.getElementById('history-table-body');
+        const profileLoadSelect = document.getElementById('profile-load');
+        const loadedProfileInfoEl = document.getElementById('loaded-profile-info');
+        const saveProfileBtnText = document.getElementById('save-profile-btn-text');
+
+        // Input elements (Add new ones)
+        const teacherNameInput = document.getElementById('teacher-name');
+        const weeklyHoursInput = document.getElementById('weekly-hours'); // Pensum
+        const hourReductionInput = document.getElementById('hour-reduction'); // Zniżka
+        const maxOvertimeInput = document.getElementById('max-overtime');
+        const workdaysPerWeekSelect = document.getElementById('workdays-per-week');
+        const teacherTypeSelect = document.getElementById('teacher-type'); // Keep for profile saving
+        const periodStartInput = document.getElementById('period-start');
+        const periodEndInput = document.getElementById('period-end');
+        const absentDatesInput = document.getElementById('absent-dates');
+        const holidayDatesInput = document.getElementById('holiday-dates');
+        const hoursWorkedInput = document.getElementById('hours-worked');
+
+        // Output elements (Add new ones)
+        const hoursWorkedValue = document.getElementById('hours-worked-value');
+        const normHoursValue = document.getElementById('norm-hours-value'); // Period Norm
+        const overtimeHoursValue = document.getElementById('overtime-hours-value'); // Final Overtime
+        const finalResult = document.getElementById('final-result');
+        const effectivePensumValue = document.getElementById('effective-pensum-value');
+        const dailyNormValue = document.getElementById('daily-norm-value');
+        const actualWorkingDaysValue = document.getElementById('actual-working-days-value'); // Renamed
+        const periodNormValue = document.getElementById('period-norm-value');
+        const preliminaryOvertimeValue = document.getElementById('preliminary-overtime-value');
+        const maxWeeklyOvertimeLimitValue = document.getElementById('max-weekly-overtime-limit-value'); // Added for clarity
+        const maxPeriodOvertimeValue = document.getElementById('max-period-overtime-value');
+        const totalDaysDisplay = document.getElementById('total-days-display');
+        const workingDaysDisplay = document.getElementById('working-days-display'); // For sidebar display
+
+        // Chart Variables
+        let overtimeChart, historyChart;
+
+        // --- Initialization ---
+        function initializeApp() {
+            initializeFlatpickr();
+            loadSavedData(); // Load profiles and calculations first
+            setupEventListeners();
+            initializeCharts();
+            // Set default dates (e.g., current month)
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            flatpickrInstances.start.setDate(firstDay, false); // Don't trigger change yet
+            flatpickrInstances.end.setDate(lastDay, true); // Trigger change here to calculate
+            updateUI(); // Initial UI update based on default state
+        }
+
+        let flatpickrInstances = {};
+        function initializeFlatpickr() {
+             const commonConfig = {
+                dateFormat: "Y-m-d",
+                locale: "pl",
+                altInput: true,
+                altFormat: "d.m.Y",
+                allowInput: false // Prevent manual typing
+            };
+
+            flatpickrInstances.start = flatpickr(periodStartInput, {
+                ...commonConfig,
+                onChange: (selectedDates) => {
+                    state.period.start = selectedDates[0] || null;
+                    flatpickrInstances.end.set('minDate', state.period.start);
+                    updatePeriodAndRecalculate();
+                }
+            });
+            flatpickrInstances.end = flatpickr(periodEndInput, {
+                 ...commonConfig,
+                onChange: (selectedDates) => {
+                    state.period.end = selectedDates[0] || null;
+                    flatpickrInstances.start.set('maxDate', state.period.end);
+                    // Also update min/max for absence/holiday pickers
+                    const minDate = state.period.start;
+                    const maxDate = state.period.end;
+                    flatpickrInstances.absent.set('minDate', minDate);
+                    flatpickrInstances.absent.set('maxDate', maxDate);
+                    flatpickrInstances.holiday.set('minDate', minDate);
+                    flatpickrInstances.holiday.set('maxDate', maxDate);
+                    updatePeriodAndRecalculate();
+                }
+            });
+             flatpickrInstances.absent = flatpickr(absentDatesInput, {
+                ...commonConfig,
+                mode: "multiple",
+                conjunction: ", ", // Separator for display
+                onChange: (selectedDates) => {
+                    state.period.absentDates = selectedDates;
+                    updatePeriodAndRecalculate();
+                }
+            });
+            flatpickrInstances.holiday = flatpickr(holidayDatesInput, {
+                ...commonConfig,
+                mode: "multiple",
+                conjunction: ", ",
+                 onChange: (selectedDates) => {
+                    state.period.holidayDates = selectedDates;
+                    updatePeriodAndRecalculate();
+                }
+            });
+        }
+
+        function setupEventListeners() {
+            // Sidebar inputs
+            teacherNameInput.addEventListener('input', (e) => state.teacher.name = e.target.value);
+            weeklyHoursInput.addEventListener('input', updateStateAndRecalculate);
+            hourReductionInput.addEventListener('input', updateStateAndRecalculate);
+            maxOvertimeInput.addEventListener('input', updateStateAndRecalculate);
+            workdaysPerWeekSelect.addEventListener('change', updateStateAndRecalculate);
+            teacherTypeSelect.addEventListener('change', (e) => state.teacher.type = e.target.value);
+            hoursWorkedInput.addEventListener('input', updateStateAndRecalculate);
+
+            // Add listeners for calculation type buttons if not already handled by onclick
+        }
+
+        function updateStateAndRecalculate(event) {
+            // Update state based on which input triggered the event
+             if (event) {
+                 const id = event.target.id;
+                 const value = event.target.value;
+                 switch (id) {
+                    case 'weekly-hours': state.teacher.pensum = parseFloat(value) || 0; break;
+                    case 'hour-reduction': state.teacher.reduction = parseFloat(value) || 0; break;
+                    case 'max-overtime': state.teacher.maxOvertime = parseFloat(value) || 0; break;
+                    case 'workdays-per-week': state.teacher.workdaysPerWeek = parseInt(value) || 5; break;
+                    case 'hours-worked': state.hours.worked = parseFloat(value) || 0; break;
+                 }
+             }
+             updatePeriodData(); // Recalculate period days first
+             calculateAll(); // Then run main calculation
+             updateUI(); // Update display
+        }
+
+         function updatePeriodAndRecalculate() {
+            updatePeriodData();
+            calculateAll();
+            updateUI();
+        }
+
+         function updatePeriodData() {
+            if (state.period.start && state.period.end && state.period.start <= state.period.end) {
+                // Calculate Total Days
+                const diffTime = Math.abs(state.period.end - state.period.start);
+                state.period.totalDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+                // Calculate Actual Working Days
+                state.period.actualWorkDays = countActualWorkdays(
+                    state.period.start,
+                    state.period.end,
+                    state.teacher.workdaysPerWeek,
+                    state.period.holidayDates,
+                    state.period.absentDates
+                );
+            } else {
+                state.period.totalDays = 0;
+                state.period.actualWorkDays = 0;
+            }
+         }
+
+
+        // --- Calculation Logic (VULCAN based) ---
+
+        function calculateAll() {
+            state.calculation.steps = []; // Clear previous steps
+            state.calculation.weeklyResults = []; // Clear weekly details
+
+            const { pensum, reduction, maxOvertime, workdaysPerWeek } = state.teacher;
+            const { start, end, actualWorkDays, totalDays } = state.period; // Use calculated actualWorkDays
+            const { worked } = state.hours;
+
+             // Validate essential data
+            if (!start || !end || pensum <= 0 || workdaysPerWeek <= 0) {
+                resetCalculationResults();
+                addCalcStep("Błąd", "Brak wystarczających danych (okres, pensum, dni pracy).", "", "BŁĄD");
+                return;
+            }
+
+            // Step 0: Effective Pensum
+            state.calculation.effectivePensum = Math.max(0, pensum - reduction);
+            const effectivePensum = state.calculation.effectivePensum;
+            addCalcStep("Pensum efektywne", `[Pensum efektywne] = [Pensum] - [Zniżka]`, `${pensum} - ${reduction}`, `${effectivePensum.toFixed(2)} godz./tydz.`);
+
+
+            // Step 1: Daily Norm (Dzienna norma godzin)
+            if (workdaysPerWeek <= 0) {
+                 resetCalculationResults();
+                 addCalcStep("Błąd", "Liczba dni pracy w tygodniu musi być większa od 0.", "", "BŁĄD");
+                 return;
+            }
+            state.calculation.dailyNorm = effectivePensum / workdaysPerWeek;
+            const dailyNorm = state.calculation.dailyNorm;
+            addCalcStep(
+                "1. Dzienna norma godzin",
+                `[Dzienna norma] = [Pensum efektywne] / [L. dni pracy w tyg.]`,
+                `${effectivePensum.toFixed(2)} / ${workdaysPerWeek}`,
+                `${dailyNorm.toFixed(2)} godz./dzień`
+            );
+
+            if (state.calculation.type === 'wholePeriod') {
+                calculateWholePeriod(dailyNorm, actualWorkDays, worked, maxOvertime, workdaysPerWeek, totalDays);
+            } else { // byWeek
+                calculateByWeek(dailyNorm, start, end, worked, maxOvertime, workdaysPerWeek);
+            }
+        }
+
+         function calculateWholePeriod(dailyNorm, actualWorkDays, hoursWorked, maxWeeklyOvertime, workdaysPerWeek, totalDaysInPeriod) {
+            // Step 2: Period Norm (Norma godzin za cały okres)
+            state.calculation.periodNorm = dailyNorm * actualWorkDays;
+            const periodNorm = state.calculation.periodNorm;
+            addCalcStep(
+                "2. Norma godzin za okres",
+                `[Norma za okres] = [Dzienna norma] * [L. dni pracy w okresie]`,
+                `${dailyNorm.toFixed(2)} * ${actualWorkDays}`,
+                `${periodNorm.toFixed(2)} godz.`
+            );
+
+            // Step 3: Preliminary Overtime (Wstępna liczba godzin ponadwymiarowych)
+            state.calculation.preliminaryOvertime = Math.max(0, hoursWorked - periodNorm);
+            const preliminaryOvertime = state.calculation.preliminaryOvertime;
+             addCalcStep(
+                "3. Wstępna l. godz. ponadwym.",
+                `[Wstępne G.P.] = [Godz. zrealizowane] - [Norma za okres]`,
+                 `${hoursWorked.toFixed(2)} - ${periodNorm.toFixed(2)}`,
+                 `${preliminaryOvertime.toFixed(2)} godz.`
+            );
+
+            // Step 4: Max Daily Overtime (Maksymalna liczba godzin ponadwymiarowych na dzień)
+            state.calculation.maxDailyOvertime = maxWeeklyOvertime / workdaysPerWeek;
+            const maxDailyOvertime = state.calculation.maxDailyOvertime;
+             addCalcStep(
+                "4. Max. dzienna l. godz. ponadwym.",
+                `[Max dzienne G.P.] = [Max tyg. G.P.] / [L. dni pracy w tyg.]`,
+                 `${maxWeeklyOvertime.toFixed(2)} / ${workdaysPerWeek}`,
+                 `${maxDailyOvertime.toFixed(2)} godz./dzień`
+            );
+
+            // Step 5: Max Period Overtime (Maksymalna liczba godzin ponadwymiarowych w okresie) - VULCAN uses TOTAL days here
+            state.calculation.maxPeriodOvertime = maxDailyOvertime * totalDaysInPeriod; // IMPORTANT: Uses total days, not actual work days
+            const maxPeriodOvertime = state.calculation.maxPeriodOvertime;
+            addCalcStep(
+                "5. Max. l. godz. ponadwym. w okresie",
+                `[Max G.P. w okresie] = [Max dzienne G.P.] * [L. dni pracy w okresie rozliczeniowym (całkowita)]`, // VULCAN Examples 1,2,3 use total days (e.g., 13, 12, 10)
+                `${maxDailyOvertime.toFixed(2)} * ${totalDaysInPeriod}`, // Using totalDaysInPeriod based on VULCAN examples
+                `${maxPeriodOvertime.toFixed(2)} godz.`
+            );
+
+             // Step 6: Final Overtime (Ostateczna liczba godzin ponadwymiarowych)
+            state.calculation.finalOvertime = Math.min(preliminaryOvertime, maxPeriodOvertime);
+            const finalOvertime = state.calculation.finalOvertime;
+             addCalcStep(
+                "6. Ostateczna l. godz. ponadwym.",
+                `[Ostateczne G.P.] = min([Wstępne G.P.], [Max G.P. w okresie])`,
+                `min(${preliminaryOvertime.toFixed(2)}, ${maxPeriodOvertime.toFixed(2)})`,
+                `${finalOvertime.toFixed(2)} godz.`
+            );
+        }
+
+        function calculateByWeek(dailyNorm, periodStart, periodEnd, totalHoursWorked, maxWeeklyOvertime, workdaysPerWeek) {
+            const weeks = getWeeksInPeriod(periodStart, periodEnd);
+            let totalFinalOvertime = 0;
+            let distributedHours = distributeHoursEvenly(totalHoursWorked, periodStart, periodEnd, workdaysPerWeek, state.period.holidayDates, state.period.absentDates); // Simple distribution for demo
+
+            if (weeks.length === 0) {
+                addCalcStep("Błąd", "Nie można podzielić okresu na tygodnie.", "", "BŁĄD");
+                resetCalculationResults();
+                return;
+            }
+
+             weeks.forEach((week, index) => {
+                 const weekHoursWorked = distributedHours[index] || 0; // Get hours for this week
+
+                 // Calculate Actual Work Days IN THIS WEEK
+                 const weekActualWorkDays = countActualWorkdays(week.start, week.end, workdaysPerWeek, state.period.holidayDates, state.period.absentDates);
+
+                 // Calculate Week Norm
+                 const weekNorm = dailyNorm * weekActualWorkDays;
+
+                 // Calculate Preliminary Weekly Overtime
+                 const preliminaryWeeklyOvertime = Math.max(0, weekHoursWorked - weekNorm);
+
+                 // Calculate Max Daily Overtime (same as step 4 in wholePeriod)
+                 const maxDailyOvertime = maxWeeklyOvertime / workdaysPerWeek;
+
+                 // Calculate Max Overtime FOR THIS WEEK (Max daily * number of POSSIBLE workdays in this week's segment)
+                 const possibleWorkdaysInWeekSegment = countPossibleWorkdays(week.start, week.end, workdaysPerWeek);
+                 const maxWeeklySegmentOvertime = maxDailyOvertime * possibleWorkdaysInWeekSegment;
+
+                 // Calculate Final Weekly Overtime
+                 const finalWeeklyOvertime = Math.min(preliminaryWeeklyOvertime, maxWeeklySegmentOvertime);
+                 totalFinalOvertime += finalWeeklyOvertime;
+
+                 // Store weekly results for display/debugging
+                 state.calculation.weeklyResults.push({
+                    weekNum: index + 1,
+                    weekStart: week.start,
+                    weekEnd: week.end,
+                    actualDays: weekActualWorkDays,
+                    possibleDays: possibleWorkdaysInWeekSegment,
+                    norm: weekNorm,
+                    worked: weekHoursWorked,
+                    preliminary: preliminaryWeeklyOvertime,
+                    maxLimit: maxWeeklySegmentOvertime,
+                    final: finalWeeklyOvertime
+                 });
+
+                  // Add step for each week
+                 addCalcStep(
+                    `Tydzień ${index + 1} (${formatDateShort(week.start)} - ${formatDateShort(week.end)})`,
+                    `Dni pracy: ${weekActualWorkDays}, Norma: ${weekNorm.toFixed(2)}, Zreal: ${weekHoursWorked.toFixed(2)}\n` +
+                    `Wstępne G.P.: ${preliminaryWeeklyOvertime.toFixed(2)}, Max G.P.: ${maxWeeklySegmentOvertime.toFixed(2)}`,
+                    `Finalne G.P. = min(${preliminaryWeeklyOvertime.toFixed(2)}, ${maxWeeklySegmentOvertime.toFixed(2)})`,
+                    `${finalWeeklyOvertime.toFixed(2)} godz.`
+                 );
+             });
+
+            // Final sum step
+            state.calculation.finalOvertime = totalFinalOvertime;
+            addCalcStep(
+                "Suma godzin ponadwymiarowych",
+                 "Suma obliczonych godzin ze wszystkich tygodni okresu.",
+                 state.calculation.weeklyResults.map(w => w.final.toFixed(2)).join(' + '),
+                 `${totalFinalOvertime.toFixed(2)} godz.`
+            );
+
+            // Fill main calculation fields for consistency in display
+            state.calculation.periodNorm = state.calculation.weeklyResults.reduce((sum, w) => sum + w.norm, 0);
+            state.calculation.preliminaryOvertime = state.calculation.weeklyResults.reduce((sum, w) => sum + w.preliminary, 0);
+             state.calculation.maxPeriodOvertime = state.calculation.weeklyResults.reduce((sum, w) => sum + w.maxLimit, 0); // Sum of weekly maxes
+        }
+
+        function resetCalculationResults() {
+            state.calculation.dailyNorm = 0;
+            state.calculation.effectivePensum = 0;
+            state.calculation.periodNorm = 0;
+            state.calculation.preliminaryOvertime = 0;
+            state.calculation.maxDailyOvertime = 0;
+            state.calculation.maxPeriodOvertime = 0;
+            state.calculation.finalOvertime = 0;
+             state.calculation.weeklyResults = [];
+        }
+
+        function addCalcStep(title, formula, calculation, result) {
+            state.calculation.steps.push({ title, formula, calculation, result });
+        }
+
+        // --- Helper Functions ---
+
+        function countActualWorkdays(startDate, endDate, workdaysInWeek, holidayDates, absenceDates) {
+            let count = 0;
+            let currentDate = new Date(startDate);
+            const holidaysSet = new Set(holidayDates.map(d => d.toDateString()));
+            const absencesSet = new Set(absenceDates.map(d => d.toDateString()));
+
+            while (currentDate <= endDate) {
+                const dayOfWeek = currentDate.getDay(); // 0 = Sunday, 6 = Saturday
+
+                let isWorkday = false;
+                if (workdaysInWeek === 5 && dayOfWeek >= 1 && dayOfWeek <= 5) { // Mon-Fri
+                    isWorkday = true;
+                } else if (workdaysInWeek === 4) { // Assuming Mon-Thu, needs clarification if configurable
+                    // This needs a more robust way to define the 4 days if it's not always Mon-Thu
+                    if (dayOfWeek >= 1 && dayOfWeek <= 4) { // Example: Mon-Thu
+                       isWorkday = true;
+                    }
+                } // Add other scenarios if needed
+
+                if (isWorkday && !holidaysSet.has(currentDate.toDateString()) && !absencesSet.has(currentDate.toDateString())) {
+                    count++;
+                }
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            return count;
+        }
+
+         function countPossibleWorkdays(startDate, endDate, workdaysInWeek) {
+             // Counts potential workdays (Mon-Fri or Mon-Thu etc.) ignoring holidays/absences
+            let count = 0;
+            let currentDate = new Date(startDate);
+             while (currentDate <= endDate) {
+                const dayOfWeek = currentDate.getDay();
+                 let isWorkday = false;
+                if (workdaysInWeek === 5 && dayOfWeek >= 1 && dayOfWeek <= 5) { isWorkday = true;}
+                else if (workdaysInWeek === 4 && dayOfWeek >= 1 && dayOfWeek <= 4) { isWorkday = true; } // Assuming Mon-Thu
+
+                if(isWorkday) {
+                    count++;
+                }
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            return count;
+         }
+
+         function getWeeksInPeriod(startDate, endDate) {
+            const weeks = [];
+            let currentStart = new Date(startDate);
+
+            while (currentStart <= endDate) {
+                let currentEnd = new Date(currentStart);
+                currentEnd.setDate(currentStart.getDate() + (6 - currentStart.getDay())); // Go to Sunday
+
+                 if (currentEnd > endDate) {
+                    currentEnd = new Date(endDate); // Don't exceed period end
+                }
+
+                weeks.push({ start: new Date(currentStart), end: new Date(currentEnd) });
+
+                // Move to the next Monday
+                currentStart = new Date(currentEnd);
+                currentStart.setDate(currentStart.getDate() + 1);
+            }
+            return weeks;
+        }
+
+        // Basic hour distribution - replace with more accurate method if needed
+         function distributeHoursEvenly(totalHours, periodStart, periodEnd, workdaysPerWeek, holidays, absences) {
+             const weeks = getWeeksInPeriod(periodStart, periodEnd);
+             const totalActualWorkDaysInPeriod = state.period.actualWorkDays; // Use already calculated value
+             if (totalActualWorkDaysInPeriod <= 0 || weeks.length === 0) return weeks.map(() => 0);
+
+             const avgHoursPerWorkDay = totalHours / totalActualWorkDaysInPeriod;
+             let distributed = [];
+             let remainingHours = totalHours;
+
+             weeks.forEach((week, index) => {
+                const actualWorkDaysThisWeek = countActualWorkdays(week.start, week.end, workdaysPerWeek, holidays, absences);
+                let hoursThisWeek = avgHoursPerWorkDay * actualWorkDaysThisWeek;
+
+                 // Ensure total doesn't exceed original total, distribute remainder on last week
+                 if(index === weeks.length - 1) {
+                     hoursThisWeek = remainingHours;
+                 } else {
+                     remainingHours -= hoursThisWeek;
+                     if (remainingHours < 0) remainingHours = 0; // Prevent negative
+                 }
+
+                distributed.push(hoursThisWeek);
+             });
+
+             return distributed;
+         }
+
+
+         function formatDate(date) {
+            if (!date) return '';
+            return date.toISOString().split('T')[0];
+         }
+         function formatDateShort(date) {
+             if (!date) return '';
+             const day = String(date.getDate()).padStart(2, '0');
+             const month = String(date.getMonth() + 1).padStart(2, '0');
+             return `${day}.${month}`;
+         }
+
+        // --- UI Update Functions ---
+
+        function updateUI() {
+            // Update Dashboard
+            hoursWorkedValue.textContent = state.hours.worked.toFixed(1);
+            normHoursValue.textContent = state.calculation.periodNorm.toFixed(1);
+            overtimeHoursValue.textContent = state.calculation.finalOvertime.toFixed(1);
+
+            // Update Result Card Details
+            finalResult.textContent = `${state.calculation.finalOvertime.toFixed(1)} godz.`;
+            effectivePensumValue.textContent = `${state.calculation.effectivePensum.toFixed(1)} godz./tydz.`;
+            dailyNormValue.textContent = `${state.calculation.dailyNorm.toFixed(2)} godz./dzień`;
+            actualWorkingDaysValue.textContent = `${state.period.actualWorkDays} dni`;
+            periodNormValue.textContent = `${state.calculation.periodNorm.toFixed(2)} godz.`;
+            preliminaryOvertimeValue.textContent = `${state.calculation.preliminaryOvertime.toFixed(2)} godz.`;
+            maxWeeklyOvertimeLimitValue.textContent = `${state.teacher.maxOvertime.toFixed(1)} godz./tydz.`;
+            maxPeriodOvertimeValue.textContent = `${state.calculation.maxPeriodOvertime.toFixed(2)} godz.`;
+
+             // Update Sidebar calculated displays
+            totalDaysDisplay.textContent = state.period.totalDays > 0 ? `${state.period.totalDays} dni` : '--';
+            workingDaysDisplay.textContent = state.period.actualWorkDays > 0 || (state.period.start && state.period.end) ? `${state.period.actualWorkDays} dni` : '--';
+
+            // Update Calculation Steps display
+            renderCalculationSteps();
+
+            // Update Charts
+            updateCharts();
+
+            // Update Profile Load Dropdown and Info
+            renderProfileLoadOptions();
+            updateLoadedProfileInfo();
+        }
+
+        function renderCalculationSteps() {
+             calculationStepsEl.innerHTML = ''; // Clear previous
+            if (state.calculation.steps.length === 0) {
+                 calculationStepsEl.innerHTML = '<div style="text-align:center; color: #888; font-size: 0.9em; width: 100%;">Brak obliczeń do wyświetlenia.</div>';
+                 return;
+            }
+
+             state.calculation.steps.forEach((step, index) => {
+                const stepCard = document.createElement('div');
+                // Determine if it's the final step
+                const isFinalStep = (index === state.calculation.steps.length - 1);
+                stepCard.className = `step-card ${isFinalStep ? 'active' : ''}`; // Highlight final step
+                stepCard.id = `step-${index}`;
+
+                let stepHTML = `<div class="step-title">${step.title}</div>`;
+
+                if (state.ui.showFormulas && step.formula) {
+                    stepHTML += `<div class="step-formula">${step.formula}</div>`;
+                }
+                 if (step.calculation) { // Show the numbers used if available
+                    stepHTML += `<div class="step-formula" style="color: #555; font-size: 0.75em;">${step.calculation}</div>`;
+                 }
+
+                stepHTML += `<div class="step-result">${step.result}</div>`;
+
+                stepCard.innerHTML = stepHTML;
+                calculationStepsEl.appendChild(stepCard);
+            });
+
+            // Scroll to the end to show the final step if steps overflow
+            calculationStepsEl.scrollLeft = calculationStepsEl.scrollWidth;
+        }
+
+         function toggleFormulas() {
+            state.ui.showFormulas = !state.ui.showFormulas;
+            renderCalculationSteps(); // Re-render steps
+        }
+
+        // --- Chart Functions ---
+         function initializeCharts() {
+            const commonOptions = { responsive: true, maintainAspectRatio: false };
+            const commonTooltip = { callbacks: { label: ctx => `${ctx.raw.toFixed(1)} godz.` } };
+
+            // Overtime Chart (Bar: Worked, Norm, Overtime)
+            const overtimeCtx = document.getElementById('overtimeChart').getContext('2d');
+            overtimeChart = new Chart(overtimeCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Zrealizowane', 'Norma okresu', 'Ponadwymiarowe'],
+                    datasets: [{
+                        label: 'Godziny', data: [0, 0, 0],
+                        backgroundColor: ['rgba(52, 152, 219, 0.6)', 'rgba(46, 204, 113, 0.6)', 'rgba(231, 76, 60, 0.6)'],
+                        borderColor: ['#3498db', '#2ecc71', '#e74c3c'], borderWidth: 1
+                    }]
+                },
+                options: { ...commonOptions, plugins: { legend: { display: false }, tooltip: commonTooltip } }
+            });
+
+            // History Chart (Line: Overtime over last calculations)
+            const historyCtx = document.getElementById('historyChart').getContext('2d');
+            historyChart = new Chart(historyCtx, {
+                type: 'line',
+                data: { labels: [], datasets: [{ label: 'Godz. ponadwym.', data: [], borderColor: '#3498db', tension: 0.1, fill: false }] },
+                options: { ...commonOptions, plugins: { legend: { display: true }, tooltip: commonTooltip }, scales: { y: { beginAtZero: true } } }
+            });
+         }
+
+         function updateCharts() {
+            // Update Overtime Chart
+            overtimeChart.data.datasets[0].data = [
+                state.hours.worked,
+                state.calculation.periodNorm,
+                state.calculation.finalOvertime
+            ];
+            overtimeChart.update();
+
+            // Update History Chart (show last N calculations)
+            const lastN = 10;
+            const recentCalculations = state.saved.calculations.slice(-lastN);
+            historyChart.data.labels = recentCalculations.map(c => formatDateShort(new Date(c.periodStart || c.date))); // Use period start or save date
+            historyChart.data.datasets[0].data = recentCalculations.map(c => c.finalOvertime);
+            historyChart.update();
+         }
+
+
+        // --- Profile Management ---
+        function saveOrUpdateTeacherProfile() {
+             const name = teacherNameInput.value.trim();
+             if (!name) { alert('Wprowadź imię i nazwisko nauczyciela, aby zapisać profil.'); return; }
+
+             const profileData = {
+                // id: state.teacher.id || Date.now(), // Use existing ID if editing
+                name: name,
+                pensum: parseFloat(weeklyHoursInput.value) || 18,
+                reduction: parseFloat(hourReductionInput.value) || 0,
+                maxOvertime: parseFloat(maxOvertimeInput.value) || 8,
+                workdaysPerWeek: parseInt(workdaysPerWeekSelect.value) || 5,
+                type: teacherTypeSelect.value || 'default'
+             };
+
+             const existingProfileIndex = state.saved.profiles.findIndex(p => p.id === state.ui.activeProfileId);
+
+             if (existingProfileIndex > -1) { // Update existing
+                state.saved.profiles[existingProfileIndex] = { ...state.saved.profiles[existingProfileIndex], ...profileData };
+                 alert(`Profil "${profileData.name}" zaktualizowany.`);
+             } else { // Save new
+                profileData.id = Date.now(); // Assign new ID
+                state.saved.profiles.push(profileData);
+                state.ui.activeProfileId = profileData.id; // Set the new profile as active
+                alert(`Profil "${profileData.name}" zapisany.`);
+             }
+
+             saveDataToLocalStorage();
+             renderTeacherProfiles(); // Update sidebar list
+             renderProfileLoadOptions(); // Update dropdown
+             updateLoadedProfileInfo(); // Update info text
+        }
+
+         function loadTeacherProfile(id) {
+            const profile = state.saved.profiles.find(p => p.id === id);
+            if (profile) {
+                state.teacher.id = profile.id; // Store loaded profile ID
+                state.teacher.name = profile.name;
+                state.teacher.pensum = profile.pensum;
+                state.teacher.reduction = profile.reduction;
+                state.teacher.maxOvertime = profile.maxOvertime;
+                state.teacher.workdaysPerWeek = profile.workdaysPerWeek;
+                state.teacher.type = profile.type;
+                state.ui.activeProfileId = profile.id; // Mark as active
+
+                // Update input fields
+                teacherNameInput.value = profile.name;
+                weeklyHoursInput.value = profile.pensum;
+                hourReductionInput.value = profile.reduction;
+                maxOvertimeInput.value = profile.maxOvertime;
+                workdaysPerWeekSelect.value = profile.workdaysPerWeek;
+                teacherTypeSelect.value = profile.type;
+
+                // Set dropdown selection
+                profileLoadSelect.value = id;
+
+                updateStateAndRecalculate(); // Trigger recalculation and UI update
+                alert(`Wczytano profil: ${profile.name}`);
+            } else {
+                 state.ui.activeProfileId = null; // No profile loaded
+                 profileLoadSelect.value = ""; // Reset dropdown
+                 updateLoadedProfileInfo();
+            }
+         }
+
+        function editTeacherProfile(id, event) {
+            event.stopPropagation();
+            loadTeacherProfile(id); // Load data into form for editing
+             // Optionally scroll to the teacher data section or highlight it
+            const teacherSection = document.getElementById('teacher-data-content');
+            if (teacherSection.classList.contains('collapsed')) {
+                toggleSection('teacher-data');
+            }
+            teacherNameInput.focus();
+        }
+
+
+         function deleteTeacherProfile(id, event) {
+            event.stopPropagation();
+            const profile = state.saved.profiles.find(p => p.id === id);
+            if (profile && confirm(`Czy na pewno chcesz usunąć profil "${profile.name}"?`)) {
+                state.saved.profiles = state.saved.profiles.filter(p => p.id !== id);
+
+                 if (state.ui.activeProfileId === id) {
+                     state.ui.activeProfileId = null; // Deactivate if it was active
+                     // Optionally clear the form or load defaults
+                 }
+
+                saveDataToLocalStorage();
+                renderTeacherProfiles();
+                renderProfileLoadOptions();
+                updateLoadedProfileInfo();
+            }
+         }
+
+         function renderTeacherProfiles() {
+            teacherProfilesListEl.innerHTML = '';
+             if (state.saved.profiles.length === 0) {
+                teacherProfilesListEl.innerHTML = '<div style="text-align:center; color: #888; font-size: 0.9em;">Brak zapisanych profili.</div>';
+                return;
+            }
+             state.saved.profiles.forEach(profile => {
+                const isActive = profile.id === state.ui.activeProfileId;
+                const profileCard = document.createElement('div');
+                profileCard.className = `profile-card ${isActive ? 'active' : ''}`;
+                profileCard.onclick = () => loadTeacherProfile(profile.id);
+
+                 profileCard.innerHTML = `
+                    <div class="profile-header">
+                        <div class="profile-avatar">${profile.name.charAt(0).toUpperCase()}</div>
+                        <div class="profile-name">${profile.name}</div>
+                    </div>
+                    <div class="profile-details">
+                        <div>Pensum: ${profile.pensum} - ${profile.reduction} = ${profile.pensum - profile.reduction} godz.</div>
+                        <div>Max G.P.: ${profile.maxOvertime} godz./tydz.</div>
+                        <div>Dni pracy: ${profile.workdaysPerWeek}</div>
+                    </div>
+                    <div class="profile-actions">
+                         <button class="profile-action-btn edit" title="Edytuj" onclick="editTeacherProfile(${profile.id}, event)">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                        <button class="profile-action-btn delete" title="Usuń" onclick="deleteTeacherProfile(${profile.id}, event)">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                `;
+                teacherProfilesListEl.appendChild(profileCard);
+            });
+         }
+
+         function renderProfileLoadOptions() {
+             // Clear existing options except the default
+            profileLoadSelect.length = 1;
+            state.saved.profiles.forEach(profile => {
+                const option = new Option(profile.name, profile.id);
+                profileLoadSelect.add(option);
+            });
+             // Set selected value if a profile is active
+             profileLoadSelect.value = state.ui.activeProfileId || "";
+         }
+
+         function loadSelectedProfile() {
+             const selectedId = parseInt(profileLoadSelect.value);
+             if (selectedId) {
+                 loadTeacherProfile(selectedId);
+             } else {
+                 // Clear form or load defaults if "-- Wybierz --" is selected
+                 // state.ui.activeProfileId = null;
+                 // clearTeacherForm(); // Implement this if needed
+                 // updateLoadedProfileInfo();
+             }
+         }
+
+          function updateLoadedProfileInfo() {
+             if (state.ui.activeProfileId) {
+                 const profile = state.saved.profiles.find(p => p.id === state.ui.activeProfileId);
+                 if (profile) {
+                     loadedProfileInfoEl.textContent = `Wczytano: ${profile.name}`;
+                     loadedProfileInfoEl.style.display = 'block';
+                     saveProfileBtnText.textContent = 'Zaktualizuj profil';
+                     return;
+                 }
+             }
+             loadedProfileInfoEl.style.display = 'none';
+             saveProfileBtnText.textContent = 'Zapisz jako nowy profil';
+         }
+
+
+        // --- History Management ---
+         function saveCalculation() {
+             // Ensure calculation has run and is valid
+             if (state.calculation.finalOvertime === undefined || state.period.actualWorkDays === undefined) {
+                 alert("Nie można zapisać. Najpierw wykonaj obliczenia.");
+                 return;
+             }
+
+             const calculationRecord = {
+                id: Date.now(),
+                date: new Date().toISOString(), // Save timestamp
+                teacherName: state.teacher.name || 'Nieznany nauczyciel',
+                periodStart: formatDate(state.period.start),
+                periodEnd: formatDate(state.period.end),
+                hoursWorked: state.hours.worked,
+                finalOvertime: state.calculation.finalOvertime,
+                status: 'completed', // Default status
+                // Save essential inputs for reloading/auditing
+                details: {
+                    pensum: state.teacher.pensum,
+                    reduction: state.teacher.reduction,
+                    maxOvertime: state.teacher.maxOvertime,
+                    workdaysPerWeek: state.teacher.workdaysPerWeek,
+                    absentDates: state.period.absentDates.map(d => formatDate(d)), // Save dates as strings
+                    holidayDates: state.period.holidayDates.map(d => formatDate(d)),
+                    calculationType: state.calculation.type,
+                    // Store calculated values used
+                    actualWorkDays: state.period.actualWorkDays,
+                    periodNorm: state.calculation.periodNorm
+                }
+            };
+
+            state.saved.calculations.push(calculationRecord);
+            saveDataToLocalStorage();
+            renderCalculationsHistory(); // Update table
+            updateCharts(); // Update history chart
+            alert('Rozliczenie zostało zapisane!');
+         }
+
+        function viewCalculationDetails(id) {
+             const calc = state.saved.calculations.find(c => c.id === id);
+             if (calc) {
+                 // Load teacher data
+                 state.teacher.name = calc.teacherName;
+                 state.teacher.pensum = calc.details.pensum;
+                 state.teacher.reduction = calc.details.reduction;
+                 state.teacher.maxOvertime = calc.details.maxOvertime;
+                 state.teacher.workdaysPerWeek = calc.details.workdaysPerWeek;
+                 state.teacher.type = 'default'; // Reset type or load if saved later
+                 state.ui.activeProfileId = null; // Deactivate profile link
+
+                 // Load period data
+                 const startDate = calc.periodStart ? new Date(calc.periodStart) : null;
+                 const endDate = calc.periodEnd ? new Date(calc.periodEnd) : null;
+                 state.period.start = startDate;
+                 state.period.end = endDate;
+                 state.period.absentDates = (calc.details.absentDates || []).map(d => new Date(d));
+                 state.period.holidayDates = (calc.details.holidayDates || []).map(d => new Date(d));
+
+                 // Load hours
+                 state.hours.worked = calc.hoursWorked;
+
+                 // Load calculation type
+                 setCalculationType(calc.details.calculationType || 'wholePeriod'); // Also updates UI
+
+                 // Update form fields directly
+                 teacherNameInput.value = state.teacher.name;
+                 weeklyHoursInput.value = state.teacher.pensum;
+                 hourReductionInput.value = state.teacher.reduction;
+                 maxOvertimeInput.value = state.teacher.maxOvertime;
+                 workdaysPerWeekSelect.value = state.teacher.workdaysPerWeek;
+                 hoursWorkedInput.value = state.hours.worked;
+
+                 // Update date pickers
+                 flatpickrInstances.start.setDate(startDate, false);
+                 flatpickrInstances.end.setDate(endDate, false);
+                 flatpickrInstances.absent.setDate(state.period.absentDates, false);
+                 flatpickrInstances.holiday.setDate(state.period.holidayDates, true); // Trigger recalc on last one
+
+                 alert(`Wczytano dane z historii dla ${calc.teacherName}.`);
+             }
+         }
+
+
+         function deleteCalculation(id, event) {
+            event.stopPropagation();
+             const calcIndex = state.saved.calculations.findIndex(c => c.id === id);
+             if (calcIndex > -1 && confirm(`Czy na pewno chcesz usunąć to rozliczenie z historii?`)) {
+                state.saved.calculations.splice(calcIndex, 1);
+                saveDataToLocalStorage();
+                renderCalculationsHistory();
+                updateCharts(); // Update history chart
+            }
+         }
+
+         function renderCalculationsHistory() {
+            historyTableBodyEl.innerHTML = ''; // Clear existing rows
+            if (state.saved.calculations.length === 0) {
+                 historyTableBodyEl.innerHTML = '<tr><td colspan="7" style="text-align:center; color: #888; padding: 20px;">Brak zapisanych rozliczeń.</td></tr>';
+                 return;
+            }
+
+             // Sort by date descending (most recent first)
+            const sortedCalculations = [...state.saved.calculations].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+             sortedCalculations.forEach(calc => {
+                const tr = document.createElement('tr');
+                tr.style.cursor = 'pointer';
+                tr.onclick = () => viewCalculationDetails(calc.id); // Make row clickable to load
+
+                const saveDate = new Date(calc.date);
+                const periodStr = (calc.periodStart && calc.periodEnd)
+                    ? `${formatDateShort(new Date(calc.periodStart))} - ${formatDateShort(new Date(calc.periodEnd))}`
+                    : 'Brak okresu';
+
+                 let statusBadge = '<span class="status-badge completed">Zapisane</span>'; // Default or adjust based on calc.status
+
+                tr.innerHTML = `
+                    <td>${saveDate.toLocaleDateString()} ${saveDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</td>
+                    <td>${calc.teacherName}</td>
+                    <td>${periodStr}</td>
+                    <td>${calc.hoursWorked.toFixed(1)}</td>
+                    <td>${calc.finalOvertime.toFixed(1)}</td>
+                    <td>${statusBadge}</td>
+                    <td>
+                        <button class="btn btn-secondary btn-sm" title="Wczytaj dane" onclick="viewCalculationDetails(${calc.id})"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-danger btn-sm" title="Usuń z historii" onclick="deleteCalculation(${calc.id}, event)"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                `;
+                historyTableBodyEl.appendChild(tr);
+            });
+         }
+
+
+        // --- Data Persistence ---
+        function saveDataToLocalStorage() {
+            localStorage.setItem('eduTimePro_profiles', JSON.stringify(state.saved.profiles));
+            localStorage.setItem('eduTimePro_calculations', JSON.stringify(state.saved.calculations));
+        }
+
+        function loadSavedData() {
+            const savedProfiles = localStorage.getItem('eduTimePro_profiles');
+            const savedCalculations = localStorage.getItem('eduTimePro_calculations');
+
+            if (savedProfiles) {
+                state.saved.profiles = JSON.parse(savedProfiles);
+                renderTeacherProfiles(); // Render sidebar list
+            }
+            if (savedCalculations) {
+                // Convert date strings back to Date objects if needed elsewhere, though not strictly necessary for display
+                state.saved.calculations = JSON.parse(savedCalculations);
+                renderCalculationsHistory(); // Render history table
+            }
+         }
+
+        // --- Other Functions ---
+         function toggleSidebar() {
+            sidebar.classList.toggle('collapsed');
+            sidebarToggle.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+             // Adjust toggle icon
+             const icon = sidebarToggle.querySelector('i');
+             icon.className = sidebar.classList.contains('collapsed') ? 'fas fa-chevron-right' : 'fas fa-chevron-left';
+        }
+
+        function toggleSection(sectionId) {
+            const content = document.getElementById(`${sectionId}-content`);
+            const toggle = document.getElementById(`${sectionId}-toggle`);
+            content.classList.toggle('collapsed');
+            toggle.classList.toggle('collapsed');
+        }
+
+         function setCalculationType(type) {
+             state.calculation.type = type;
+             // Update button active state
+            document.querySelectorAll('.calculation-type-option').forEach(opt => {
+                opt.classList.toggle('active', opt.dataset.type === type);
+            });
+             calculateAll(); // Recalculate when type changes
+             updateUI();
+        }
+
+         function exportData() {
+            if (state.saved.calculations.length === 0) { alert('Brak danych do eksportu.'); return; }
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            // Header row
+            csvContent += "DataZapisu,Nauczyciel,OkresPoczatek,OkresKoniec,GodzZrealizowane,GodzPonadwymiarowe,TypObliczen,Pensum,Znizka,MaxTygGP,DniPracyTyg,DniNieobecny,DniWolne,DniPracyFaktyczne,NormaOkres\n";
+
+            state.saved.calculations.forEach(calc => {
+                 const row = [
+                    new Date(calc.date).toLocaleString('pl-PL'),
+                    `"${calc.teacherName.replace(/"/g, '""')}"`, // Handle quotes in name
+                    calc.periodStart || '',
+                    calc.periodEnd || '',
+                    calc.hoursWorked.toFixed(2),
+                    calc.finalOvertime.toFixed(2),
+                    calc.details.calculationType || '',
+                    calc.details.pensum || '',
+                    calc.details.reduction || '',
+                    calc.details.maxOvertime || '',
+                    calc.details.workdaysPerWeek || '',
+                    (calc.details.absentDates || []).length,
+                    (calc.details.holidayDates || []).length,
+                    calc.details.actualWorkDays || '',
+                    calc.details.periodNorm ? calc.details.periodNorm.toFixed(2) : ''
+                 ].join(",");
+                 csvContent += row + "\n";
+             });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "EduTimePro_rozliczenia.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+         }
+
+        function printReport() {
+            window.print();
+        }
+
+
+        // --- Run Initialization ---
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>
