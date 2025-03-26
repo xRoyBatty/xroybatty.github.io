@@ -1035,7 +1035,7 @@
                         } else { throw new Error("Invalid target specification for insertion."); }
                         if (row < 0 || row > doc.getLength()) { throw new Error(`Calculated insertion row ${row+1} is out of bounds (Doc length ${doc.getLength()}). Target was ${info}.`); }
                         return { row: row, column: 0, info: info };
-                    }
+                    },
                 }; // End Editors Module
 
                 const Project = {
