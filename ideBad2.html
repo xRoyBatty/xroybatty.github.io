@@ -865,17 +865,17 @@
                          lastParsedOperations = operations;
                     },
                     // Helper to escape HTML for display in <pre>
+                    
                     escapeHtml(unsafe) {
                         if (unsafe == null) return '';
-                        return unsafe
+                        // Ensure result is treated as string
+                        return String(unsafe)
                              .replace(/&/g, "&")
                              .replace(/</g, "<")
                              .replace(/>/g, ">")
-                             .replace(/"/g, """)
-                             .replace(/'/g, "'");
+                             .replace(/"/g, """) // Corrected this line
+                             .replace(/'/g, "'"); // Use numeric entity for single quote
                     }
-
-                }; // End UI Module
 
                 const Editors = {
                     init() {
