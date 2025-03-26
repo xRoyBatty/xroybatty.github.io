@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI-Assisted Code Editor (JSON Patch)</title>
     <style>
-        /* --- Base Styles (Same as before) --- */
+        /* --- Base Styles --- */
         :root {
             --bg-color: #282c34;
             --editor-bg: #21252b;
@@ -23,14 +23,21 @@
             --diff-bg: #2c313a; /* Background for diff panels */
             --diff-header-bg: #3e4451;
         }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevent body scrollbars */
+        }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color); color: var(--text-color);
-            display: flex; flex-direction: column; height: 100vh; overflow: hidden;
+            display: flex; flex-direction: column;
         }
         .toolbar {
             padding: 8px 15px; background-color: var(--editor-bg); border-bottom: 1px solid var(--border-color);
             display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+            flex-shrink: 0; /* Prevent toolbar shrinking */
         }
         button, select, input[type="text"], input[type="color"] {
             padding: 5px 10px; margin: 0; cursor: pointer; background-color: var(--button-bg);
@@ -45,94 +52,93 @@
             z-index: 1000; opacity: 0; transition: opacity 0.3s ease-in-out; pointer-events: none;
         }
         #feedback.visible { opacity: 1; }
-        .main-content { display: flex; flex-grow: 1; overflow: hidden; }
-        .editor-area { flex-grow: 3; display: flex; flex-direction: column; overflow: hidden; border-right: 1px solid var(--border-color); }
-        #navigationButtonsContainer { padding: 5px 10px; background-color: var(--editor-bg); border-bottom: 1px solid var(--border-color); min-height: 30px; display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
-        .nav-button { margin: 2px; border: 1px solid var(--border-color); padding: 3px 6px; font-size: 0.85em; position: relative; border-radius: 3px; white-space: nowrap; }
+        .main-content { display: flex; flex-grow: 1; overflow: hidden; height: calc(100% - 45px); /* Adjust based on toolbar height */ }
+        .editor-area { flex-grow: 3; display: flex; flex-direction: column; overflow: hidden; border-right: 1px solid var(--border-color); height: 100%; }
+        #navigationButtonsContainer { padding: 5px 10px; background-color: var(--editor-bg); border-bottom: 1px solid var(--border-color); min-height: 30px; display: flex; flex-wrap: wrap; gap: 5px; align-items: center; flex-shrink: 0; }
+        .nav-button { margin: 2px; border: 1px solid var(--border-color); padding: 3px 6px; font-size: 0.85em; position: relative; border-radius: 3px; white-space: nowrap; background-color: var(--button-bg); }
+        .nav-button:hover { background-color: var(--button-hover-bg); }
         .nav-button .remove { position: absolute; top: -8px; right: -8px; background: red; color: white; border-radius: 50%; width: 16px; height: 16px; line-height: 16px; text-align: center; font-size: 11px; cursor: pointer; border: 1px solid rgba(0,0,0,0.5); opacity: 0.7; }
         .nav-button:hover .remove { opacity: 1; }
-        #editorContainer { flex-grow: 1; display: flex; overflow: hidden; position: relative; }
+        #editorContainer { flex-grow: 1; display: flex; overflow: hidden; position: relative; background-color: var(--bg-color); /* BG for gaps */ }
         .editor-column { height: 100%; display: flex; flex-direction: column; overflow: hidden; position: relative; flex-grow: 1; /* Allow columns to share space */ }
-        .editor-wrapper { display: flex; flex-direction: column; overflow: hidden; position: relative; flex-grow: 1; /* Allow editors to share space */ }
+        .editor-wrapper { display: flex; flex-direction: column; overflow: hidden; position: relative; flex-grow: 1; /* Allow editors to share space */ background-color: var(--editor-bg); /* BG for editor area */ }
         .editor-wrapper.hidden { display: none; }
-        .editor-header { display: flex; justify-content: space-between; align-items: center; padding: 2px 8px; background-color: var(--editor-bg); font-size: 0.8em; border-bottom: 1px solid var(--border-color); }
-        .editor-header label { display: flex; align-items: center; gap: 4px; }
+        .editor-header { display: flex; justify-content: space-between; align-items: center; padding: 2px 8px; background-color: var(--editor-bg); font-size: 0.8em; border-bottom: 1px solid var(--border-color); flex-shrink: 0; }
+        .editor-header label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+        .editor-controls { display: flex; gap: 5px; }
         .editor-controls button { background: none; border: none; color: var(--text-color); padding: 1px 4px; font-size: 1em; cursor: pointer; }
         .editor-controls button:hover { color: var(--accent-color); background: none; }
         .editor { flex-grow: 1; min-height: 50px; width: 100%; }
         .resizer { background: var(--resizer-bg); position: relative; flex-shrink: 0; z-index: 10; }
         .resizer.horizontal { width: 100%; height: 8px; cursor: row-resize; }
-        .resizer.vertical { width: 8px; height: 100%; cursor: col-resize; } /* Removed absolute positioning here - handled by flexbox */
+        .resizer.vertical { width: 8px; height: 100%; cursor: col-resize; flex-shrink: 0; } /* Vertical resizer between flex items */
         .resizer::after { content: ''; position: absolute; background: var(--resizer-handle); border-radius: 3px; opacity: 0.7; }
         .resizer:hover::after { opacity: 1; }
         .resizer.horizontal::after { height: 4px; width: 40px; left: 50%; top: 50%; transform: translate(-50%, -50%); }
         .resizer.vertical::after { width: 4px; height: 40px; left: 50%; top: 50%; transform: translate(-50%, -50%); }
-        .side-panel { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 350px; } /* Slightly wider min-width */
-        .panel-header { padding: 6px 10px; background-color: var(--editor-bg); border-bottom: 1px solid var(--border-color); font-weight: bold; font-size: 0.9em; }
+        .side-panel { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 350px; height: 100%; }
+        .panel-header { padding: 6px 10px; background-color: var(--editor-bg); border-bottom: 1px solid var(--border-color); font-weight: bold; font-size: 0.9em; flex-shrink: 0; }
         .modal-backdrop { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 100; justify-content: center; align-items: center; }
         .modal-backdrop.visible { display: flex; }
         .modal-content { background-color: var(--editor-bg); padding: 20px; border-radius: 5px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 10px; min-width: 300px; max-width: 500px; }
-        .modal-content h3 { margin-top: 0;} .modal-content label { font-size: 0.9em;} .modal-content input, .modal-content select, .modal-content textarea { width: 95%;} .modal-content textarea { min-height: 60px; }
+        .modal-content h3 { margin-top: 0;} .modal-content label { font-size: 0.9em;} .modal-content input, .modal-content select, .modal-content textarea { width: 95%; background-color: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); padding: 5px; } .modal-content textarea { min-height: 60px; }
         .modal-buttons { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
 
-        /* --- NEW/MODIFIED Styles for LLM Area & Diff View --- */
+        /* --- LLM Area & Diff View Styles --- */
         .llm-interaction-area {
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            /* Combined area takes up space, internal elements manage height */
+            flex-grow: 1; /* Combined area takes up space */
+            flex-basis: 40%; /* Initial ratio */
         }
-
         #llmPatchInputContainer {
              padding: 5px;
              border-bottom: 1px solid var(--border-color);
-             background-color: var(--llm-input-bg); /* Match textarea bg */
-             flex-shrink: 0; /* Prevent shrinking */
+             background-color: var(--llm-input-bg);
+             flex-shrink: 0;
         }
-
         #llmPatchInput {
             width: 100%;
             box-sizing: border-box;
             background-color: var(--llm-input-bg);
             color: var(--text-color);
-            border: 1px solid var(--border-color); /* Add border */
+            border: 1px solid var(--border-color);
             font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
             font-size: 0.9em;
             padding: 5px;
-            resize: vertical; /* Allow vertical resize */
-            min-height: 60px; /* Minimum rows */
-            height: 80px; /* Default smallish height */
+            resize: vertical;
+            min-height: 60px;
+            height: 80px;
         }
-
         #llmActionButtons {
              display: flex;
              justify-content: space-between;
              align-items: center;
-             padding: 5px;
-             background-color: var(--editor-bg); /* Consistent bg */
+             padding: 5px 10px; /* More padding */
+             background-color: var(--editor-bg);
              border-bottom: 1px solid var(--border-color);
              flex-shrink: 0;
         }
-         #llmActionButtons button { margin: 0; } /* Remove default margins */
-         #llmStatus { font-size: 0.8em; color: var(--accent-color); }
+         #llmActionButtons button { margin: 0; }
+         #llmStatus { font-size: 0.8em; color: var(--accent-color); text-align: center; flex-grow: 1; margin: 0 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+         #llmHintButton { flex-shrink: 0;} /* Prevent hint button shrinking */
 
         .diff-view-container {
             display: flex;
             flex-grow: 1; /* Take remaining space */
-            overflow: hidden; /* Contain diff panels */
+            overflow: hidden;
             background-color: var(--diff-bg);
         }
-
         .diff-panel {
             width: 50%;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Hide overflow */
+            overflow: hidden;
         }
          .diff-panel:first-child {
              border-right: 1px solid var(--border-color);
          }
-
         .diff-header {
             padding: 4px 8px;
             background-color: var(--diff-header-bg);
@@ -142,37 +148,41 @@
             flex-shrink: 0;
             text-align: center;
         }
-
         .diff-content {
             flex-grow: 1;
-            overflow: auto; /* Allow scrolling */
+            overflow: auto;
             padding: 8px;
             font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
             font-size: 0.85em;
-            white-space: pre; /* Preserve whitespace */
+            white-space: pre;
             color: var(--text-color);
              line-height: 1.4;
         }
-        .diff-content.deleted {
-             color: #f97583; /* Reddish for deleted */
-             text-decoration: line-through;
-        }
-         .diff-content.inserted {
-             color: #85e89d; /* Greenish for added */
-         }
+        /* Diff Highlighting Styles (can be enhanced) */
          .diff-content .context-line {
-             opacity: 0.6; /* Dim context lines */
+             opacity: 0.6;
+             display: inline-block; /* Allow styling lines */
+             width: 100%; /* Take full width */
          }
+         .diff-content .deleted-line {
+             background-color: rgba(249, 117, 131, 0.2); /* Reddish background */
+             display: inline-block; width: 100%;
+         }
+          .diff-content .inserted-line {
+             background-color: rgba(133, 232, 157, 0.2); /* Greenish background */
+             display: inline-block; width: 100%;
+          }
 
         .preview-area {
             display: flex; flex-direction: column; overflow: hidden;
-            flex-basis: 60%; /* Initial ratio, adjust as needed */
+            flex-basis: 60%;
             flex-grow: 1;
         }
         #previewFrame { flex-grow: 1; width: 100%; height: 100%; border: none; background-color: var(--preview-bg); }
 
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.15.2/ace.js"></script>
+    <!-- Consider adding a diff library like diff-match-patch or jsdiff later for better diff views -->
 </head>
 <body>
     <div class="toolbar">
@@ -188,8 +198,12 @@
 
     <div class="main-content">
         <div class="editor-area">
-            <div id="navigationButtonsContainer"></div>
-            <div id="editorContainer"></div>
+            <div id="navigationButtonsContainer">
+                <!-- Navigation buttons will be added here -->
+            </div>
+            <div id="editorContainer">
+                <!-- Editor columns and wrappers will be added here -->
+            </div>
         </div>
 
         <div class="resizer vertical" id="mainVerticalResizer"></div>
@@ -228,14 +242,41 @@
     </div>
 
     <div id="feedback"></div>
-    <div id="navButtonModal" class="modal-backdrop"> <!-- Modal Content Same --> </div>
-    <div id="projectModal" class="modal-backdrop"> <!-- Modal Content Same --> </div>
+
+    <!-- Modals -->
+    <div id="navButtonModal" class="modal-backdrop">
+        <div class="modal-content">
+            <h3>Create Navigation Button</h3>
+            <label>Label: <input id="buttonLabel" type="text" placeholder="e.g., Initialize Function" /></label>
+            <label>Text to Find: <textarea id="buttonText" rows="2" placeholder="Exact text snippet to jump to"></textarea></label>
+            <label>Target Document: <select id="buttonDocSelect"></select></label>
+            <label>Target Editor ID (Optional): <input id="buttonEditorId" type="text" placeholder="Editor ID (e.g., editor-1) if specific pane needed"></label>
+            <label>Color: <input id="buttonColor" type="color" value="#5c6370" /></label>
+            <div class="modal-buttons">
+                <button id="confirmButtonCreation">Create</button>
+                <button class="cancel-button">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="projectModal" class="modal-backdrop">
+        <div class="modal-content">
+            <h3 id="projectModalTitle">Project Management</h3>
+             <label id="projectNameLabel">Project Name: <input id="projectName" type="text" placeholder="My Web Project" /></label>
+            <label id="projectListLabel">Select Project: <select id="projectList"></select></label>
+             <p id="saveWarning" style="font-size:0.8em; color: orange; display: none;">Note: Saving replaces existing project with the same name.</p>
+            <div class="modal-buttons">
+                <button id="confirmProjectAction">Confirm</button>
+                <button class="cancel-button">Cancel</button>
+            </div>
+        </div>
+    </div>
 
 
     <script>
         // Wrap the entire initialization logic in a function
         function initializeApp() {
-            // Ace ready check (same as before)
+            // Ace ready check
             if (typeof ace === 'undefined' || typeof ace.edit === 'undefined' || typeof ace.require !== 'function') {
                  console.log("Ace base not ready, retrying in 100ms...");
                  setTimeout(initializeApp, 100); return;
@@ -249,20 +290,28 @@
                  const AceDocument = DocumentModule.Document;
                  const AceRange = RangeModule.Range; // Store Range constructor
 
-                // --- START: Original code ---
+                // --- START: Main Application Code ---
 
                 const DEFAULT_DOC_NAME = 'main.html';
-                const DEFAULT_CONTENT = `<!-- @@ID:html-start -->\n<!DOCTYPE html>\n<html lang="en">\n<!-- @@ID:head-start -->\n<head>\n    <meta charset="UTF-8">\n    <title>Document</title>\n    <!-- @@ID:style-start -->\n    <style>\n        body { font-family: sans-serif; }\n    </style>\n    <!-- @@ID:style-end -->\n</head>\n<!-- @@ID:head-end -->\n<!-- @@ID:body-start -->\n<body>\n    <!-- @@ID:content-start -->\n    <h1>Hello!</h1>\n    <p>Edit Me!</p>\n    <button id="mainButton">Click</button>\n    <!-- @@ID:content-end -->\n\n    <!-- @@ID:script-start -->\n    <script>\n        console.log('Script loaded');\n        // @@ID:button-listener-start\n        document.getElementById('mainButton')?.addEventListener('click', () => {\n            alert('Clicked!');\n        });\n        // @@ID:button-listener-end\n    <\/script>\n    <!-- @@ID:script-end -->\n</body>\n<!-- @@ID:body-end -->\n</html>\n<!-- @@ID:html-end -->`; // Added some sample anchors
+                const DEFAULT_CONTENT = `<!-- @@ID:html-start -->\n<!DOCTYPE html>\n<html lang="en">\n<!-- @@ID:head-start -->\n<head>\n    <meta charset="UTF-8">\n    <title>Document</title>\n    <!-- @@ID:style-start -->\n    <style>\n        body { font-family: sans-serif; padding: 15px; }\n        .card { border: 1px solid #ccc; padding: 10px; margin-top: 10px; border-radius: 4px; }\n        button { cursor: pointer; padding: 5px 10px; }\n    </style>\n    <!-- @@ID:style-end -->\n</head>\n<!-- @@ID:head-end -->\n<!-- @@ID:body-start -->\n<body>\n    <!-- @@ID:content-start -->\n    <h1>Hello!</h1>\n    <p>Edit Me!</p>\n    <button id="mainButton">Click</button>\n    <!-- @@ID:content-end -->\n\n    <!-- @@ID:script-start -->\n    <script>\n        console.log('Script loaded');\n        // @@ID:button-listener-start\n        document.getElementById('mainButton')?.addEventListener('click', () => {\n            alert('Clicked!');\n        });\n        // @@ID:button-listener-end\n    <\/script>\n    <!-- @@ID:script-end -->\n</body>\n<!-- @@ID:body-end -->\n</html>\n<!-- @@ID:html-end -->`; // Added sample anchors
                 const ACE_THEME = "ace/theme/tomorrow_night_eighties";
 
-                // --- State (Same) ---
-                let documents = new Map(); let editorPanes = new Map(); let nextEditorId = 1;
-                let uiState = { columnWidths: [], editorHeights: {}, sidePanelRatio: 0.6, mainSplitRatio: 0.7 };
-                let projectAction = null;
+                // --- State ---
+                let documents = new Map(); // Map<docName: string, { doc: AceDocument, mode: string }>
+                let editorPanes = new Map(); // Map<paneId: string, { editor: Ace.Editor, wrapper: HTMLElement, column: HTMLElement, docName: string | null }>
+                let nextEditorId = 1;
+                let uiState = { // For saving/loading layout
+                    columnWidths: [], // Stores flex-grow values for columns
+                    editorHeights: {}, // { paneId: flex-grow value }
+                    sidePanelRatio: 0.6, // Ratio of preview height in side panel
+                    mainSplitRatio: 0.7, // Ratio of editor area width vs side panel
+                };
+                let projectAction = null; // 'save' or 'load'
                 let lastParsedOperations = []; // Store operations for Apply button
 
                 // --- Modules ---
-                const UI = { // Mostly same, add diff view elements
+
+                const UI = {
                     feedbackEl: document.getElementById('feedback'),
                     editorContainer: document.getElementById('editorContainer'),
                     navButtonsContainer: document.getElementById('navigationButtonsContainer'),
@@ -281,38 +330,450 @@
                     mainVerticalResizer: document.getElementById('mainVerticalResizer'),
                     sidePanelHorizontalResizer: document.getElementById('sidePanelHorizontalResizer'),
 
-                    showFeedback(message, duration = 3000) { /* ... same ... */ },
-                    showModal(modalId, actionType = null) { /* ... same ... */ },
-                    hideModal(modalId) { /* ... same ... */ },
-                    updatePreview(docName) { /* ... same ... */ },
-                    createEditorPane(docName, existingPaneIdToSplit = null) { /* ... same ... */ },
-                    removeEditorPane(paneId) { /* ... same ... */ },
-                    setupEditorControlEvents(wrapper, paneId) { /* ... same ... */ },
-                    updateDocSelector(paneId) { /* ... same ... */ },
-                    updateAllDocSelectors() { /* ... same ... */ },
-                    layoutEditors() { /* ... same ... */ },
-                    updateNavigationButtons(buttonsState) { /* ... same ... */ },
-                    createNavButtonFromState(state) { /* ... same ... */ },
-                    getNavButtonsState() { /* ... same ... */ },
+                    showFeedback(message, duration = 3000) {
+                        this.feedbackEl.textContent = message;
+                        this.feedbackEl.classList.add('visible');
+                        setTimeout(() => {
+                            this.feedbackEl.classList.remove('visible');
+                        }, duration);
+                    },
+
+                    showModal(modalId, actionType = null) {
+                        projectAction = actionType; // Store action type for project modal
+                        const modal = document.getElementById(modalId);
+                        if (modalId === 'projectModal') {
+                            const title = document.getElementById('projectModalTitle');
+                            const nameInput = document.getElementById('projectName');
+                            const nameLabel = document.getElementById('projectNameLabel');
+                            const listSelect = document.getElementById('projectList');
+                            const listLabel = document.getElementById('projectListLabel');
+                            const confirmBtn = document.getElementById('confirmProjectAction');
+                            const saveWarning = document.getElementById('saveWarning');
+
+                            if (actionType === 'save') {
+                                title.textContent = "Save Project";
+                                nameInput.style.display = 'block'; nameLabel.style.display = 'block';
+                                listSelect.style.display = 'none'; listLabel.style.display = 'none';
+                                saveWarning.style.display = 'block';
+                                confirmBtn.textContent = "Save";
+                            } else { // 'load'
+                                title.textContent = "Load Project";
+                                Project.updateProjectList();
+                                nameInput.style.display = 'none'; nameLabel.style.display = 'none';
+                                listSelect.style.display = 'block'; listLabel.style.display = 'block';
+                                saveWarning.style.display = 'none';
+                                confirmBtn.textContent = "Load";
+                            }
+                        } else if (modalId === 'navButtonModal') {
+                             const docSelect = document.getElementById('buttonDocSelect');
+                             docSelect.innerHTML = '';
+                             documents.forEach((_, docName) => {
+                                 const option = document.createElement('option');
+                                 option.value = docName; option.textContent = docName;
+                                 docSelect.appendChild(option);
+                             });
+                              document.getElementById('buttonLabel').value = '';
+                              document.getElementById('buttonText').value = '';
+                              document.getElementById('buttonEditorId').value = '';
+                              document.getElementById('buttonColor').value = '#5c6370';
+                        }
+                         if (modal) modal.classList.add('visible');
+                    },
+
+                    hideModal(modalId) {
+                        const modal = document.getElementById(modalId);
+                        if (modal) modal.classList.remove('visible');
+                        projectAction = null;
+                    },
+
+                    updatePreview(docName) {
+                        const docData = documents.get(docName);
+                        if (docData && docData.mode === 'ace/mode/html') {
+                            try {
+                                this.previewFrame.srcdoc = docData.doc.getValue();
+                            } catch (e) {
+                                console.error("Error setting preview srcdoc:", e);
+                                this.previewFrame.srcdoc = `<html><body>Preview Error: ${e.message}</body></html>`;
+                            }
+                        } else if (docData) {
+                            this.previewFrame.srcdoc = `<html><body><pre>${docData.doc.getValue().replace(/</g, "<")}</pre></body></html>`;
+                        } else {
+                            this.previewFrame.srcdoc = '';
+                        }
+                    },
+
+                    createEditorPane(docName, existingPaneIdToSplit = null) {
+                        const paneId = `editor-${nextEditorId++}`;
+                        const { doc, mode, error } = Editors.getDocumentOrDefault(docName);
+                        if (error || !doc) {
+                            console.error(`Document ${docName || DEFAULT_DOC_NAME} not found for new pane.`);
+                            this.showFeedback(`Error creating pane: ${error}`);
+                            return null;
+                        }
+
+                        const wrapper = document.createElement('div');
+                        wrapper.className = 'editor-wrapper';
+                        wrapper.dataset.paneId = paneId;
+
+                        const header = document.createElement('div');
+                        header.className = 'editor-header';
+                        header.innerHTML = `
+                            <label>
+                                <input type="checkbox" class="visibility-toggle" data-pane-id="${paneId}" checked title="Toggle Visibility">
+                                <span class="editor-doc-name">${docName || DEFAULT_DOC_NAME}</span>
+                            </label>
+                            <div class="editor-controls">
+                                 <select class="doc-selector" data-pane-id="${paneId}" title="Switch Document"></select>
+                                <button class="split-button" data-pane-id="${paneId}" title="Split View (Same Document)"> H </button>
+                                 <button class="close-button" data-pane-id="${paneId}" title="Close Pane">✖</button>
+                            </div>
+                        `;
+
+                        const editorDiv = document.createElement('div');
+                        editorDiv.id = paneId; editorDiv.className = 'editor';
+
+                        const hResizer = document.createElement('div');
+                        hResizer.className = 'resizer horizontal';
+                        hResizer.dataset.resizesPane = paneId;
+
+                        wrapper.appendChild(header);
+                        wrapper.appendChild(editorDiv);
+
+                        let targetColumn;
+                        const columns = Array.from(this.editorContainer.querySelectorAll('.editor-column'));
+
+                        if (existingPaneIdToSplit) {
+                             targetColumn = editorPanes.get(existingPaneIdToSplit)?.column;
+                             if (!targetColumn) {
+                                 targetColumn = columns[0] || this.createEditorColumn(); // Fallback
+                             }
+                             const existingWrapper = targetColumn.querySelector(`.editor-wrapper[data-pane-id="${existingPaneIdToSplit}"]`);
+                             const existingResizer = targetColumn.querySelector(`.resizer.horizontal[data-resizes-pane="${existingPaneIdToSplit}"]`);
+                             if (existingWrapper && existingResizer) {
+                                targetColumn.insertBefore(wrapper, existingResizer); // Insert wrapper before existing resizer
+                                targetColumn.insertBefore(hResizer, existingResizer); // Insert new resizer before existing resizer
+                             } else { // Append if split target not found correctly
+                                targetColumn.appendChild(wrapper);
+                                targetColumn.appendChild(hResizer);
+                             }
+                        } else {
+                             // Find column with fewest editors, or create new if < 3 columns
+                             let minEditors = Infinity;
+                             let bestColumn = null;
+                             columns.forEach(col => {
+                                const count = col.querySelectorAll('.editor-wrapper').length;
+                                if (count < minEditors) {
+                                    minEditors = count;
+                                    bestColumn = col;
+                                }
+                             });
+
+                             if (columns.length < 3 && (minEditors > 1 || !bestColumn)) { // Add new column
+                                 targetColumn = this.createEditorColumn();
+                             } else { // Add to existing column
+                                 targetColumn = bestColumn || this.createEditorColumn(); // Ensure column exists
+                             }
+                             targetColumn.appendChild(wrapper);
+                             targetColumn.appendChild(hResizer);
+                        }
+
+                        const editor = ace.edit(paneId);
+                        editor.setTheme(ACE_THEME);
+                        const session = ace.createEditSession(doc); // Use the actual AceDocument instance
+                        session.setMode(mode);
+                        editor.setSession(session);
+
+                        editorPanes.set(paneId, { editor, wrapper, column: targetColumn, docName: docName || DEFAULT_DOC_NAME });
+
+                        this.setupEditorControlEvents(wrapper, paneId);
+                        this.updateDocSelector(paneId);
+
+                        session.on('change', () => {
+                            const currentDocName = editorPanes.get(paneId)?.docName;
+                            if (currentDocName === DEFAULT_DOC_NAME) {
+                                this.updatePreview(DEFAULT_DOC_NAME);
+                            }
+                        });
+
+                        Resizers.initHorizontalResizer(hResizer);
+                        this.layoutEditors();
+                        return paneId;
+                    },
+
+                    // Helper to create a column and add vertical resizer if needed
+                    createEditorColumn() {
+                         const targetColumn = document.createElement('div');
+                         targetColumn.className = 'editor-column';
+
+                         // Add Vertical Resizer *before* this new column (if not the first column)
+                         const existingColumns = this.editorContainer.querySelectorAll('.editor-column');
+                         if (existingColumns.length > 0) {
+                              const vResizer = document.createElement('div');
+                              vResizer.className = 'resizer vertical';
+                              // Insert resizer before the new column
+                              this.editorContainer.appendChild(vResizer);
+                              Resizers.initVerticalResizer(vResizer, targetColumn); // Pass column it controls (the new one)
+                         }
+                         this.editorContainer.appendChild(targetColumn);
+                         return targetColumn;
+                    },
+
+
+                    removeEditorPane(paneId) {
+                        const paneData = editorPanes.get(paneId);
+                        if (!paneData) return;
+
+                        paneData.editor.destroy();
+                        const resizer = paneData.column.querySelector(`.resizer.horizontal[data-resizes-pane="${paneId}"]`);
+                        if(resizer) resizer.remove();
+                        paneData.wrapper.remove();
+                        editorPanes.delete(paneId);
+
+                         // If column is now empty, remove it and its preceding vertical resizer
+                         if (paneData.column.querySelectorAll('.editor-wrapper').length === 0) {
+                             const columns = Array.from(this.editorContainer.children).filter(c => c.classList.contains('editor-column'));
+                             const columnIndex = columns.indexOf(paneData.column);
+
+                             // Find preceding vertical resizer (which is between elements, not inside column)
+                             const vResizers = Array.from(this.editorContainer.children).filter(c => c.classList.contains('resizer') && c.classList.contains('vertical'));
+                             const vResizerToRemove = vResizers[columnIndex - 1]; // Resizer before the column
+
+                             if (vResizerToRemove) vResizerToRemove.remove();
+                             paneData.column.remove();
+                         }
+                        this.layoutEditors();
+                    },
+
+                    setupEditorControlEvents(wrapper, paneId) {
+                        const checkbox = wrapper.querySelector('.visibility-toggle');
+                        const closeButton = wrapper.querySelector('.close-button');
+                        const splitButton = wrapper.querySelector('.split-button');
+                        const docSelector = wrapper.querySelector('.doc-selector');
+
+                        checkbox.addEventListener('change', () => {
+                            wrapper.classList.toggle('hidden', !checkbox.checked);
+                            this.layoutEditors();
+                        });
+                        closeButton.addEventListener('click', () => {
+                             if (editorPanes.size <= 1) {
+                                 this.showFeedback("Cannot close the last editor pane."); return;
+                             }
+                            this.removeEditorPane(paneId);
+                        });
+                        splitButton.addEventListener('click', () => {
+                             const currentDocName = editorPanes.get(paneId)?.docName;
+                             if (currentDocName) { this.createEditorPane(currentDocName, paneId); }
+                        });
+                        docSelector.addEventListener('change', () => {
+                             const newDocName = docSelector.value;
+                             Editors.switchDocumentInPane(paneId, newDocName);
+                        });
+                    },
+
+                    updateDocSelector(paneId) {
+                        const paneData = editorPanes.get(paneId);
+                        if (!paneData) return;
+                        const selector = paneData.wrapper.querySelector('.doc-selector');
+                        const currentDocName = paneData.docName;
+                        selector.innerHTML = '';
+
+                        documents.forEach((_, docName) => {
+                            const option = document.createElement('option');
+                            option.value = docName; option.textContent = docName;
+                            if (docName === currentDocName) { option.selected = true; }
+                            selector.appendChild(option);
+                        });
+                    },
+
+                    updateAllDocSelectors() {
+                        editorPanes.forEach((_, paneId) => { this.updateDocSelector(paneId); });
+                    },
+
+                    layoutEditors() {
+                        const container = this.editorContainer;
+                        const children = Array.from(container.children);
+                        const visibleColumns = children.filter(el => el.classList.contains('editor-column') && el.querySelector('.editor-wrapper:not(.hidden)')); // Only columns with visible content
+
+                        if (visibleColumns.length === 0) {
+                             // Hide all vertical resizers if no columns are visible
+                            children.filter(el => el.classList.contains('resizer') && el.classList.contains('vertical')).forEach(vr => vr.style.display = 'none');
+                            return;
+                        };
+
+                        // Distribute width among VISIBLE columns using flex-grow
+                        let totalColumnFlex = 0;
+                        visibleColumns.forEach((col, index) => {
+                            col.style.display = 'flex'; // Ensure visible
+                            // Use stored width (flex-grow value) or default to 1
+                            const flexGrow = parseFloat(uiState.columnWidths[index] || 1);
+                            col.style.flexGrow = flexGrow;
+                            totalColumnFlex += flexGrow;
+                        });
+                        // Hide non-visible columns
+                        children.filter(el => el.classList.contains('editor-column') && !visibleColumns.includes(el))
+                                .forEach(col => col.style.display = 'none');
+
+
+                        // Position and show/hide vertical resizers between visible columns
+                        let accumulatedFlex = 0;
+                        let visibleColumnIndex = 0;
+                        children.forEach(el => {
+                            if (el.classList.contains('editor-column')) {
+                                if (visibleColumns.includes(el)) {
+                                    accumulatedFlex += parseFloat(el.style.flexGrow);
+                                    visibleColumnIndex++;
+                                }
+                            } else if (el.classList.contains('resizer') && el.classList.contains('vertical')) {
+                                // Show resizer only if it's between two visible columns
+                                const precedingCol = visibleColumns[visibleColumnIndex - 1];
+                                const succeedingCol = visibleColumns[visibleColumnIndex];
+                                if (precedingCol && succeedingCol) {
+                                    el.style.display = 'block';
+                                    // Position based on preceding visible column's accumulated flex
+                                    // This positioning might need refinement depending on exact flexbox behavior.
+                                    // Setting flex-basis might be more reliable than positioning resizers absolutely.
+                                    // For simplicity, let flexbox handle spacing for now.
+                                } else {
+                                    el.style.display = 'none';
+                                }
+                            }
+                        });
+
+
+                        // Distribute height within each VISIBLE column
+                        visibleColumns.forEach(column => {
+                            const visibleWrappers = Array.from(column.querySelectorAll('.editor-wrapper:not(.hidden)'));
+                            if (visibleWrappers.length === 0) return; // Should not happen due to outer check, but safe
+
+                            let totalHeightFlex = 0;
+                            visibleWrappers.forEach(wrapper => {
+                                const paneId = wrapper.dataset.paneId;
+                                const flexGrow = parseFloat(uiState.editorHeights[paneId] || 1);
+                                wrapper.style.flexGrow = flexGrow;
+                                totalHeightFlex += flexGrow;
+                                wrapper.style.display = 'flex'; // Ensure visible
+                            });
+                             // Hide non-visible wrappers
+                             column.querySelectorAll('.editor-wrapper.hidden').forEach(w => w.style.display = 'none');
+
+
+                            // Adjust horizontal resizer visibility
+                            const allWrappersInColumn = Array.from(column.querySelectorAll('.editor-wrapper'));
+                            let lastVisibleWrapperFound = null;
+                             // Iterate backwards to easily find the last visible one
+                             for(let i = allWrappersInColumn.length - 1; i >= 0; i--) {
+                                if (!allWrappersInColumn[i].classList.contains('hidden')) {
+                                    lastVisibleWrapperFound = allWrappersInColumn[i];
+                                    break;
+                                }
+                             }
+
+                            allWrappersInColumn.forEach((wrapper) => {
+                                const paneId = wrapper.dataset.paneId;
+                                const resizer = column.querySelector(`.resizer.horizontal[data-resizes-pane="${paneId}"]`);
+                                if (resizer) {
+                                    // Show resizer only if it's NOT the last VISIBLE wrapper in the column and the wrapper itself is visible
+                                    const isLastVisible = (wrapper === lastVisibleWrapperFound);
+                                    resizer.style.display = (isLastVisible || wrapper.classList.contains('hidden')) ? 'none' : 'block';
+                                }
+                            });
+                        });
+
+                        // Resize Ace instances in visible panes
+                        editorPanes.forEach(({ editor, wrapper }) => {
+                            if (!wrapper.classList.contains('hidden')) {
+                                editor.resize();
+                            }
+                        });
+                        Resizers.layoutSidePanel();
+                    },
+
+                    updateNavigationButtons(buttonsState) {
+                        this.navButtonsContainer.innerHTML = '';
+                        buttonsState.forEach(state => {
+                            const button = this.createNavButtonFromState(state);
+                            this.navButtonsContainer.appendChild(button);
+                        });
+                    },
+
+                    createNavButtonFromState(state) {
+                        const button = document.createElement("button");
+                        button.textContent = state.label;
+                        button.className = "nav-button";
+                        button.style.backgroundColor = state.color || 'var(--button-bg)';
+                        button.setAttribute("data-doc-name", state.docName);
+                        button.setAttribute("data-search-text", state.searchText);
+                        button.setAttribute("data-target-pane", state.targetPane || '');
+
+                        const removeBtn = document.createElement("span");
+                        removeBtn.textContent = "x"; removeBtn.className = "remove";
+                        removeBtn.onclick = (e) => { e.stopPropagation(); button.remove(); this.showFeedback("Navigation button removed."); };
+                        button.appendChild(removeBtn);
+
+                        button.addEventListener("click", () => {
+                            const docName = button.getAttribute("data-doc-name");
+                            const searchText = button.getAttribute("data-search-text");
+                            const targetPaneId = button.getAttribute("data-target-pane");
+                            let targetEditor = null;
+
+                            // Find specific pane or first visible pane with the doc
+                            if (targetPaneId && editorPanes.has(targetPaneId)) {
+                                const paneData = editorPanes.get(targetPaneId);
+                                if (paneData.docName === docName && !paneData.wrapper.classList.contains('hidden')) {
+                                    targetEditor = paneData.editor;
+                                }
+                            }
+                            if (!targetEditor) {
+                                for (const paneData of editorPanes.values()) {
+                                    if (paneData.docName === docName && !paneData.wrapper.classList.contains('hidden')) {
+                                        targetEditor = paneData.editor; break;
+                                    }
+                                }
+                            }
+
+                            if (targetEditor && searchText) {
+                                 const wrapper = editorPanes.get(targetEditor.container.id).wrapper;
+                                 if (wrapper.classList.contains('hidden')) {
+                                     wrapper.classList.remove('hidden');
+                                     wrapper.querySelector('.visibility-toggle').checked = true;
+                                     this.layoutEditors();
+                                 }
+                                 targetEditor.find(searchText, { backwards: false, wrap: true, caseSensitive: false, wholeWord: false, regExp: false });
+                                 targetEditor.centerSelection(); targetEditor.focus();
+                            } else if (targetEditor) {
+                                targetEditor.focus();
+                            } else { this.showFeedback(`Document "${docName}" not open in a visible editor.`); }
+                        });
+                        return button;
+                    },
+
+                    getNavButtonsState() {
+                         return Array.from(this.navButtonsContainer.querySelectorAll('.nav-button')).map(button => ({
+                            label: button.firstChild.textContent,
+                            color: button.style.backgroundColor,
+                            docName: button.getAttribute("data-doc-name"),
+                            searchText: button.getAttribute("data-search-text"),
+                            targetPane: button.getAttribute("data-target-pane")
+                         }));
+                    },
 
                      // NEW: Clear diff views
                      clearDiffViews(statusText = "Paste JSON to see diff") {
-                         this.diffCurrentCode.textContent = '';
-                         this.diffNewCode.textContent = '';
+                         this.diffCurrentCode.innerHTML = ''; // Use innerHTML since we add spans
+                         this.diffNewCode.innerHTML = '';
                          this.llmStatus.textContent = statusText;
                          this.applyPatchButton.disabled = true;
-                         lastParsedOperations = []; // Clear stored ops
+                         lastParsedOperations = [];
                      },
 
-                     // NEW: Update diff views (Simplified for first operation)
+                     // NEW: Update diff views (Shows first op, basic diff)
                     displayDiff(operations) {
                          if (!operations || operations.length === 0) {
                             this.clearDiffViews("No valid operations found in JSON.");
                             return;
                          }
 
-                         // --- Display diff for the FIRST operation for now ---
-                         const op = operations[0];
+                         const op = operations[0]; // Show diff for the first operation
                          const { doc, error: findDocError } = Editors.getDocumentOrDefault(op.file);
 
                          if (findDocError || !doc) {
@@ -320,206 +781,460 @@
                              return;
                          }
 
-                         let currentContent = '';
-                         let newContentDisplay = '';
-                         let targetInfo = ''; // To display what was targeted
+                         let currentContentHTML = '';
+                         let newContentHTML = '';
+                         let targetInfo = '';
+                         let errorMsg = '';
 
                          try {
-                             const { range, info } = Editors.getTargetRange(doc, op.target); // Get range and info string
-                             targetInfo = info;
+                            let range = null;
+                            let insertPos = null;
+                            let contextLines = { before: [], after: [] }; // Store context lines separately
 
-                             if (range) { // If a range was found (not just insert point)
-                                 currentContent = doc.getTextRange(range);
-                                 // Add context lines if available in op
-                                 if (op.context && op.context.before) {
-                                     currentContent = op.context.before.map(l => `<span class="context-line">${l}</span>`).join('\n') + '\n' + currentContent;
-                                 }
-                                 if (op.context && op.context.after) {
-                                     currentContent += '\n' + op.context.after.map(l => `<span class="context-line">${l}</span>`).join('\n');
-                                 }
-                             } else if (op.type === 'insertAfter' || op.type === 'insertBefore') {
-                                 currentContent = `(Inserting ${op.type === 'insertBefore' ? 'before' : 'after'} ${targetInfo})`;
-                                 // Optionally show context around insertion point
-                                 // ... (logic to get lines around insert point) ...
-                             } else {
-                                 currentContent = `(Target ${targetInfo} not found or invalid for diff)`;
+                            // --- Determine Target and Get Context ---
+                             if (op.type === 'insertAfter' || op.type === 'insertBefore') {
+                                insertPos = Editors.getInsertionPosition(doc, op.target, op.type);
+                                targetInfo = insertPos.info;
+                                // Get context around insertion point
+                                const insertRow = insertPos.row;
+                                contextLines.before = [doc.getLine(Math.max(0, insertRow - 1)) || ''];
+                                contextLines.after = [doc.getLine(insertRow) || '']; // Line where content will start
+                             } else { // replace or delete
+                                const targetResult = Editors.getTargetRange(doc, op.target);
+                                range = targetResult.range;
+                                targetInfo = targetResult.info;
+                                // Get lines within the range for current content
+                                contextLines.before = [doc.getLine(Math.max(0, range.start.row - 1)) || '']; // Line before range
+                                contextLines.after = [doc.getLine(range.end.row + 1) || '']; // Line after range
                              }
 
-                             // Prepare display for new content
+                            // --- Prepare Current Content Display ---
+                            let currentLines = [];
+                            if (range) { // Replace or Delete
+                                currentLines = doc.getLines(range.start.row, range.end.row);
+                            } else { // Insert
+                                currentLines.push(`(Inserting ${op.type === 'insertBefore' ? 'before' : 'after'} ${targetInfo})`);
+                            }
+
+                            currentContentHTML = (op.context?.before || contextLines.before)
+                                .map(l => `<span class="context-line">${this.escapeHtml(l)}</span>`).join('\n');
+                            currentContentHTML += '\n' + currentLines.map(l => `<span class="${op.type === 'delete' ? 'deleted-line' : ''}">${this.escapeHtml(l)}</span>`).join('\n');
+                            currentContentHTML += '\n' + (op.context?.after || contextLines.after)
+                                .map(l => `<span class="context-line">${this.escapeHtml(l)}</span>`).join('\n');
+
+
+                             // --- Prepare New Content Display ---
+                             let newLines = [];
                              if (op.type === 'delete') {
-                                 newContentDisplay = '(Code will be deleted)';
-                                 this.diffNewCode.classList.add('deleted');
-                                 this.diffNewCode.classList.remove('inserted');
+                                 newLines.push('(Code will be deleted)');
                              } else if (op.content != null) {
-                                 newContentDisplay = op.content;
-                                  this.diffNewCode.classList.add('inserted');
-                                  this.diffNewCode.classList.remove('deleted');
+                                 newLines = op.content.split('\n');
                              } else {
-                                 newContentDisplay = '(No content provided)';
-                                 this.diffNewCode.classList.remove('inserted', 'deleted');
+                                 newLines.push('(No content provided)');
                              }
+
+                             newContentHTML = (op.context?.before || contextLines.before)
+                                .map(l => `<span class="context-line">${this.escapeHtml(l)}</span>`).join('\n');
+                             // For insert, show new lines between context
+                             if (op.type === 'insertAfter' || op.type === 'insertBefore') {
+                                  newContentHTML += '\n' + newLines.map(l => `<span class="inserted-line">${this.escapeHtml(l)}</span>`).join('\n');
+                             } else if (op.type === 'replace'){ // For replace, show new lines instead of old
+                                  newContentHTML += '\n' + newLines.map(l => `<span class="inserted-line">${this.escapeHtml(l)}</span>`).join('\n');
+                             } else { // For delete, show nothing between context
+                                 // newContentHTML += '\n'; // Optional empty line
+                             }
+                             newContentHTML += '\n' + (op.context?.after || contextLines.after)
+                                .map(l => `<span class="context-line">${this.escapeHtml(l)}</span>`).join('\n');
+
 
                          } catch (e) {
                              console.error("Error generating diff:", e);
-                             currentContent = `Error finding target: ${e.message}`;
-                             newContentDisplay = '';
-                             this.clearDiffViews(`Error preparing diff: ${e.message}`);
+                             errorMsg = `Error preparing diff: ${e.message}`;
+                             this.clearDiffViews(errorMsg);
                              return; // Don't enable apply if diff fails
                          }
 
-                         // Use innerHTML for context spans
-                         this.diffCurrentCode.innerHTML = currentContent; // Use innerHTML because of context spans
-                         this.diffNewCode.textContent = newContentDisplay; // Use textContent for proposed code
+                         // Update diff panels using innerHTML
+                         this.diffCurrentCode.innerHTML = currentContentHTML;
+                         this.diffNewCode.innerHTML = newContentHTML;
 
                          // Update status and enable button
                          const opCount = operations.length;
-                         this.llmStatus.textContent = `Parsed ${opCount} operation(s). Diff for #1 shown. Target: ${targetInfo}`;
+                         this.llmStatus.textContent = `Parsed ${opCount} operation(s). Diff for #1: ${targetInfo}`;
                          this.applyPatchButton.disabled = false;
-                         lastParsedOperations = operations; // Store for apply button
-                     }
+                         lastParsedOperations = operations;
+                    },
+                    // Helper to escape HTML for display in <pre>
+                    escapeHtml(unsafe) {
+                        if (unsafe == null) return '';
+                        return unsafe
+                             .replace(/&/g, "&")
+                             .replace(/</g, "<")
+                             .replace(/>/g, ">")
+                             .replace(/"/g, """)
+                             .replace(/'/g, "'");
+                    }
 
                 }; // End UI Module
 
-                const Editors = { // Mostly same, add helpers
-                    init() { /* ... same ... */ },
-                    createDocument(docName, content = '', mode = 'ace/mode/text') { /* ... same using AceDocument ... */ },
-                    //getDocument(docName) { /* ... same ... */ }, // Use getDocumentOrDefault now
-                    setDocumentContent(docName, content) { /* ... same ... */ },
-                    switchDocumentInPane(paneId, newDocName) { /* ... same ... */ },
-                    getCurrentDocumentAndEditor() { /* ... same ... */ },
-                    getEditorState() { /* ... same ... */ },
-                    setEditorState(state) { /* ... same ... */ },
+                const Editors = {
+                    init() {
+                        if (!documents.has(DEFAULT_DOC_NAME)) {
+                            this.createDocument(DEFAULT_DOC_NAME, DEFAULT_CONTENT, 'ace/mode/html');
+                        }
+                        UI.createEditorPane(DEFAULT_DOC_NAME);
+                        UI.updatePreview(DEFAULT_DOC_NAME);
+                    },
 
-                    // NEW: Get document or default, return error status too
-                     getDocumentOrDefault(docName) {
-                         const targetDocName = docName || DEFAULT_DOC_NAME;
-                         const docData = documents.get(targetDocName);
-                         if (docData) {
-                             return { doc: docData.doc, docName: targetDocName, mode: docData.mode, error: null };
-                         } else {
-                             return { doc: null, docName: targetDocName, mode: null, error: `Document '${targetDocName}' not found.` };
-                         }
-                     },
+                    createDocument(docName, content = '', mode = 'ace/mode/text') {
+                        if (documents.has(docName)) {
+                            console.warn(`Document ${docName} already exists.`); return;
+                        }
+                        const doc = new AceDocument(content);
+                        documents.set(docName, { doc, mode });
+                        UI.updateAllDocSelectors();
+                    },
 
-                     // NEW: Helper to find anchor position (returns {row: number} or null)
-                     findAnchorPosition(doc, anchorId) {
-                         const anchorPatterns = [
-                             `<!-- @@ID:${anchorId} -->`,
-                             `/* @@ID:${anchorId} */`,
-                             `// @@ID:${anchorId}`
-                         ];
-                         for (let i = 0; i < doc.getLength(); i++) {
-                             const line = doc.getLine(i).trim();
-                             if (anchorPatterns.some(pattern => line.includes(pattern))) {
-                                 return { row: i }; // 0-based row index
-                             }
-                         }
-                         return null; // Not found
-                     },
+                    setDocumentContent(docName, content) {
+                        const { doc, mode, error } = this.getDocumentOrDefault(docName);
+                        if (error || !doc) { console.error(error); return; }
+                        doc.setValue(content);
+                        if (docName === DEFAULT_DOC_NAME && mode === 'ace/mode/html') {
+                            UI.updatePreview(docName);
+                        }
+                    },
 
-                     // NEW: Helper to get AceRange and display info from target object
+                    switchDocumentInPane(paneId, newDocName) {
+                        const paneData = editorPanes.get(paneId);
+                        const { doc: newDoc, mode: newMode, error } = this.getDocumentOrDefault(newDocName);
+
+                        if (!paneData || error || !newDoc) {
+                            console.error("Invalid pane or document for switching:", paneId, newDocName, error);
+                            const selector = paneData?.wrapper.querySelector('.doc-selector');
+                            if(selector) selector.value = paneData?.docName || ''; // Revert selector
+                            return;
+                        }
+
+                        const newSession = ace.createEditSession(newDoc);
+                        newSession.setMode(newMode);
+                        paneData.editor.setSession(newSession);
+                        paneData.docName = newDocName;
+                        paneData.wrapper.querySelector('.editor-doc-name').textContent = newDocName;
+
+                        if (newDocName === DEFAULT_DOC_NAME && newMode === 'ace/mode/html') { UI.updatePreview(newDocName); }
+
+                        newSession.on('change', () => {
+                            if (editorPanes.get(paneId)?.docName === DEFAULT_DOC_NAME) { UI.updatePreview(DEFAULT_DOC_NAME); }
+                        });
+                        UI.showFeedback(`Editor pane switched to ${newDocName}`);
+                    },
+
+                    getCurrentDocumentAndEditor() {
+                        let lastFocusedEditor = null; let lastFocusedPaneId = null;
+                        for (const [paneId, paneData] of editorPanes.entries()) {
+                            if (paneData.editor.isFocused()) {
+                                lastFocusedEditor = paneData.editor; lastFocusedPaneId = paneId; break;
+                            }
+                        }
+                        if (!lastFocusedEditor) {
+                            for (const [paneId, paneData] of editorPanes.entries()) {
+                                 if (!paneData.wrapper.classList.contains('hidden')) {
+                                     lastFocusedEditor = paneData.editor; lastFocusedPaneId = paneId; break;
+                                 }
+                            }
+                        }
+                        if (lastFocusedEditor && lastFocusedPaneId) {
+                            const { doc, docName, mode, error } = this.getDocumentOrDefault(editorPanes.get(lastFocusedPaneId).docName);
+                            return { editor: lastFocusedEditor, doc, docName, mode, error };
+                        }
+                        return { editor: null, doc: null, docName: null, mode: null, error: "No active editor found." };
+                    },
+
+                    getEditorState() {
+                        const state = {};
+                        editorPanes.forEach((paneData, paneId) => {
+                            state[paneId] = {
+                                docName: paneData.docName,
+                                isVisible: !paneData.wrapper.classList.contains('hidden')
+                            };
+                        });
+                        return state;
+                    },
+
+                    setEditorState(state) {
+                        const currentPaneIds = Array.from(editorPanes.keys());
+                        currentPaneIds.forEach(paneId => UI.removeEditorPane(paneId)); // Clear existing panes
+
+                        // Recreate panes based on saved state (simplified recreation order)
+                        Object.entries(state).forEach(([_, paneState]) => { // Ignore saved paneId, create new
+                            if (documents.has(paneState.docName)) {
+                                const createdPaneId = UI.createEditorPane(paneState.docName);
+                                 if (createdPaneId) {
+                                    const wrapper = editorPanes.get(createdPaneId).wrapper;
+                                    wrapper.classList.toggle('hidden', !paneState.isVisible);
+                                    wrapper.querySelector('.visibility-toggle').checked = paneState.isVisible;
+                                }
+                            }
+                        });
+                        // If no panes were created (e.g., empty state loaded), ensure one exists
+                        if (editorPanes.size === 0) {
+                            this.init(); // Re-initialize default
+                        } else {
+                            UI.layoutEditors();
+                        }
+                    },
+
+                    getDocumentOrDefault(docName) {
+                        const targetDocName = docName || DEFAULT_DOC_NAME;
+                        const docData = documents.get(targetDocName);
+                        if (docData) {
+                            return { doc: docData.doc, docName: targetDocName, mode: docData.mode, error: null };
+                        } else {
+                            return { doc: null, docName: targetDocName, mode: null, error: `Document '${targetDocName}' not found.` };
+                        }
+                    },
+
+                    findAnchorPosition(doc, anchorId) {
+                        const anchorPatterns = [ `<!-- @@ID:${anchorId} -->`, `/* @@ID:${anchorId} */`, `// @@ID:${anchorId}` ];
+                        for (let i = 0; i < doc.getLength(); i++) {
+                            const line = doc.getLine(i); // Don't trim, match anywhere on line
+                            if (anchorPatterns.some(pattern => line.includes(pattern))) { return { row: i }; }
+                        }
+                        return null;
+                    },
+
                     getTargetRange(doc, target) {
-                         let range = null;
-                         let info = '';
+                        let range = null; let info = '';
+                        if (target.lineRange) {
+                            const startLine = target.lineRange.startLine; const endLine = target.lineRange.endLine;
+                            const startRow = startLine - 1; const endRow = endLine - 1;
+                            info = `line(s) ${startLine}-${endLine}`;
+                            if (startRow < 0 || endRow < startRow || endRow >= doc.getLength()) { throw new Error(`Invalid ${info}`); }
+                            range = new AceRange(startRow, 0, endRow, doc.getLine(endRow).length);
+                        } else if (target.anchorId) {
+                            info = `anchor "${target.anchorId}"`;
+                            const pos = this.findAnchorPosition(doc, target.anchorId);
+                            if (pos) { range = new AceRange(pos.row, 0, pos.row, doc.getLine(pos.row).length); }
+                            else { throw new Error(`Anchor ID "${target.anchorId}" not found.`); }
+                        } else { throw new Error("Invalid target specification in JSON."); }
+                        return { range, info };
+                    },
 
-                         if (target.lineRange) {
-                             const startLine = target.lineRange.startLine;
-                             const endLine = target.lineRange.endLine;
-                             const startRow = startLine - 1;
-                             const endRow = endLine - 1;
-                             info = `line(s) ${startLine}-${endLine}`;
-
-                             // Validate range
-                             if (startRow < 0 || endRow < startRow || endRow >= doc.getLength()) {
-                                 throw new Error(`Invalid ${info}`);
-                             }
-                             // Create range covering full lines
-                             range = new AceRange(startRow, 0, endRow, doc.getLine(endRow).length);
-
-                         } else if (target.anchorId) {
-                             info = `anchor "${target.anchorId}"`;
-                             const pos = this.findAnchorPosition(doc, target.anchorId);
-                             if (pos) {
-                                 // Create a range covering the anchor line itself
-                                 range = new AceRange(pos.row, 0, pos.row, doc.getLine(pos.row).length);
-                             } else {
-                                  throw new Error(`Anchor ID "${target.anchorId}" not found.`);
-                             }
-                         } else {
-                            throw new Error("Invalid target specification in JSON.");
-                         }
-                         return { range, info }; // Return null range if only an insertion point was found (e.g. anchor for insert)
-                     },
-
-                    // NEW: Helper to get insert position {row, column} from target
-                     getInsertionPosition(doc, target, type) { // type is 'insertBefore' or 'insertAfter'
-                         let row = -1;
-                         let info = '';
-
-                         if (target.lineRange) {
-                             info = `line(s) ${target.lineRange.startLine}-${target.lineRange.endLine}`;
-                             const targetRow = (type === 'insertBefore') ? target.lineRange.startLine - 1 : target.lineRange.endLine -1;
-                              // Validate row
-                              if (targetRow < 0 || targetRow >= doc.getLength()) {
-                                 throw new Error(`Invalid target ${info}`);
-                             }
-                             row = (type === 'insertBefore') ? targetRow : targetRow + 1;
-
-                         } else if (target.anchorId) {
-                             info = `anchor "${target.anchorId}"`;
-                             const pos = this.findAnchorPosition(doc, target.anchorId);
-                              if (pos) {
-                                 row = (type === 'insertBefore') ? pos.row : pos.row + 1;
-                              } else {
-                                  throw new Error(`Anchor ID "${target.anchorId}" not found.`);
-                              }
-                         } else {
-                              throw new Error("Invalid target specification for insertion.");
-                         }
-                         // Ensure row is within bounds (allow inserting at very end)
-                          if (row < 0 || row > doc.getLength()) {
-                              throw new Error(`Calculated insertion row ${row+1} is out of bounds (Doc length ${doc.getLength()}). Target was ${info}.`);
-                          }
-
-                         return { row: row, column: 0, info: info }; // Insert at start of the line
-                     }
-
+                    getInsertionPosition(doc, target, type) { // type is 'insertBefore' or 'insertAfter'
+                        let row = -1; let info = '';
+                        if (target.lineRange) {
+                            const lineNo = (type === 'insertBefore') ? target.lineRange.startLine : target.lineRange.endLine;
+                            info = `line ${lineNo}`;
+                            const targetRow = lineNo - 1;
+                            if (targetRow < 0 || targetRow >= doc.getLength()) { throw new Error(`Invalid target ${info}`); }
+                            row = (type === 'insertBefore') ? targetRow : targetRow + 1;
+                        } else if (target.anchorId) {
+                            info = `anchor "${target.anchorId}"`;
+                            const pos = this.findAnchorPosition(doc, target.anchorId);
+                            if (pos) { row = (type === 'insertBefore') ? pos.row : pos.row + 1; }
+                            else { throw new Error(`Anchor ID "${target.anchorId}" not found.`); }
+                        } else { throw new Error("Invalid target specification for insertion."); }
+                        if (row < 0 || row > doc.getLength()) { throw new Error(`Calculated insertion row ${row+1} is out of bounds (Doc length ${doc.getLength()}). Target was ${info}.`); }
+                        return { row: row, column: 0, info: info };
+                    }
                 }; // End Editors Module
 
-                const Project = { /* ... same ... */ };
-                const FileIO = { /* ... same ... */ };
+                const Project = {
+                    save() {
+                        const projectName = document.getElementById('projectName').value.trim();
+                        if (!projectName) { UI.showFeedback("Error: Please enter a project name."); return; }
 
-                const LLM = { // --- SIGNIFICANT CHANGES ---
+                        const projectData = {
+                            name: projectName, documents: {}, editorPanes: Editors.getEditorState(),
+                            ui: uiState, navButtons: UI.getNavButtonsState()
+                        };
+                        documents.forEach((data, name) => {
+                            projectData.documents[name] = { content: data.doc.getValue(), mode: data.mode };
+                        });
+
+                        try {
+                            let projects = JSON.parse(localStorage.getItem("projects") || "[]");
+                            const existingIndex = projects.findIndex(p => p.name === projectName);
+                            if (existingIndex !== -1) { projects[existingIndex] = projectData; }
+                            else { projects.push(projectData); }
+                            localStorage.setItem("projects", JSON.stringify(projects));
+                            this.updateProjectList();
+                            UI.showFeedback(`Project "${projectName}" saved successfully!`);
+                            UI.hideModal('projectModal');
+                        } catch (error) { UI.showFeedback("Error saving project: " + error.message); console.error("Save Error:", error); }
+                    },
+
+                    load() {
+                        const projectName = document.getElementById('projectList').value;
+                        if (!projectName) { UI.showFeedback("Error: No project selected."); return; }
+                        const projects = JSON.parse(localStorage.getItem("projects") || "[]");
+                        const projectData = projects.find(p => p.name === projectName);
+                        if (!projectData) { UI.showFeedback(`Error: Project "${projectName}" not found.`); return; }
+
+                        try {
+                            const currentPaneIds = Array.from(editorPanes.keys());
+                            currentPaneIds.forEach(paneId => UI.removeEditorPane(paneId));
+                            documents.clear(); UI.navButtonsContainer.innerHTML = '';
+
+                            Object.entries(projectData.documents).forEach(([name, data]) => {
+                                Editors.createDocument(name, data.content, data.mode);
+                            });
+
+                            if (projectData.ui) { uiState = { ...uiState, ...projectData.ui }; } // Restore UI state
+
+                            // Recreate editor panes (Simplified: Order might not be perfect)
+                            if (projectData.editorPanes && Object.keys(projectData.editorPanes).length > 0) {
+                                Object.values(projectData.editorPanes).forEach(paneState => {
+                                    if (documents.has(paneState.docName)) {
+                                        const createdPaneId = UI.createEditorPane(paneState.docName);
+                                        if (createdPaneId) {
+                                            const wrapper = editorPanes.get(createdPaneId).wrapper;
+                                            wrapper.classList.toggle('hidden', !paneState.isVisible);
+                                            wrapper.querySelector('.visibility-toggle').checked = paneState.isVisible;
+                                        }
+                                    }
+                                });
+                            } else if (documents.size > 0) { // Fallback if no panes saved but docs exist
+                                Editors.init(); // Re-init default view
+                            } else { // Truly empty project
+                                Editors.createDocument(DEFAULT_DOC_NAME, '', 'ace/mode/html');
+                                Editors.init();
+                            }
+
+
+                            if (projectData.navButtons) { UI.updateNavigationButtons(projectData.navButtons); }
+
+                            Resizers.applyLayout(); // Apply layout *after* panes are created
+                            UI.layoutEditors(); // Recalculate final layout
+
+                            UI.showFeedback(`Project "${projectName}" loaded successfully!`);
+                            UI.hideModal('projectModal');
+                            if (documents.has(DEFAULT_DOC_NAME)) { UI.updatePreview(DEFAULT_DOC_NAME); }
+
+                        } catch (error) { UI.showFeedback("Error loading project: " + error.message); console.error("Load Error:", error); this.newProject(); }
+                    },
+
+                    newProject() {
+                        if (!confirm("This will clear all current editors and unsaved changes. Continue?")) { return; }
+                        const currentPaneIds = Array.from(editorPanes.keys());
+                        currentPaneIds.forEach(paneId => UI.removeEditorPane(paneId));
+                        documents.clear(); UI.navButtonsContainer.innerHTML = '';
+                        uiState = { columnWidths: [], editorHeights: {}, sidePanelRatio: 0.6, mainSplitRatio: 0.7 };
+                        Editors.init(); // Creates default doc and first pane
+                        Resizers.applyLayout(); // Reset splits
+                        UI.clearDiffViews(); // Clear diff on new project
+                        UI.showFeedback("New project started.");
+                    },
+
+                    updateProjectList() {
+                        const projectList = document.getElementById("projectList");
+                        projectList.innerHTML = "";
+                        try {
+                            const projects = JSON.parse(localStorage.getItem("projects") || "[]");
+                            if (projects.length === 0) {
+                                projectList.innerHTML = "<option disabled>No saved projects</option>";
+                            } else {
+                                projects.forEach((project) => {
+                                    projectList.innerHTML += `<option value="${project.name}">${project.name}</option>`;
+                                });
+                            }
+                        } catch (error) { console.error("Error reading projects:", error); projectList.innerHTML = "<option disabled>Error loading projects</option>"; }
+                    }
+                }; // End Project Module
+
+                const FileIO = {
+                    downloadCurrentFile() {
+                        const { doc, docName, error } = Editors.getDocumentOrDefault(null);
+                        if (error || !doc) { UI.showFeedback(error || "Error: No active document found."); return; }
+                        const content = doc.getValue();
+                        const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+                        const a = document.createElement("a");
+                        a.href = URL.createObjectURL(blob);
+                        a.download = docName || 'download.txt';
+                        a.style.display = "none"; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                        URL.revokeObjectURL(a.href);
+                        UI.showFeedback(`File "${a.download}" download initiated. Save it manually.`);
+                    },
+
+                    setupImport() {
+                        const fileInput = document.getElementById('importFileTrigger');
+                        const importButton = document.getElementById('importFile');
+                        importButton.addEventListener('click', () => fileInput.click());
+                        fileInput.addEventListener('change', (e) => {
+                            const file = e.target.files[0]; if (!file) return;
+                            const reader = new FileReader();
+                            reader.onload = (readerEvent) => {
+                                try {
+                                    const content = readerEvent.target.result;
+                                    const { editor, doc, docName, error } = Editors.getDocumentOrDefault(null);
+                                    const newMode = this.guessMode(file.name);
+
+                                    if (error || !doc) { // If no active doc, create new one
+                                        Editors.createDocument(file.name, content, newMode);
+                                        UI.showFeedback(`File "${file.name}" imported as new document.`);
+                                        // Optionally switch an editor to view it? Or create a new pane?
+                                        // UI.createEditorPane(file.name); // Example: Create a new pane
+                                    } else { // Overwrite current doc
+                                        doc.setValue(content);
+                                        documents.get(docName).mode = newMode; // Update stored mode
+                                        editorPanes.forEach(paneData => {
+                                            if (paneData.docName === docName) { paneData.editor.session.setMode(newMode); }
+                                        });
+                                        UI.showFeedback(`File "${file.name}" imported into "${docName}".`);
+                                        if (docName === DEFAULT_DOC_NAME && newMode === 'ace/mode/html') { UI.updatePreview(docName); }
+                                    }
+                                } catch (err) { UI.showFeedback("Error importing file: " + err.message); }
+                                finally { fileInput.value = ''; }
+                            };
+                            reader.onerror = () => { UI.showFeedback(`Error reading file "${file.name}".`); fileInput.value = ''; };
+                            reader.readAsText(file);
+                        });
+                    },
+
+                    guessMode(filename) {
+                        const extension = filename.split('.').pop().toLowerCase();
+                        switch(extension) {
+                            case 'html': case 'htm': return 'ace/mode/html';
+                            case 'css': return 'ace/mode/css';
+                            case 'js': return 'ace/mode/javascript';
+                            case 'json': return 'ace/mode/json';
+                            case 'md': return 'ace/mode/markdown';
+                            case 'xml': return 'ace/mode/xml';
+                            case 'py': return 'ace/mode/python';
+                            case 'java': return 'ace/mode/java';
+                            case 'c': case 'cpp': case 'h': return 'ace/mode/c_cpp';
+                            case 'ts': return 'ace/mode/typescript';
+                            case 'sh': return 'ace/mode/sh';
+                            default: return 'ace/mode/text';
+                        }
+                    }
+                }; // End FileIO Module
+
+                const LLM = {
                     patchInput: document.getElementById('llmPatchInput'),
                     applyButton: document.getElementById('applyPatchButton'),
                     statusEl: document.getElementById('llmStatus'),
                     hintButton: document.getElementById('llmHintButton'),
 
                     init() {
-                        // Parse on input change
                         this.patchInput.addEventListener('input', () => {
                             const jsonText = this.patchInput.value.trim();
-                            if (!jsonText) {
-                                UI.clearDiffViews();
-                                return;
-                            }
-                            const operations = this.parsePatch(jsonText); // Parse
-                            UI.displayDiff(operations); // Display
+                            if (!jsonText) { UI.clearDiffViews(); return; }
+                            const operations = this.parsePatch(jsonText);
+                            UI.displayDiff(operations);
                         });
-
                         this.applyButton.addEventListener('click', () => this.applyPatch());
                         this.hintButton.addEventListener('click', () => this.showHint());
                     },
 
                     showHint() {
-                        // Simple alert for now, could be a modal
                         alert("**Required JSON Patch Format:**\n\n" +
                         "[\n" +
                         "  {\n" +
-                        "    \"file\": \"filename.ext\",\n" +
+                        "    \"file\": \"filename.ext\", // Optional, defaults to current/main\n" +
                         "    \"target\": { \"lineRange\": { \"startLine\": N, \"endLine\": M } } | { \"anchorId\": \"unique-name\" },\n" +
                         "    \"type\": \"replace\" | \"insertAfter\" | \"insertBefore\" | \"delete\",\n" +
-                        "    \"content\": \"New code...\\n...with newlines.\", // (Omit for delete)\n" +
+                        "    \"content\": \"New code...\\n...with newlines.\", // (Omit/null for delete)\n" +
                         "    \"context\": { \"before\": [\"line1\", ...], \"after\": [\"line1\", ...] } // (Optional)\n" +
                         "  },\n" +
                         "  // ... more operations\n" +
@@ -529,171 +1244,322 @@
                         "* Ensure JSON is valid and strings are properly escaped.");
                     },
 
-                    parsePatch(jsonText) { // REWRITTEN for JSON
+                    parsePatch(jsonText) {
                         let operations = [];
                         try {
-                            // Attempt to parse the input as JSON
                             const parsedData = JSON.parse(jsonText);
+                            if (!Array.isArray(parsedData)) { throw new Error("Input is not a JSON array."); }
 
-                            if (!Array.isArray(parsedData)) {
-                                throw new Error("Input is not a JSON array.");
-                            }
-
-                            // Basic validation of each operation object
                             operations = parsedData.map((op, index) => {
-                                if (!op || typeof op !== 'object') throw new Error(`Operation #${index+1} is not an object.`);
-                                if (typeof op.file !== 'string') op.file = null; // Allow optional file, default later
-                                if (!op.target || typeof op.target !== 'object') throw new Error(`Operation #${index+1}: Missing or invalid 'target' object.`);
-                                if (!op.target.lineRange && !op.target.anchorId) throw new Error(`Operation #${index+1}: Target must have 'lineRange' or 'anchorId'.`);
-                                if (op.target.lineRange && (typeof op.target.lineRange.startLine !== 'number' || typeof op.target.lineRange.endLine !== 'number' || op.target.lineRange.startLine <= 0 || op.target.lineRange.endLine < op.target.lineRange.startLine)) throw new Error(`Operation #${index+1}: Invalid 'lineRange'.`);
-                                if (op.target.anchorId && typeof op.target.anchorId !== 'string') throw new Error(`Operation #${index+1}: Invalid 'anchorId'.`);
-                                if (!['replace', 'insertAfter', 'insertBefore', 'delete'].includes(op.type)) throw new Error(`Operation #${index+1}: Invalid 'type'.`);
-                                if (op.type !== 'delete' && typeof op.content !== 'string') throw new Error(`Operation #${index+1}: Missing or invalid 'content' for type '${op.type}'.`);
-                                if (op.type === 'delete' && op.content != null) console.warn(`Operation #${index+1}: 'content' provided for delete operation will be ignored.`);
-                                // Context validation is optional
-
+                                const opNum = index + 1;
+                                if (!op || typeof op !== 'object') throw new Error(`Op#${opNum} is not an object.`);
+                                if (op.file != null && typeof op.file !== 'string') throw new Error(`Op#${opNum}: Invalid 'file'.`);
+                                if (!op.target || typeof op.target !== 'object') throw new Error(`Op#${opNum}: Missing/invalid 'target'.`);
+                                if (!op.target.lineRange && !op.target.anchorId) throw new Error(`Op#${opNum}: Target needs 'lineRange' or 'anchorId'.`);
+                                if (op.target.lineRange && (typeof op.target.lineRange.startLine !== 'number' || typeof op.target.lineRange.endLine !== 'number' || op.target.lineRange.startLine <= 0 || op.target.lineRange.endLine < op.target.lineRange.startLine)) throw new Error(`Op#${opNum}: Invalid 'lineRange'.`);
+                                if (op.target.anchorId && typeof op.target.anchorId !== 'string') throw new Error(`Op#${opNum}: Invalid 'anchorId'.`);
+                                if (!['replace', 'insertAfter', 'insertBefore', 'delete'].includes(op.type)) throw new Error(`Op#${opNum}: Invalid 'type'.`);
+                                if (op.type !== 'delete' && typeof op.content !== 'string') throw new Error(`Op#${opNum}: Missing/invalid 'content' for type '${op.type}'.`);
+                                if (op.type === 'delete' && op.content != null) console.warn(`Op#${opNum}: 'content' ignored for delete.`);
                                 return op;
                             });
 
-                            // Sort operations by primary target DESCENDING (heuristic for applying)
-                            // This is tricky with mixed targets. Simple line sort for now.
+                            // Sort: Heuristic - Anchor ops first, then line ops descending
                             operations.sort((a, b) => {
-                                const lineA = a.target.lineRange ? a.target.lineRange.startLine : Infinity; // Put anchors last? Or try to resolve? Simple for now.
-                                const lineB = b.target.lineRange ? b.target.lineRange.startLine : Infinity;
-                                return lineB - lineA; // Sort by line number descending
+                                const lineA = a.target.lineRange ? a.target.lineRange.startLine : -1; // Anchors effectively at -1
+                                const lineB = b.target.lineRange ? b.target.lineRange.startLine : -1;
+                                if (lineA === -1 && lineB !== -1) return -1; // a (anchor) comes before b (line)
+                                if (lineA !== -1 && lineB === -1) return 1;  // b (anchor) comes before a (line)
+                                return lineB - lineA; // If both lines or both anchors, sort descending line #
                             });
 
-                             console.log("Parsed & sorted JSON operations:", JSON.stringify(operations, null, 2));
-                             return operations;
+                            console.log("Parsed & sorted JSON operations:", JSON.stringify(operations, null, 2));
+                            return operations;
 
                         } catch (error) {
                             console.error("JSON Patch Parsing Error:", error);
-                            UI.clearDiffViews(`Invalid JSON: ${error.message}`); // Update status on parse error
-                            return []; // Return empty array on error
+                            UI.clearDiffViews(`Invalid JSON: ${error.message}`);
+                            return [];
                         }
                     },
 
                     applyPatch() {
-                        // Use the operations parsed when input changed
                         const operations = lastParsedOperations;
-
-                        if (!operations || operations.length === 0) {
-                            UI.showFeedback("No valid operations to apply.");
-                            return;
-                        }
-
+                        if (!operations || operations.length === 0) { UI.showFeedback("No valid operations to apply."); return; }
                         console.log("Applying operations:", operations);
 
-                        let changesApplied = 0;
-                        let errors = 0;
-                        const appliedFiles = new Set(); // Track files that were changed
+                        let changesApplied = 0; let errors = 0; const appliedFiles = new Set();
 
-                         // Process operations (they are pre-sorted, roughly descending line #)
-                         // Note: Interaction between anchor and line # ops can still be tricky.
                         operations.forEach((op, index) => {
                             try {
                                 const { doc, docName, error: findDocError } = Editors.getDocumentOrDefault(op.file);
-                                if (findDocError || !doc) {
-                                    throw new Error(findDocError || `Target document "${op.file || DEFAULT_DOC_NAME}" not found.`);
-                                }
+                                if (findDocError || !doc) { throw new Error(findDocError || `Target document "${op.file || DEFAULT_DOC_NAME}" not found.`); }
 
-                                let range = null; // AceRange for replace/delete
-                                let insertPos = null; // {row, column} for insert
+                                let range = null; let insertPos = null;
 
-                                // Determine target range or position
                                 if (op.type === 'insertAfter' || op.type === 'insertBefore') {
                                     insertPos = Editors.getInsertionPosition(doc, op.target, op.type);
-                                } else { // replace or delete
+                                } else {
                                      const targetResult = Editors.getTargetRange(doc, op.target);
                                      range = targetResult.range;
-                                     // We already validated target exists during diff generation/parsing, but double check range
-                                     if (!range) throw new Error(`Could not resolve target range for ${op.type} operation.`);
+                                     if (!range) throw new Error(`Could not resolve target range for ${op.type}.`);
                                 }
 
-                                // Perform Ace document modification
+                                // Perform Ace modification
                                 if (op.type === 'replace' && range) {
-                                    doc.replace(range, op.content || '');
-                                    changesApplied++;
+                                    doc.replace(range, op.content || ''); changesApplied++;
                                 } else if (op.type === 'insertAfter' && insertPos) {
-                                    const contentToInsert = (op.content || '') + '\n'; // Ensure newline? Check Ace behavior.
-                                    doc.insert(insertPos, contentToInsert); // Insert at start of determined row
-                                    changesApplied++;
+                                    const contentToInsert = (op.content || '') + '\n';
+                                    doc.insert(insertPos, contentToInsert); changesApplied++;
                                 } else if (op.type === 'insertBefore' && insertPos) {
                                     const contentToInsert = (op.content || '') + '\n';
-                                    doc.insert(insertPos, contentToInsert); // Insert at start of determined row
-                                    changesApplied++;
+                                    doc.insert(insertPos, contentToInsert); changesApplied++;
                                 } else if (op.type === 'delete' && range) {
-                                    doc.remove(range);
-                                    changesApplied++;
-                                } else {
-                                     // Should not happen if parsing/range finding is correct
-                                     throw new Error(`Invalid state or combination for operation type ${op.type}`);
-                                }
-                                appliedFiles.add(docName); // Mark file as changed
+                                    doc.remove(range); changesApplied++;
+                                } else { throw new Error(`Invalid state for op type ${op.type}`); }
+                                appliedFiles.add(docName);
 
                             } catch (error) {
-                                console.error(`Error applying operation #${index + 1}: ${JSON.stringify(op)}`, error);
+                                console.error(`Error applying op #${index + 1}: ${JSON.stringify(op)}`, error);
                                 errors++;
-                                // Optionally stop on first error? Or continue? Continue for now.
                             }
-                        }); // End forEach operation
+                        });
 
                         // Feedback
                         if (changesApplied > 0 && errors === 0) {
                             UI.showFeedback(`Successfully applied ${changesApplied} patch operation(s).`);
-                            this.patchInput.value = ''; // Clear input on full success
-                            UI.clearDiffViews(`Applied ${changesApplied} operation(s).`);
+                            this.patchInput.value = ''; UI.clearDiffViews(`Applied ${changesApplied} operation(s).`);
                         } else if (changesApplied > 0 && errors > 0) {
                             UI.showFeedback(`Applied ${changesApplied} operation(s) with ${errors} error(s). Check console.`);
-                             UI.clearDiffViews(`Applied ${changesApplied}/${operations.length} with errors.`);
+                            UI.clearDiffViews(`Applied ${changesApplied}/${operations.length} with errors.`);
                         } else if (errors > 0){
-                             UI.showFeedback(`Failed to apply any patch operations. ${errors} error(s) occurred.`);
-                             UI.clearDiffViews(`Apply failed with ${errors} errors.`);
-                        } else {
-                            // No changes applied, no errors? Might happen if JSON was valid but ops were no-ops?
-                            UI.showFeedback("No changes were applied.");
-                            UI.clearDiffViews("No changes applied.");
-                        }
+                            UI.showFeedback(`Failed to apply patch operations. ${errors} error(s) occurred.`);
+                            UI.clearDiffViews(`Apply failed with ${errors} errors.`);
+                        } else { UI.showFeedback("No changes were applied."); UI.clearDiffViews("No changes applied."); }
 
-                         // Update previews for affected documents
-                        appliedFiles.forEach(docName => {
-                            if (docName === DEFAULT_DOC_NAME) { // Only update preview for main HTML for now
-                                 UI.updatePreview(docName);
-                            }
-                            // Trigger redraw/update in editors showing this doc? Ace sessions should update automatically.
-                        });
-
-                    } // End applyPatch
-
+                        appliedFiles.forEach(docName => { if (docName === DEFAULT_DOC_NAME) { UI.updatePreview(docName); } });
+                    }
                 }; // End LLM Module
 
-                const Resizers = { /* ... same ... */ };
+                const Resizers = {
+                    dragging: false, targetResizer: null, startX: 0, startY: 0,
+                    elements: { prev: null, next: null, container: null }, // Store related elements
+                    startDim: { width: 0, height: 0, prevFlex: 1, nextFlex: 1, totalFlex: 2 }, // Store dimensions/flex at drag start
+
+                    init() {
+                        this.initMainVerticalResizer(UI.mainVerticalResizer);
+                        this.initSidePanelHorizontalResizer(UI.sidePanelHorizontalResizer);
+                        document.addEventListener('mousemove', this.handleDrag.bind(this));
+                        document.addEventListener('mouseup', this.stopDrag.bind(this));
+                        window.addEventListener('resize', () => { UI.layoutEditors(); this.applyLayout(); }); // Use applyLayout on resize
+                    },
+
+                    startDrag(e, resizer, elementType, getElementsFunc) {
+                        e.preventDefault();
+                        this.dragging = true;
+                        this.targetResizer = resizer;
+                        this.startX = e.clientX; this.startY = e.clientY;
+
+                        this.elements = getElementsFunc(resizer); // Get relevant elements
+                        if (!this.elements.prev || !this.elements.container) { this.stopDrag(); return; } // Need at least prev and container
+
+                        const prevRect = this.elements.prev.getBoundingClientRect();
+                        const nextRect = this.elements.next?.getBoundingClientRect(); // Next might not exist
+
+                        this.startDim.width = prevRect.width;
+                        this.startDim.height = prevRect.height;
+                        this.startDim.prevFlex = parseFloat(this.elements.prev.style.flexGrow || 1);
+                        this.startDim.nextFlex = this.elements.next ? parseFloat(this.elements.next.style.flexGrow || 1) : 0;
+                        this.startDim.totalFlex = this.startDim.prevFlex + this.startDim.nextFlex;
+
+                        document.body.style.cursor = getComputedStyle(resizer).cursor;
+                        document.body.style.userSelect = 'none'; // Prevent text selection
+                    },
+
+                    handleDrag(e) {
+                        if (!this.dragging || !this.targetResizer) return;
+
+                        const isVertical = this.targetResizer.classList.contains('vertical');
+                        const isHorizontal = this.targetResizer.classList.contains('horizontal');
+
+                        if (isVertical) {
+                            const dx = e.clientX - this.startX;
+                            const containerWidth = this.elements.container.getBoundingClientRect().width;
+                            let newPrevWidth = this.startDim.width + dx;
+                            let newNextWidth = this.elements.next ? (containerWidth - newPrevWidth - this.targetResizer.offsetWidth) : 0;
+
+                            const minWidth = 50; // Minimum width for panels/columns
+                            if (newPrevWidth < minWidth || (this.elements.next && newNextWidth < minWidth)) return; // Prevent collapse
+
+                            // Calculate new flex-grow based on width distribution
+                            const totalAvailableWidth = containerWidth - this.targetResizer.offsetWidth;
+                            let newPrevFlex = (newPrevWidth / totalAvailableWidth) * this.startDim.totalFlex;
+                            let newNextFlex = this.elements.next ? (newNextWidth / totalAvailableWidth) * this.startDim.totalFlex : 0;
+
+                            this.elements.prev.style.flexGrow = newPrevFlex;
+                            if (this.elements.next) this.elements.next.style.flexGrow = newNextFlex;
+
+                            // Update UI State
+                            if (this.targetResizer.id === 'mainVerticalResizer') {
+                                uiState.mainSplitRatio = newPrevFlex / (newPrevFlex + newNextFlex);
+                            } else { // Column resizer
+                                const columns = Array.from(this.elements.container.children).filter(c => c.classList.contains('editor-column'));
+                                const prevIndex = columns.indexOf(this.elements.prev);
+                                const nextIndex = this.elements.next ? columns.indexOf(this.elements.next) : -1;
+                                if (prevIndex !== -1) uiState.columnWidths[prevIndex] = newPrevFlex;
+                                if (nextIndex !== -1) uiState.columnWidths[nextIndex] = newNextFlex;
+                            }
+
+                        } else if (isHorizontal) {
+                            const dy = e.clientY - this.startY;
+                            const containerHeight = this.elements.container.getBoundingClientRect().height;
+                            let newPrevHeight = this.startDim.height + dy;
+                            let newNextHeight = this.elements.next ? (containerHeight - newPrevHeight - this.targetResizer.offsetHeight) : 0;
+
+                            const minHeight = 50;
+                            if (newPrevHeight < minHeight || (this.elements.next && newNextHeight < minHeight)) return;
+
+                            const totalAvailableHeight = containerHeight - this.targetResizer.offsetHeight;
+                            let newPrevFlex = (newPrevHeight / totalAvailableHeight) * this.startDim.totalFlex;
+                            let newNextFlex = this.elements.next ? (newNextHeight / totalAvailableHeight) * this.startDim.totalFlex : 0;
+
+                            this.elements.prev.style.flexGrow = newPrevFlex;
+                            if (this.elements.next) this.elements.next.style.flexGrow = newNextFlex;
+
+                             // Update UI State
+                             if (this.targetResizer.id === 'sidePanelHorizontalResizer') {
+                                uiState.sidePanelRatio = newNextFlex / (newPrevFlex + newNextFlex); // Ratio of preview (next)
+                             } else { // Editor row resizer
+                                 const prevPaneId = this.elements.prev.dataset.paneId;
+                                 const nextPaneId = this.elements.next?.dataset.paneId;
+                                 if (prevPaneId) uiState.editorHeights[prevPaneId] = newPrevFlex;
+                                 if (nextPaneId) uiState.editorHeights[nextPaneId] = newNextFlex;
+                             }
+                        }
+                        UI.layoutEditors(); // Trigger Ace resize etc.
+                    },
+
+                    stopDrag(e) {
+                        if (this.dragging) {
+                            this.dragging = false; this.targetResizer = null;
+                            document.body.style.cursor = 'default';
+                            document.body.style.userSelect = ''; // Re-enable selection
+                            UI.layoutEditors(); // Final layout
+                        }
+                    },
+
+                    // --- Specific Initializers ---
+                    initHorizontalResizer(resizer) { // Between editors in a column
+                         resizer.addEventListener('mousedown', (e) => this.startDrag(e, resizer, 'editor', (r) => {
+                            const wrapper = r.previousElementSibling; // The editor-wrapper above
+                            const container = r.parentElement; // The editor-column
+                            let nextWrapper = r.nextElementSibling; // Find next non-hidden wrapper
+                            while(nextWrapper && (!nextWrapper.classList.contains('editor-wrapper') || nextWrapper.classList.contains('hidden'))) {
+                                nextWrapper = nextWrapper.nextElementSibling;
+                            }
+                            return { prev: wrapper, next: nextWrapper, container: container };
+                         }));
+                    },
+                    initVerticalResizer(resizer, controlledColumn) { // Between columns
+                        resizer.addEventListener('mousedown', (e) => this.startDrag(e, resizer, 'column', (r) => {
+                            const prevColumn = r.previousElementSibling; // Column before resizer
+                            const nextColumn = controlledColumn || r.nextElementSibling; // Column after resizer
+                            const container = r.parentElement; // editorContainer
+                            return { prev: prevColumn, next: nextColumn, container: container };
+                         }));
+                    },
+                    initMainVerticalResizer(resizer) { // Between editor-area and side-panel
+                        resizer.addEventListener('mousedown', (e) => this.startDrag(e, resizer, 'main', (r) => ({
+                            prev: document.querySelector('.editor-area'),
+                            next: document.querySelector('.side-panel'),
+                            container: document.querySelector('.main-content')
+                         })));
+                    },
+                    initSidePanelHorizontalResizer(resizer) { // Between LLM and Preview
+                        resizer.addEventListener('mousedown', (e) => this.startDrag(e, resizer, 'side', (r) => ({
+                            prev: document.querySelector('.llm-interaction-area'),
+                            next: document.querySelector('.preview-area'),
+                            container: document.querySelector('.side-panel')
+                         })));
+                    },
+
+                    applyLayout() {
+                        const editorArea = document.querySelector('.editor-area');
+                        const sidePanel = document.querySelector('.side-panel');
+                        if (editorArea && sidePanel) {
+                            const totalMainFlex = 100; // Arbitrary total for ratio calculation
+                            editorArea.style.flexGrow = uiState.mainSplitRatio * totalMainFlex;
+                            sidePanel.style.flexGrow = (1 - uiState.mainSplitRatio) * totalMainFlex;
+                        }
+                        this.layoutSidePanel();
+                        UI.layoutEditors(); // Apply column/editor ratios via layoutEditors
+                    },
+
+                    layoutSidePanel() {
+                        const llmArea = document.querySelector('.llm-interaction-area');
+                        const previewArea = document.querySelector('.preview-area');
+                        if (llmArea && previewArea) {
+                            const totalSideFlex = 100;
+                            previewArea.style.flexGrow = uiState.sidePanelRatio * totalSideFlex;
+                            llmArea.style.flexGrow = (1 - uiState.sidePanelRatio) * totalSideFlex;
+                        }
+                    }
+                }; // End Resizers Module
+
 
                 // --- Initialization ---
                 Editors.init();
                 FileIO.setupImport();
-                LLM.init(); // Initialize new LLM logic
+                LLM.init();
                 Resizers.init();
-                Resizers.applyLayout();
+                Resizers.applyLayout(); // Apply initial layout ratios and trigger first layout
 
-                // --- Global Event Listeners (Modal parts same) ---
+                // --- Global Event Listeners ---
                 document.getElementById('newProject').addEventListener('click', () => Project.newProject());
                 document.getElementById('saveProject').addEventListener('click', () => UI.showModal('projectModal', 'save'));
                 document.getElementById('loadProject').addEventListener('click', () => UI.showModal('projectModal', 'load'));
                 document.getElementById('downloadFile').addEventListener('click', () => FileIO.downloadCurrentFile());
                 document.getElementById('createNavButton').addEventListener('click', () => UI.showModal('navButtonModal'));
-                document.getElementById('addEditorView').addEventListener('click', () => { /* ... same ... */ });
-                document.getElementById('confirmProjectAction').addEventListener('click', () => { /* ... same ... */ });
-                document.getElementById('confirmButtonCreation').addEventListener('click', () => { /* ... same ... */ });
-                document.querySelectorAll('.cancel-button').forEach(button => { /* ... same ... */ });
+                document.getElementById('addEditorView').addEventListener('click', () => {
+                    const { docName, error } = Editors.getCurrentDocumentAndEditor();
+                    if (error) { UI.showFeedback(error); }
+                    else { UI.createEditorPane(docName); }
+                });
+                document.getElementById('confirmProjectAction').addEventListener('click', () => {
+                    if (projectAction === 'save') { Project.save(); }
+                    else if (projectAction === 'load') { Project.load(); }
+                });
+                document.getElementById('confirmButtonCreation').addEventListener('click', () => {
+                    const label = document.getElementById('buttonLabel').value.trim();
+                    const searchText = document.getElementById('buttonText').value.trim();
+                    const docName = document.getElementById('buttonDocSelect').value;
+                    const targetPane = document.getElementById('buttonEditorId').value.trim();
+                    const color = document.getElementById('buttonColor').value;
+                    if (label && docName && searchText) {
+                        const state = { label, searchText, docName, targetPane, color };
+                        UI.navButtonsContainer.appendChild(UI.createNavButtonFromState(state));
+                        UI.showFeedback("Navigation button created."); UI.hideModal('navButtonModal');
+                    } else { UI.showFeedback("Please provide Label, Text to Find, and select a Document."); }
+                });
+                document.querySelectorAll('.cancel-button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const modal = button.closest('.modal-backdrop');
+                        if (modal) UI.hideModal(modal.id);
+                    });
+                });
 
                 console.log("AI-Assisted Code Editor (JSON Patch) Initialized.");
 
-                // --- END: Original code ---
+                // --- END: Main Application Code ---
 
-            }, function(err) { /* ... same error handling ... */ });
+            }, function(err) { // Ace require error handler
+                console.error("Failed to require Ace modules:", err);
+                // Basic fallback error display
+                 document.body.innerHTML = `<div style="color: red; padding: 20px;">Error loading editor components. Please check console and refresh.</div>`;
+            });
         } // <<< Closes initializeApp function
 
+        // Start the initialization process once the DOM is ready
         document.addEventListener('DOMContentLoaded', initializeApp);
     </script>
 </body>
