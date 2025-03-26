@@ -868,13 +868,12 @@
                     
                     escapeHtml(unsafe) {
                         if (unsafe == null) return '';
-                        // Ensure result is treated as string
-                        return String(unsafe)
-                             .replace(/&/g, "&")
-                             .replace(/</g, "<")
-                             .replace(/>/g, ">")
-                             .replace(/"/g, """) // Corrected this line
-                             .replace(/'/g, "'"); // Use numeric entity for single quote
+                        return unsafe
+                            .replace(/&/g, "&amp;")
+                            .replace(/</g, "&lt;")
+                            .replace(/>/g, "&gt;")
+                            .replace(/"/g, "&quot;")
+                            .replace(/'/g, "&#39;");
                     }
 
                 const Editors = {
