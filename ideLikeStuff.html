@@ -414,7 +414,28 @@
 
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        <script>
+    // Wrap the entire initialization logic in a function
+    function initializeApp() {
+        // Check if Ace and its Document constructor are loaded
+        if (typeof ace === 'undefined' || typeof ace.edit === 'undefined' || typeof ace.require !== 'function') {
+             console.log("Ace base not ready, retrying in 100ms...");
+             setTimeout(initializeApp, 100); // Try again shortly
+             return;
+        }
+
+        // Use ace.require to ensure the document module is loaded
+        ace.require(['ace/document'], function(DocumentModule) {
+            if (!DocumentModule || !DocumentModule.Document) {
+                console.log("ace/document module not ready, retrying in 100ms...");
+                setTimeout(initializeApp, 100); // Try again shortly
+                return;
+            }
+
+             console.log("Ace library and document module ready.");
+             const AceDocument = DocumentModule.Document; // Assign the constructor
+
+            // --- START: Original code from inside DOMContentLoaded ---
 
             // --- Configuration ---
             const DEFAULT_DOC_NAME = 'main.html';
@@ -422,8 +443,8 @@
             const ACE_THEME = "ace/theme/tomorrow_night_eighties"; // A theme matching the UI better
 
             // --- State ---
-            let documents = new Map(); // Map<docName: string, { doc: Ace.Document, mode: string }>
-            let editorPanes = new Map(); // Map<paneId: string, { editor: Ace.Editor, wrapper: HTMLElement, column: HTMLElement, docName: string | null }>
+                    let documents = new Map(); // Map<docName: string, { doc: AceDocument, mode: string }> // Use AceDocument here
+        let editorPanes = new Map(); // Map<paneId: string, { editor: Ace.Editor, wrapper: HTMLElement, column: HTMLElement, docName: string | null }>
             let nextEditorId = 1;
             let uiState = { // For saving/loading layout
                 columnWidths: [],
@@ -893,7 +914,7 @@
                          console.warn(`Document ${docName} already exists.`);
                          return;
                      }
-                     const doc = new ace.Document(content);
+                     const doc = new AceDocument(content); // Use the local AceDocument variable
                      documents.set(docName, { doc, mode });
                       UI.updateAllDocSelectors(); // Update dropdowns everywhere
                  },
@@ -1673,8 +1694,23 @@ Combine these instructions as needed for multiple changes. Ensure line numbers a
             document.querySelector('.llm-interaction-area .panel-header').appendChild(llmHintButton);
 
 
-            console.log("AI-Assisted Code Editor Initialized.");
+                    console.log("AI-Assisted Code Editor Initialized.");
+
+            // --- END: Original code from inside DOMContentLoaded ---
+
+        }, function(err) {
+            // Handle error if ace.require fails
+            console.error("Failed to require ace/document module:", err);
+            // Ensure UI exists before trying to show feedback if error happens early
+            if (typeof UI !== 'undefined' && UI.showFeedback) {
+                 UI.showFeedback("Error loading editor components. Please refresh.", 10000);
+            }
         });
-    </script>
+    } // <<< Closes initializeApp function
+
+    // Start the initialization process once the DOM is ready
+    document.addEventListener('DOMContentLoaded', initializeApp);
+
+</script> // <<< This is the final closing script tag
 </body>
 </html>
