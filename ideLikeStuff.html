@@ -418,7 +418,7 @@
 
             // --- Configuration ---
             const DEFAULT_DOC_NAME = 'main.html';
-            const DEFAULT_CONTENT = `<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <title>Document</title>\n    <style>\n        body { font-family: sans-serif; }\n    </style>\n</head>\n<body>\n    <h1>Hello!</h1>\n    <script>\n        console.log('Script loaded');\n    </script>\n</body>\n</html>`;
+                        const DEFAULT_CONTENT = `<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <title>Document</title>\n    <style>\n        body { font-family: sans-serif; }\n    </style>\n</head>\n<body>\n    <h1>Hello!</h1>\n    <script>\n        console.log('Script loaded');\n    <\/script>\n</body>\n</html>`; // <--- CORRECTED: Note the '\/'
             const ACE_THEME = "ace/theme/tomorrow_night_eighties"; // A theme matching the UI better
 
             // --- State ---
