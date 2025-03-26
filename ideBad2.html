@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI-Assisted Code Editor (JSON Patch)</title>
+    <style>
+        /* --- Base Styles (Same as before) --- */
+        :root {
+            --bg-color: #282c34;
+            --editor-bg: #21252b;
+            --text-color: #abb2bf;
+            --border-color: #4b5263;
+            --button-bg: #5c6370;
+            --button-hover-bg: #6b7383;
+            --accent-color: #61afef;
+            --input-bg: #3a3f4b;
+            --feedback-bg: #3a3f4b;
+            --resizer-bg: #4b5263;
+            --resizer-handle: #888;
+            --preview-bg: #ffffff;
+            --llm-input-bg: #2c313a;
+            --diff-bg: #2c313a; /* Background for diff panels */
+            --diff-header-bg: #3e4451;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0;
+            background-color: var(--bg-color); color: var(--text-color);
+            display: flex; flex-direction: column; height: 100vh; overflow: hidden;
+        }
+        .toolbar {
+            padding: 8px 15px; background-color: var(--editor-bg); border-bottom: 1px solid var(--border-color);
+            display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+        }
+        button, select, input[type="text"], input[type="color"] {
+            padding: 5px 10px; margin: 0; cursor: pointer; background-color: var(--button-bg);
+            color: var(--text-color); border: 1px solid var(--border-color); border-radius: 4px; font-size: 0.9em;
+        }
+        button:hover { background-color: var(--button-hover-bg); }
+        input, select { background-color: var(--input-bg); cursor: text; }
+        input[type="color"] { padding: 2px; min-height: 26px; cursor: pointer; }
+        #feedback {
+            position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); padding: 8px 15px;
+            background-color: var(--feedback-bg); border: 1px solid var(--border-color); border-radius: 4px;
+            z-index: 1000; opacity: 0; transition: opacity 0.3s ease-in-out; pointer-events: none;
+        }
+        #feedback.visible { opacity: 1; }
+        .main-content { display: flex; flex-grow: 1; overflow: hidden; }
+        .editor-area { flex-grow: 3; display: flex; flex-direction: column; overflow: hidden; border-right: 1px solid var(--border-color); }
+        #navigationButtonsContainer { padding: 5px 10px; background-color: var(--editor-bg); border-bottom: 1px solid var(--border-color); min-height: 30px; display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+        .nav-button { margin: 2px; border: 1px solid var(--border-color); padding: 3px 6px; font-size: 0.85em; position: relative; border-radius: 3px; white-space: nowrap; }
+        .nav-button .remove { position: absolute; top: -8px; right: -8px; background: red; color: white; border-radius: 50%; width: 16px; height: 16px; line-height: 16px; text-align: center; font-size: 11px; cursor: pointer; border: 1px solid rgba(0,0,0,0.5); opacity: 0.7; }
+        .nav-button:hover .remove { opacity: 1; }
+        #editorContainer { flex-grow: 1; display: flex; overflow: hidden; position: relative; }
+        .editor-column { height: 100%; display: flex; flex-direction: column; overflow: hidden; position: relative; flex-grow: 1; /* Allow columns to share space */ }
+        .editor-wrapper { display: flex; flex-direction: column; overflow: hidden; position: relative; flex-grow: 1; /* Allow editors to share space */ }
+        .editor-wrapper.hidden { display: none; }
+        .editor-header { display: flex; justify-content: space-between; align-items: center; padding: 2px 8px; background-color: var(--editor-bg); font-size: 0.8em; border-bottom: 1px solid var(--border-color); }
+        .editor-header label { display: flex; align-items: center; gap: 4px; }
+        .editor-controls button { background: none; border: none; color: var(--text-color); padding: 1px 4px; font-size: 1em; cursor: pointer; }
+        .editor-controls button:hover { color: var(--accent-color); background: none; }
+        .editor { flex-grow: 1; min-height: 50px; width: 100%; }
+        .resizer { background: var(--resizer-bg); position: relative; flex-shrink: 0; z-index: 10; }
+        .resizer.horizontal { width: 100%; height: 8px; cursor: row-resize; }
+        .resizer.vertical { width: 8px; height: 100%; cursor: col-resize; } /* Removed absolute positioning here - handled by flexbox */
+        .resizer::after { content: ''; position: absolute; background: var(--resizer-handle); border-radius: 3px; opacity: 0.7; }
+        .resizer:hover::after { opacity: 1; }
+        .resizer.horizontal::after { height: 4px; width: 40px; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+        .resizer.vertical::after { width: 4px; height: 40px; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+        .side-panel { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 350px; } /* Slightly wider min-width */
+        .panel-header { padding: 6px 10px; background-color: var(--editor-bg); border-bottom: 1px solid var(--border-color); font-weight: bold; font-size: 0.9em; }
+        .modal-backdrop { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 100; justify-content: center; align-items: center; }
+        .modal-backdrop.visible { display: flex; }
+        .modal-content { background-color: var(--editor-bg); padding: 20px; border-radius: 5px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 10px; min-width: 300px; max-width: 500px; }
+        .modal-content h3 { margin-top: 0;} .modal-content label { font-size: 0.9em;} .modal-content input, .modal-content select, .modal-content textarea { width: 95%;} .modal-content textarea { min-height: 60px; }
+        .modal-buttons { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
+
+        /* --- NEW/MODIFIED Styles for LLM Area & Diff View --- */
+        .llm-interaction-area {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            /* Combined area takes up space, internal elements manage height */
+        }
+
+        #llmPatchInputContainer {
+             padding: 5px;
+             border-bottom: 1px solid var(--border-color);
+             background-color: var(--llm-input-bg); /* Match textarea bg */
+             flex-shrink: 0; /* Prevent shrinking */
+        }
+
+        #llmPatchInput {
+            width: 100%;
+            box-sizing: border-box;
+            background-color: var(--llm-input-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color); /* Add border */
+            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+            padding: 5px;
+            resize: vertical; /* Allow vertical resize */
+            min-height: 60px; /* Minimum rows */
+            height: 80px; /* Default smallish height */
+        }
+
+        #llmActionButtons {
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+             padding: 5px;
+             background-color: var(--editor-bg); /* Consistent bg */
+             border-bottom: 1px solid var(--border-color);
+             flex-shrink: 0;
+        }
+         #llmActionButtons button { margin: 0; } /* Remove default margins */
+         #llmStatus { font-size: 0.8em; color: var(--accent-color); }
+
+        .diff-view-container {
+            display: flex;
+            flex-grow: 1; /* Take remaining space */
+            overflow: hidden; /* Contain diff panels */
+            background-color: var(--diff-bg);
+        }
+
+        .diff-panel {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Hide overflow */
+        }
+         .diff-panel:first-child {
+             border-right: 1px solid var(--border-color);
+         }
+
+        .diff-header {
+            padding: 4px 8px;
+            background-color: var(--diff-header-bg);
+            font-size: 0.8em;
+            font-weight: bold;
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+            text-align: center;
+        }
+
+        .diff-content {
+            flex-grow: 1;
+            overflow: auto; /* Allow scrolling */
+            padding: 8px;
+            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+            font-size: 0.85em;
+            white-space: pre; /* Preserve whitespace */
+            color: var(--text-color);
+             line-height: 1.4;
+        }
+        .diff-content.deleted {
+             color: #f97583; /* Reddish for deleted */
+             text-decoration: line-through;
+        }
+         .diff-content.inserted {
+             color: #85e89d; /* Greenish for added */
+         }
+         .diff-content .context-line {
+             opacity: 0.6; /* Dim context lines */
+         }
+
+        .preview-area {
+            display: flex; flex-direction: column; overflow: hidden;
+            flex-basis: 60%; /* Initial ratio, adjust as needed */
+            flex-grow: 1;
+        }
+        #previewFrame { flex-grow: 1; width: 100%; height: 100%; border: none; background-color: var(--preview-bg); }
+
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.15.2/ace.js"></script>
+</head>
+<body>
+    <div class="toolbar">
+        <button id="newProject">New Project</button>
+        <button id="saveProject">Save Project</button>
+        <button id="loadProject">Load Project</button>
+        <button id="downloadFile">Download Current File</button>
+        <input type="file" id="importFileTrigger" style="display: none;" accept=".html,.css,.js,.txt,.md">
+        <button id="importFile">Import to Current</button>
+        <button id="createNavButton">Create Nav Button</button>
+        <button id="addEditorView">Add Editor View</button>
+    </div>
+
+    <div class="main-content">
+        <div class="editor-area">
+            <div id="navigationButtonsContainer"></div>
+            <div id="editorContainer"></div>
+        </div>
+
+        <div class="resizer vertical" id="mainVerticalResizer"></div>
+
+        <div class="side-panel">
+            <!-- Consolidated LLM Interaction and Diff View -->
+            <div class="llm-interaction-area">
+                <div class="panel-header">AI Patch Control</div>
+                 <div id="llmPatchInputContainer">
+                     <textarea id="llmPatchInput" placeholder="Paste patch JSON here..."></textarea>
+                 </div>
+                 <div id="llmActionButtons">
+                     <button id="applyPatchButton" disabled>Apply Patch</button> <!-- Start disabled -->
+                     <span id="llmStatus">Paste JSON to see diff</span>
+                      <button id="llmHintButton" title="Show LLM Patch Format">?</button>
+                 </div>
+                <div class="diff-view-container">
+                    <div class="diff-panel">
+                        <div class="diff-header">Current Code (at Target)</div>
+                        <pre id="diffCurrentCode" class="diff-content"></pre>
+                    </div>
+                    <div class="diff-panel">
+                        <div class="diff-header">Proposed Change</div>
+                        <pre id="diffNewCode" class="diff-content"></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="resizer horizontal" id="sidePanelHorizontalResizer"></div>
+
+            <div class="preview-area">
+                <div class="panel-header">Live Preview</div>
+                <iframe id="previewFrame" sandbox="allow-scripts allow-same-origin allow-modals"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <div id="feedback"></div>
+    <div id="navButtonModal" class="modal-backdrop"> <!-- Modal Content Same --> </div>
+    <div id="projectModal" class="modal-backdrop"> <!-- Modal Content Same --> </div>
+
+
+    <script>
+        // Wrap the entire initialization logic in a function
+        function initializeApp() {
+            // Ace ready check (same as before)
+            if (typeof ace === 'undefined' || typeof ace.edit === 'undefined' || typeof ace.require !== 'function') {
+                 console.log("Ace base not ready, retrying in 100ms...");
+                 setTimeout(initializeApp, 100); return;
+            }
+            ace.require(['ace/document', 'ace/range'], function(DocumentModule, RangeModule) { // Require Range too
+                if (!DocumentModule || !DocumentModule.Document || !RangeModule || !RangeModule.Range) {
+                    console.log("ace/document or ace/range module not ready, retrying in 100ms...");
+                    setTimeout(initializeApp, 100); return;
+                }
+                 console.log("Ace library, document, and range modules ready.");
+                 const AceDocument = DocumentModule.Document;
+                 const AceRange = RangeModule.Range; // Store Range constructor
+
+                // --- START: Original code ---
+
+                const DEFAULT_DOC_NAME = 'main.html';
+                const DEFAULT_CONTENT = `<!-- @@ID:html-start -->\n<!DOCTYPE html>\n<html lang="en">\n<!-- @@ID:head-start -->\n<head>\n    <meta charset="UTF-8">\n    <title>Document</title>\n    <!-- @@ID:style-start -->\n    <style>\n        body { font-family: sans-serif; }\n    </style>\n    <!-- @@ID:style-end -->\n</head>\n<!-- @@ID:head-end -->\n<!-- @@ID:body-start -->\n<body>\n    <!-- @@ID:content-start -->\n    <h1>Hello!</h1>\n    <p>Edit Me!</p>\n    <button id="mainButton">Click</button>\n    <!-- @@ID:content-end -->\n\n    <!-- @@ID:script-start -->\n    <script>\n        console.log('Script loaded');\n        // @@ID:button-listener-start\n        document.getElementById('mainButton')?.addEventListener('click', () => {\n            alert('Clicked!');\n        });\n        // @@ID:button-listener-end\n    <\/script>\n    <!-- @@ID:script-end -->\n</body>\n<!-- @@ID:body-end -->\n</html>\n<!-- @@ID:html-end -->`; // Added some sample anchors
+                const ACE_THEME = "ace/theme/tomorrow_night_eighties";
+
+                // --- State (Same) ---
+                let documents = new Map(); let editorPanes = new Map(); let nextEditorId = 1;
+                let uiState = { columnWidths: [], editorHeights: {}, sidePanelRatio: 0.6, mainSplitRatio: 0.7 };
+                let projectAction = null;
+                let lastParsedOperations = []; // Store operations for Apply button
+
+                // --- Modules ---
+                const UI = { // Mostly same, add diff view elements
+                    feedbackEl: document.getElementById('feedback'),
+                    editorContainer: document.getElementById('editorContainer'),
+                    navButtonsContainer: document.getElementById('navigationButtonsContainer'),
+                    previewFrame: document.getElementById('previewFrame'),
+                    // LLM Area Elements
+                    llmPatchInput: document.getElementById('llmPatchInput'),
+                    applyPatchButton: document.getElementById('applyPatchButton'),
+                    llmStatus: document.getElementById('llmStatus'),
+                    llmHintButton: document.getElementById('llmHintButton'),
+                    diffCurrentCode: document.getElementById('diffCurrentCode'),
+                    diffNewCode: document.getElementById('diffNewCode'),
+                    // Modals
+                    navButtonModal: document.getElementById('navButtonModal'),
+                    projectModal: document.getElementById('projectModal'),
+                    // Resizers
+                    mainVerticalResizer: document.getElementById('mainVerticalResizer'),
+                    sidePanelHorizontalResizer: document.getElementById('sidePanelHorizontalResizer'),
+
+                    showFeedback(message, duration = 3000) { /* ... same ... */ },
+                    showModal(modalId, actionType = null) { /* ... same ... */ },
+                    hideModal(modalId) { /* ... same ... */ },
+                    updatePreview(docName) { /* ... same ... */ },
+                    createEditorPane(docName, existingPaneIdToSplit = null) { /* ... same ... */ },
+                    removeEditorPane(paneId) { /* ... same ... */ },
+                    setupEditorControlEvents(wrapper, paneId) { /* ... same ... */ },
+                    updateDocSelector(paneId) { /* ... same ... */ },
+                    updateAllDocSelectors() { /* ... same ... */ },
+                    layoutEditors() { /* ... same ... */ },
+                    updateNavigationButtons(buttonsState) { /* ... same ... */ },
+                    createNavButtonFromState(state) { /* ... same ... */ },
+                    getNavButtonsState() { /* ... same ... */ },
+
+                     // NEW: Clear diff views
+                     clearDiffViews(statusText = "Paste JSON to see diff") {
+                         this.diffCurrentCode.textContent = '';
+                         this.diffNewCode.textContent = '';
+                         this.llmStatus.textContent = statusText;
+                         this.applyPatchButton.disabled = true;
+                         lastParsedOperations = []; // Clear stored ops
+                     },
+
+                     // NEW: Update diff views (Simplified for first operation)
+                    displayDiff(operations) {
+                         if (!operations || operations.length === 0) {
+                            this.clearDiffViews("No valid operations found in JSON.");
+                            return;
+                         }
+
+                         // --- Display diff for the FIRST operation for now ---
+                         const op = operations[0];
+                         const { doc, error: findDocError } = Editors.getDocumentOrDefault(op.file);
+
+                         if (findDocError || !doc) {
+                             this.clearDiffViews(`Error: Document "${op.file || DEFAULT_DOC_NAME}" not found.`);
+                             return;
+                         }
+
+                         let currentContent = '';
+                         let newContentDisplay = '';
+                         let targetInfo = ''; // To display what was targeted
+
+                         try {
+                             const { range, info } = Editors.getTargetRange(doc, op.target); // Get range and info string
+                             targetInfo = info;
+
+                             if (range) { // If a range was found (not just insert point)
+                                 currentContent = doc.getTextRange(range);
+                                 // Add context lines if available in op
+                                 if (op.context && op.context.before) {
+                                     currentContent = op.context.before.map(l => `<span class="context-line">${l}</span>`).join('\n') + '\n' + currentContent;
+                                 }
+                                 if (op.context && op.context.after) {
+                                     currentContent += '\n' + op.context.after.map(l => `<span class="context-line">${l}</span>`).join('\n');
+                                 }
+                             } else if (op.type === 'insertAfter' || op.type === 'insertBefore') {
+                                 currentContent = `(Inserting ${op.type === 'insertBefore' ? 'before' : 'after'} ${targetInfo})`;
+                                 // Optionally show context around insertion point
+                                 // ... (logic to get lines around insert point) ...
+                             } else {
+                                 currentContent = `(Target ${targetInfo} not found or invalid for diff)`;
+                             }
+
+                             // Prepare display for new content
+                             if (op.type === 'delete') {
+                                 newContentDisplay = '(Code will be deleted)';
+                                 this.diffNewCode.classList.add('deleted');
+                                 this.diffNewCode.classList.remove('inserted');
+                             } else if (op.content != null) {
+                                 newContentDisplay = op.content;
+                                  this.diffNewCode.classList.add('inserted');
+                                  this.diffNewCode.classList.remove('deleted');
+                             } else {
+                                 newContentDisplay = '(No content provided)';
+                                 this.diffNewCode.classList.remove('inserted', 'deleted');
+                             }
+
+                         } catch (e) {
+                             console.error("Error generating diff:", e);
+                             currentContent = `Error finding target: ${e.message}`;
+                             newContentDisplay = '';
+                             this.clearDiffViews(`Error preparing diff: ${e.message}`);
+                             return; // Don't enable apply if diff fails
+                         }
+
+                         // Use innerHTML for context spans
+                         this.diffCurrentCode.innerHTML = currentContent; // Use innerHTML because of context spans
+                         this.diffNewCode.textContent = newContentDisplay; // Use textContent for proposed code
+
+                         // Update status and enable button
+                         const opCount = operations.length;
+                         this.llmStatus.textContent = `Parsed ${opCount} operation(s). Diff for #1 shown. Target: ${targetInfo}`;
+                         this.applyPatchButton.disabled = false;
+                         lastParsedOperations = operations; // Store for apply button
+                     }
+
+                }; // End UI Module
+
+                const Editors = { // Mostly same, add helpers
+                    init() { /* ... same ... */ },
+                    createDocument(docName, content = '', mode = 'ace/mode/text') { /* ... same using AceDocument ... */ },
+                    //getDocument(docName) { /* ... same ... */ }, // Use getDocumentOrDefault now
+                    setDocumentContent(docName, content) { /* ... same ... */ },
+                    switchDocumentInPane(paneId, newDocName) { /* ... same ... */ },
+                    getCurrentDocumentAndEditor() { /* ... same ... */ },
+                    getEditorState() { /* ... same ... */ },
+                    setEditorState(state) { /* ... same ... */ },
+
+                    // NEW: Get document or default, return error status too
+                     getDocumentOrDefault(docName) {
+                         const targetDocName = docName || DEFAULT_DOC_NAME;
+                         const docData = documents.get(targetDocName);
+                         if (docData) {
+                             return { doc: docData.doc, docName: targetDocName, mode: docData.mode, error: null };
+                         } else {
+                             return { doc: null, docName: targetDocName, mode: null, error: `Document '${targetDocName}' not found.` };
+                         }
+                     },
+
+                     // NEW: Helper to find anchor position (returns {row: number} or null)
+                     findAnchorPosition(doc, anchorId) {
+                         const anchorPatterns = [
+                             `<!-- @@ID:${anchorId} -->`,
+                             `/* @@ID:${anchorId} */`,
+                             `// @@ID:${anchorId}`
+                         ];
+                         for (let i = 0; i < doc.getLength(); i++) {
+                             const line = doc.getLine(i).trim();
+                             if (anchorPatterns.some(pattern => line.includes(pattern))) {
+                                 return { row: i }; // 0-based row index
+                             }
+                         }
+                         return null; // Not found
+                     },
+
+                     // NEW: Helper to get AceRange and display info from target object
+                    getTargetRange(doc, target) {
+                         let range = null;
+                         let info = '';
+
+                         if (target.lineRange) {
+                             const startLine = target.lineRange.startLine;
+                             const endLine = target.lineRange.endLine;
+                             const startRow = startLine - 1;
+                             const endRow = endLine - 1;
+                             info = `line(s) ${startLine}-${endLine}`;
+
+                             // Validate range
+                             if (startRow < 0 || endRow < startRow || endRow >= doc.getLength()) {
+                                 throw new Error(`Invalid ${info}`);
+                             }
+                             // Create range covering full lines
+                             range = new AceRange(startRow, 0, endRow, doc.getLine(endRow).length);
+
+                         } else if (target.anchorId) {
+                             info = `anchor "${target.anchorId}"`;
+                             const pos = this.findAnchorPosition(doc, target.anchorId);
+                             if (pos) {
+                                 // Create a range covering the anchor line itself
+                                 range = new AceRange(pos.row, 0, pos.row, doc.getLine(pos.row).length);
+                             } else {
+                                  throw new Error(`Anchor ID "${target.anchorId}" not found.`);
+                             }
+                         } else {
+                            throw new Error("Invalid target specification in JSON.");
+                         }
+                         return { range, info }; // Return null range if only an insertion point was found (e.g. anchor for insert)
+                     },
+
+                    // NEW: Helper to get insert position {row, column} from target
+                     getInsertionPosition(doc, target, type) { // type is 'insertBefore' or 'insertAfter'
+                         let row = -1;
+                         let info = '';
+
+                         if (target.lineRange) {
+                             info = `line(s) ${target.lineRange.startLine}-${target.lineRange.endLine}`;
+                             const targetRow = (type === 'insertBefore') ? target.lineRange.startLine - 1 : target.lineRange.endLine -1;
+                              // Validate row
+                              if (targetRow < 0 || targetRow >= doc.getLength()) {
+                                 throw new Error(`Invalid target ${info}`);
+                             }
+                             row = (type === 'insertBefore') ? targetRow : targetRow + 1;
+
+                         } else if (target.anchorId) {
+                             info = `anchor "${target.anchorId}"`;
+                             const pos = this.findAnchorPosition(doc, target.anchorId);
+                              if (pos) {
+                                 row = (type === 'insertBefore') ? pos.row : pos.row + 1;
+                              } else {
+                                  throw new Error(`Anchor ID "${target.anchorId}" not found.`);
+                              }
+                         } else {
+                              throw new Error("Invalid target specification for insertion.");
+                         }
+                         // Ensure row is within bounds (allow inserting at very end)
+                          if (row < 0 || row > doc.getLength()) {
+                              throw new Error(`Calculated insertion row ${row+1} is out of bounds (Doc length ${doc.getLength()}). Target was ${info}.`);
+                          }
+
+                         return { row: row, column: 0, info: info }; // Insert at start of the line
+                     }
+
+                }; // End Editors Module
+
+                const Project = { /* ... same ... */ };
+                const FileIO = { /* ... same ... */ };
+
+                const LLM = { // --- SIGNIFICANT CHANGES ---
+                    patchInput: document.getElementById('llmPatchInput'),
+                    applyButton: document.getElementById('applyPatchButton'),
+                    statusEl: document.getElementById('llmStatus'),
+                    hintButton: document.getElementById('llmHintButton'),
+
+                    init() {
+                        // Parse on input change
+                        this.patchInput.addEventListener('input', () => {
+                            const jsonText = this.patchInput.value.trim();
+                            if (!jsonText) {
+                                UI.clearDiffViews();
+                                return;
+                            }
+                            const operations = this.parsePatch(jsonText); // Parse
+                            UI.displayDiff(operations); // Display
+                        });
+
+                        this.applyButton.addEventListener('click', () => this.applyPatch());
+                        this.hintButton.addEventListener('click', () => this.showHint());
+                    },
+
+                    showHint() {
+                        // Simple alert for now, could be a modal
+                        alert("**Required JSON Patch Format:**\n\n" +
+                        "[\n" +
+                        "  {\n" +
+                        "    \"file\": \"filename.ext\",\n" +
+                        "    \"target\": { \"lineRange\": { \"startLine\": N, \"endLine\": M } } | { \"anchorId\": \"unique-name\" },\n" +
+                        "    \"type\": \"replace\" | \"insertAfter\" | \"insertBefore\" | \"delete\",\n" +
+                        "    \"content\": \"New code...\\n...with newlines.\", // (Omit for delete)\n" +
+                        "    \"context\": { \"before\": [\"line1\", ...], \"after\": [\"line1\", ...] } // (Optional)\n" +
+                        "  },\n" +
+                        "  // ... more operations\n" +
+                        "]\n\n" +
+                        "* Line numbers are 1-based.\n" +
+                        "* Use anchorId (e.g., from <!-- @@ID:name -->) where possible.\n" +
+                        "* Ensure JSON is valid and strings are properly escaped.");
+                    },
+
+                    parsePatch(jsonText) { // REWRITTEN for JSON
+                        let operations = [];
+                        try {
+                            // Attempt to parse the input as JSON
+                            const parsedData = JSON.parse(jsonText);
+
+                            if (!Array.isArray(parsedData)) {
+                                throw new Error("Input is not a JSON array.");
+                            }
+
+                            // Basic validation of each operation object
+                            operations = parsedData.map((op, index) => {
+                                if (!op || typeof op !== 'object') throw new Error(`Operation #${index+1} is not an object.`);
+                                if (typeof op.file !== 'string') op.file = null; // Allow optional file, default later
+                                if (!op.target || typeof op.target !== 'object') throw new Error(`Operation #${index+1}: Missing or invalid 'target' object.`);
+                                if (!op.target.lineRange && !op.target.anchorId) throw new Error(`Operation #${index+1}: Target must have 'lineRange' or 'anchorId'.`);
+                                if (op.target.lineRange && (typeof op.target.lineRange.startLine !== 'number' || typeof op.target.lineRange.endLine !== 'number' || op.target.lineRange.startLine <= 0 || op.target.lineRange.endLine < op.target.lineRange.startLine)) throw new Error(`Operation #${index+1}: Invalid 'lineRange'.`);
+                                if (op.target.anchorId && typeof op.target.anchorId !== 'string') throw new Error(`Operation #${index+1}: Invalid 'anchorId'.`);
+                                if (!['replace', 'insertAfter', 'insertBefore', 'delete'].includes(op.type)) throw new Error(`Operation #${index+1}: Invalid 'type'.`);
+                                if (op.type !== 'delete' && typeof op.content !== 'string') throw new Error(`Operation #${index+1}: Missing or invalid 'content' for type '${op.type}'.`);
+                                if (op.type === 'delete' && op.content != null) console.warn(`Operation #${index+1}: 'content' provided for delete operation will be ignored.`);
+                                // Context validation is optional
+
+                                return op;
+                            });
+
+                            // Sort operations by primary target DESCENDING (heuristic for applying)
+                            // This is tricky with mixed targets. Simple line sort for now.
+                            operations.sort((a, b) => {
+                                const lineA = a.target.lineRange ? a.target.lineRange.startLine : Infinity; // Put anchors last? Or try to resolve? Simple for now.
+                                const lineB = b.target.lineRange ? b.target.lineRange.startLine : Infinity;
+                                return lineB - lineA; // Sort by line number descending
+                            });
+
+                             console.log("Parsed & sorted JSON operations:", JSON.stringify(operations, null, 2));
+                             return operations;
+
+                        } catch (error) {
+                            console.error("JSON Patch Parsing Error:", error);
+                            UI.clearDiffViews(`Invalid JSON: ${error.message}`); // Update status on parse error
+                            return []; // Return empty array on error
+                        }
+                    },
+
+                    applyPatch() {
+                        // Use the operations parsed when input changed
+                        const operations = lastParsedOperations;
+
+                        if (!operations || operations.length === 0) {
+                            UI.showFeedback("No valid operations to apply.");
+                            return;
+                        }
+
+                        console.log("Applying operations:", operations);
+
+                        let changesApplied = 0;
+                        let errors = 0;
+                        const appliedFiles = new Set(); // Track files that were changed
+
+                         // Process operations (they are pre-sorted, roughly descending line #)
+                         // Note: Interaction between anchor and line # ops can still be tricky.
+                        operations.forEach((op, index) => {
+                            try {
+                                const { doc, docName, error: findDocError } = Editors.getDocumentOrDefault(op.file);
+                                if (findDocError || !doc) {
+                                    throw new Error(findDocError || `Target document "${op.file || DEFAULT_DOC_NAME}" not found.`);
+                                }
+
+                                let range = null; // AceRange for replace/delete
+                                let insertPos = null; // {row, column} for insert
+
+                                // Determine target range or position
+                                if (op.type === 'insertAfter' || op.type === 'insertBefore') {
+                                    insertPos = Editors.getInsertionPosition(doc, op.target, op.type);
+                                } else { // replace or delete
+                                     const targetResult = Editors.getTargetRange(doc, op.target);
+                                     range = targetResult.range;
+                                     // We already validated target exists during diff generation/parsing, but double check range
+                                     if (!range) throw new Error(`Could not resolve target range for ${op.type} operation.`);
+                                }
+
+                                // Perform Ace document modification
+                                if (op.type === 'replace' && range) {
+                                    doc.replace(range, op.content || '');
+                                    changesApplied++;
+                                } else if (op.type === 'insertAfter' && insertPos) {
+                                    const contentToInsert = (op.content || '') + '\n'; // Ensure newline? Check Ace behavior.
+                                    doc.insert(insertPos, contentToInsert); // Insert at start of determined row
+                                    changesApplied++;
+                                } else if (op.type === 'insertBefore' && insertPos) {
+                                    const contentToInsert = (op.content || '') + '\n';
+                                    doc.insert(insertPos, contentToInsert); // Insert at start of determined row
+                                    changesApplied++;
+                                } else if (op.type === 'delete' && range) {
+                                    doc.remove(range);
+                                    changesApplied++;
+                                } else {
+                                     // Should not happen if parsing/range finding is correct
+                                     throw new Error(`Invalid state or combination for operation type ${op.type}`);
+                                }
+                                appliedFiles.add(docName); // Mark file as changed
+
+                            } catch (error) {
+                                console.error(`Error applying operation #${index + 1}: ${JSON.stringify(op)}`, error);
+                                errors++;
+                                // Optionally stop on first error? Or continue? Continue for now.
+                            }
+                        }); // End forEach operation
+
+                        // Feedback
+                        if (changesApplied > 0 && errors === 0) {
+                            UI.showFeedback(`Successfully applied ${changesApplied} patch operation(s).`);
+                            this.patchInput.value = ''; // Clear input on full success
+                            UI.clearDiffViews(`Applied ${changesApplied} operation(s).`);
+                        } else if (changesApplied > 0 && errors > 0) {
+                            UI.showFeedback(`Applied ${changesApplied} operation(s) with ${errors} error(s). Check console.`);
+                             UI.clearDiffViews(`Applied ${changesApplied}/${operations.length} with errors.`);
+                        } else if (errors > 0){
+                             UI.showFeedback(`Failed to apply any patch operations. ${errors} error(s) occurred.`);
+                             UI.clearDiffViews(`Apply failed with ${errors} errors.`);
+                        } else {
+                            // No changes applied, no errors? Might happen if JSON was valid but ops were no-ops?
+                            UI.showFeedback("No changes were applied.");
+                            UI.clearDiffViews("No changes applied.");
+                        }
+
+                         // Update previews for affected documents
+                        appliedFiles.forEach(docName => {
+                            if (docName === DEFAULT_DOC_NAME) { // Only update preview for main HTML for now
+                                 UI.updatePreview(docName);
+                            }
+                            // Trigger redraw/update in editors showing this doc? Ace sessions should update automatically.
+                        });
+
+                    } // End applyPatch
+
+                }; // End LLM Module
+
+                const Resizers = { /* ... same ... */ };
+
+                // --- Initialization ---
+                Editors.init();
+                FileIO.setupImport();
+                LLM.init(); // Initialize new LLM logic
+                Resizers.init();
+                Resizers.applyLayout();
+
+                // --- Global Event Listeners (Modal parts same) ---
+                document.getElementById('newProject').addEventListener('click', () => Project.newProject());
+                document.getElementById('saveProject').addEventListener('click', () => UI.showModal('projectModal', 'save'));
+                document.getElementById('loadProject').addEventListener('click', () => UI.showModal('projectModal', 'load'));
+                document.getElementById('downloadFile').addEventListener('click', () => FileIO.downloadCurrentFile());
+                document.getElementById('createNavButton').addEventListener('click', () => UI.showModal('navButtonModal'));
+                document.getElementById('addEditorView').addEventListener('click', () => { /* ... same ... */ });
+                document.getElementById('confirmProjectAction').addEventListener('click', () => { /* ... same ... */ });
+                document.getElementById('confirmButtonCreation').addEventListener('click', () => { /* ... same ... */ });
+                document.querySelectorAll('.cancel-button').forEach(button => { /* ... same ... */ });
+
+                console.log("AI-Assisted Code Editor (JSON Patch) Initialized.");
+
+                // --- END: Original code ---
+
+            }, function(err) { /* ... same error handling ... */ });
+        } // <<< Closes initializeApp function
+
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>
