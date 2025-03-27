@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cooking Vocabulary Drag and Drop Exercise</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #d32f2f;
+            margin-bottom: 30px;
+        }
+        .instructions {
+            text-align: center;
+            margin-bottom: 30px;
+            background-color: #fff3e0;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .english-terms {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            max-width: 900px;
+            margin: 0 auto 40px auto;
+        }
+        .english-term {
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            min-width: 100px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            cursor: grab;
+            user-select: none;
+            transition: transform 0.1s;
+        }
+        .english-term:hover {
+            transform: scale(1.05);
+        }
+        .english-term.dragging {
+            opacity: 0.5;
+        }
+        .polish-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .polish-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            width: 22%; /* Approximately 4 columns with gap */
+        }
+        .dropzone {
+            width: 120px;
+            height: 30px;
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+            padding: 5px;
+            transition: all 0.2s;
+        }
+        .dropzone.active {
+            border-color: #4caf50;
+            background-color: rgba(76, 175, 80, 0.1);
+        }
+        .dropzone.matched {
+            border-style: solid;
+            border-color: #4caf50;
+            background-color: #e8f5e9;
+        }
+        .dropzone.incorrect {
+            border-style: solid;
+            border-color: #f44336;
+            background-color: #ffebee;
+        }
+        .dropped-term {
+            padding: 5px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .polish-text {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .controls {
+            text-align: center;
+            margin-top: 40px;
+        }
+        button {
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 0 10px;
+        }
+        button:hover {
+            background-color: #b71c1c;
+        }
+        .score {
+            font-size: 18px;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .color-1 { background-color: #2196F3; } /* Blue */
+        .color-2 { background-color: #F44336; } /* Red */
+        .color-3 { background-color: #FF9800; } /* Orange */
+        .color-4 { background-color: #4CAF50; } /* Green */
+        .color-5 { background-color: #9C27B0; } /* Purple */
+        .color-6 { background-color: #3F51B5; } /* Indigo */
+        .color-7 { background-color: #00BCD4; } /* Cyan */
+        .color-8 { background-color: #FF5722; } /* Deep Orange */
+        .color-9 { background-color: #009688; } /* Teal */
+        .color-10 { background-color: #E91E63; } /* Pink */
+        .color-11 { background-color: #8BC34A; } /* Light Green */
+        .color-12 { background-color: #673AB7; } /* Deep Purple */
+        .color-13 { background-color: #FFEB3B; color: #333; } /* Yellow */
+        .color-14 { background-color: #03A9F4; } /* Light Blue */
+        .color-15 { background-color: #607D8B; } /* Blue Grey */
+    </style>
+</head>
+<body>
+    <h1>Cooking Vocabulary Drag and Drop Exercise</h1>
+    
+    <div class="instructions">
+        <p>Drag the English cooking terms from the top and drop them next to their matching Polish translations.</p>
+    </div>
+    
+    <div class="english-terms" id="english-terms-container">
+        <!-- English terms will be dynamically generated here -->
+    </div>
+    
+    <div class="polish-section" id="polish-container">
+        <!-- Polish terms with dropzones will be dynamically generated here -->
+    </div>
+    
+    <div class="controls">
+        <button id="check-button">Check Answers</button>
+        <button id="reset-button">Reset</button>
+    </div>
+    
+    <div class="score" id="score-display"></div>
+    
+    <script>
+        // Cooking vocabulary pairs (English, Polish)
+        const vocabularyPairs = [
+            // Cooking Verbs
+            { english: "chop", polish: "siekać" },
+            { english: "beat", polish: "ubijać" },
+            { english: "peel", polish: "obierać" },
+            { english: "slice", polish: "kroić" },
+            { english: "mix", polish: "mieszać" },
+            { english: "roast", polish: "piec/zapiekać" },
+            { english: "boil", polish: "gotować" },
+            { english: "fry", polish: "smażyć" },
+            { english: "bake", polish: "piec (w piekarniku)" },
+            { english: "add", polish: "dodawać" },
+            { english: "put", polish: "wkładać" },
+            { english: "leave", polish: "zostawiać" },
+            { english: "take out", polish: "wyjmować" },
+            
+            // Kitchen Equipment
+            { english: "bowl", polish: "miska" },
+            { english: "cake tin", polish: "forma do ciasta" },
+            { english: "frying pan", polish: "patelnia" },
+            { english: "oven", polish: "piekarnik" },
+            { english: "pot", polish: "garnek" },
+            
+            // Ingredients
+            { english: "flour", polish: "mąka" },
+            { english: "sugar", polish: "cukier" },
+            { english: "butter", polish: "masło" },
+            { english: "oil", polish: "olej" },
+            { english: "eggs", polish: "jajka" },
+            { english: "salt", polish: "sól" },
+            { english: "pepper", polish: "pieprz" },
+            { english: "cocoa", polish: "kakao" },
+            { english: "lemon juice", polish: "sok z cytryny" },
+            { english: "orange juice", polish: "sok pomarańczowy" },
+            { english: "strawberries", polish: "truskawki" },
+            { english: "apples", polish: "jabłka" },
+            { english: "pasta", polish: "makaron" },
+            { english: "vegetables", polish: "warzywa" },
+            { english: "chicken legs", polish: "udka z kurczaka" },
+            { english: "potatoes", polish: "ziemniaki" },
+            { english: "onions", polish: "cebula" },
+            { english: "garlic", polish: "czosnek" },
+            
+            // Useful Phrases
+            { english: "grams of...", polish: "gramów..." },
+            { english: "when it is cool", polish: "kiedy ostygnie" },
+            { english: "for about... minutes", polish: "przez około... minut" },
+            { english: "put them in...", polish: "włożyć je do..." },
+            { english: "take it out of...", polish: "wyjąć to z..." },
+            { english: "leave them for...", polish: "zostawić je na..." },
+            { english: "at 160°C", polish: "w temperaturze 160°C" },
+            { english: "in hot oil", polish: "na gorącym oleju" },
+            { english: "simple recipe", polish: "prosty przepis" },
+            { english: "healthy", polish: "zdrowy" },
+            
+            // Recipe Types
+            { english: "simple fruit salad", polish: "prosta sałatka owocowa" },
+            { english: "simple cake", polish: "proste ciasto" },
+            { english: "simple chicken legs", polish: "proste udka z kurczaka" },
+            
+            // Useful Connecting Words
+            { english: "with", polish: "z/ze" },
+            { english: "then", polish: "następnie/potem" },
+            { english: "some", polish: "trochę/niektóre" },
+            { english: "to (in order to)", polish: "aby/żeby" }
+        ];
+        
+        // Shuffle an array (Fisher-Yates algorithm)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+        
+        // Game state
+        let gamePairs = [...vocabularyPairs]; // Use all pairs
+        let matches = {};
+        let droppedTermsMap = {};
+        
+        // Initialize the game
+        function initGame() {
+            const englishContainer = document.getElementById('english-terms-container');
+            const polishContainer = document.getElementById('polish-container');
+            
+            englishContainer.innerHTML = '';
+            polishContainer.innerHTML = '';
+            
+            // Reset state
+            matches = {};
+            droppedTermsMap = {};
+            
+            // Add English terms with colored backgrounds
+            shuffleArray(gamePairs).forEach((pair, index) => {
+                const englishTerm = document.createElement('div');
+                englishTerm.className = `english-term color-${(index % 15) + 1}`;
+                englishTerm.textContent = pair.english;
+                englishTerm.setAttribute('data-term', pair.english);
+                englishTerm.setAttribute('draggable', 'true');
+                
+                // Add drag events
+                englishTerm.addEventListener('dragstart', dragStart);
+                englishTerm.addEventListener('dragend', dragEnd);
+                
+                englishContainer.appendChild(englishTerm);
+            });
+            
+            // Add Polish terms with dropzones (shuffled)
+            shuffleArray(gamePairs).forEach(pair => {
+                const polishItem = document.createElement('div');
+                polishItem.className = 'polish-item';
+                
+                const dropzone = document.createElement('div');
+                dropzone.className = 'dropzone';
+                dropzone.setAttribute('data-polish', pair.polish);
+                dropzone.setAttribute('data-correct', pair.english);
+                
+                // Add drop events
+                dropzone.addEventListener('dragover', dragOver);
+                dropzone.addEventListener('dragleave', dragLeave);
+                dropzone.addEventListener('drop', drop);
+                
+                const polishText = document.createElement('span');
+                polishText.className = 'polish-text';
+                polishText.textContent = pair.polish;
+                
+                polishItem.appendChild(dropzone);
+                polishItem.appendChild(polishText);
+                polishContainer.appendChild(polishItem);
+            });
+            
+            // Clear score display
+            document.getElementById('score-display').textContent = '';
+        }
+        
+        // Drag and drop functionality
+        function dragStart(e) {
+            this.classList.add('dragging');
+            e.dataTransfer.setData('text/plain', this.getAttribute('data-term'));
+            e.dataTransfer.setData('color', this.className.match(/color-\d+/)[0]);
+        }
+        
+        function dragEnd() {
+            this.classList.remove('dragging');
+        }
+        
+        function dragOver(e) {
+            e.preventDefault();
+            this.classList.add('active');
+        }
+        
+        function dragLeave() {
+            this.classList.remove('active');
+        }
+        
+        function drop(e) {
+            e.preventDefault();
+            this.classList.remove('active');
+            
+            const term = e.dataTransfer.getData('text/plain');
+            const color = e.dataTransfer.getData('color');
+            const polishTerm = this.getAttribute('data-polish');
+            
+            // Clear dropzone first
+            this.innerHTML = '';
+            
+            // Create a new element for the dropped term
+            const droppedTerm = document.createElement('div');
+            droppedTerm.className = `dropped-term ${color}`;
+            droppedTerm.textContent = term;
+            this.appendChild(droppedTerm);
+            
+            // Add click handler to remove the term
+            droppedTerm.addEventListener('click', function() {
+                // Create a new English term in the container
+                const englishContainer = document.getElementById('english-terms-container');
+                const newEnglishTerm = document.createElement('div');
+                newEnglishTerm.className = `english-term ${color}`;
+                newEnglishTerm.textContent = term;
+                newEnglishTerm.setAttribute('data-term', term);
+                newEnglishTerm.setAttribute('draggable', 'true');
+                
+                // Add drag events
+                newEnglishTerm.addEventListener('dragstart', dragStart);
+                newEnglishTerm.addEventListener('dragend', dragEnd);
+                
+                englishContainer.appendChild(newEnglishTerm);
+                
+                // Remove from dropzone
+                this.parentNode.innerHTML = '';
+                
+                // Update matches
+                delete matches[polishTerm];
+                delete droppedTermsMap[term];
+            });
+            
+            // Update matches
+            matches[polishTerm] = term;
+            droppedTermsMap[term] = polishTerm;
+            
+            // Remove the original term if it exists in the English terms container
+            const originalTerm = document.querySelector(`.english-term[data-term="${term}"]`);
+            if (originalTerm) {
+                originalTerm.remove();
+            }
+        }
+        
+        // Check answers
+        function checkAnswers() {
+            let score = 0;
+            const dropzones = document.querySelectorAll('.dropzone');
+            
+            dropzones.forEach(dropzone => {
+                const polishTerm = dropzone.getAttribute('data-polish');
+                const correctEnglish = dropzone.getAttribute('data-correct');
+                
+                dropzone.classList.remove('matched', 'incorrect');
+                
+                if (matches[polishTerm] === correctEnglish) {
+                    dropzone.classList.add('matched');
+                    score++;
+                } else if (matches[polishTerm]) {
+                    dropzone.classList.add('incorrect');
+                }
+            });
+            
+            // Update score display
+            document.getElementById('score-display').textContent = `Score: ${score} / ${gamePairs.length}`;
+        }
+        
+        // Reset game
+        function resetGame() {
+            initGame();
+        }
+        
+        // Initialize game when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initGame();
+            
+            // Add event listeners to buttons
+            document.getElementById('check-button').addEventListener('click', checkAnswers);
+            document.getElementById('reset-button').addEventListener('click', resetGame);
+        });
+    </script>
+</body>
+</html>
