@@ -3,302 +3,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cooking Vocabulary Checklist</title>
+    <title>Recipe Vocabulary Checklist</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
+            font-family: Arial, sans-serif;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
             background-color: #f9f9f9;
-            color: #333;
         }
         h1 {
+            color: #4a4a4a;
             text-align: center;
-            color: #2c3e50;
-            border-bottom: 2px solid #e67e22;
+            border-bottom: 2px solid #f0ad4e;
             padding-bottom: 10px;
         }
         h2 {
-            color: #e67e22;
-            margin-top: 20px;
-            border-left: 4px solid #e67e22;
-            padding-left: 10px;
+            color: #5a5a5a;
+            margin-top: 30px;
+            background-color: #f0ad4e;
+            padding: 10px;
+            border-radius: 5px;
         }
-        .category {
+        .checklist {
             background-color: white;
             padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
             margin-bottom: 20px;
         }
-        .checkbox-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
-        }
-        .checkbox-item {
+        .item {
+            margin: 8px 0;
             display: flex;
             align-items: center;
         }
         input[type="checkbox"] {
-            margin-right: 8px;
-            width: 18px;
-            height: 18px;
+            margin-right: 10px;
+            transform: scale(1.3);
         }
         label {
             cursor: pointer;
-            font-size: 16px;
+            flex-grow: 1;
         }
-        label span.polish {
-            color: #7f8c8d;
-            font-style: italic;
-            font-size: 14px;
-        }
-        .stats {
-            background-color: #2c3e50;
+        .counter {
+            background-color: #5cb85c;
             color: white;
             padding: 15px;
+            text-align: center;
+            font-size: 18px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .instructions {
+            background-color: #d9edf7;
+            border-left: 5px solid #31708f;
+            padding: 15px;
+            margin-bottom: 20px;
             border-radius: 5px;
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .reset-btn {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        .reset-btn:hover {
-            background-color: #c0392b;
         }
     </style>
 </head>
 <body>
-    <h1>Cooking Vocabulary Checklist</h1>
-    <p>Check the vocabulary items you have used in your recipe. The counter below will show how many terms you've used.</p>
+    <h1>Recipe Vocabulary Checklist</h1>
     
-    <div class="category">
-        <h2>Cooking Verbs</h2>
-        <div class="checkbox-grid">
-            <div class="checkbox-item">
-                <input type="checkbox" id="chop" name="cooking-term">
-                <label for="chop">chop <span class="polish">(siekać)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="beat" name="cooking-term">
-                <label for="beat">beat <span class="polish">(ubijać)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="peel" name="cooking-term">
-                <label for="peel">peel <span class="polish">(obierać)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="slice" name="cooking-term">
-                <label for="slice">slice <span class="polish">(kroić)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="mix" name="cooking-term">
-                <label for="mix">mix <span class="polish">(mieszać)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="roast" name="cooking-term">
-                <label for="roast">roast <span class="polish">(piec/zapiekać)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="boil" name="cooking-term">
-                <label for="boil">boil <span class="polish">(gotować)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="fry" name="cooking-term">
-                <label for="fry">fry <span class="polish">(smażyć)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="bake" name="cooking-term">
-                <label for="bake">bake <span class="polish">(piec)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="add" name="cooking-term">
-                <label for="add">add <span class="polish">(dodawać)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="put" name="cooking-term">
-                <label for="put">put <span class="polish">(wkładać)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="leave" name="cooking-term">
-                <label for="leave">leave <span class="polish">(zostawiać)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="takeout" name="cooking-term">
-                <label for="takeout">take out <span class="polish">(wyjmować)</span></label>
-            </div>
+    <div class="instructions">
+        <p>Check off each cooking term or phrase that you use in your recipe. The counter will show how many different terms you've included.</p>
+    </div>
+    
+    <div class="counter" id="counter">
+        Terms used: <span id="count">0</span>
+    </div>
+    
+    <h2>Cooking Verbs</h2>
+    <div class="checklist">
+        <div class="item">
+            <input type="checkbox" id="verb1" class="term-checkbox">
+            <label for="verb1">chop (siekać)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="verb2" class="term-checkbox">
+            <label for="verb2">beat (ubijać)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="verb3" class="term-checkbox">
+            <label for="verb3">peel (obierać)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="verb4" class="term-checkbox">
+            <label for="verb4">slice (kroić)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="verb5" class="term-checkbox">
+            <label for="verb5">mix (mieszać)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="verb6" class="term-checkbox">
+            <label for="verb6">roast (piec/zapiekać)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="verb7" class="term-checkbox">
+            <label for="verb7">boil (gotować)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="verb8" class="term-checkbox">
+            <label for="verb8">fry (smażyć)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="verb9" class="term-checkbox">
+            <label for="verb9">bake (piec w piekarniku)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="verb10" class="term-checkbox">
+            <label for="verb10">add (dodawać)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="verb11" class="term-checkbox">
+            <label for="verb11">put (wkładać)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="verb12" class="term-checkbox">
+            <label for="verb12">leave (zostawiać)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="verb13" class="term-checkbox">
+            <label for="verb13">take out (wyjmować)</label>
         </div>
     </div>
     
-    <div class="category">
-        <h2>Kitchen Equipment</h2>
-        <div class="checkbox-grid">
-            <div class="checkbox-item">
-                <input type="checkbox" id="bowl" name="cooking-term">
-                <label for="bowl">bowl <span class="polish">(miska)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="caketin" name="cooking-term">
-                <label for="caketin">cake tin <span class="polish">(forma do ciasta)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="fryingpan" name="cooking-term">
-                <label for="fryingpan">frying pan <span class="polish">(patelnia)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="oven" name="cooking-term">
-                <label for="oven">oven <span class="polish">(piekarnik)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="pot" name="cooking-term">
-                <label for="pot">pot <span class="polish">(garnek)</span></label>
-            </div>
+    <h2>Kitchen Equipment</h2>
+    <div class="checklist">
+        <div class="item">
+            <input type="checkbox" id="equip1" class="term-checkbox">
+            <label for="equip1">bowl (miska)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="equip2" class="term-checkbox">
+            <label for="equip2">cake tin (forma do ciasta)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="equip3" class="term-checkbox">
+            <label for="equip3">frying pan (patelnia)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="equip4" class="term-checkbox">
+            <label for="equip4">oven (piekarnik)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="equip5" class="term-checkbox">
+            <label for="equip5">pot (garnek)</label>
         </div>
     </div>
     
-    <div class="category">
-        <h2>Useful Phrases</h2>
-        <div class="checkbox-grid">
-            <div class="checkbox-item">
-                <input type="checkbox" id="gramsof" name="cooking-term">
-                <label for="gramsof">grams of... <span class="polish">(gramów...)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="whenitis" name="cooking-term">
-                <label for="whenitis">when it is cool <span class="polish">(kiedy ostygnie)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="forabout" name="cooking-term">
-                <label for="forabout">for about... minutes <span class="polish">(przez około... minut)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="putthemin" name="cooking-term">
-                <label for="putthemin">put them in... <span class="polish">(włożyć je do...)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="takeitout" name="cooking-term">
-                <label for="takeitout">take it out of... <span class="polish">(wyjąć to z...)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="leavethem" name="cooking-term">
-                <label for="leavethem">leave them for... <span class="polish">(zostawić je na...)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="attemp" name="cooking-term">
-                <label for="attemp">at 160°C <span class="polish">(w temperaturze 160°C)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="inhotoil" name="cooking-term">
-                <label for="inhotoil">in hot oil <span class="polish">(na gorącym oleju)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="healthy" name="cooking-term">
-                <label for="healthy">healthy <span class="polish">(zdrowy)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="with" name="cooking-term">
-                <label for="with">with <span class="polish">(z)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="then" name="cooking-term">
-                <label for="then">then <span class="polish">(następnie/potem)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="some" name="cooking-term">
-                <label for="some">some <span class="polish">(trochę/kilka)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="to" name="cooking-term">
-                <label for="to">to (in order to) <span class="polish">(aby)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="first" name="cooking-term">
-                <label for="first">first <span class="polish">(najpierw)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="afterthat" name="cooking-term">
-                <label for="afterthat">after that <span class="polish">(po tym)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="next" name="cooking-term">
-                <label for="next">next <span class="polish">(następnie)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="finally" name="cooking-term">
-                <label for="finally">finally <span class="polish">(na koniec)</span></label>
-            </div>
+    <h2>Ingredients</h2>
+    <div class="checklist">
+        <div class="item">
+            <input type="checkbox" id="ing1" class="term-checkbox">
+            <label for="ing1">flour (mąka)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="ing2" class="term-checkbox">
+            <label for="ing2">sugar (cukier)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="ing3" class="term-checkbox">
+            <label for="ing3">butter (masło)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="ing4" class="term-checkbox">
+            <label for="ing4">oil (olej)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="ing5" class="term-checkbox">
+            <label for="ing5">eggs (jajka)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="ing6" class="term-checkbox">
+            <label for="ing6">salt (sól)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="ing7" class="term-checkbox">
+            <label for="ing7">pepper (pieprz)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="ing8" class="term-checkbox">
+            <label for="ing8">cocoa (kakao)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="ing9" class="term-checkbox">
+            <label for="ing9">lemon juice (sok z cytryny)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="ing10" class="term-checkbox">
+            <label for="ing10">orange juice (sok pomarańczowy)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="ing11" class="term-checkbox">
+            <label for="ing11">strawberries (truskawki)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="ing12" class="term-checkbox">
+            <label for="ing12">apples (jabłka)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="ing13" class="term-checkbox">
+            <label for="ing13">pasta (makaron)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="ing14" class="term-checkbox">
+            <label for="ing14">vegetables (warzywa)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="ing15" class="term-checkbox">
+            <label for="ing15">chicken legs (udka z kurczaka)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="ing16" class="term-checkbox">
+            <label for="ing16">potatoes (ziemniaki)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="ing17" class="term-checkbox">
+            <label for="ing17">onions (cebula)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="ing18" class="term-checkbox">
+            <label for="ing18">garlic (czosnek)</label>
         </div>
     </div>
     
-    <div class="category">
-        <h2>Measurements</h2>
-        <div class="checkbox-grid">
-            <div class="checkbox-item">
-                <input type="checkbox" id="oneglass" name="cooking-term">
-                <label for="oneglass">one glass of <span class="polish">(jedna szklanka)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="halfglass" name="cooking-term">
-                <label for="halfglass">half a glass of <span class="polish">(pół szklanki)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="pinch" name="cooking-term">
-                <label for="pinch">a pinch of <span class="polish">(szczypta)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="oneteaspoon" name="cooking-term">
-                <label for="oneteaspoon">one teaspoon of <span class="polish">(jedna łyżeczka)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="halfteaspoon" name="cooking-term">
-                <label for="halfteaspoon">half a teaspoon of <span class="polish">(pół łyżeczki)</span></label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="spoon" name="cooking-term">
-                <label for="spoon">a spoon of <span class="polish">(łyżka)</span></label>
-            </div>
+    <h2>Useful Phrases</h2>
+    <div class="checklist">
+        <div class="item">
+            <input type="checkbox" id="phrase1" class="term-checkbox">
+            <label for="phrase1">grams of... (gramów...)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="phrase2" class="term-checkbox">
+            <label for="phrase2">when it is cool (kiedy ostygnie)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="phrase3" class="term-checkbox">
+            <label for="phrase3">for about... minutes (przez około... minut)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="phrase4" class="term-checkbox">
+            <label for="phrase4">put them in... (włożyć je do...)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="phrase5" class="term-checkbox">
+            <label for="phrase5">take it out of... (wyjąć to z...)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="phrase6" class="term-checkbox">
+            <label for="phrase6">leave them for... (zostawić je na...)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="phrase7" class="term-checkbox">
+            <label for="phrase7">at 160°C (w temperaturze 160°C)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="phrase8" class="term-checkbox">
+            <label for="phrase8">in hot oil (na gorącym oleju)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="phrase9" class="term-checkbox">
+            <label for="phrase9">simple recipe (prosty przepis)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="phrase10" class="term-checkbox">
+            <label for="phrase10">healthy (zdrowy)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="phrase11" class="term-checkbox">
+            <label for="phrase11">with (z)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="phrase12" class="term-checkbox">
+            <label for="phrase12">then (następnie/potem)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="phrase13" class="term-checkbox">
+            <label for="phrase13">some (trochę/kilka)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="phrase14" class="term-checkbox">
+            <label for="phrase14">to (aby)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="phrase15" class="term-checkbox">
+            <label for="phrase15">first (najpierw)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="phrase16" class="term-checkbox">
+            <label for="phrase16">after that (po tym)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="phrase17" class="term-checkbox">
+            <label for="phrase17">next (następnie)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="phrase18" class="term-checkbox">
+            <label for="phrase18">finally (na koniec)</label>
         </div>
     </div>
     
-    <div class="stats">
-        <div>
-            <span>Total cooking terms used: </span>
-            <span id="counter">0</span>
+    <h2>Measurements</h2>
+    <div class="checklist">
+        <div class="item">
+            <input type="checkbox" id="meas1" class="term-checkbox">
+            <label for="meas1">one glass of (jedna szklanka)</label>
         </div>
-        <button class="reset-btn" onclick="resetCheckboxes()">Reset All</button>
+        <div class="item">
+            <input type="checkbox" id="meas2" class="term-checkbox">
+            <label for="meas2">half a glass of (pół szklanki)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="meas3" class="term-checkbox">
+            <label for="meas3">a pinch of (szczypta)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="meas4" class="term-checkbox">
+            <label for="meas4">one teaspoon of (jedna łyżeczka)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="meas5" class="term-checkbox">
+            <label for="meas5">half a teaspoon of (pół łyżeczki)</label>
+        </div>
+        <div class="item">
+            <input type="checkbox" id="meas6" class="term-checkbox">
+            <label for="meas6">a spoon of (łyżka)</label>
+        </div>
     </div>
-    
+
     <script>
-        // Update counter when checkboxes are clicked
-        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-        const counter = document.getElementById('counter');
+        // Get all checkboxes
+        const checkboxes = document.querySelectorAll('.term-checkbox');
+        const countDisplay = document.getElementById('count');
         
+        // Add event listeners to all checkboxes
         checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', updateCounter);
+            checkbox.addEventListener('change', updateCount);
         });
         
-        function updateCounter() {
-            const checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked');
-            counter.textContent = checkedBoxes.length;
-        }
-        
-        function resetCheckboxes() {
+        // Function to update the count
+        function updateCount() {
+            let checkedCount = 0;
             checkboxes.forEach(checkbox => {
-                checkbox.checked = false;
+                if (checkbox.checked) {
+                    checkedCount++;
+                }
             });
-            updateCounter();
+            countDisplay.textContent = checkedCount;
         }
     </script>
 </body>
