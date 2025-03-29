@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hangman Game - Restaurant Phrases</title>
+    <title>Wisielec - Czasowniki i Czynności</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -105,43 +105,53 @@
 </head>
 <body>
     <div class="container">
+        <h1>Wisielec - Czasowniki i Czynności</h1>
         <div class="input-section hidden">
             <div id="inputRows">
                 <div class="input-row">
-                    <input type="text" placeholder="Enter word or phrase" class="word-input">
-                    <input type="text" placeholder="Enter hint/translation" class="hint-input">
+                    <input type="text" placeholder="Wpisz słowo lub frazę (EN)" class="word-input">
+                    <input type="text" placeholder="Wpisz podpowiedź/tłumaczenie (PL)" class="hint-input">
                     <button class="remove-row-btn" onclick="removeRow(this)">×</button>
                 </div>
             </div>
-            <button class="add-row-btn" onclick="addInputRow()">Add Another Word/Phrase</button>
-            <button onclick="startGame()">Start Game</button>
+            <button class="add-row-btn" onclick="addInputRow()">Dodaj kolejne słowo/frazę</button>
+            <button onclick="startGame()">Rozpocznij grę</button>
         </div>
         <div class="game-section">
             <div class="hint" id="currentHint"></div>
             <canvas id="hangmanCanvas" width="200" height="250"></canvas>
-            <div class="attempts" id="attempts">Remaining attempts: 6</div>
+            <div class="attempts" id="attempts">Pozostałe próby: 6</div>
             <div class="word-display" id="wordDisplay"></div>
             <div class="keyboard" id="keyboard"></div>
             <p id="message"></p>
         </div>
     </div>
     <script>
-        // Pre-loaded phrases from the Polish-English restaurant guide
+        // Nowa lista słów i podpowiedzi
         let wordHintPairs = [
-  {word: "bass guitar", hint: "gitara basowa"},
-  {word: "cello", hint: "wiolonczela"},
-  {word: "clarinet", hint: "klarnet"},
-  {word: "drums", hint: "perkusja"},
-  {word: "guitar", hint: "gitara"},
-  {word: "piano", hint: "fortepian"},
-  {word: "recorder", hint: "flet prosty"},
-  {word: "saxophone", hint: "saksofon"},
-  {word: "trumpet", hint: "trąbka"},
-  {word: "violin", hint: "skrzypce"}
-];
+          {word: "about", hint: "około"},
+          {word: "dance", hint: "tańczyć"},
+          {word: "basketball", hint: "koszykówka"},
+          {word: "running", hint: "bieganie"},
+          {word: "dive", hint: "nurkować"},
+          {word: "climb", hint: "wspinać się"},
+          {word: "hockey", hint: "hokej"},
+          {word: "walk", hint: "chodzić, spacerować"},
+          {word: "fly", hint: "latać"},
+          {word: "jump", hint: "skakać"},
+          {word: "volleyball", hint: "siatkówka"}, // Poprawiona literówka 'voleyball'
+          {word: "skiing", hint: "narciarstwo"},
+          {word: "chess", hint: "szachy"},
+          {word: "swim", hint: "pływać"}, // Poprawiona literówka 'ptywaé'
+          {word: "cycling", hint: "kolarstwo"},
+          {word: "catch", hint: "łapać"}, // Poprawiona literówka 'tapac'
+          {word: "drawing", hint: "rysowanie"},
+          {word: "singing", hint: "śpiewanie"}, // Poprawiona literówka 'spiewanie'
+          {word: "judo", hint: "dżudo"}, // Poprawiona pisownia 'dzudo'
+          {word: "ride", hint: "jeździć"}, // Poprawiona literówka 'jeídzié'
+          {word: "reading", hint: "czytanie"}
+        ];
 
-
-        
         let currentPairIndex = 0;
         let currentWord = '';
         let currentHint = '';
@@ -153,8 +163,8 @@
             const row = document.createElement('div');
             row.className = 'input-row';
             row.innerHTML = `
-                <input type="text" placeholder="Enter word or phrase" class="word-input">
-                <input type="text" placeholder="Enter hint/translation" class="hint-input">
+                <input type="text" placeholder="Wpisz słowo lub frazę (EN)" class="word-input">
+                <input type="text" placeholder="Wpisz podpowiedź/tłumaczenie (PL)" class="hint-input">
                 <button class="remove-row-btn" onclick="removeRow(this)">×</button>
             `;
             document.getElementById('inputRows').appendChild(row);
@@ -170,57 +180,81 @@
         function drawHangman(stage) {
             ctx.strokeStyle = '#444';
             ctx.lineWidth = 3;
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Wyczyść płótno przed rysowaniem
             ctx.beginPath();
-            
+
+            // Podstawa
             if(stage >= 1) {
                 ctx.moveTo(20, 230);
                 ctx.lineTo(180, 230);
             }
+            // Pionowy słup
             if(stage >= 2) {
                 ctx.moveTo(40, 230);
                 ctx.lineTo(40, 20);
             }
+            // Pozioma belka
             if(stage >= 3) {
                 ctx.moveTo(40, 20);
                 ctx.lineTo(120, 20);
             }
+            // Lina
             if(stage >= 4) {
                 ctx.moveTo(120, 20);
                 ctx.lineTo(120, 50);
             }
+            // Głowa
             if(stage >= 5) {
-                ctx.moveTo(140, 70);
-                ctx.arc(120, 70, 20, 0, Math.PI * 2);
+                ctx.moveTo(140, 70); // Przesuń punkt startowy łuku, aby narysować okrąg
+                ctx.arc(120, 70, 20, 0, Math.PI * 2); // Głowa
             }
+            // Ciało i kończyny
             if(stage >= 6) {
-                ctx.moveTo(120, 90);
+                ctx.moveTo(120, 90); // Tułów
                 ctx.lineTo(120, 150);
-                ctx.moveTo(120, 110);
+                ctx.moveTo(120, 110); // Lewa ręka
                 ctx.lineTo(90, 130);
-                ctx.moveTo(120, 110);
+                ctx.moveTo(120, 110); // Prawa ręka
                 ctx.lineTo(150, 130);
-                ctx.moveTo(120, 150);
+                ctx.moveTo(120, 150); // Lewa noga
                 ctx.lineTo(90, 190);
-                ctx.moveTo(120, 150);
+                ctx.moveTo(120, 150); // Prawa noga
                 ctx.lineTo(150, 190);
             }
             ctx.stroke();
         }
 
+
         function startGame() {
+            // Ta funkcja jest teraz mniej istotna, bo startujemy od razu,
+            // ale zostawiam ją na wypadek chęci dodania opcji wprowadzania własnych słów
             document.querySelector('.input-section').classList.add('hidden');
             document.querySelector('.game-section').classList.remove('hidden');
-            
+
             canvas = document.getElementById('hangmanCanvas');
+            if (!canvas) {
+                console.error("Nie znaleziono elementu canvas!");
+                return;
+            }
             ctx = canvas.getContext('2d');
-            
+            if (!ctx) {
+                 console.error("Nie można uzyskać kontekstu 2D canvas!");
+                return;
+            }
+
             currentPairIndex = 0;
             initializeGame();
         }
 
         function initializeGame() {
-            if (currentPairIndex >= wordHintPairs.length) {
-                document.getElementById('message').textContent = 'Congratulations! You completed all words!';
+            if (!wordHintPairs || wordHintPairs.length === 0) {
+                 document.getElementById('message').textContent = 'Brak słów do gry!';
+                 disableKeyboard();
+                 return;
+            }
+             if (currentPairIndex >= wordHintPairs.length) {
+                document.getElementById('message').textContent = 'Gratulacje! Odgadłeś wszystkie słowa!';
+                disableKeyboard(); // Wyłącz klawiaturę po zakończeniu
                 return;
             }
 
@@ -228,30 +262,42 @@
             currentHint = wordHintPairs[currentPairIndex].hint;
             guessedLetters = [];
             remainingAttempts = 6;
-            
+
+            // Upewnij się, że ctx jest zdefiniowany
+            if (!ctx) {
+                 canvas = document.getElementById('hangmanCanvas');
+                 ctx = canvas.getContext('2d');
+            }
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawHangman(0);
-            
-            document.getElementById('currentHint').textContent = currentHint;
+            drawHangman(0); // Narysuj pustą szubienicę na początku
+
+            document.getElementById('currentHint').textContent = `Podpowiedź: ${currentHint}`;
             updateWordDisplay();
             createKeyboard();
             document.getElementById('message').textContent = '';
-            document.getElementById('attempts').textContent = `Remaining attempts: ${remainingAttempts}`;
+            document.getElementById('attempts').textContent = `Pozostałe próby: ${remainingAttempts}`;
         }
 
         function updateWordDisplay() {
             const words = currentWord.split(' ');
-            const display = words.map(word => 
-                word.split('').map(letter => 
-    guessedLetters.includes(letter) || letter === ',' || letter === '.' || letter === '?' || letter === '!' || letter === "'" ? letter : '_'
-).join(' ')
-            ).join('&nbsp;&nbsp;&nbsp;');
-            
+            const display = words.map(word =>
+                word.split('').map(letter => {
+                    // Sprawdzamy, czy litera została odgadnięta LUB czy jest to znak specjalny/spacja
+                    if (guessedLetters.includes(letter) || !letter.match(/[A-Z]/i)) {
+                         return letter;
+                    } else {
+                        return '_';
+                    }
+                }).join(' ')
+            ).join('   '); // Większy odstęp między słowami
+
             document.getElementById('wordDisplay').innerHTML = display;
-            
+
+            // Sprawdź, czy nie ma już podkreśleń (słowo odgadnięte)
             if (!display.includes('_')) {
+                disableKeyboard(); // Wyłącz klawiaturę po odgadnięciu
                 setTimeout(() => {
-                    document.getElementById('message').textContent = 'Correct! Moving to next word...';
+                    document.getElementById('message').textContent = 'Poprawnie! Następne słowo...';
                     setTimeout(() => {
                         currentPairIndex++;
                         initializeGame();
@@ -259,6 +305,7 @@
                 }, 500);
             }
         }
+
 
         function createKeyboard() {
             const keyboard = document.getElementById('keyboard');
@@ -273,27 +320,32 @@
         }
 
         function guessLetter(letter) {
-            if (guessedLetters.includes(letter)) return;
-            
+            // Ignoruj kliknięcie, jeśli gra się zakończyła lub litera została już odgadnięta
+            if (remainingAttempts === 0 || guessedLetters.includes(letter) || !document.getElementById('wordDisplay').innerHTML.includes('_')) return;
+
             guessedLetters.push(letter);
             const button = document.querySelector(`button[data-letter="${letter}"]`);
             if (button) button.disabled = true;
-            
+
             if (!currentWord.includes(letter)) {
                 remainingAttempts--;
-                document.getElementById('attempts').textContent = `Remaining attempts: ${remainingAttempts}`;
-                drawHangman(6 - remainingAttempts);
-                
+                document.getElementById('attempts').textContent = `Pozostałe próby: ${remainingAttempts}`;
+                drawHangman(6 - remainingAttempts); // Rysuj kolejne etapy wisielca
+
                 if (remainingAttempts === 0) {
-                    document.getElementById('message').textContent = 
-                        `Game Over! The phrase was: ${currentWord}`;
-                    setTimeout(() => {
-                        currentPairIndex++;
-                        initializeGame();
-                    }, 2000);
+                    document.getElementById('message').textContent =
+                        `Koniec gry! Prawidłowe słowo/fraza to: ${currentWord}`;
+                    disableKeyboard(); // Wyłącz klawiaturę po przegranej
+                    // Opcjonalnie: dodaj przycisk "Zagraj ponownie" lub automatycznie przejdź dalej po czasie
+                     setTimeout(() => {
+                         // Można tu dodać logikę restartu gry lub przejścia do następnego słowa,
+                         // ale na razie zostawiamy wiadomość o końcu gry.
+                         // currentPairIndex++;
+                         // initializeGame();
+                     }, 3000);
                 }
             }
-            updateWordDisplay();
+            updateWordDisplay(); // Zaktualizuj wyświetlanie słowa po każdej próbie
         }
 
         function disableKeyboard() {
@@ -301,11 +353,23 @@
             buttons.forEach(button => button.disabled = true);
         }
 
-        // Start the game immediately with pre-loaded phrases
+        // Rozpocznij grę od razu po załadowaniu strony z predefiniowanymi słowami
         window.onload = function() {
+            // Nie pokazuj sekcji wprowadzania, od razu przejdź do gry
+            document.querySelector('.input-section').classList.add('hidden');
+            document.querySelector('.game-section').classList.remove('hidden');
+
             canvas = document.getElementById('hangmanCanvas');
+             if (!canvas) {
+                console.error("Nie znaleziono elementu canvas!");
+                return;
+            }
             ctx = canvas.getContext('2d');
-            initializeGame();
+             if (!ctx) {
+                 console.error("Nie można uzyskać kontekstu 2D canvas!");
+                return;
+            }
+            initializeGame(); // Zainicjuj grę z pierwszym słowem
         };
     </script>
 </body>
