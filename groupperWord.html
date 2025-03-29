@@ -1,0 +1,1814 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Interaktywne Grupy Słówek v2</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-bg: #f8f9fa;
+      --secondary-bg: #ffffff;
+      --text-color: #212529;
+      --border-color: #dee2e6;
+      --primary-accent: #0d6efd;
+      --primary-accent-hover: #0b5ed7;
+      --success-accent: #198754;
+      --success-accent-hover: #157347;
+      --danger-accent: #dc3545;
+      --danger-accent-hover: #bb2d3b;
+      --warning-accent: #ffc107;
+      --info-accent: #0dcaf0;
+      --highlight-bg: #fff3cd;
+      /* Default SRS backgrounds (light theme) */
+      --word-new-bg: #e9f5ff;
+      --word-review-bg: #fff9e0;
+      --word-mastered-bg: #e6ffed;
+
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+      --border-radius-sm: 0.25rem;
+      --border-radius-md: 0.5rem;
+    }
+
+    /* --- Dark Theme Variables --- */
+    body.dark-theme {
+      --primary-bg: #121212; /* Improved Dark Mode Contrast */
+      --secondary-bg: #1e1e1e; /* Improved Dark Mode Contrast */
+      --text-color: #e1e1e1; /* Improved Dark Mode Contrast */
+      --border-color: #494949; /* Improved Dark Mode Contrast */
+      --primary-accent: #4c8bf5; /* Improved Dark Mode Contrast */
+      --primary-accent-hover: #3a78e0; /* Improved Dark Mode Contrast */
+      --success-accent: #2ecc71; /* Improved Dark Mode Contrast */
+      --success-accent-hover: #27ae60; /* Improved Dark Mode Contrast */
+      --danger-accent: #e74c3c; /* Improved Dark Mode Contrast */
+      --danger-accent-hover: #c0392b; /* Improved Dark Mode Contrast */
+      --highlight-bg: #352e1a; /* Improved Dark Mode Contrast */
+      /* Higher contrast SRS backgrounds for dark mode */
+      --word-new-bg: #1c3955;
+      --word-review-bg: #5e4d28;
+      --word-mastered-bg: #1e4a2e;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--primary-bg);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: var(--primary-accent);
+    }
+
+    /* --- Controls Styling --- */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--secondary-bg);
+      padding: 15px;
+      border-radius: var(--border-radius-md);
+      box-shadow: var(--shadow-md);
+      margin-bottom: 30px;
+    }
+    body.dark-theme .controls { /* Dark Mode Controls */
+       box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+
+    .controls input[type="text"],
+    .controls input[type="file"],
+    .controls select { /* Added select styling */
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      background-color: var(--primary-bg);
+      color: var(--text-color);
+      min-width: 150px; /* Adjusted min-width */
+    }
+
+    .controls button, .controls label {
+      padding: 10px 15px;
+      border: none;
+      border-radius: var(--border-radius-sm);
+      background-color: var(--primary-accent);
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s ease, box-shadow 0.2s ease; /* Added box-shadow transition */
+      font-size: 0.9em;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: var(--shadow-sm); /* Subtle shadow */
+    }
+    .controls label { background-color: var(--success-accent); }
+    .controls label:hover { background-color: var(--success-accent-hover); }
+    .controls button:hover { background-color: var(--primary-accent-hover); transform: translateY(-1px);} /* Subtle lift */
+    .controls button.secondary { background-color: var(--success-accent); }
+    .controls button.secondary:hover { background-color: var(--success-accent-hover); }
+    .controls button.danger { background-color: var(--danger-accent); }
+    .controls button.danger:hover { background-color: var(--danger-accent-hover); }
+
+    .controls input[type="color"] { padding: 0; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; background-color: transparent; vertical-align: middle;}
+    .controls input[type="file"] { display: none; }
+
+    /* --- Color Palette --- */
+    .color-palette {
+      display: none; /* Hidden by default */
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 10px;
+      padding: 5px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      background-color: var(--primary-bg);
+      position: absolute; /* Position relative to controls if needed */
+      z-index: 10;
+      max-width: 150px;
+    }
+    .palette-color {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 1px solid var(--border-color);
+      transition: transform 0.2s, border 0.2s;
+    }
+    .palette-color.active {
+      border: 2px solid var(--primary-accent);
+      transform: scale(1.1);
+    }
+    .palette-color:hover {
+       transform: scale(1.1);
+    }
+    /* Position palette near its toggle button */
+    .palette-container {
+        position: relative;
+        display: inline-block; /* Or flex */
+    }
+
+    /* --- Search Input --- */
+    .search-container {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+    }
+
+    /* --- Batch Operations --- */
+    .batch-operations {
+      display: none; /* Hidden by default */
+      background-color: var(--secondary-bg);
+      padding: 10px;
+      border-radius: var(--border-radius-sm);
+      margin: 10px 0;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      border: 1px solid var(--border-color);
+      width: 100%; /* Take full width in controls */
+      justify-content: center;
+    }
+    .batch-operations span { font-weight: 500; }
+    .batch-operations button { font-size: 0.85em; padding: 5px 10px;}
+    .batch-operations select { font-size: 0.85em; padding: 5px;}
+
+
+    /* --- Group Styling --- */
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .group {
+      background-color: var(--secondary-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-md);
+      padding: 15px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animation */
+    }
+    .group:hover { /* Animation */
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .group-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px; /* Reduced margin */
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+    }
+    .group-header h3 { margin: 0; font-size: 1.3em; cursor: pointer; color: var(--primary-accent); flex-grow: 1; margin-right: 10px;}
+    .group-header .actions { display: flex; gap: 5px;} /* Spacing for header buttons */
+    .group-header .actions button { background: none; border: none; color: var(--text-color); cursor: pointer; font-size: 1.1em; padding: 5px; opacity: 0.7; transition: opacity 0.2s, color 0.2s;}
+    .group-header .actions button:hover { opacity: 1; color: var(--primary-accent);}
+    .group-header .actions button.delete-group:hover { color: var(--danger-accent);}
+
+    /* --- Group Stats --- */
+    .group-stats {
+      font-size: 0.8em;
+      color: var(--text-color);
+      opacity: 0.7;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap; /* Allow wrapping */
+    }
+    .stat-item { display: flex; align-items: center; gap: 5px; }
+
+    /* --- Add Word Section --- */
+    .add-word-section input[type="text"] { padding: 8px; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); width: calc(70% - 5px); margin-right: 5px; background-color: var(--primary-bg); color: var(--text-color);}
+    .add-word-section button { padding: 8px 12px; background-color: var(--success-accent); border: none; border-radius: var(--border-radius-sm); color: #fff; cursor: pointer; transition: background-color 0.3s ease; width: 30%;}
+    .add-word-section button:hover { background-color: var(--success-accent-hover); }
+
+    /* --- Word List & Words --- */
+    .word-list {
+      margin-top: 15px;
+      min-height: 80px;
+      background-color: var(--primary-bg);
+      border: 1px dashed var(--border-color);
+      padding: 10px;
+      border-radius: var(--border-radius-sm);
+      flex-grow: 1;
+      transition: background-color 0.3s ease, border-color 0.3s ease; /* Animation */
+    }
+
+    .word {
+      background-color: var(--secondary-bg);
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      border-radius: var(--border-radius-sm);
+      cursor: grab;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      /* Applied Transitions */
+      transition: background-color 0.3s ease, transform 0.2s ease, opacity 0.2s ease, border-color 0.3s ease;
+    }
+    .word:active, .word.dragging { cursor: grabbing; transform: scale(1.02); } /* Combined active/dragging */
+    .word.selected-for-batch { outline: 2px solid var(--primary-accent); transform: scale(1.02); }
+
+    /* --- Word Text & Actions --- */
+    .word-content { display: flex; justify-content: space-between; align-items: center;}
+    .word-text { font-weight: 500; cursor: text; color: var(--text-color); /* Ensure theme color */}
+    .word-text:hover { opacity: 0.8; }
+    /* Dark mode text color ensures visibility */
+    body.dark-theme .word-text { color: #ffffff; }
+
+    .word-actions { display: flex; align-items: center; gap: 2px; /* Reduced gap */ }
+    .word-actions button { background: none; border: none; cursor: pointer; font-size: 0.9em; padding: 3px; margin-left: 3px; /* Adjusted margin */ color: var(--text-color); opacity: 0.7; transition: opacity 0.2s, color 0.2s;}
+    .word-actions button:hover { opacity: 1; color: var(--primary-accent); }
+    .word-actions button.delete-word { color: var(--danger-accent); }
+    .word-actions button.delete-word:hover { color: var(--danger-accent-hover); }
+
+    /* --- Word Details --- */
+    .word-details { font-size: 0.85em; color: #6c757d; margin-top: 5px; padding-top: 5px; border-top: 1px dashed var(--border-color); display: none;}
+    .word-details p { margin: 2px 0; }
+    .word-details strong { color: var(--text-color); }
+    .word-details button { font-size: 0.8em !important; padding: 2px 5px !important; margin-top: 5px; } /* Ensure button is small */
+    body.dark-theme .word-details { color: #adb5bd; }
+    body.dark-theme .word-details strong { color: #e9ecef; }
+
+    /* --- SRS Styling --- */
+    .srs-status { display: flex; gap: 4px; margin-left: 5px; }
+    .srs-status button { background: none; border: 1px solid var(--border-color); border-radius: 50%; width: 18px; height: 18px; cursor: pointer; font-size: 0.7em; padding: 0; display: inline-flex; justify-content: center; align-items: center; opacity: 0.6; transition: opacity 0.2s, border-color 0.2s, background-color 0.2s; }
+    .srs-status button:hover, .srs-status button.active { opacity: 1; }
+    .srs-status button.srs-new { border-color: var(--info-accent); }
+    .srs-status button.srs-review { border-color: var(--warning-accent); }
+    .srs-status button.srs-mastered { border-color: var(--success-accent); }
+    .srs-status button.srs-new.active { background-color: var(--info-accent); color: white; }
+    .srs-status button.srs-review.active { background-color: var(--warning-accent); color: #333; }
+    .srs-status button.srs-mastered.active { background-color: var(--success-accent); color: white; }
+
+    /* Base SRS Background Colors */
+    .word[data-srs="new"] { background-color: var(--word-new-bg); color: #000000; /* Force black text */}
+    .word[data-srs="review"] { background-color: var(--word-review-bg); color: #000000; /* Force black text */}
+    .word[data-srs="mastered"] { background-color: var(--word-mastered-bg); color: #000000; /* Force black text */}
+    /* Dark Theme SRS Text Colors + Text Shadow */
+    body.dark-theme .word[data-srs="new"],
+    body.dark-theme .word[data-srs="review"],
+    body.dark-theme .word[data-srs="mastered"] {
+        color: #ffffff; /* Force light text */
+        text-shadow: 0 0 1px rgba(0,0,0,0.5); /* Readability */
+    }
+
+    /* --- Highlight Mode --- */
+    .word.highlightable { cursor: pointer; }
+
+    /* --- Drag & Drop Visual Feedback --- */
+    @keyframes pulse-border {
+      0% { border-color: var(--border-color); }
+      50% { border-color: var(--primary-accent); }
+      100% { border-color: var(--border-color); }
+    }
+    .word.dragging { /* Combined from old active/new dragging */
+      opacity: 0.5;
+      animation: pulse-border 1s infinite;
+      cursor: grabbing;
+      transform: scale(1.02);
+    }
+    .word-list.drag-over { /* Renamed from drop-target */
+      background-color: rgba(13, 110, 253, 0.1);
+      border: 2px dashed var(--primary-accent);
+    }
+
+    /* --- Modal Styling --- */
+    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); padding-top: 60px;}
+    .modal-content { background-color: var(--secondary-bg); margin: 5% auto; padding: 20px; border: 1px solid var(--border-color); width: 80%; max-width: 600px; border-radius: var(--border-radius-md); position: relative; }
+    body.dark-theme .modal-content { box-shadow: 0 5px 20px rgba(0,0,0,0.5); } /* Dark mode modal shadow */
+    .close-modal { color: #aaa; position: absolute; top: 10px; right: 20px; font-size: 28px; font-weight: bold; cursor: pointer;}
+    .close-modal:hover, .close-modal:focus { color: var(--danger-accent); text-decoration: none;}
+    #activityContent { margin-top: 20px; }
+    #activity-loading { text-align: center; font-style: italic; padding: 20px; }
+
+    /* --- Flashcard Styling --- */
+    .flashcard { background-color: var(--primary-bg); border: 1px solid var(--border-color); padding: 30px; margin: 20px auto; text-align: center; min-height: 150px; display: flex; justify-content: center; align-items: center; font-size: 1.5em; cursor: pointer; border-radius: var(--border-radius-md); position: relative; }
+    .flashcard .side { display: block; }
+    .flashcard .back { display: none; }
+    .flashcard.flipped .front { display: none; }
+    .flashcard.flipped .back { display: block; }
+    .flashcard-nav { text-align: center; margin-top: 15px; }
+    .flashcard-nav button { margin: 0 10px; }
+
+    /* --- Matching Game Styling --- */
+     .matching-game { display: flex; justify-content: space-around; align-items: flex-start; }
+     .matching-column { display: flex; flex-direction: column; gap: 10px; width: 45%; }
+     .match-item { padding: 10px; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); cursor: pointer; transition: background-color 0.2s, color 0.2s; }
+     .match-item.selected { background-color: var(--primary-accent); color: white; }
+     .match-item.matched { background-color: var(--success-accent); color: white; cursor: default; opacity: 0.7; }
+
+    /* --- Animations --- */
+    @keyframes word-added { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .word-new-animation { animation: word-added 0.5s ease forwards; }
+
+    /* --- Utility --- */
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <h1><i class="fa-solid fa-puzzle-piece"></i> Interaktywne Grupy Słówek v2</h1>
+
+  <div class="controls">
+    <input type="text" id="newGroupName" placeholder="Nazwa nowej grupy">
+    <button onclick="VocabularyApp.ui.addGroup()"><i class="fa-solid fa-plus"></i> Dodaj Grupę</button>
+    <button class="secondary" onclick="VocabularyApp.data.exportAll()"><i class="fa-solid fa-download"></i> Pobierz JSON</button>
+    <label for="fileLoader" class="secondary"><i class="fa-solid fa-upload"></i> Wczytaj JSON</label>
+    <input type="file" id="fileLoader" accept="application/json" onchange="VocabularyApp.data.importAll(event)">
+
+    <!-- Import Group Button (moved logic to JS) -->
+    <button id="importGroupBtn" class="secondary"><i class="fa-solid fa-file-import"></i> Importuj grupę</button>
+    <input type="file" id="importGroupInput" accept="application/json" style="display: none;">
+
+    <button onclick="VocabularyApp.activities.showActivityModal('flashcards')"><i class="fa-solid fa-layer-group"></i> Generuj Fiszki</button>
+    <button onclick="VocabularyApp.activities.showActivityModal('matching')"><i class="fa-solid fa-link"></i> Generuj Dopasowanie</button>
+    <button onclick="VocabularyApp.ui.toggleTheme()" title="Przełącz motyw jasny/ciemny"><i class="fa-solid fa-circle-half-stroke"></i> Motyw</button>
+    <button class="danger" onclick="VocabularyApp.data.clearAll()" title="Usuń wszystkie grupy i słowa"><i class="fa-solid fa-trash-can"></i> Wyczyść wszystko</button>
+
+    <!-- Search -->
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Szukaj słów...">
+      <button id="clearSearchBtn" title="Wyczyść wyszukiwanie"><i class="fa-solid fa-times"></i></button>
+    </div>
+
+     <!-- Highlight & Palette -->
+     <div class="palette-container">
+        <button id="toggleHighlightBtn" onclick="VocabularyApp.ui.toggleHighlightMode()" title="Kliknij słowo, aby zmienić jego podświetlenie"><i class="fa-solid fa-highlighter"></i> Tryb podśw.: Wył.</button>
+        <input type="color" id="highlightColor" title="Wybierz kolor podświetlenia" value="#fff3cd">
+        <button id="togglePaletteBtn" title="Pokaż/ukryj paletę kolorów"><i class="fa-solid fa-palette"></i></button>
+        <button id="saveColorBtn" title="Zapisz obecny kolor do palety"><i class="fa-solid fa-save"></i></button>
+        <div id="colorPalette" class="color-palette"></div>
+     </div>
+
+    <!-- Batch Mode -->
+    <button id="batchModeBtn" onclick="VocabularyApp.ui.toggleBatchMode()"><i class="fa-solid fa-list-check"></i> Tryb wielu słów: Wył.</button>
+    <div id="batchOperations" class="batch-operations"></div>
+
+  </div>
+
+  <div class="container" id="groupsContainer">
+    <!-- Grupy pojawią się tutaj dynamicznie -->
+  </div>
+
+  <!-- Modal dla ćwiczeń -->
+  <div id="activityModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="VocabularyApp.ui.closeModal()">×</span>
+      <h2 id="activityTitle">Aktywność</h2>
+      <div id="activityContent">
+        <!-- Treść ćwiczenia zostanie tu wstrzyknięta -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Utility Functions (Throttle/Debounce) ---
+    function debounce(func, wait) {
+      let timeout;
+      return function(...args) {
+        const context = this;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), wait);
+      };
+    }
+    function throttle(func, limit) {
+      let inThrottle;
+      return function(...args) {
+        const context = this;
+        if (!inThrottle) {
+          func.apply(context, args);
+          inThrottle = true;
+          setTimeout(() => inThrottle = false, limit);
+        }
+      };
+    }
+
+    // --- Main Application Object ---
+    const VocabularyApp = {
+      // --- State ---
+      highlightMode: false,
+      batchMode: false,
+      selectedWords: [],
+      draggedWord: null,
+      paletteColors: ['#FFC107', '#4CAF50', '#2196F3', '#9C27B0', '#FF5722', '#607D8B', '#E91E63', '#00BCD4'],
+      synth: window.speechSynthesis,
+
+      // --- Data Management ---
+      data: {
+        saveAll: function() {
+          try {
+            const container = document.getElementById('groupsContainer');
+            const groups = [];
+            container.querySelectorAll('.group').forEach(groupDiv => {
+              const groupName = groupDiv.getAttribute('data-group');
+              const words = [];
+              groupDiv.querySelectorAll('.word').forEach(wordDiv => {
+                words.push(VocabularyApp.helpers.getWordData(wordDiv));
+              });
+              groups.push({ group: groupName, words: words });
+            });
+            const jsonData = JSON.stringify(groups);
+            localStorage.setItem('wordGroupsData', jsonData);
+            // console.log("Data saved."); // For debugging
+          } catch (err) {
+            console.error("Error saving data:", err);
+          }
+        },
+        // Throttle save function for frequent updates
+        throttledSaveAll: throttle(function() { VocabularyApp.data.saveAll(); }, 1000),
+
+        loadAll: function() {
+          const savedData = localStorage.getItem('wordGroupsData');
+          if (savedData) {
+            try {
+              const groups = JSON.parse(savedData);
+               if (!Array.isArray(groups)) {
+                    throw new Error('Loaded data is not an array');
+                }
+              VocabularyApp.ui.rebuildGroups(groups);
+            } catch (err) {
+              console.error("Error loading saved data:", err);
+              localStorage.removeItem('wordGroupsData'); // Clear corrupted data
+            }
+          }
+           // Load color palette
+          const savedPalette = localStorage.getItem('colorPalette');
+          if (savedPalette) {
+              try {
+                VocabularyApp.paletteColors = JSON.parse(savedPalette);
+              } catch (err) {
+                  console.error("Error loading color palette:", err);
+                  localStorage.removeItem('colorPalette');
+              }
+          }
+        },
+
+        exportAll: function() {
+          try {
+            const container = document.getElementById('groupsContainer');
+            const groups = [];
+            container.querySelectorAll('.group').forEach(groupDiv => {
+              const groupName = groupDiv.getAttribute('data-group');
+              const words = [];
+              groupDiv.querySelectorAll('.word').forEach(wordDiv => {
+                 words.push(VocabularyApp.helpers.getWordData(wordDiv));
+              });
+              groups.push({ group: groupName, words: words });
+            });
+            const jsonData = JSON.stringify(groups, null, 2);
+            const blob = new Blob([jsonData], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "Interaktywne_Grupy_Slowek_v2.json";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          } catch (err) {
+            console.error("Error exporting data:", err);
+            alert("Wystąpił błąd podczas eksportowania danych.");
+          }
+        },
+
+        importAll: function(event) {
+          const file = event.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            try {
+              const groups = JSON.parse(e.target.result);
+              if (!Array.isArray(groups)) {
+                throw new Error('Imported data is not an array');
+              }
+              // Basic structure validation
+              for (const group of groups) {
+                if (!group.group || typeof group.group !== 'string') throw new Error('Group missing valid name');
+                if (!Array.isArray(group.words)) throw new Error(`Group "${group.group}" has invalid words array`);
+              }
+              VocabularyApp.ui.rebuildGroups(groups);
+              VocabularyApp.data.saveAll(); // Save immediately after successful import
+            } catch (err) {
+              console.error("Error reading JSON file:", err);
+              alert(`Błąd odczytu pliku JSON: ${err.message}`);
+            }
+          };
+          reader.onerror = () => alert('Nie można odczytać pliku.');
+          reader.readAsText(file);
+          event.target.value = null; // Reset input
+        },
+
+        exportGroup: function(groupDiv) {
+             try {
+                const groupName = groupDiv.getAttribute('data-group');
+                const words = [];
+                groupDiv.querySelectorAll('.word').forEach(wordDiv => {
+                  words.push(VocabularyApp.helpers.getWordData(wordDiv));
+                });
+                const groupData = { group: groupName, words: words };
+                const jsonData = JSON.stringify(groupData, null, 2);
+                const blob = new Blob([jsonData], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${groupName}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch (err) {
+                console.error("Error exporting group:", err);
+                alert("Wystąpił błąd podczas eksportowania grupy.");
+            }
+        },
+
+        importGroup: function(event) {
+             const file = event.target.files[0];
+              if (!file) return;
+              const reader = new FileReader();
+              reader.onload = function(e) {
+                try {
+                  const groupData = JSON.parse(e.target.result);
+                  if (groupData && typeof groupData.group === 'string' && Array.isArray(groupData.words)) {
+                    const existingGroups = document.querySelectorAll('.group');
+                    let groupName = groupData.group;
+                    let counter = 1;
+                    while (Array.from(existingGroups).some(g => g.getAttribute('data-group') === groupName)) {
+                      groupName = `${groupData.group}_${counter}`; // Use underscore
+                      counter++;
+                    }
+                    groupData.group = groupName; // Update name if changed
+                    VocabularyApp.ui.createGroupElement(groupData);
+                    VocabularyApp.data.saveAll();
+                  } else {
+                    throw new Error('Nieprawidłowy format pliku grupy.');
+                  }
+                } catch (err) {
+                  console.error('Error importing group:', err);
+                  alert(`Błąd podczas importowania grupy: ${err.message}`);
+                }
+              };
+              reader.readAsText(file);
+              event.target.value = null; // Reset input
+        },
+
+        clearAll: function() {
+          if (confirm('Czy na pewno chcesz usunąć WSZYSTKIE grupy i słowa? Tej operacji nie można cofnąć!')) {
+            document.getElementById('groupsContainer').innerHTML = "";
+            localStorage.removeItem('wordGroupsData');
+            localStorage.removeItem('colorPalette'); // Also clear palette
+            VocabularyApp.paletteColors = ['#FFC107', '#4CAF50', '#2196F3', '#9C27B0', '#FF5722', '#607D8B', '#E91E63', '#00BCD4']; // Reset default palette
+            VocabularyApp.ui.buildColorPalette(); // Rebuild palette UI
+            alert('Wszystkie dane zostały usunięte.');
+          }
+        },
+
+        copyWord: function(wordDiv) {
+            try {
+                const copiedWordData = JSON.parse(JSON.stringify(VocabularyApp.helpers.getWordData(wordDiv)));
+                localStorage.setItem('copiedWord', JSON.stringify(copiedWordData));
+                return true; // Indicate success
+            } catch (err) {
+                console.error("Error copying word data:", err);
+                return false; // Indicate failure
+            }
+        },
+
+        pasteWord: function(groupDiv) {
+            const copiedWordJSON = localStorage.getItem('copiedWord');
+            if (!copiedWordJSON) {
+              alert('Brak skopiowanego słowa w schowku!');
+              return;
+            }
+            try {
+              const copiedWord = JSON.parse(copiedWordJSON);
+              // Optionally modify pasted word? E.g., reset SRS status?
+              // copiedWord.srs = 'new';
+              VocabularyApp.ui.addWordToGroup(groupDiv, copiedWord);
+              VocabularyApp.data.saveAll();
+            } catch (err) {
+              console.error('Error pasting word:', err);
+              alert('Błąd podczas wklejania słowa.');
+            }
+        }
+      },
+
+      // --- UI Management ---
+      ui: {
+        addGroup: function() {
+          const groupNameInput = document.getElementById('newGroupName');
+          const groupName = groupNameInput.value.trim();
+          if (!groupName) {
+            alert('Wprowadź nazwę grupy!');
+            return;
+          }
+          // Check for duplicate group names
+          const existingGroups = document.querySelectorAll('.group');
+          if (Array.from(existingGroups).some(g => g.getAttribute('data-group') === groupName)) {
+              alert('Grupa o tej nazwie już istnieje!');
+              return;
+          }
+          VocabularyApp.ui.createGroupElement({ group: groupName, words: [] });
+          groupNameInput.value = '';
+          VocabularyApp.data.saveAll(); // Save after adding group
+        },
+
+        createGroupElement: function(groupData) {
+          const container = document.getElementById('groupsContainer');
+          const groupName = groupData.group;
+          const words = groupData.words || [];
+
+          const groupDiv = document.createElement('div');
+          groupDiv.className = 'group';
+          groupDiv.setAttribute('data-group', groupName);
+
+          // --- Group Header ---
+          const headerDiv = document.createElement('div');
+          headerDiv.className = 'group-header';
+          const title = document.createElement('h3');
+          title.innerText = groupName;
+          // Dblclick handled by delegation
+
+          const headerActions = document.createElement('div');
+          headerActions.className = 'actions';
+
+          // Shuffle Button
+          const shuffleBtn = document.createElement('button');
+          shuffleBtn.innerHTML = '<i class="fa-solid fa-shuffle"></i>'; // Changed icon
+          shuffleBtn.title = 'Przetasuj słowa';
+          shuffleBtn.onclick = () => VocabularyApp.ui.shuffleWords(groupDiv);
+          headerActions.appendChild(shuffleBtn);
+
+          // Paste Button
+          const pasteBtn = document.createElement('button');
+          pasteBtn.innerHTML = '<i class="fa-solid fa-paste"></i>';
+          pasteBtn.title = 'Wklej skopiowane słowo';
+          pasteBtn.onclick = () => VocabularyApp.data.pasteWord(groupDiv);
+          headerActions.appendChild(pasteBtn);
+
+          // Export Group Button
+          const exportGroupBtn = document.createElement('button');
+          exportGroupBtn.innerHTML = '<i class="fa-solid fa-file-export"></i>';
+          exportGroupBtn.title = 'Eksportuj grupę';
+          exportGroupBtn.onclick = () => VocabularyApp.data.exportGroup(groupDiv);
+          headerActions.appendChild(exportGroupBtn);
+
+          // Remove Group Button
+          const removeGroupBtn = document.createElement('button');
+          removeGroupBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
+          removeGroupBtn.title = 'Usuń grupę';
+          removeGroupBtn.className = 'delete-group'; // For easier selection
+          removeGroupBtn.onclick = function() {
+            if (confirm(`Czy na pewno usunąć grupę "${groupName}" i wszystkie jej słowa?`)) {
+              container.removeChild(groupDiv);
+              VocabularyApp.data.saveAll(); // Save after removing group
+            }
+          };
+          headerActions.appendChild(removeGroupBtn);
+
+          headerDiv.appendChild(title);
+          headerDiv.appendChild(headerActions);
+          groupDiv.appendChild(headerDiv);
+
+          // --- Group Stats ---
+          const statsDiv = document.createElement('div');
+          statsDiv.className = 'group-stats';
+          groupDiv.appendChild(statsDiv); // Add stats div
+
+          // --- Add Word Section ---
+          const inputContainer = document.createElement('div');
+          inputContainer.className = 'add-word-section';
+          inputContainer.style.marginBottom = '15px';
+          const wordInput = document.createElement('input');
+          wordInput.type = 'text';
+          wordInput.placeholder = 'Nowe słowo';
+          wordInput.onkeydown = (e) => { if (e.key === 'Enter') addWordBtn.click(); };
+          const addWordBtn = document.createElement('button');
+          addWordBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Dodaj';
+          addWordBtn.onclick = function() {
+            const wordText = wordInput.value.trim();
+            if (!wordText) { alert('Wprowadź słowo!'); return; }
+            VocabularyApp.ui.addWordToGroup(groupDiv, { text: wordText, definition: '', example: '', srs: 'new', highlight: '' });
+            wordInput.value = '';
+            wordInput.focus();
+          };
+          inputContainer.appendChild(wordInput);
+          inputContainer.appendChild(addWordBtn);
+          groupDiv.appendChild(inputContainer);
+
+          // --- Word List ---
+          const wordList = document.createElement('div');
+          wordList.className = 'word-list';
+          // Drag/Drop handled by delegation
+
+          groupDiv.appendChild(wordList);
+
+          // Add existing words
+          words.forEach(wordObj => VocabularyApp.ui.addWordToGroup(groupDiv, wordObj, false)); // Pass false to skip save on initial build
+
+          container.appendChild(groupDiv);
+          VocabularyApp.ui.updateGroupStats(groupDiv); // Update stats after adding words
+
+          // Important: Attach delegated listeners if needed (though delegation setup in init should cover this)
+        },
+
+        addWordToGroup: function(groupDiv, wordData, shouldSave = true) {
+          const wordList = groupDiv.querySelector('.word-list');
+          const wordDiv = document.createElement('div');
+          wordDiv.className = 'word';
+          wordDiv.draggable = true;
+          wordDiv.dataset.srs = wordData.srs || 'new';
+          if (VocabularyApp.highlightMode) wordDiv.classList.add('highlightable');
+          if (VocabularyApp.batchMode) { // Add listener if batch mode active when word is added
+              wordDiv.addEventListener('click', VocabularyApp.handlers.handleBatchWordClick);
+          }
+
+          // Apply highlight or SRS background
+          if (wordData.highlight) {
+            wordDiv.style.backgroundColor = wordData.highlight;
+          } else {
+            VocabularyApp.helpers.applySrsBackground(wordDiv, wordDiv.dataset.srs);
+          }
+          // Drag events handled by delegation
+
+          const wordContent = document.createElement('div');
+          wordContent.className = 'word-content';
+
+          const wordSpan = document.createElement('span');
+          wordSpan.className = 'word-text';
+          wordSpan.innerText = wordData.text;
+          // Dblclick handled by delegation
+
+          const wordActions = document.createElement('div');
+          wordActions.className = 'word-actions';
+
+          // SRS Status
+          const srsStatusDiv = VocabularyApp.ui.createSrsStatusElement(wordDiv, wordData);
+
+          // Details Button
+          const detailsBtn = document.createElement('button');
+          detailsBtn.innerHTML = '<i class="fa-solid fa-circle-info"></i>';
+          detailsBtn.title = 'Pokaż/Ukryj szczegóły';
+          detailsBtn.onclick = (e) => {
+            e.stopPropagation();
+            const detailsDiv = wordDiv.querySelector('.word-details');
+            detailsDiv.style.display = detailsDiv.style.display === 'block' ? 'none' : 'block';
+          };
+
+          // Speak Button
+          const speakBtn = document.createElement('button');
+          speakBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+          speakBtn.title = 'Odsłuchaj wymowę';
+          speakBtn.onclick = (e) => { e.stopPropagation(); VocabularyApp.helpers.speakWord(wordData.text, speakBtn); };
+
+          // Copy Button
+          const copyBtn = document.createElement('button');
+          copyBtn.innerHTML = '<i class="fa-solid fa-copy"></i>';
+          copyBtn.title = 'Kopiuj słowo';
+          copyBtn.onclick = (e) => {
+              e.stopPropagation();
+              if (VocabularyApp.data.copyWord(wordDiv)) {
+                  const originalIcon = copyBtn.innerHTML;
+                  copyBtn.innerHTML = '<i class="fa-solid fa-check"></i>'; // Feedback
+                  copyBtn.style.color = 'var(--success-accent)';
+                  setTimeout(() => {
+                    copyBtn.innerHTML = originalIcon;
+                    copyBtn.style.color = '';
+                  }, 1000);
+              }
+          };
+
+          // Remove Word Button
+          const removeWordBtn = document.createElement('button');
+          removeWordBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+          removeWordBtn.title = 'Usuń słowo';
+          removeWordBtn.className = 'delete-word';
+          removeWordBtn.onclick = (e) => {
+            e.stopPropagation();
+            const parentGroup = wordDiv.closest('.group'); // Get group before removing
+            wordList.removeChild(wordDiv);
+            if (parentGroup) VocabularyApp.ui.updateGroupStats(parentGroup); // Update stats
+            VocabularyApp.data.saveAll(); // Save after removing word
+          };
+
+          wordActions.appendChild(srsStatusDiv);
+          wordActions.appendChild(detailsBtn);
+          wordActions.appendChild(speakBtn);
+          wordActions.appendChild(copyBtn);
+          wordActions.appendChild(removeWordBtn);
+
+          wordContent.appendChild(wordSpan);
+          wordContent.appendChild(wordActions);
+          wordDiv.appendChild(wordContent);
+
+          // Word Details Section
+          const detailsDiv = document.createElement('div');
+          detailsDiv.className = 'word-details';
+          const defSpanId = `def-${Date.now()}-${Math.random()}`; // Unique ID for span
+          const exSpanId = `ex-${Date.now()}-${Math.random()}`; // Unique ID for span
+          detailsDiv.innerHTML = `
+            <p><strong>Definicja:</strong> <span id="${defSpanId}" class="word-def" ondblclick="VocabularyApp.ui.editElement(this, text => VocabularyApp.helpers.updateWordDataField(this, 'definition', text), true)">${wordData.definition || 'Kliknij dwukrotnie, aby dodać'}</span></p>
+            <p><strong>Przykład:</strong> <span id="${exSpanId}" class="word-ex" ondblclick="VocabularyApp.ui.editElement(this, text => VocabularyApp.helpers.updateWordDataField(this, 'example', text), true)">${wordData.example || 'Kliknij dwukrotnie, aby dodać'}</span></p>
+            <button onclick="VocabularyApp.helpers.fetchAiData(this.closest('.word'))" style="font-size: 0.8em !important; padding: 2px 5px !important; margin-top: 5px;"><i class="fa-solid fa-robot"></i> Pobierz dane (AI)</button>
+          `;
+          wordDiv.appendChild(detailsDiv);
+
+          // Click for highlight/batch handled by delegation
+
+          wordList.appendChild(wordDiv);
+
+          // Add animation for new words
+          wordDiv.classList.add('word-new-animation');
+          setTimeout(() => wordDiv.classList.remove('word-new-animation'), 500);
+
+          if (shouldSave) {
+              VocabularyApp.ui.updateGroupStats(groupDiv); // Update stats
+              VocabularyApp.data.saveAll(); // Save after adding word
+          }
+        },
+
+        createSrsStatusElement: function(wordDiv, wordData) {
+          const srsDiv = document.createElement('div');
+          srsDiv.className = 'srs-status';
+          const statuses = ['new', 'review', 'mastered'];
+          const icons = {'new': '🌱', 'review': '🤔', 'mastered': '✅'};
+
+          statuses.forEach(status => {
+              const btn = document.createElement('button');
+              btn.dataset.status = status;
+              btn.className = `srs-${status}`; // Keep class for potential styling
+              btn.innerHTML = icons[status];
+              btn.title = status.charAt(0).toUpperCase() + status.slice(1);
+              if (wordData.srs === status) btn.classList.add('active');
+              // Click handled by delegation
+              srsDiv.appendChild(btn);
+          });
+          return srsDiv;
+        },
+
+        setSrsStatus: function(wordDiv, newStatus) {
+            wordDiv.dataset.srs = newStatus;
+
+            // Update active button class
+            const srsButtons = wordDiv.querySelectorAll('.srs-status button');
+            srsButtons.forEach(b => b.classList.remove('active'));
+            const currentBtn = wordDiv.querySelector(`.srs-status button[data-status="${newStatus}"]`);
+            if(currentBtn) currentBtn.classList.add('active');
+
+            // Re-apply background only if no manual highlight is set
+            const currentHighlight = wordDiv.style.backgroundColor;
+            if (!currentHighlight || currentHighlight === VocabularyApp.helpers.getRgbFromCssVar(`--word-${wordDiv.dataset.srs === 'new' ? 'new' : wordDiv.dataset.srs === 'review' ? 'review' : 'mastered'}-bg`)) { // Check if current bg is default SRS
+                 VocabularyApp.helpers.applySrsBackground(wordDiv, newStatus);
+            }
+            // Update stats for the group
+            const groupDiv = wordDiv.closest('.group');
+            if (groupDiv) VocabularyApp.ui.updateGroupStats(groupDiv);
+
+            VocabularyApp.data.throttledSaveAll(); // Use throttled save
+        },
+
+        editElement: function(element, onUpdate, isMultiline = false) {
+          const currentText = element.innerText === 'Kliknij dwukrotnie, aby dodać' ? '' : element.innerText;
+          const input = isMultiline ? document.createElement('textarea') : document.createElement('input');
+          if (!isMultiline) input.type = 'text';
+          input.style.width = "90%";
+          input.style.minHeight = isMultiline ? '50px' : 'auto';
+          input.value = currentText;
+          input.style.backgroundColor = 'var(--primary-bg)'; // Ensure contrast
+          input.style.color = 'var(--text-color)';
+          input.style.border = '1px solid var(--primary-accent)';
+
+          element.style.display = 'none'; // Hide original element
+          element.parentNode.insertBefore(input, element.nextSibling); // Insert input after element
+
+          input.focus();
+          input.select();
+
+          const finishEdit = () => {
+              const newText = input.value.trim();
+              const displayText = newText || (isMultiline ? 'Kliknij dwukrotnie, aby dodać' : element.tagName === 'H3' ? 'Nowa Grupa' : 'Nowe Słowo');
+
+              element.innerText = displayText;
+              element.style.display = ''; // Show original element again
+              if (input.parentNode) input.parentNode.removeChild(input); // Remove input
+
+              if (onUpdate && newText !== currentText) {
+                  onUpdate(newText);
+                  // Save is handled within the onUpdate callback where appropriate
+              }
+              // Remove blur/keydown listeners to prevent memory leaks
+              input.onblur = null;
+              input.onkeydown = null;
+          }
+
+          input.onblur = finishEdit;
+          input.onkeydown = function(e) {
+              if (!isMultiline && e.key === "Enter") { finishEdit(); }
+              if (isMultiline && e.key === "Enter" && !e.shiftKey) { e.preventDefault(); finishEdit(); }
+              if (e.key === "Escape") { input.value = currentText; finishEdit(); } // Restore original on Esc
+          };
+        },
+
+        updateGroupStats: function(groupDiv) {
+            if (!groupDiv) return;
+            let statsDiv = groupDiv.querySelector('.group-stats');
+            if (!statsDiv) { // Should not happen if created properly, but good fallback
+                statsDiv = document.createElement('div');
+                statsDiv.className = 'group-stats';
+                groupDiv.insertBefore(statsDiv, groupDiv.querySelector('.add-word-section'));
+            }
+
+            const words = groupDiv.querySelectorAll('.word');
+            const total = words.length;
+            const newCount = groupDiv.querySelectorAll('.word[data-srs="new"]').length;
+            const reviewCount = groupDiv.querySelectorAll('.word[data-srs="review"]').length;
+            const masteredCount = groupDiv.querySelectorAll('.word[data-srs="mastered"]').length;
+
+            statsDiv.innerHTML = `
+              <div class="stat-item" title="Wszystkie"><i class="fa-solid fa-list"></i> ${total}</div>
+              <div class="stat-item" title="Nowe"><i class="fa-solid fa-seedling" style="color: var(--info-accent);"></i> ${newCount}</div>
+              <div class="stat-item" title="Do powtórki"><i class="fa-solid fa-arrows-rotate" style="color: var(--warning-accent);"></i> ${reviewCount}</div>
+              <div class="stat-item" title="Opanowane"><i class="fa-solid fa-check-double" style="color: var(--success-accent);"></i> ${masteredCount}</div>
+            `;
+        },
+
+        rebuildGroups: function(groups) {
+          const container = document.getElementById('groupsContainer');
+          container.innerHTML = ""; // Clear existing
+          if (Array.isArray(groups)) {
+            groups.forEach(groupObj => {
+              if (groupObj && typeof groupObj.group === 'string' && Array.isArray(groupObj.words)) {
+                  VocabularyApp.ui.createGroupElement(groupObj);
+              } else {
+                  console.warn("Pominięto nieprawidłowy obiekt grupy podczas ładowania:", groupObj);
+              }
+            });
+            // Update stats for all groups after building
+            document.querySelectorAll('.group').forEach(VocabularyApp.ui.updateGroupStats);
+          } else {
+              console.error("Wczytane dane JSON nie są tablicą grup:", groups);
+              alert("Format wczytanego pliku JSON jest nieprawidłowy.");
+          }
+          // Re-apply batch mode listeners if needed
+          if (VocabularyApp.batchMode) VocabularyApp.ui.toggleBatchMode(true); // Re-enable to attach listeners
+        },
+
+        shuffleWords: function(groupDiv) {
+            const wordList = groupDiv.querySelector('.word-list');
+            const words = Array.from(wordList.children);
+            // Fisher-Yates shuffle
+            for (let i = words.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [words[i], words[j]] = [words[j], words[i]];
+            }
+            // Re-append in shuffled order
+            words.forEach(word => wordList.appendChild(word));
+            VocabularyApp.data.saveAll(); // Save new order
+        },
+
+        toggleHighlightMode: function() {
+            VocabularyApp.highlightMode = !VocabularyApp.highlightMode;
+            const btn = document.getElementById('toggleHighlightBtn');
+            btn.innerHTML = VocabularyApp.highlightMode ? '<i class="fa-solid fa-highlighter"></i> Tryb podśw.: Wł.' : '<i class="fa-solid fa-highlighter"></i> Tryb podśw.: Wył.';
+            btn.style.backgroundColor = VocabularyApp.highlightMode ? 'var(--warning-accent)' : ''; // Visual feedback
+
+            document.querySelectorAll('.word').forEach(wordDiv => {
+                wordDiv.classList.toggle('highlightable', VocabularyApp.highlightMode);
+            });
+             // Disable batch mode when highlight mode is on
+            if (VocabularyApp.highlightMode && VocabularyApp.batchMode) {
+                VocabularyApp.ui.toggleBatchMode();
+            }
+        },
+
+        buildColorPalette: function() {
+            const paletteContainer = document.getElementById('colorPalette');
+            paletteContainer.innerHTML = ''; // Clear existing
+            VocabularyApp.paletteColors.forEach(color => {
+              const colorBtn = document.createElement('div');
+              colorBtn.className = 'palette-color';
+              colorBtn.style.backgroundColor = color;
+              colorBtn.onclick = () => {
+                document.getElementById('highlightColor').value = color;
+                // Update active state
+                paletteContainer.querySelectorAll('.palette-color').forEach(btn => btn.classList.remove('active'));
+                colorBtn.classList.add('active');
+              };
+              // Mark active if it matches current picker value
+              if (color === document.getElementById('highlightColor').value) {
+                  colorBtn.classList.add('active');
+              }
+              paletteContainer.appendChild(colorBtn);
+            });
+        },
+
+        toggleBatchMode: function(forceState = null) {
+            const newState = forceState !== null ? forceState : !VocabularyApp.batchMode;
+            if (newState === VocabularyApp.batchMode) return; // No change
+
+            VocabularyApp.batchMode = newState;
+            const btn = document.getElementById('batchModeBtn');
+            btn.innerHTML = VocabularyApp.batchMode ? '<i class="fa-solid fa-list-check"></i> Tryb wielu słów: Wł.' : '<i class="fa-solid fa-list-check"></i> Tryb wielu słów: Wył.';
+            btn.style.backgroundColor = VocabularyApp.batchMode ? 'var(--warning-accent)' : '';
+
+            const batchOpsDiv = document.getElementById('batchOperations');
+            batchOpsDiv.style.display = VocabularyApp.batchMode ? 'flex' : 'none';
+
+            // Clear selection and remove listeners if turning off
+            if (!VocabularyApp.batchMode) {
+                VocabularyApp.selectedWords = [];
+                document.querySelectorAll('.word.selected-for-batch').forEach(word => {
+                    word.classList.remove('selected-for-batch');
+                    word.removeEventListener('click', VocabularyApp.handlers.handleBatchWordClick); // Clean up listener
+                });
+                 batchOpsDiv.innerHTML = ''; // Clear controls
+            } else {
+                // Disable highlight mode if enabling batch mode
+                if (VocabularyApp.highlightMode) VocabularyApp.ui.toggleHighlightMode();
+                VocabularyApp.ui.buildBatchControls(); // Build controls
+                // Add listeners
+                document.querySelectorAll('.word').forEach(word => {
+                    word.addEventListener('click', VocabularyApp.handlers.handleBatchWordClick);
+                });
+            }
+        },
+
+        buildBatchControls: function() {
+            const batchOpsDiv = document.getElementById('batchOperations');
+            batchOpsDiv.innerHTML = ''; // Clear existing
+
+            const infoSpan = document.createElement('span');
+            infoSpan.textContent = 'Operacje na wybranych:';
+            batchOpsDiv.appendChild(infoSpan);
+
+            // --- Move To Group ---
+            const moveContainer = document.createElement('div');
+            moveContainer.style.display = 'flex';
+            moveContainer.style.gap = '5px';
+            const groupSelect = document.createElement('select');
+            groupSelect.id = 'batchGroupSelect';
+            let hasGroups = false;
+            document.querySelectorAll('.group').forEach(group => {
+                hasGroups = true;
+                const option = document.createElement('option');
+                option.value = group.dataset.group;
+                option.textContent = group.dataset.group;
+                groupSelect.appendChild(option);
+            });
+            const moveBtn = document.createElement('button');
+            moveBtn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Przenieś';
+            moveBtn.onclick = VocabularyApp.handlers.handleBatchMove;
+            if (!hasGroups) { // Disable if no groups
+                moveBtn.disabled = true;
+                groupSelect.disabled = true;
+            }
+            moveContainer.appendChild(groupSelect);
+            moveContainer.appendChild(moveBtn);
+            batchOpsDiv.appendChild(moveContainer);
+
+             // --- Change SRS Status ---
+            const statusContainer = document.createElement('div');
+            statusContainer.style.display = 'flex';
+            statusContainer.style.gap = '5px';
+            statusContainer.innerHTML = '<span style="align-self: center;">Status:</span>';
+            const statuses = {'new': '🌱', 'review': '🤔', 'mastered': '✅'};
+            Object.entries(statuses).forEach(([status, icon]) => {
+                const btn = document.createElement('button');
+                btn.dataset.status = status;
+                btn.innerHTML = icon;
+                btn.title = status.charAt(0).toUpperCase() + status.slice(1);
+                btn.onclick = () => VocabularyApp.handlers.handleBatchSrsChange(status);
+                statusContainer.appendChild(btn);
+            });
+            batchOpsDiv.appendChild(statusContainer);
+
+            // --- Delete Selected ---
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'danger';
+            deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i> Usuń';
+            deleteBtn.onclick = VocabularyApp.handlers.handleBatchDelete;
+            batchOpsDiv.appendChild(deleteBtn);
+        },
+
+        handleSearch: function() {
+          const searchInput = document.getElementById('searchInput');
+          const searchTerm = searchInput.value.toLowerCase().trim();
+          const groupsContainer = document.getElementById('groupsContainer');
+
+          if (!searchTerm) {
+            groupsContainer.querySelectorAll('.word, .group').forEach(el => el.style.display = '');
+            return;
+          }
+
+          const groupsWithMatches = new Set();
+          groupsContainer.querySelectorAll('.word').forEach(word => {
+            const data = VocabularyApp.helpers.getWordData(word);
+            const isMatch = (data.text?.toLowerCase().includes(searchTerm)) ||
+                            (data.definition?.toLowerCase().includes(searchTerm)) ||
+                            (data.example?.toLowerCase().includes(searchTerm));
+
+            word.style.display = isMatch ? '' : 'none';
+            if (isMatch) {
+              const group = word.closest('.group');
+              if (group) groupsWithMatches.add(group);
+            }
+          });
+
+          groupsContainer.querySelectorAll('.group').forEach(group => {
+            group.style.display = groupsWithMatches.has(group) ? '' : 'none';
+          });
+        },
+
+        toggleTheme: function() {
+          document.body.classList.toggle('dark-theme');
+          localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
+           // Update backgrounds after theme change if needed (SRS colors depend on theme vars)
+            document.querySelectorAll('.word').forEach(wordDiv => {
+                const data = VocabularyApp.helpers.getWordData(wordDiv);
+                 if (!data.highlight) { // Only if no manual highlight
+                     VocabularyApp.helpers.applySrsBackground(wordDiv, data.srs);
+                 }
+            });
+        },
+
+        closeModal: function() {
+          document.getElementById('activityModal').style.display = "none";
+          document.getElementById('activityContent').innerHTML = ''; // Clear content
+        }
+      },
+
+      // --- Activity Generation ---
+      activities: {
+        showActivityModal: function(type) {
+            const modal = document.getElementById('activityModal');
+            const titleEl = document.getElementById('activityTitle');
+            const contentEl = document.getElementById('activityContent');
+            contentEl.innerHTML = ''; // Clear previous content
+
+            const groups = document.querySelectorAll('.group');
+            if (groups.length === 0) {
+                alert("Najpierw dodaj grupę i słowa!");
+                return;
+            }
+
+            const selectorDiv = document.createElement('div');
+            selectorDiv.style.marginBottom = '20px';
+            selectorDiv.style.textAlign = 'center';
+            selectorDiv.innerHTML = '<label for="activityGroupSelect">Wybierz grupę słówek: </label>';
+
+            const select = document.createElement('select');
+            select.id = 'activityGroupSelect';
+            select.style.padding = '5px';
+            select.style.marginLeft = '10px';
+
+            groups.forEach((group) => {
+                const groupName = group.getAttribute('data-group');
+                const option = document.createElement('option');
+                option.value = groupName; // Use name as value
+                option.textContent = groupName;
+                select.appendChild(option);
+            });
+
+            const startBtn = document.createElement('button');
+            startBtn.textContent = `Rozpocznij ${type === 'flashcards' ? 'fiszki' : 'dopasowanie'}`;
+            startBtn.style.marginLeft = '10px';
+            startBtn.onclick = () => {
+                const selectedGroupName = select.value;
+                const selectedGroup = document.querySelector(`.group[data-group="${selectedGroupName}"]`);
+                if (!selectedGroup) { alert("Wybrana grupa nie istnieje!"); return; }
+
+                contentEl.innerHTML = '<div id="activity-loading">Ładowanie...</div>'; // Loading indicator
+
+                // Lazy load with setTimeout
+                setTimeout(() => {
+                    const requireDetails = type === 'matching';
+                    const words = VocabularyApp.helpers.getWordsFromGroup(selectedGroup, requireDetails);
+
+                    if (!words) { // getWordsFromGroup handles alerts
+                        contentEl.innerHTML = ''; // Clear loading
+                        return;
+                    }
+
+                    contentEl.innerHTML = ''; // Clear loading indicator
+                    titleEl.innerText = `${type === 'flashcards' ? 'Fiszki' : 'Gra w Dopasowanie'} (Grupa: ${selectedGroupName})`;
+
+                    if (type === 'flashcards') {
+                        VocabularyApp.activities.generateFlashcards(contentEl, words);
+                    } else if (type === 'matching') {
+                        VocabularyApp.activities.generateMatchingGame(contentEl, words);
+                    }
+                }, 10); // Small delay to allow UI update
+            };
+
+            selectorDiv.appendChild(select);
+            selectorDiv.appendChild(startBtn);
+            contentEl.appendChild(selectorDiv);
+            modal.style.display = "block";
+        },
+
+        generateFlashcards: function(container, words) {
+            if (!words || words.length === 0) { container.innerText = "Brak słów w tej grupie."; return;}
+            let currentCardIndex = 0;
+
+            const flashcardDiv = document.createElement('div');
+            flashcardDiv.className = 'flashcard';
+            const front = document.createElement('div'); front.className = 'front';
+            const back = document.createElement('div'); back.className = 'back';
+            flashcardDiv.appendChild(front); flashcardDiv.appendChild(back);
+
+            const navDiv = document.createElement('div'); navDiv.className = 'flashcard-nav';
+            const prevBtn = document.createElement('button'); prevBtn.innerHTML = '<i class="fa-solid fa-arrow-left"></i> Poprzednia';
+            const nextBtn = document.createElement('button'); nextBtn.innerHTML = 'Następna <i class="fa-solid fa-arrow-right"></i>';
+            const counterSpan = document.createElement('span'); counterSpan.style.margin = '0 10px';
+
+            const updateCard = () => {
+                flashcardDiv.classList.remove('flipped');
+                const wordData = words[currentCardIndex];
+                front.innerText = wordData.text;
+                const backContent = (wordData.definition && wordData.definition !== 'Kliknij dwukrotnie, aby dodać')
+                                  ? wordData.definition : (wordData.example && wordData.example !== 'Kliknij dwukrotnie, aby dodać')
+                                  ? wordData.example : '(Brak definicji/przykładu)';
+                back.innerText = backContent;
+                counterSpan.innerText = `${currentCardIndex + 1} / ${words.length}`;
+            };
+
+            flashcardDiv.onclick = () => flashcardDiv.classList.toggle('flipped');
+            prevBtn.onclick = () => { currentCardIndex = (currentCardIndex - 1 + words.length) % words.length; updateCard(); };
+            nextBtn.onclick = () => { currentCardIndex = (currentCardIndex + 1) % words.length; updateCard(); };
+
+            navDiv.appendChild(prevBtn); navDiv.appendChild(counterSpan); navDiv.appendChild(nextBtn);
+            container.appendChild(flashcardDiv); container.appendChild(navDiv);
+            updateCard();
+        },
+
+        generateMatchingGame: function(container, words) {
+            if (!words || words.length < 2) { container.innerText = "Za mało słów z definicjami."; return;}
+             container.innerHTML = '<p style="text-align: center;">Kliknij słowo, a następnie pasującą definicję.</p>';
+             const gameDiv = document.createElement('div'); gameDiv.className = 'matching-game';
+             const wordsColumn = document.createElement('div'); wordsColumn.className = 'matching-column';
+             const defsColumn = document.createElement('div'); defsColumn.className = 'matching-column';
+
+             const items = words.map((word, index) => ({ id: index, word: word.text, definition: word.definition }));
+             const shuffledDefs = [...items].sort(() => Math.random() - 0.5);
+
+             let selectedWordItem = null; let selectedDefItem = null; let matchedPairs = 0;
+
+             items.forEach(item => {
+                 const wordItem = document.createElement('div');
+                 wordItem.className = 'match-item word-match'; wordItem.innerText = item.word; wordItem.dataset.id = item.id;
+                 wordItem.onclick = () => handleSelection(wordItem, 'word');
+                 wordsColumn.appendChild(wordItem);
+             });
+             shuffledDefs.forEach(item => {
+                 const defItem = document.createElement('div');
+                 defItem.className = 'match-item def-match'; defItem.innerText = item.definition; defItem.dataset.id = item.id;
+                 defItem.onclick = () => handleSelection(defItem, 'def');
+                 defsColumn.appendChild(defItem);
+             });
+             gameDiv.appendChild(wordsColumn); gameDiv.appendChild(defsColumn); container.appendChild(gameDiv);
+
+             function handleSelection(element, type) {
+                 if(element.classList.contains('matched')) return;
+                 if (type === 'word') {
+                     if (selectedWordItem) selectedWordItem.classList.remove('selected');
+                     selectedWordItem = element; selectedWordItem.classList.add('selected');
+                 } else {
+                     if (selectedDefItem) selectedDefItem.classList.remove('selected');
+                     selectedDefItem = element; selectedDefItem.classList.add('selected');
+                 }
+                 if (selectedWordItem && selectedDefItem) {
+                     if (selectedWordItem.dataset.id === selectedDefItem.dataset.id) {
+                         selectedWordItem.classList.add('matched'); selectedDefItem.classList.add('matched');
+                         selectedWordItem.classList.remove('selected'); selectedDefItem.classList.remove('selected');
+                         selectedWordItem = null; selectedDefItem = null; matchedPairs++;
+                         if (matchedPairs === items.length) {
+                             container.innerHTML += '<p style="color: var(--success-accent); font-weight: bold; text-align:center; margin-top: 15px;">Gratulacje! Wszystko dopasowane!</p>';
+                         }
+                     } else {
+                         const sw = selectedWordItem; const sd = selectedDefItem;
+                         sw.classList.add('shake'); sd.classList.add('shake'); // Add shake animation for wrong match
+                         setTimeout(() => {
+                            if(sw) { sw.classList.remove('selected', 'shake'); }
+                            if(sd) { sd.classList.remove('selected', 'shake'); }
+                         }, 500);
+                          selectedWordItem = null; selectedDefItem = null;
+                     }
+                 }
+             }
+        }
+      },
+
+      // --- Event Handlers (mostly for delegation) ---
+      handlers: {
+        handleContainerClick: function(e) {
+            // Group Title Edit (Double Click)
+            if (e.target.tagName === 'H3' && e.target.closest('.group-header') && e.detail === 2) {
+                const title = e.target;
+                const groupDiv = title.closest('.group');
+                VocabularyApp.ui.editElement(title, (newName) => {
+                    // Basic validation for new name
+                    const trimmedName = newName.trim();
+                    if (!trimmedName) {
+                        alert("Nazwa grupy nie może być pusta.");
+                        title.innerText = groupDiv.getAttribute('data-group'); // Revert
+                        return; // Don't save
+                    }
+                     // Check for duplicates before saving
+                     const existingGroups = document.querySelectorAll('.group');
+                     if (Array.from(existingGroups).some(g => g !== groupDiv && g.getAttribute('data-group') === trimmedName)) {
+                         alert('Grupa o tej nazwie już istnieje!');
+                          title.innerText = groupDiv.getAttribute('data-group'); // Revert
+                         return; // Don't save
+                     }
+                    groupDiv.setAttribute('data-group', trimmedName);
+                    VocabularyApp.data.saveAll(); // Save after successful edit
+                }, false);
+            }
+             // SRS Status Button Click
+            else if (e.target.closest('.srs-status button')) {
+                const btn = e.target.closest('.srs-status button');
+                const status = btn.dataset.status;
+                const wordDiv = btn.closest('.word');
+                if (wordDiv && status) {
+                     VocabularyApp.ui.setSrsStatus(wordDiv, status);
+                     // Save is handled within setSrsStatus (throttled)
+                }
+            }
+            // Word Highlighting Click (if highlightMode is on, not batchMode, and not on actions)
+            else if (VocabularyApp.highlightMode && !VocabularyApp.batchMode && e.target.closest('.word') && !e.target.closest('.word-actions')) {
+                 const wordDiv = e.target.closest('.word');
+                 const chosenColor = document.getElementById('highlightColor').value;
+                 const currentBg = wordDiv.style.backgroundColor;
+                 const wordData = VocabularyApp.helpers.getWordData(wordDiv); // Get data to update highlight field
+
+                 if (currentBg && VocabularyApp.helpers.compareColors(currentBg, chosenColor)) {
+                    wordDiv.style.backgroundColor = ""; // Remove highlight
+                    wordData.highlight = ""; // Update data
+                    VocabularyApp.helpers.applySrsBackground(wordDiv, wordDiv.dataset.srs); // Restore SRS bg
+                 } else {
+                    wordDiv.style.backgroundColor = chosenColor; // Apply highlight
+                    wordData.highlight = chosenColor; // Update data
+                 }
+                 VocabularyApp.data.saveAll(); // Save highlight change
+            }
+            // Word Text Edit (Double Click) - Handled by inline ondblclick on the span itself for simplicity
+            // Word Detail Edit (Double Click) - Handled by inline ondblclick
+        },
+
+        handleDragStart: function(e) {
+           if (e.target.classList.contains('word')) {
+              VocabularyApp.draggedWord = e.target;
+              // Use timeout to allow browser to capture element before changing style
+              setTimeout(() => {
+                  if (VocabularyApp.draggedWord) VocabularyApp.draggedWord.classList.add('dragging');
+              }, 0);
+              // Required for Firefox:
+              try { e.dataTransfer.setData('text/plain', ''); } catch(err){}
+           }
+        },
+        handleDragEnd: function(e) {
+           if (e.target.classList.contains('word')) {
+              e.target.classList.remove('dragging');
+              // Clean up potential leftover drag-over classes
+              document.querySelectorAll('.word-list.drag-over').forEach(list => list.classList.remove('drag-over'));
+              VocabularyApp.draggedWord = null;
+           }
+        },
+        handleDragOver: function(e) {
+            const wordList = e.target.closest('.word-list');
+            if (wordList && VocabularyApp.draggedWord) {
+                e.preventDefault(); // Allow drop
+                wordList.classList.add('drag-over');
+            }
+        },
+        handleDragLeave: function(e) {
+             const wordList = e.target.closest('.word-list');
+             // Check if leaving the list itself, not just moving over child elements
+             if (wordList && !wordList.contains(e.relatedTarget)) {
+                 wordList.classList.remove('drag-over');
+             }
+        },
+        handleDrop: function(e) {
+           const wordList = e.target.closest('.word-list');
+           if (wordList && VocabularyApp.draggedWord && VocabularyApp.draggedWord.parentElement !== wordList) {
+               e.preventDefault();
+               wordList.classList.remove('drag-over');
+               if (document.body.contains(VocabularyApp.draggedWord)) { // Check if still exists
+                   const originalGroup = VocabularyApp.draggedWord.closest('.group');
+                   wordList.appendChild(VocabularyApp.draggedWord);
+                   const newGroup = wordList.closest('.group');
+                   // Update stats for both groups
+                   if(originalGroup) VocabularyApp.ui.updateGroupStats(originalGroup);
+                   if(newGroup) VocabularyApp.ui.updateGroupStats(newGroup);
+                   VocabularyApp.data.saveAll(); // Save after successful move
+               }
+           }
+           // Clean up even if drop failed or was invalid
+           if (VocabularyApp.draggedWord) VocabularyApp.draggedWord.classList.remove('dragging');
+           document.querySelectorAll('.word-list.drag-over').forEach(list => list.classList.remove('drag-over'));
+           VocabularyApp.draggedWord = null;
+        },
+
+        handleBatchWordClick: function(e) {
+            // Only process if batchMode is truly active and click is not on actions
+            if (!VocabularyApp.batchMode || e.target.closest('.word-actions')) return;
+
+            const wordDiv = e.target.closest('.word');
+            if (!wordDiv) return; // Clicked outside a word somehow
+
+            e.stopPropagation(); // Prevent other clicks like highlight
+
+            if (wordDiv.classList.contains('selected-for-batch')) {
+                wordDiv.classList.remove('selected-for-batch');
+                VocabularyApp.selectedWords = VocabularyApp.selectedWords.filter(w => w !== wordDiv);
+            } else {
+                wordDiv.classList.add('selected-for-batch');
+                VocabularyApp.selectedWords.push(wordDiv);
+            }
+        },
+
+        handleBatchMove: function() {
+            if (VocabularyApp.selectedWords.length === 0) { alert('Wybierz słowa do przeniesienia!'); return; }
+            const targetGroupName = document.getElementById('batchGroupSelect')?.value;
+            if (!targetGroupName) { alert('Wybierz grupę docelową!'); return; }
+            const targetGroup = document.querySelector(`.group[data-group="${targetGroupName}"]`);
+            if (!targetGroup) { alert('Grupa docelowa nie istnieje!'); return; }
+
+            const targetWordList = targetGroup.querySelector('.word-list');
+            const groupsToUpdate = new Set([targetGroup]); // Track groups needing stats update
+
+            VocabularyApp.selectedWords.forEach(word => {
+                 const originalGroup = word.closest('.group');
+                 if (originalGroup) groupsToUpdate.add(originalGroup);
+                 targetWordList.appendChild(word);
+                 word.classList.remove('selected-for-batch');
+            });
+
+            VocabularyApp.selectedWords = [];
+            groupsToUpdate.forEach(g => VocabularyApp.ui.updateGroupStats(g)); // Update stats
+            VocabularyApp.data.saveAll();
+        },
+
+        handleBatchSrsChange: function(status) {
+             if (VocabularyApp.selectedWords.length === 0) { alert('Wybierz słowa do zmiany statusu!'); return; }
+             const groupsToUpdate = new Set();
+             VocabularyApp.selectedWords.forEach(word => {
+                 VocabularyApp.ui.setSrsStatus(word, status); // This now handles stats update and throttled save
+                 word.classList.remove('selected-for-batch');
+                 const group = word.closest('.group');
+                 if (group) groupsToUpdate.add(group);
+             });
+             VocabularyApp.selectedWords = [];
+             // Explicit save might be redundant due to throttled save in setSrsStatus, but ensures final state is saved
+             VocabularyApp.data.saveAll();
+              // Update stats explicitly after loop (might be slightly delayed due to throttle)
+             // setTimeout(() => groupsToUpdate.forEach(g => VocabularyApp.ui.updateGroupStats(g)), 1100); // Update after throttle duration
+        },
+
+        handleBatchDelete: function() {
+             if (VocabularyApp.selectedWords.length === 0) { alert('Wybierz słowa do usunięcia!'); return; }
+             if (confirm(`Czy na pewno usunąć ${VocabularyApp.selectedWords.length} wybranych słów?`)) {
+                const groupsToUpdate = new Set();
+                VocabularyApp.selectedWords.forEach(word => {
+                    const group = word.closest('.group');
+                    if (group) groupsToUpdate.add(group);
+                    word.parentElement.removeChild(word);
+                });
+                VocabularyApp.selectedWords = [];
+                groupsToUpdate.forEach(g => VocabularyApp.ui.updateGroupStats(g)); // Update stats
+                VocabularyApp.data.saveAll();
+             }
+        }
+
+      },
+
+      // --- Helper Functions ---
+      helpers: {
+        getWordData: function(wordDiv) {
+          if (!wordDiv) return {};
+          const text = wordDiv.querySelector('.word-text')?.innerText || '';
+          const definition = wordDiv.querySelector('.word-def')?.innerText || '';
+          const example = wordDiv.querySelector('.word-ex')?.innerText || '';
+          const srs = wordDiv.dataset.srs || 'new';
+          const highlight = wordDiv.style.backgroundColor ? VocabularyApp.helpers.rgbToHex(wordDiv.style.backgroundColor) : '';
+          return { text, definition, example, srs, highlight };
+        },
+         updateWordDataField: function(spanElement, field, newText) {
+            // This function is called from the inline ondblclick's onUpdate callback
+            // We don't need to modify wordData object directly here,
+            // as getWordData will retrieve the updated innerText when saveData is called.
+            // The important part is calling saveData after the edit.
+            VocabularyApp.data.saveAll();
+        },
+        rgbToHex: function(rgb) {
+          if (!rgb || !rgb.startsWith('rgb')) return '';
+          try {
+            let sep = rgb.includes(",") ? "," : " ";
+            let rgbValues = rgb.substr(4).split(")")[0].split(sep);
+            let r = (+rgbValues[0]).toString(16).padStart(2, '0');
+            let g = (+rgbValues[1]).toString(16).padStart(2, '0');
+            let b = (+rgbValues[2]).toString(16).padStart(2, '0');
+            return "#" + r + g + b;
+          } catch (e) { return ''; } // Handle potential errors
+        },
+        hexToRgb: function(hex) {
+          if (!hex || !hex.startsWith('#') || (hex.length !== 4 && hex.length !== 7)) return '';
+          try {
+            let r = 0, g = 0, b = 0;
+            if (hex.length == 4) { // #RGB
+              r = parseInt(hex[1] + hex[1], 16); g = parseInt(hex[2] + hex[2], 16); b = parseInt(hex[3] + hex[3], 16);
+            } else { // #RRGGBB
+              r = parseInt(hex[1] + hex[2], 16); g = parseInt(hex[3] + hex[4], 16); b = parseInt(hex[5] + hex[6], 16);
+            }
+            return `rgb(${r}, ${g}, ${b})`;
+          } catch (e) { return ''; }
+        },
+         compareColors: function(color1, color2) {
+            // Compares potentially different formats (rgb vs hex)
+            const rgb1 = color1.startsWith('#') ? VocabularyApp.helpers.hexToRgb(color1) : color1;
+            const rgb2 = color2.startsWith('#') ? VocabularyApp.helpers.hexToRgb(color2) : color2;
+            return rgb1 === rgb2;
+        },
+        applySrsBackground: function(wordDiv, status) {
+          // Use CSS variables directly
+          const rootStyles = getComputedStyle(document.documentElement);
+          let bgColor = 'var(--secondary-bg)'; // Default background
+          switch (status) {
+              case 'new': bgColor = rootStyles.getPropertyValue('--word-new-bg').trim(); break;
+              case 'review': bgColor = rootStyles.getPropertyValue('--word-review-bg').trim(); break;
+              case 'mastered': bgColor = rootStyles.getPropertyValue('--word-mastered-bg').trim(); break;
+          }
+          wordDiv.style.backgroundColor = bgColor;
+        },
+        getRgbFromCssVar: function(varName) {
+             try {
+                 return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+             } catch(e) { return ''; }
+        },
+        speakWord: function(text, buttonElement) { // Added buttonElement for feedback
+            if (!VocabularyApp.synth) { console.warn("Speech Synthesis not supported."); return; }
+            if (VocabularyApp.synth.speaking) { console.warn('Already speaking'); return; }
+            if (text && text.trim() !== '') {
+                try {
+                    const utterThis = new SpeechSynthesisUtterance(text);
+                    let originalIcon = null;
+                    if (buttonElement) originalIcon = buttonElement.innerHTML; // Store original icon
+
+                    utterThis.onerror = function (event) {
+                        console.error('SpeechSynthesisUtterance error:', event);
+                        if (buttonElement) { // Visual error feedback
+                           buttonElement.innerHTML = '<i class="fa-solid fa-exclamation-triangle"></i>';
+                           buttonElement.style.color = 'var(--danger-accent)';
+                           setTimeout(() => {
+                               buttonElement.innerHTML = originalIcon;
+                               buttonElement.style.color = '';
+                           }, 2000);
+                        }
+                    };
+                     utterThis.onend = function() { // Restore icon when done
+                         if (buttonElement) buttonElement.innerHTML = originalIcon;
+                     };
+
+                    utterThis.pitch = 1;
+                    utterThis.rate = 0.9;
+                    // Optional: Select a voice if needed
+                    // const voices = VocabularyApp.synth.getVoices();
+                    // if (voices.length > 0) utterThis.voice = voices[0]; // Example: first available voice
+
+                    VocabularyApp.synth.speak(utterThis);
+                    if (buttonElement) buttonElement.innerHTML = '<i class="fa-solid fa-volume-low"></i>'; // Indicate speaking
+
+                } catch (error) {
+                    console.error('Error initiating speech synthesis:', error);
+                     if (buttonElement) { // Visual error feedback on initiation fail
+                        const originalIcon = buttonElement.innerHTML;
+                        buttonElement.innerHTML = '<i class="fa-solid fa-exclamation-triangle"></i>';
+                        buttonElement.style.color = 'var(--danger-accent)';
+                        setTimeout(() => {
+                            buttonElement.innerHTML = originalIcon;
+                            buttonElement.style.color = '';
+                        }, 2000);
+                     }
+                }
+            }
+        },
+         fetchAiData: async function(wordDiv) { // Make async for potential API calls
+            const wordSpan = wordDiv.querySelector('.word-text');
+            const defSpan = wordDiv.querySelector('.word-def');
+            const exSpan = wordDiv.querySelector('.word-ex');
+            const fetchBtn = wordDiv.querySelector('.word-details button'); // Get the button
+
+            if (!wordSpan || !defSpan || !exSpan || !fetchBtn) return;
+
+            const wordText = wordSpan.innerText;
+            defSpan.innerText = `Definicja dla "${wordText}" (ładowanie...)`;
+            exSpan.innerText = `Przykład dla "${wordText}" (ładowanie...)`;
+            fetchBtn.disabled = true; // Disable button during fetch
+            fetchBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; // Loading indicator
+
+            // --- SIMULATION ---
+            // Replace this section with actual API call if available
+            await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate delay
+            const fakeDefinition = `Prosta definicja słowa '${wordText}'.`;
+            const fakeExample = `Przykładowe zdanie używające '${wordText}' poprawnie.`;
+            // --- END SIMULATION ---
+
+            try {
+                // --- Example API Call (Conceptual) ---
+                /*
+                const apiKey = 'YOUR_API_KEY'; // Replace with actual key if needed
+                const prompt = `Provide a simple definition and an example sentence for the English word "${wordText}" suitable for an ESL learner. Format as JSON: {"definition": "...", "example": "..."}`;
+                const response = await fetch('API_ENDPOINT', { // Replace API_ENDPOINT
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+                    body: JSON.stringify({ prompt: prompt })
+                });
+                if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+                const data = await response.json();
+                const definition = data.definition;
+                const example = data.example;
+                */
+                // --- Using Simulated Data ---
+                const definition = fakeDefinition;
+                const example = fakeExample;
+                // -----------------------------
+
+                defSpan.innerText = definition || 'Nie znaleziono definicji.';
+                exSpan.innerText = example || 'Nie znaleziono przykładu.';
+
+                // Update data and save
+                VocabularyApp.data.saveAll();
+
+            } catch (error) {
+                console.error("Error fetching AI data:", error);
+                defSpan.innerText = 'Błąd pobierania definicji.';
+                exSpan.innerText = 'Błąd pobierania przykładu.';
+            } finally {
+                 fetchBtn.disabled = false; // Re-enable button
+                 fetchBtn.innerHTML = '<i class="fa-solid fa-robot"></i> Pobierz dane (AI)'; // Restore button text
+            }
+        },
+        getWordsFromGroup: function(groupElement, requireDetails = false) {
+            if (!groupElement) return null;
+            const wordDivs = groupElement.querySelectorAll('.word');
+            const wordsData = Array.from(wordDivs)
+                .map(wd => VocabularyApp.helpers.getWordData(wd))
+                .filter(data => data.text);
+
+            if (requireDetails) {
+                const filteredWords = wordsData.filter(data => data.definition && data.definition !== 'Kliknij dwukrotnie, aby dodać');
+                if (filteredWords.length < 2) {
+                    alert(`Grupa "${groupElement.dataset.group}" musi mieć co najmniej 2 słowa z definicjami, aby wygenerować to ćwiczenie.`);
+                    return null;
+                }
+                return filteredWords;
+            }
+
+            if (wordsData.length === 0) {
+                alert(`Grupa "${groupElement.dataset.group}" nie ma jeszcze żadnych słów!`);
+                return null;
+            }
+            return wordsData;
+        }
+
+      },
+
+      // --- Initialization ---
+      init: function() {
+        this.data.loadAll(); // Load data from localStorage
+        this.setupEventHandlers(); // Set up global listeners
+        this.ui.buildColorPalette(); // Build palette UI
+
+        // Set initial theme based on localStorage
+        if (localStorage.getItem('theme') === 'dark') {
+          document.body.classList.add('dark-theme');
+        }
+        // Ensure TTS voices are loaded (some browsers need this)
+        if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = () => VocabularyApp.synth.getVoices();
+        }
+         // Trigger initial stats update for all groups
+         document.querySelectorAll('.group').forEach(VocabularyApp.ui.updateGroupStats);
+      },
+
+      setupEventHandlers: function() {
+        const container = document.getElementById('groupsContainer');
+        const controls = document.querySelector('.controls');
+
+        // --- Delegated Clicks on Group Container ---
+        container.addEventListener('click', this.handlers.handleContainerClick);
+
+        // --- Delegated Drag & Drop on Group Container ---
+        container.addEventListener('dragstart', this.handlers.handleDragStart);
+        container.addEventListener('dragend', this.handlers.handleDragEnd);
+        // Dragover, dragleave, drop need to be on potential drop targets (word-lists)
+        // We add these dynamically or delegate from container and check target
+         container.addEventListener('dragover', this.handlers.handleDragOver);
+         container.addEventListener('dragleave', this.handlers.handleDragLeave);
+         container.addEventListener('drop', this.handlers.handleDrop);
+
+
+        // --- Control Buttons ---
+        // Search
+        const searchInput = document.getElementById('searchInput');
+        const clearSearchBtn = document.getElementById('clearSearchBtn');
+        const debouncedSearch = debounce(this.ui.handleSearch, 300);
+        searchInput.addEventListener('input', debouncedSearch);
+        clearSearchBtn.onclick = () => { searchInput.value = ''; this.ui.handleSearch(); };
+
+        // Palette Toggle & Save
+        document.getElementById('togglePaletteBtn').onclick = () => {
+            const palette = document.getElementById('colorPalette');
+            palette.style.display = palette.style.display === 'none' ? 'flex' : 'none';
+        };
+         document.getElementById('saveColorBtn').onclick = () => {
+            const currentColor = document.getElementById('highlightColor').value;
+            if (!this.paletteColors.includes(currentColor)) {
+                this.paletteColors.push(currentColor);
+                localStorage.setItem('colorPalette', JSON.stringify(this.paletteColors));
+                this.ui.buildColorPalette(); // Rebuild UI
+            }
+        };
+         // Close palette if clicked outside
+         document.addEventListener('click', (e) => {
+             const paletteContainer = document.querySelector('.palette-container');
+             const palette = document.getElementById('colorPalette');
+             if (palette.style.display === 'flex' && !paletteContainer.contains(e.target)) {
+                 palette.style.display = 'none';
+             }
+         });
+
+
+        // Import Group
+         document.getElementById('importGroupBtn').onclick = () => document.getElementById('importGroupInput').click();
+         document.getElementById('importGroupInput').onchange = (event) => this.data.importGroup(event);
+
+
+        // --- Modal Close ---
+        window.onclick = (event) => {
+          const modal = document.getElementById('activityModal');
+          if (event.target == modal) {
+            this.ui.closeModal();
+          }
+        }
+      }
+    };
+
+    // --- Initialize App ---
+    document.addEventListener('DOMContentLoaded', () => VocabularyApp.init());
+
+  </script>
+</body>
+</html>
