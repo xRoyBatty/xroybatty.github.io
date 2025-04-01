@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Przewodnik: Jak napisać e-mail o przeprowadzce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Dodatkowe style dla płynniejszego przejścia i wyglądu (takie same jak poprzednio) */
+        .step-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, margin-top 0.5s ease-out;
+            margin-top: 0;
+        }
+        .step-content.visible {
+            max-height: 1000px; /* Wystarczająco duża wartość */
+            margin-top: 1rem; /* Dodaj margines górny po rozwinięciu */
+            transition: max-height 0.5s ease-in, margin-top 0.5s ease-in;
+        }
+        .toggle-button {
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .action-button {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        textarea {
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        textarea:focus {
+            border-color: #3b82f6; /* Tailwind blue-500 */
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-cyan-100 font-sans text-gray-800 p-4 md:p-8">
+
+    <div class="container mx-auto max-w-3xl bg-white rounded-2xl shadow-xl p-6 md:p-10">
+
+        <header class="text-center mb-8 border-b pb-4 border-cyan-200">
+            <h1 class="text-3xl md:text-4xl font-bold text-cyan-700 mb-2">Twój Przewodnik: E-mail o Przeprowadzce!</h1>
+            <p class="text-lg text-gray-600">Cześć! Tym razem napiszemy e-mail o przeprowadzce. Pokażę Ci, jak to zrobić krok po kroku.</p>
+            <p class="mt-2 text-sm text-gray-500">Pamiętaj, pracuj spokojnie i we własnym tempie. Klikaj, aby odkrywać kolejne etapy!</p>
+        </header>
+
+        <div class="mb-8 p-4 bg-cyan-50 rounded-lg border border-cyan-200">
+            <h2 class="text-xl font-semibold text-cyan-600 mb-2">Twoje Nowe Zadanie:</h2>
+            <p class="text-gray-700">Wyobraź sobie, że niedawno przeprowadziłeś/aś się z rodziną do nowego domu lub mieszkania (w innym mieście lub innej części Twojego miasta). Napisz e-mail do przyjaciela/przyjaciółki (80-120 słów), aby o tym opowiedzieć.</p>
+            <ul class="list-disc list-inside text-gray-700 mt-2 pl-4">
+                <li>Przywitaj się i zapytaj co słychać.</li>
+                <li>Napisz, że się przeprowadziłeś/aś.</li>
+                <li>Opisz nowe miejsce (gdzie jest, jakie jest, co jest w okolicy?). Użyj <code class="bg-cyan-100 px-1 rounded">It’s</code>, <code class="bg-cyan-100 px-1 rounded">There is/are</code>.</li>
+                <li>Opisz nowy dom/mieszkanie (jaki jest, np. pokój?). Użyj <code class="bg-cyan-100 px-1 rounded">It’s</code>.</li>
+                <li>Zakończ e-mail i podpisz się.</li>
+            </ul>
+        </div>
+
+        <div class="mb-6 bg-white rounded-lg shadow-md border border-gray-200">
+            <button onclick="toggleStep('step0-content')" class="toggle-button w-full text-left p-4 bg-gray-100 hover:bg-gray-200 rounded-t-lg font-semibold text-lg text-gray-700 flex justify-between items-center">
+                <span>Krok 0: Przydatne Słówka (Kliknij, aby zobaczyć!)</span>
+                <span class="text-xl arrow">▼</span>
+            </button>
+            <div id="step0-content" class="step-content p-4 border-t border-gray-200">
+                <p class="mb-3 text-gray-600">Pamiętasz te słówka? Mogą się przydać także teraz! Zwróć uwagę na te dotyczące domu i miasta.</p>
+                {/* Sekcja słówek - taka sama jak poprzednio, bo słownictwo jest uniwersalne */}
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <h3 class="font-semibold text-cyan-600 mb-1">Powitania i zwroty:</h3>
+                        <ul class="list-disc list-inside text-sm">
+                            <li><code class="bg-cyan-50 px-1 rounded">Hi [Imię],</code> / <code class="bg-cyan-50 px-1 rounded">Hello [Imię],</code></li>
+                            <li><code class="bg-cyan-50 px-1 rounded">How are you?</code> / <code class="bg-cyan-50 px-1 rounded">How are things?</code></li>
+                            <li><code class="bg-cyan-50 px-1 rounded">I hope you are well.</code></li>
+                            <li><code class="bg-cyan-50 px-1 rounded">Write back soon.</code> / <code class="bg-cyan-50 px-1 rounded">See you soon.</code></li>
+                            <li><code class="bg-cyan-50 px-1 rounded">Best wishes,</code> / <code class="bg-cyan-50 px-1 rounded">Bye for now,</code></li>
+                             <li><code class="bg-cyan-50 px-1 rounded">Guess what?</code> - Zgadnij co? (Dobry początek do nowiny)</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-cyan-600 mb-1">Opis Miejsca (Miasto/Okolica):</h3>
+                        <ul class="list-disc list-inside text-sm">
+                             <li><code class="bg-cyan-50 px-1 rounded">town</code> / <code class="bg-cyan-50 px-1 rounded">city</code> / <code class="bg-cyan-50 px-1 rounded">village</code></li>
+                             <li><code class="bg-cyan-50 px-1 rounded">street</code> - ulica</li>
+                             <li><code class="bg-cyan-50 px-1 rounded">part of the city</code> - część miasta</li>
+                             <li><code class="bg-cyan-50 px-1 rounded">small</code> / <code class="bg-cyan-50 px-1 rounded">big</code> / <code class="bg-cyan-50 px-1 rounded">nice</code> / <code class="bg-cyan-50 px-1 rounded">quiet</code> / <code class="bg-cyan-50 px-1 rounded">noisy</code> / <code class="bg-cyan-50 px-1 rounded">interesting</code></li>
+                             <li><code class="bg-cyan-50 px-1 rounded">near</code> - blisko</li>
+                        </ul>
+                    </div>
+                     <div>
+                        <h3 class="font-semibold text-cyan-600 mb-1">Miejsca w mieście:</h3>
+                        <ul class="list-disc list-inside text-sm">
+                             <li><code class="bg-cyan-50 px-1 rounded">park</code>, <code class="bg-cyan-50 px-1 rounded">cinema</code>, <code class="bg-cyan-50 px-1 rounded">museum</code>, <code class="bg-cyan-50 px-1 rounded">castle</code>, <code class="bg-cyan-50 px-1 rounded">church</code>, <code class="bg-cyan-50 px-1 rounded">shops</code>, <code class="bg-cyan-50 px-1 rounded">cafe</code>, <code class="bg-cyan-50 px-1 rounded">station</code>, <code class="bg-cyan-50 px-1 rounded">library</code></li>
+                        </ul>
+                    </div>
+                     <div>
+                        <h3 class="font-semibold text-cyan-600 mb-1">Opis Domu/Mieszkania:</h3>
+                        <ul class="list-disc list-inside text-sm">
+                            <li><code class="bg-cyan-50 px-1 rounded">house</code> - dom / <code class="bg-cyan-50 px-1 rounded">flat</code> - mieszkanie</li>
+                            <li><code class="bg-cyan-50 px-1 rounded">room</code> / <code class="bg-cyan-50 px-1 rounded">bedroom</code> / <code class="bg-cyan-50 px-1 rounded">kitchen</code> / <code class="bg-cyan-50 px-1 rounded">living room</code> / <code class="bg-cyan-50 px-1 rounded">bathroom</code></li>
+                             <li><code class="bg-cyan-50 px-1 rounded">garden</code> - ogród</li>
+                             <li><code class="bg-cyan-50 px-1 rounded">big</code> / <code class="bg-cyan-50 px-1 rounded">small</code> / <code class="bg-cyan-50 px-1 rounded">modern</code> / <code class="bg-cyan-50 px-1 rounded">old</code> / <code class="bg-cyan-50 px-1 rounded">cosy</code> - przytulny</li>
+                        </ul>
+                    </div>
+                     <div>
+                        <h3 class="font-semibold text-cyan-600 mb-1">Ważne zwroty do opisu:</h3>
+                        <ul class="list-disc list-inside text-sm">
+                            <li><code class="bg-cyan-50 px-1 rounded">It's...</code> - To jest... / Ono jest...</li>
+                            <li><code class="bg-cyan-50 px-1 rounded">There is a...</code> (lub <code class="bg-cyan-50 px-1 rounded">There’s a...</code>) - Jest (jakiś)...</li>
+                            <li><code class="bg-cyan-50 px-1 rounded">There are some...</code> - Są (jakieś)...</li>
+                             <li><code class="bg-cyan-50 px-1 rounded">I moved</code> - Przeprowadziłem/am się</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="steps-container">
+            <div class="mb-6 bg-white rounded-lg shadow-md border border-gray-200">
+                <button onclick="toggleStep('step1-content')" class="toggle-button w-full text-left p-4 bg-blue-100 hover:bg-blue-200 rounded-t-lg font-semibold text-lg text-blue-800 flex justify-between items-center">
+                    <span>Krok 1: Temat E-maila (Subject)</span>
+                    <span class="text-xl arrow">▼</span>
+                </button>
+                <div id="step1-content" class="step-content p-4 border-t border-blue-200">
+                    <p class="text-gray-700 mb-3">Zaczynamy od tematu. Napisz krótko, że piszesz o przeprowadzce.</p>
+                    <p class="text-gray-700 mb-3">Przykłady: <code class="bg-blue-50 px-1 rounded">My new house!</code>, <code class="bg-blue-50 px-1 rounded">News from me</code>, <code class="bg-blue-50 px-1 rounded">Moving!</code>.</p>
+                    <p class="text-gray-700 font-medium">✍️ Pomyśl i zapisz swój pomysł na temat (możesz na kartce):</p>
+                    <div class="mt-3 text-center">
+                       <button onclick="markDone(this)" class="action-button bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-5 rounded-full text-sm">
+                           Zrobione! Idę dalej 👍
+                       </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6 bg-white rounded-lg shadow-md border border-gray-200 opacity-50" id="step2">
+                <button onclick="toggleStep('step2-content')" class="toggle-button w-full text-left p-4 bg-green-100 hover:bg-green-200 rounded-t-lg font-semibold text-lg text-green-800 flex justify-between items-center" disabled>
+                    <span>Krok 2: Powitanie i Pytanie o Samopoczucie</span>
+                    <span class="text-xl arrow">▼</span>
+                </button>
+                <div id="step2-content" class="step-content p-4 border-t border-green-200">
+                    <p class="text-gray-700 mb-3">Przywitaj się i zapytaj, co słychać u kolegi/koleżanki.</p>
+                    <p class="text-gray-700 mb-2"><strong>1. Powitanie:</strong></p>
+                     <ul class="list-disc list-inside text-gray-700 mb-3 pl-4">
+                        <li><code class="bg-green-50 px-1 rounded">Hi [Imię],</code> albo <code class="bg-green-50 px-1 rounded">Hello [Imię],</code> (Pamiętaj o przecinku!)</li>
+                    </ul>
+                    <p class="text-gray-700 mb-2"><strong>2. Pytanie o samopoczucie (wybierz jedno):</strong></p>
+                     <ul class="list-disc list-inside text-gray-700 mb-3 pl-4">
+                         <li><code class="bg-green-50 px-1 rounded">How are you?</code></li>
+                         <li><code class="bg-green-50 px-1 rounded">How are things?</code></li>
+                         <li><code class="bg-green-50 px-1 rounded">I hope you are well.</code></li>
+                    </ul>
+                    <p class="text-gray-700 font-medium">✍️ Zapisz swoje powitanie i pytanie na kartce:</p>
+                     <div class="mt-3 text-center">
+                       <button onclick="markDone(this)" class="action-button bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-5 rounded-full text-sm">
+                           Mam to! Co dalej? ✅
+                       </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6 bg-white rounded-lg shadow-md border border-gray-200 opacity-50" id="step3">
+                <button onclick="toggleStep('step3-content')" class="toggle-button w-full text-left p-4 bg-yellow-100 hover:bg-yellow-200 rounded-t-lg font-semibold text-lg text-yellow-800 flex justify-between items-center" disabled>
+                    <span>Krok 3: Główna Wiadomość - Przeprowadzka!</span>
+                    <span class="text-xl arrow">▼</span>
+                </button>
+                <div id="step3-content" class="step-content p-4 border-t border-yellow-200">
+                    <p class="text-gray-700 mb-3">Teraz najważniejsze - powiedz o przeprowadzce!</p>
+                    <p class="text-gray-700 mb-2"><strong>Napisz zdanie, np.:</strong></p>
+                    <ul class="list-disc list-inside text-gray-700 mb-3 pl-4">
+                        <li><code class="bg-yellow-50 px-1 rounded">Guess what?</code> (Zgadnij co?) - dobry początek</li>
+                        <li><code class="bg-yellow-50 px-1 rounded">I moved to a new house.</code> (Przeprowadziłem/am się do nowego domu.)</li>
+                        <li>LUB <code class="bg-yellow-50 px-1 rounded">I moved to a new flat.</code> (Przeprowadziłem/am się do nowego mieszkania.)</li>
+                        <li>Możesz połączyć: <code class="bg-yellow-50 px-1 rounded">Guess what? I moved to a new house/flat recently.</code> (...ostatnio.)</li>
+                    </ul>
+                    <p class="text-gray-700 font-medium">✍️ Zapisz swoje zdanie o przeprowadzce:</p>
+                     <div class="mt-3 text-center">
+                       <button onclick="markDone(this)" class="action-button bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-5 rounded-full text-sm">
+                           Powiedziałem/am! Następny krok! 🚀
+                       </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6 bg-white rounded-lg shadow-md border border-gray-200 opacity-50" id="step4">
+                <button onclick="toggleStep('step4-content')" class="toggle-button w-full text-left p-4 bg-purple-100 hover:bg-purple-200 rounded-t-lg font-semibold text-lg text-purple-800 flex justify-between items-center" disabled>
+                    <span>Krok 4: Nowe Miejsce - Gdzie To Jest?</span>
+                     <span class="text-xl arrow">▼</span>
+                </button>
+                <div id="step4-content" class="step-content p-4 border-t border-purple-200">
+                    <p class="text-gray-700 mb-3">Gdzie teraz mieszkasz? Podaj nazwę miasta lub dzielnicy.</p>
+                     <p class="text-gray-700 mb-2"><strong>Użyj <code class="bg-purple-50 px-1 rounded">It's</code>:</strong></p>
+                     <ul class="list-disc list-inside text-gray-700 mb-3 pl-4">
+                        <li><code class="bg-purple-50 px-1 rounded">It's in a town called [Nazwa].</code></li>
+                        <li><code class="bg-purple-50 px-1 rounded">It's in [Nazwa Miasta].</code></li>
+                        <li><code class="bg-purple-50 px-1 rounded">It's in another part of my city.</code></li>
+                        <li>Możesz dodać, gdzie to jest: <code class="bg-purple-50 px-1 rounded">It's near [Większe Miasto].</code> lub <code class="bg-purple-50 px-1 rounded">It's in the north/south/west/east of Poland.</code></li>
+                    </ul>
+                    <p class="text-gray-700 font-medium">✍️ Zapisz zdanie o lokalizacji nowego miejsca:</p>
+                     <div class="mt-3 text-center">
+                       <button onclick="markDone(this)" class="action-button bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-5 rounded-full text-sm">
+                           Zapisane! Co teraz? 🤔
+                       </button>
+                    </div>
+                </div>
+            </div>
+
+             <div class="mb-6 bg-white rounded-lg shadow-md border border-gray-200 opacity-50" id="step5">
+                <button onclick="toggleStep('step5-content')" class="toggle-button w-full text-left p-4 bg-pink-100 hover:bg-pink-200 rounded-t-lg font-semibold text-lg text-pink-800 flex justify-between items-center" disabled>
+                    <span>Krok 5: Nowe Miejsce - Jakie Jest i Co Jest w Pobliżu?</span>
+                     <span class="text-xl arrow">▼</span>
+                </button>
+                <div id="step5-content" class="step-content p-4 border-t border-pink-200">
+                    <p class="text-gray-700 mb-3">Opisz trochę nową okolicę.</p>
+                    <p class="text-gray-700 mb-2"><strong>1. Jakie jest to miejsce? Użyj <code class="bg-pink-50 px-1 rounded">It's</code>:</strong></p>
+                     <ul class="list-disc list-inside text-gray-700 mb-3 pl-4">
+                        <li><code class="bg-pink-50 px-1 rounded">It's big/small.</code></li>
+                        <li><code class="bg-pink-50 px-1 rounded">It's quiet/noisy.</code></li>
+                        <li><code class="bg-pink-50 px-1 rounded">It's interesting/nice.</code></li>
+                    </ul>
+                     <p class="text-gray-700 mb-2"><strong>2. Co ciekawego jest w pobliżu? Użyj <code class="bg-pink-50 px-1 rounded">There is a...</code> / <code class="bg-pink-50 px-1 rounded">There are some...</code>:</strong></p>
+                     <ul class="list-disc list-inside text-gray-700 mb-3 pl-4">
+                        <li><code class="bg-pink-50 px-1 rounded">There is a big park near my house.</code></li>
+                        <li><code class="bg-pink-50 px-1 rounded">There are some nice shops here.</code></li>
+                        <li><code class="bg-pink-50 px-1 rounded">There isn't a cinema, but there is a library.</code> (Możesz też pisać, czego nie ma)</li>
+                    </ul>
+                    <p class="text-gray-700 font-medium">✍️ Zapisz 2-3 zdania opisujące nową okolice:</p>
+                     <div class="mt-3 text-center">
+                       <button onclick="markDone(this)" class="action-button bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-5 rounded-full text-sm">
+                           Okolica opisana! Lecimy dalej! ✨
+                       </button>
+                    </div>
+                </div>
+            </div>
+
+             <div class="mb-6 bg-white rounded-lg shadow-md border border-gray-200 opacity-50" id="step6">
+                <button onclick="toggleStep('step6-content')" class="toggle-button w-full text-left p-4 bg-teal-100 hover:bg-teal-200 rounded-t-lg font-semibold text-lg text-teal-800 flex justify-between items-center" disabled>
+                    <span>Krok 6: Nowy Dom / Mieszkanie - Jak Wygląda?</span>
+                     <span class="text-xl arrow">▼</span>
+                </button>
+                <div id="step6-content" class="step-content p-4 border-t border-teal-200">
+                    <p class="text-gray-700 mb-3">Teraz opisz sam dom lub mieszkanie. Użyj <code class="bg-teal-50 px-1 rounded">It's</code>.</p>
+                    <p class="text-gray-700 mb-2"><strong>1. Jaki jest dom/mieszkanie?</strong></p>
+                     <ul class="list-disc list-inside text-gray-700 mb-3 pl-4">
+                        <li><code class="bg-teal-50 px-1 rounded">It's quite big/small.</code></li>
+                        <li><code class="bg-teal-50 px-1 rounded">It's modern/old.</code></li>
+                        <li><code class="bg-teal-50 px-1 rounded">It's very nice.</code></li>
+                        <li>Możesz dodać: <code class="bg-teal-50 px-1 rounded">There is a small garden.</code> (jeśli jest ogród)</li>
+                    </ul>
+                     <p class="text-gray-700 mb-2"><strong>2. Coś o Twoim pokoju?</strong></p>
+                     <ul class="list-disc list-inside text-gray-700 mb-3 pl-4">
+                         <li><code class="bg-teal-50 px-1 rounded">My new bedroom is great!</code></li>
+                         <li><code class="bg-teal-50 px-1 rounded">It's small but cosy.</code></li>
+                         <li><code class="bg-teal-50 px-1 rounded">It's bigger than my old room.</code></li>
+                     </ul>
+                    <p class="text-gray-700 font-medium">✍️ Zapisz 2-3 zdania opisujące nowy dom/mieszkanie i ewentualnie pokój:</p>
+                     <div class="mt-3 text-center">
+                       <button onclick="markDone(this)" class="action-button bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-5 rounded-full text-sm">
+                           Dom opisany! Co teraz? 🏠
+                       </button>
+                    </div>
+                </div>
+            </div>
+
+             <div class="mb-6 bg-white rounded-lg shadow-md border border-gray-200 opacity-50" id="step7">
+                <button onclick="toggleStep('step7-content')" class="toggle-button w-full text-left p-4 bg-orange-100 hover:bg-orange-200 rounded-t-lg font-semibold text-lg text-orange-800 flex justify-between items-center" disabled>
+                    <span>Krok 7: Zakończenie (Closing)</span>
+                     <span class="text-xl arrow">▼</span>
+                </button>
+                <div id="step7-content" class="step-content p-4 border-t border-orange-200">
+                    <p class="text-gray-700 mb-3">Prawie gotowe! Czas zakończyć e-mail.</p>
+                    <p class="text-gray-700 mb-2"><strong>Wybierz jedno zdanie:</strong></p>
+                     <ul class="list-disc list-inside text-gray-700 mb-3 pl-4">
+                        <li><code class="bg-orange-50 px-1 rounded">Write back soon.</code></li>
+                        <li><code class="bg-orange-50 px-1 rounded">See you soon.</code></li>
+                        <li><code class="bg-orange-50 px-1 rounded">That's all for now.</code></li>
+                        <li>Możesz dodać powód zakończenia, np. <code class="bg-orange-50 px-1 rounded">I have to go now.</code> (Muszę już iść.)</li>
+                    </ul>
+                    <p class="text-gray-700 font-medium">✍️ Zapisz wybrane zdanie kończące:</p>
+                     <div class="mt-3 text-center">
+                       <button onclick="markDone(this)" class="action-button bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-5 rounded-full text-sm">
+                           Kończę! Ostatni krok! 🎉
+                       </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6 bg-white rounded-lg shadow-md border border-gray-200 opacity-50" id="step8">
+                <button onclick="toggleStep('step8-content')" class="toggle-button w-full text-left p-4 bg-red-100 hover:bg-red-200 rounded-t-lg font-semibold text-lg text-red-800 flex justify-between items-center" disabled>
+                    <span>Krok 8: Podpis (Signing Off)</span>
+                     <span class="text-xl arrow">▼</span>
+                </button>
+                <div id="step8-content" class="step-content p-4 border-t border-red-200">
+                    <p class="text-gray-700 mb-3">I na sam koniec - podpisz się!</p>
+                     <p class="text-gray-700 mb-2"><strong>1. Wybierz zwrot pożegnalny:</strong></p>
+                     <ul class="list-disc list-inside text-gray-700 mb-3 pl-4">
+                        <li><code class="bg-red-50 px-1 rounded">Best wishes,</code></li>
+                        <li><code class="bg-red-50 px-1 rounded">Bye for now,</code></li>
+                    </ul>
+                     <p class="text-gray-700 mb-2"><strong>2. Pod spodem napisz swoje imię.</strong></p>
+                    <p class="text-gray-700 font-medium">✍️ Zapisz swój podpis (zwrot + imię):</p>
+                     <div class="mt-3 text-center">
+                       <button onclick="markDone(this)" class="action-button bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-5 rounded-full text-sm">
+                           Podpisane! Czas złożyć e-mail! 組み立てる!
+                       </button>
+                    </div>
+                </div>
+            </div>
+        </div> <div class="mb-6 bg-white rounded-lg shadow-xl border border-gray-200 opacity-50" id="step9">
+             <button onclick="toggleStep('step9-content')" class="toggle-button w-full text-left p-4 bg-indigo-100 hover:bg-indigo-200 rounded-t-lg font-semibold text-lg text-indigo-800 flex justify-between items-center" disabled>
+                <span>Krok 9: Twój Gotowy E-mail o Przeprowadzce!</span>
+                 <span class="text-xl arrow">▼</span>
+            </button>
+            <div id="step9-content" class="step-content p-4 border-t border-indigo-200">
+                <p class="text-gray-700 mb-3">Fantastycznie! Zbierz teraz wszystkie części e-maila, które zapisałaś/eś na kartce.</p>
+                <p class="text-gray-700 mb-3">Przepisz tutaj po kolei:</p>
+                <ol class="list-decimal list-inside text-gray-700 mb-4 pl-4">
+                    <li>Twój temat (z Kroku 1)</li>
+                    <li>Powitanie i pytanie (z Kroku 2)</li>
+                    <li>Wiadomość o przeprowadzce (z Kroku 3)</li>
+                    <li>Gdzie jest nowe miejsce (z Kroku 4)</li>
+                    <li>Opis okolicy (z Kroku 5)</li>
+                    <li>Opis domu/mieszkania (z Kroku 6)</li>
+                    <li>Zakończenie (z Kroku 7)</li>
+                    <li>Podpis (z Kroku 8)</li>
+                </ol>
+                <label for="final-email" class="block text-gray-700 font-medium mb-2">Wpisz lub wklej tutaj swój e-mail:</label>
+                <textarea id="final-email" rows="15" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="Subject: [Twój temat]...&#10;&#10;Hi [Imię Kolegi/Koleżanki],&#10;&#10;How are you?&#10;Guess what? I moved to a new house...&#10;It's in a town called...&#10;..."></textarea>
+                <div class="mt-4 text-center">
+                   <button onclick="markDone(this)" class="action-button bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-5 rounded-full text-sm">
+                       Mój e-mail jest gotowy! Co dalej? 🤩
+                   </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-6 bg-white rounded-lg shadow-md border border-gray-200 opacity-50" id="step10">
+            <button onclick="toggleStep('step10-content')" class="toggle-button w-full text-left p-4 bg-lime-100 hover:bg-lime-200 rounded-t-lg font-semibold text-lg text-lime-800 flex justify-between items-center" disabled>
+                <span>Krok 10: Ostatnie Sprawdzenie i Gratulacje!</span>
+                 <span class="text-xl arrow">▼</span>
+            </button>
+            <div id="step10-content" class="step-content p-4 border-t border-lime-200">
+                <p class="text-gray-700 mb-3">Niesamowite! Kolejny e-mail gotowy! 💪</p>
+                <p class="text-gray-700 mb-3">Sprawdź go ostatni raz:</p>
+                <ul class="list-disc list-inside text-gray-700 mb-4 pl-4 space-y-1">
+                    <li>Czy jest temat, powitanie, zakończenie i podpis?</li>
+                    <li>Czy napisałaś/eś o przeprowadzce?</li>
+                    <li>Czy opisałaś/eś nowe miejsce (gdzie jest, jakie, co w okolicy)?</li>
+                    <li>Czy opisałaś/eś nowy dom/mieszkanie?</li>
+                    <li>Czy użyłaś/eś <code class="bg-lime-50 px-1 rounded">It's</code>, <code class="bg-lime-50 px-1 rounded">There is</code>, <code class="bg-lime-50 px-1 rounded">There are</code>?</li>
+                    <li>Policz słowa - czy jest ich mniej więcej 80-120?</li>
+                </ul>
+                <p class="text-lg font-semibold text-lime-700 mb-3">Świetnie sobie radzisz!</p>
+                <p class="text-gray-700">Teraz możesz skopiować tekst swojego e-maila z pola powyżej (zaznacz i Ctrl+C lub Cmd+C) i wkleić go w naszej rozmowie (Ctrl+V lub Cmd+V), abym mógł go sprawdzić.</p>
+                 <p class="mt-4 text-center text-2xl">🎉 WELL DONE! 🎉</p>
+            </div>
+        </div>
+
+    </div> <script>
+        // Funkcja do pokazywania/ukrywania treści kroku
+        function toggleStep(contentId) {
+            const content = document.getElementById(contentId);
+            const button = content.previousElementSibling;
+            const arrow = button.querySelector('.arrow');
+
+            if (content.classList.contains('visible')) {
+                content.classList.remove('visible');
+                arrow.textContent = '▼';
+                button.classList.remove('rounded-b-none');
+                button.classList.add('rounded-b-lg');
+            } else {
+                // closeAllSteps(); // Opcjonalnie zamknij inne
+                content.classList.add('visible');
+                arrow.textContent = '▲';
+                button.classList.remove('rounded-b-lg');
+                button.classList.add('rounded-b-none');
+            }
+        }
+
+        // Funkcja do oznaczania kroku jako zrobiony i odblokowywania następnego
+        function markDone(button) {
+            const currentStepDiv = button.closest('.step-content').parentElement;
+            button.textContent = 'Super! ✔️';
+            // Usuń specyficzne kolory tła przycisku akcji
+             button.classList.remove('bg-blue-500', 'bg-green-500', 'bg-yellow-500', 'bg-purple-500', 'bg-pink-500', 'bg-teal-500', 'bg-orange-500', 'bg-red-500', 'bg-indigo-500', 'bg-lime-500');
+             // Usuń klasy hover
+             button.classList.remove('hover:bg-blue-600', 'hover:bg-green-600', 'hover:bg-yellow-600', 'hover:bg-purple-600', 'hover:bg-pink-600', 'hover:bg-teal-600', 'hover:bg-orange-600', 'hover:bg-red-600', 'hover:bg-indigo-600', 'hover:bg-lime-600');
+             // Dodaj klasy dla nieaktywnego przycisku
+            button.classList.add('bg-gray-400', 'cursor-not-allowed');
+            button.disabled = true;
+
+            let nextStep = currentStepDiv.nextElementSibling;
+            while (nextStep && !nextStep.id?.startsWith('step')) {
+                 nextStep = nextStep.nextElementSibling;
+            }
+
+            if (nextStep && nextStep.id?.startsWith('step')) {
+                nextStep.classList.remove('opacity-50');
+                const nextButton = nextStep.querySelector('button.toggle-button'); // Celuj w przycisk rozwijania
+                if(nextButton) {
+                    nextButton.disabled = false;
+                }
+            } else {
+                 // Specjalna obsługa dla odblokowania Kroku 9 po Kroku 8
+                 const step9 = document.getElementById('step9');
+                 if (step9 && currentStepDiv.id === 'step8') {
+                    step9.classList.remove('opacity-50');
+                    const step9Button = step9.querySelector('button.toggle-button');
+                    if(step9Button) step9Button.disabled = false;
+                 }
+                 // Specjalna obsługa dla odblokowania Kroku 10 po Kroku 9
+                 const step10 = document.getElementById('step10');
+                 if (step10 && currentStepDiv.id === 'step9') {
+                     step10.classList.remove('opacity-50');
+                     const step10Button = step10.querySelector('button.toggle-button');
+                     if(step10Button) step10Button.disabled = false;
+                 }
+            }
+        }
+
+        // Inicjalizacja - upewnij się, że tylko pierwszy krok jest aktywny
+        document.addEventListener('DOMContentLoaded', () => {
+             const steps = document.querySelectorAll('#steps-container > div[id^="step"], #step9, #step10');
+             steps.forEach((step, index) => {
+                 const button = step.querySelector('button.toggle-button');
+                 // Blokuj wszystkie kroki oprócz pierwszego (index 0)
+                 if (index > 0) {
+                     step.classList.add('opacity-50');
+                     if (button) button.disabled = true;
+                 } else {
+                      step.classList.remove('opacity-50');
+                     if (button) button.disabled = false;
+                 }
+                  // Dodaj zaokrąglenie dołu przycisków na starcie
+                 if(button) button.classList.add('rounded-b-lg');
+             });
+              // Obsługa kroku 0 - jest poza głównym przepływem
+             const step0Button = document.querySelector('#step0-content').previousElementSibling;
+             if(step0Button) step0Button.classList.add('rounded-b-lg');
+         });
+
+        // Opcjonalna funkcja do zamykania wszystkich innych kroków
+        // function closeAllSteps() { ... } // taka sama jak poprzednio
+
+    </script>
+
+</body>
+</html>
