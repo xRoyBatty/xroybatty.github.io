@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Praktyka Czasowników Angielskich (Nowa Wersja)</title>
+    <style>
+        /* --- Zmienne Globalne --- */
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #6f9ceb;
+            --correct-color: #4CAF50; /* Ciemny zielony dla tekstu */
+            --correct-bg-color: rgba(76, 175, 80, 0.2); /* Jasny zielony dla tła */
+            --incorrect-color: #f44336; /* Ciemny czerwony dla tekstu */
+            --incorrect-bg-color: rgba(244, 67, 54, 0.2); /* Jasny czerwony dla tła */
+            --info-color: #2196F3; /* Ciemny niebieski dla tekstu info */
+            --info-bg-color: rgba(33, 150, 243, 0.15); /* Jasny niebieski dla tła info */
+            --neutral-color: #f0f2f5;
+            --dark-text: #333;
+            --light-text: #fff;
+            --border-color: #ddd;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition-speed: 0.2s;
+        }
+
+        /* --- Reset i Podstawy --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 16px; /* Base font size */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            color: var(--dark-text);
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 800px;
+            margin: 20px auto; /* Add some margin top/bottom */
+        }
+
+        /* --- Nagłówek --- */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        .subtitle {
+            color: #555;
+            font-size: 1.1rem;
+        }
+
+        /* --- Główny Kontener --- */
+        .container {
+            background-color: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+        }
+
+        /* --- Wybór Trybu --- */
+        .mode-selector {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .setting-label { /* Reused from V2 for consistency */
+             display: block;
+             margin-bottom: 10px;
+             font-weight: bold;
+             color: var(--primary-color);
+             font-size: 1.1rem;
+        }
+
+        .mode-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .mode-button {
+            padding: 10px 15px;
+            background-color: var(--neutral-color);
+            color: var(--dark-text);
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            flex-grow: 1; /* Allow buttons to grow */
+            flex-basis: calc(50% - 10px); /* Try for 2 per row initially */
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        .mode-button:hover {
+            background-color: #e9e9e9;
+            border-color: var(--secondary-color);
+        }
+
+        .mode-button.active {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            border-color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* --- Pasek Postępu --- */
+        .progress-container {
+            margin-bottom: 20px;
+        }
+        .progress-info {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: var(--neutral-color);
+            height: 15px;
+            border-radius: 10px;
+            overflow: hidden; /* Ensures inner bar respects radius */
+        }
+        .progress {
+            height: 100%;
+            background-color: var(--secondary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px; /* Match parent */
+        }
+
+        /* --- Statystyki --- */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+            background-color: var(--neutral-color);
+            padding: 15px;
+            border-radius: var(--border-radius);
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            min-height: 1.5em; /* Prevent layout shifts */
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        /* --- Kontener Pytania --- */
+        .question-container {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: var(--neutral-color);
+            border-radius: var(--border-radius);
+        }
+        .prompt {
+            font-size: 1.5rem; /* Slightly larger */
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+            text-align: center;
+            min-height: 1.2em; /* Prevent layout shifts */
+        }
+         .prompt-details {
+            font-size: 1rem;
+            color: #555;
+            text-align: center;
+            margin-bottom: 15px;
+            min-height: 1.2em; /* Reserve space */
+            font-style: italic;
+         }
+
+        /* --- Opcje Wyboru (MCQ) --- */
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .option {
+            padding: 15px;
+            background-color: white;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        .option:hover {
+            background-color: #f5f5f5;
+            border-color: var(--secondary-color);
+        }
+        .option.selected { /* User's temporary selection */
+            background-color: var(--secondary-color) !important;
+            color: white;
+            border-color: var(--primary-color);
+        }
+        .option.correct { /* Revealed correct answer */
+            background-color: var(--correct-bg-color) !important;
+            color: var(--correct-color) !important; /* Use dark text for light bg */
+            border-color: var(--correct-color);
+            font-weight: bold;
+            cursor: default;
+        }
+        .option.incorrect { /* Revealed incorrect user choice */
+            background-color: var(--incorrect-bg-color) !important;
+            color: var(--incorrect-color) !important; /* Use dark text for light bg */
+            border-color: var(--incorrect-color);
+            text-decoration: line-through;
+            cursor: default;
+        }
+        /* Disable hover when feedback is shown */
+        .feedback-shown .option:not(.correct):not(.incorrect):hover {
+             background-color: white;
+             border-color: var(--border-color);
+             cursor: default;
+        }
+
+
+        /* --- Pole do Pisania --- */
+        .typing-container {
+             margin-top: 20px;
+             text-align: center;
+        }
+        #answer-input {
+            width: 100%; /* Default to full width for mobile */
+            max-width: 400px; /* Limit width on larger screens */
+            padding: 12px;
+            font-size: 1.1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            margin-bottom: 10px;
+            display: block; /* Make it block for easier centering */
+            margin-left: auto;
+            margin-right: auto;
+        }
+         #answer-input:focus {
+             border-color: var(--primary-color);
+             outline: none;
+             box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.3);
+         }
+          #answer-input:disabled {
+             background-color: #eee;
+             cursor: not-allowed;
+         }
+
+        /* --- Informacja Zwrotna (Feedback) --- */
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: none; /* Initially hidden */
+            border: 1px solid transparent; /* Base border */
+        }
+        .feedback.correct {
+            background-color: var(--correct-bg-color); /* Jasnozielone tło */
+            color: var(--correct-color);             /* Ciemnozielony tekst */
+            border-color: var(--correct-color);      /* Zielona ramka */
+        }
+        .feedback.incorrect {
+            background-color: var(--incorrect-bg-color); /* Jasnoczerwone tło */
+            color: var(--incorrect-color);           /* Ciemnoczerwony tekst */
+            border-color: var(--incorrect-color);    /* Czerwona ramka */
+        }
+         .feedback.info {
+            background-color: var(--info-bg-color); /* Jasnoniebieskie tło */
+            color: var(--info-color);             /* Ciemnoniebieski tekst */
+            border-color: var(--info-color);      /* Niebieska ramka */
+         }
+
+        /* --- Przyciski Kontrolne --- */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+            gap: 10px;
+        }
+        button { /* General button styling */
+            padding: 12px 20px;
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background-color var(--transition-speed);
+            flex-grow: 1; /* Buttons share space */
+        }
+        button:hover:not(:disabled) {
+            background-color: var(--secondary-color);
+        }
+        button:disabled {
+            background-color: #cccccc;
+            color: #888;
+            cursor: not-allowed;
+        }
+
+        /* --- Panel Ustawień --- */
+        .settings-panel {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            text-align: center;
+        }
+        #reset-progress {
+            background-color: var(--incorrect-color); /* Red for reset */
+        }
+         #reset-progress:hover:not(:disabled) {
+            background-color: #d32f2f; /* Darker red */
+        }
+
+
+        /* --- Responsywność --- */
+        @media (max-width: 600px) {
+             .options-container {
+                 grid-template-columns: 1fr; /* Stack options */
+             }
+             .stats {
+                 grid-template-columns: 1fr 1fr; /* Two stats per row */
+             }
+             .controls {
+                 flex-direction: column; /* Stack buttons */
+             }
+             button { /* Make buttons full width when stacked */
+                 width: 100%;
+             }
+              #answer-input {
+                 width: 100%; /* Ensure input is full width */
+                 max-width: none;
+             }
+             .mode-button {
+                 flex-basis: calc(50% - 5px); /* Aim for 2 buttons per row */
+             }
+        }
+         @media (max-width: 400px) {
+             .mode-button {
+                 flex-basis: 100%; /* Stack mode buttons */
+             }
+             h1 { font-size: 1.5rem; }
+             .prompt { font-size: 1.3rem; }
+             .option, #answer-input, .feedback { font-size: 1rem; }
+         }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Praktyka Czasowników Angielskich</h1>
+        <div class="subtitle">Tłumaczenie i formy czasowników</div>
+    </header>
+
+    <div class="container">
+        <!-- Sekcja Wyboru Trybu -->
+        <div class="mode-selector">
+            <div class="setting-label">Wybierz tryb:</div>
+            <div class="mode-buttons">
+                <button class="mode-button active" data-mode="mode1">PL ➡ Ang (bezok.)</button>
+                <button class="mode-button" data-mode="mode2">PL ➡ Ang (przeszły)</button>
+                <button class="mode-button" data-mode="mode3">PL ➡ Ang (przeczenie didn't)</button>
+                <button class="mode-button" data-mode="mode4">PL ➡ Ang (pisanie)</button>
+            </div>
+        </div>
+
+        <!-- Sekcja Postępu -->
+        <div class="progress-container">
+             <div class="progress-info">Postęp (<span id="progress-mode-label">Wybór</span>): <span id="progress-text">0%</span></div>
+            <div class="progress-bar">
+                <div class="progress" id="progress-bar"></div>
+            </div>
+        </div>
+
+        <!-- Sekcja Statystyk -->
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="learned-mc-count">0</div>
+                <div class="stat-label">Nauczone (Wybór)</div>
+            </div>
+             <div class="stat-item">
+                <div class="stat-value" id="learned-typing-count">0</div>
+                <div class="stat-label">Nauczone (Pisanie)</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="correct-streak">0</div>
+                <div class="stat-label">Bieżąca seria</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="total-verbs">0</div>
+                <div class="stat-label">Wszystkich zwrotów</div>
+            </div>
+        </div>
+
+        <!-- Sekcja Pytania i Odpowiedzi -->
+        <div class="question-container">
+            <div class="prompt" id="prompt">Ładowanie...</div>
+            <div class="prompt-details" id="prompt-details"></div>
+            <!-- Kontener na opcje MCQ -->
+            <div class="options-container" id="options-container"></div>
+            <!-- Kontener na pole do pisania -->
+            <div class="typing-container" id="typing-container" style="display: none;">
+                 <input type="text" id="answer-input" placeholder="Wpisz odpowiedź..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+            </div>
+            <!-- Kontener na informację zwrotną -->
+            <div class="feedback" id="feedback"></div>
+        </div>
+
+        <!-- Sekcja Kontrolna -->
+        <div class="controls">
+            <button id="check-button" disabled>Sprawdź</button>
+            <button id="next-button" disabled>Następne</button>
+        </div>
+    </div>
+
+    <!-- Panel Ustawień (tylko Reset) -->
+    <div class="settings-panel">
+         <button id="reset-progress">Zresetuj cały postęp</button>
+    </div>
+
+    <script>
+        // --- Dane Czasowników ---
+        const rawVerbList = `
+            ask for help - asked for help - didn't ask for help - prosić o pomoc
+            explain to me - explained to me - didn't explain to me - wyjaśnić mi
+            work at - worked at - didn't work at - pracować w
+            want to go - wanted to go - didn't want to go - chcieć iść
+            want to have - wanted to have - didn't want to have - chcieć mieć
+            want to buy - wanted to buy - didn't want to buy - chcieć kupić
+            learn how to swim - learned how to swim - didn't learn how to swim - nauczyć się pływać
+            learn how to speak English - learned how to speak English - didn't learn how to speak English - nauczyć się mówić po angielsku
+            live in - lived in - didn't live in - mieszkać w
+            invite to - invited to - didn't invite to - zapraszać do
+            look - looked - didn't look - patrzeć
+            look at - looked at - didn't look at - patrzeć na
+            look after - looked after - didn't look after - opiekować się
+            call somebody - called somebody - didn't call somebody - dzwonić do kogoś
+            help him to - helped him to - didn't help him to - pomóc mu
+            help her to - helped her to - didn't help her to - pomóc jej
+            help them to - helped them to - didn't help them to - pomóc im
+            use - used - didn't use - używać
+            need to - needed to - didn't need to - potrzebować
+            try to - tried to - didn't try to - próbować
+            try on - tried on - didn't try on - przymierzyć
+            try out - tried out - didn't try out - wypróbować
+            like it - liked it - didn't like it - lubić to
+            decide to - decided to - didn't decide to - zdecydować się
+            suggest -ing - suggested -ing - didn't suggest -ing - sugerować
+            start -ing - started -ing - didn't start -ing - zaczynać
+            walk - walked - didn't walk - chodzić
+            travel from ... to ... - travelled from ... to ... - didn't travel from ... to ... - podróżować z ... do ...
+            believe it - believed it - didn't believe it - wierzyć w to
+        `;
+
+        // --- Stałe Konfiguracyjne ---
+        const MC_LEARN_THRESHOLD = 3;
+        const TYPING_LEARN_THRESHOLD = 2;
+        const NUM_OPTIONS = 4; // Liczba opcji w MCQ
+        const PROGRESS_STORAGE_KEY = 'verbPracticeProgress_v3'; // Nowy klucz dla tej wersji
+
+        // --- Zmienne Stanu Aplikacji ---
+        let verbData = [];
+        let userProgress = {}; // { translationKey: { mcCorrectStreak: 0, typingCorrectStreak: 0, learnedMC: false, learnedTyping: false } }
+        let currentVerbData = null; // Pełne dane bieżącego czasownika
+        let currentCorrectAnswer = ''; // Oczekiwana poprawna odpowiedź
+        let currentMode = 'mode1'; // mode1, mode2, mode3, mode4
+        let currentTargetForm = ''; // 'base', 'past', 'negativePast' (dla trybu 4)
+        let availableVerbs = []; // Czasowniki dostępne do nauki w bieżącym trybie
+        let selectedOptionElement = null; // Element DOM wybranej opcji w MCQ
+
+        // --- Referencje do Elementów DOM ---
+        const promptElement = document.getElementById('prompt');
+        const promptDetailsElement = document.getElementById('prompt-details');
+        const optionsContainer = document.getElementById('options-container');
+        const typingContainer = document.getElementById('typing-container');
+        const answerInput = document.getElementById('answer-input');
+        const checkButton = document.getElementById('check-button');
+        const nextButton = document.getElementById('next-button');
+        const feedbackElement = document.getElementById('feedback');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const progressModeLabel = document.getElementById('progress-mode-label');
+        const learnedMcCountElement = document.getElementById('learned-mc-count');
+        const learnedTypingCountElement = document.getElementById('learned-typing-count');
+        const correctStreakElement = document.getElementById('correct-streak');
+        const totalVerbsElement = document.getElementById('total-verbs');
+        const resetButton = document.getElementById('reset-progress');
+        const modeButtons = document.querySelectorAll('.mode-button');
+        const questionContainer = document.querySelector('.question-container'); // Do dodania klasy feedback-shown
+
+        // --- Funkcje Pomocnicze ---
+
+        /** Parsuje surową listę czasowników do struktury obiektów */
+        function parseVerbData(rawList) {
+            const lines = rawList.trim().split('\n');
+            const verbs = [];
+            lines.forEach((line, index) => {
+                const parts = line.split(' - ');
+                if (parts.length === 4) {
+                    verbs.push({
+                        id: index, // Prosty identyfikator
+                        base: parts[0].trim(),
+                        past: parts[1].trim(),
+                        negativePast: parts[2].trim(),
+                        translation: parts[3].trim()
+                    });
+                } else {
+                    console.warn(`Pominięto nieprawidłową linię #${index + 1}:`, line);
+                }
+            });
+            return verbs;
+        }
+
+        /** Tasuje tablicę w miejscu (algorytm Fisher-Yates) */
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        /** Inicjalizuje lub resetuje dane postępu użytkownika */
+        function initializeProgressData() {
+            userProgress = {};
+            verbData.forEach(verb => {
+                // Używamy tłumaczenia jako klucza - zakładamy unikalność
+                userProgress[verb.translation] = {
+                    mcCorrectStreak: 0,
+                    typingCorrectStreak: 0,
+                    learnedMC: false,
+                    learnedTyping: false
+                };
+            });
+        }
+
+        /** Ładuje postęp z localStorage lub inicjalizuje, jeśli nie istnieje */
+        function loadUserProgress() {
+            const savedProgress = localStorage.getItem(PROGRESS_STORAGE_KEY);
+            initializeProgressData(); // Zawsze inicjalizuj domyślną strukturę
+            if (savedProgress) {
+                try {
+                    const parsedProgress = JSON.parse(savedProgress);
+                    // Scal zapisane dane z domyślną strukturą, aby obsłużyć nowe/usunięte czasowniki
+                    verbData.forEach(verb => {
+                        if (parsedProgress[verb.translation]) {
+                            userProgress[verb.translation] = {
+                                ...userProgress[verb.translation], // Weź domyślne wartości
+                                ...parsedProgress[verb.translation] // Nadpisz zapisanymi
+                            };
+                        }
+                    });
+                } catch (e) {
+                    console.error("Nie udało się załadować postępu:", e);
+                    // W razie błędu użyj świeżo zainicjalizowanych danych
+                }
+            }
+        }
+
+        /** Zapisuje bieżący postęp w localStorage */
+        function saveUserProgress() {
+            try {
+                localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(userProgress));
+            } catch (e) {
+                console.error("Nie udało się zapisać postępu:", e);
+            }
+        }
+
+        /** Aktualizuje widok statystyk i paska postępu */
+        function updateStats() {
+            let learnedMC = 0;
+            let learnedTyping = 0;
+            verbData.forEach(verb => {
+                const progress = userProgress[verb.translation];
+                 if(progress) {
+                     if (progress.learnedMC) learnedMC++;
+                     if (progress.learnedTyping) learnedTyping++;
+                 }
+            });
+
+            learnedMcCountElement.textContent = learnedMC;
+            learnedTypingCountElement.textContent = learnedTyping;
+            totalVerbsElement.textContent = verbData.length;
+
+            // Aktualizacja bieżącej serii dla aktualnie wyświetlanego czasownika
+            let currentStreak = 0;
+             if (currentVerbData && userProgress[currentVerbData.translation]) {
+                 const progress = userProgress[currentVerbData.translation];
+                 const isMCMode = ['mode1', 'mode2', 'mode3'].includes(currentMode);
+                 currentStreak = isMCMode ? progress.mcCorrectStreak : progress.typingCorrectStreak;
+             }
+            correctStreakElement.textContent = currentStreak;
+
+            // Aktualizacja paska postępu
+             const isMCModeCategory = ['mode1', 'mode2', 'mode3'].includes(currentMode);
+             const totalInMode = verbData.length;
+             const learnedInMode = isMCModeCategory ? learnedMC : learnedTyping;
+             const progressPercent = totalInMode > 0 ? Math.round((learnedInMode / totalInMode) * 100) : 0;
+
+            progressBar.style.width = `${progressPercent}%`;
+            progressText.textContent = `${progressPercent}%`;
+            progressModeLabel.textContent = isMCModeCategory ? 'Wybór' : 'Pisanie';
+        }
+
+        // --- Logika Gry ---
+
+        /** Ustawia tryb gry */
+        function setMode(modeId) {
+            currentMode = modeId;
+
+            // Aktualizacja wyglądu przycisków trybu
+            modeButtons.forEach(button => {
+                button.classList.toggle('active', button.dataset.mode === modeId);
+            });
+
+            // Pokaż/ukryj odpowiednie kontenery
+            const isTypingMode = currentMode === 'mode4';
+            optionsContainer.style.display = isTypingMode ? 'none' : 'grid';
+            typingContainer.style.display = isTypingMode ? 'block' : 'none';
+
+            // Przygotuj i wyświetl następne pytanie dla nowego trybu
+            setNextQuestion();
+        }
+
+        /** Filtruje czasowniki, które nie zostały jeszcze nauczone w danym typie trybu */
+        function updateAvailableVerbs() {
+            const isMCModeCategory = ['mode1', 'mode2', 'mode3'].includes(currentMode);
+            availableVerbs = verbData.filter(verb => {
+                const progress = userProgress[verb.translation];
+                // Zwróć czasownik, jeśli postęp dla niego nie istnieje LUB nie jest nauczony w danym trybie
+                return !progress || (isMCModeCategory ? !progress.learnedMC : !progress.learnedTyping);
+            });
+        }
+
+        /** Przygotowuje i wyświetla następne pytanie */
+        function setNextQuestion() {
+            // Reset stanu UI dla pytania
+            feedbackElement.style.display = 'none';
+            feedbackElement.className = 'feedback'; // Reset klas
+            questionContainer.classList.remove('feedback-shown'); // Usuń klasę blokującą hover
+            selectedOptionElement = null;
+            answerInput.value = '';
+            answerInput.disabled = false;
+            optionsContainer.innerHTML = ''; // Wyczyść stare opcje
+            promptDetailsElement.textContent = ''; // Wyczyść szczegóły
+            checkButton.disabled = true;
+            nextButton.disabled = true;
+            checkButton.style.display = 'inline-block'; // Pokaż przyciski (mogły być ukryte)
+            nextButton.style.display = 'inline-block';
+
+            updateAvailableVerbs(); // Odśwież listę dostępnych czasowników
+
+            if (availableVerbs.length === 0) {
+                // Wszystko nauczone w tym trybie
+                promptElement.textContent = "Gratulacje!";
+                const modeName = document.querySelector(`.mode-button[data-mode="${currentMode}"]`).textContent;
+                promptDetailsElement.textContent = `Opanowałeś wszystkie zwroty w trybie "${modeName}"!`;
+                feedbackElement.className = 'feedback info';
+                feedbackElement.textContent = 'Wybierz inny tryb lub zresetuj postęp.';
+                feedbackElement.style.display = 'block';
+                checkButton.style.display = 'none'; // Ukryj przyciski
+                nextButton.style.display = 'none';
+                updateStats(); // Zaktualizuj statystyki (np. pasek postępu na 100%)
+                return;
+            }
+
+            // Wybierz losowy czasownik z dostępnych
+            const randomIndex = Math.floor(Math.random() * availableVerbs.length);
+            currentVerbData = availableVerbs[randomIndex];
+            promptElement.textContent = `"${currentVerbData.translation}"`;
+
+            // Ustaw poprawną odpowiedź i szczegóły w zależności od trybu
+            if (currentMode === 'mode1') {
+                currentCorrectAnswer = currentVerbData.base;
+                promptDetailsElement.textContent = 'Podaj formę bezokolicznikową';
+                createMultipleChoiceOptions(currentCorrectAnswer, 'base');
+            } else if (currentMode === 'mode2') {
+                currentCorrectAnswer = currentVerbData.past;
+                promptDetailsElement.textContent = 'Podaj formę przeszłą';
+                createMultipleChoiceOptions(currentCorrectAnswer, 'past');
+            } else if (currentMode === 'mode3') {
+                currentCorrectAnswer = currentVerbData.negativePast;
+                promptDetailsElement.textContent = 'Podaj formę przeczącą przeszłą';
+                createMultipleChoiceOptions(currentCorrectAnswer, 'negativePast');
+            } else if (currentMode === 'mode4') {
+                // Tryb pisania: losuj formę do wpisania
+                const forms = ['base', 'past', 'negativePast'];
+                currentTargetForm = forms[Math.floor(Math.random() * forms.length)];
+                currentCorrectAnswer = currentVerbData[currentTargetForm];
+
+                let formName = '';
+                switch(currentTargetForm) {
+                    case 'base': formName = 'bezokolicznikową'; break;
+                    case 'past': formName = 'przeszłą'; break;
+                    case 'negativePast': formName = 'przeczącą przeszłą'; break;
+                }
+                 promptDetailsElement.textContent = `Wpisz formę ${formName}`;
+                 answerInput.focus();
+                 // Przycisk Sprawdź zostanie włączony przez event listener 'input'
+            }
+
+             updateStats(); // Zaktualizuj statystyki (zwłaszcza bieżącą serię)
+        }
+
+        /** Tworzy opcje wielokrotnego wyboru */
+        function createMultipleChoiceOptions(correctAnswer, formType) {
+            const options = [correctAnswer];
+            const allOtherForms = verbData
+                .filter(v => v.id !== currentVerbData.id) // Wyklucz bieżący czasownik
+                .map(v => v[formType]) // Weź tylko odpowiednią formę
+                .filter(form => form !== correctAnswer); // Wyklucz duplikat poprawnej odpowiedzi
+
+            shuffleArray(allOtherForms); // Potasuj inne formy
+
+            // Dodaj unikalne dystraktory
+            for (let i = 0; options.length < NUM_OPTIONS && i < allOtherForms.length; i++) {
+                if (!options.includes(allOtherForms[i])) {
+                    options.push(allOtherForms[i]);
+                }
+            }
+            // Jeśli nadal brakuje opcji (mało prawdopodobne przy >4 czasownikach), dodaj placeholdery
+             while (options.length < NUM_OPTIONS) {
+                 options.push(`Opcja ${options.length + 1}`);
+             }
+
+            shuffleArray(options); // Potasuj finalne opcje
+
+            // Stwórz elementy DOM
+            options.forEach(optionText => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = optionText;
+                optionElement.addEventListener('click', handleOptionSelect);
+                optionsContainer.appendChild(optionElement);
+            });
+        }
+
+        /** Obsługuje kliknięcie opcji w MCQ */
+        function handleOptionSelect(event) {
+             // Nie rób nic, jeśli odpowiedź została już sprawdzona
+             if (!checkButton.disabled || nextButton.disabled === false) return;
+
+            // Odznacz poprzednio wybraną opcję, jeśli istnieje
+             if (selectedOptionElement) {
+                 selectedOptionElement.classList.remove('selected');
+             }
+
+            // Zaznacz nową opcję
+            selectedOptionElement = event.target;
+            selectedOptionElement.classList.add('selected');
+            checkButton.disabled = false; // Włącz przycisk sprawdzania
+        }
+
+        /** Sprawdza odpowiedź użytkownika */
+        function checkAnswer() {
+            if (checkButton.disabled) return;
+
+            let userAnswer = '';
+            const isMCMode = ['mode1', 'mode2', 'mode3'].includes(currentMode);
+
+            if (isMCMode) {
+                if (!selectedOptionElement) return; // Nic nie wybrano
+                userAnswer = selectedOptionElement.textContent;
+            } else { // Tryb pisania
+                userAnswer = answerInput.value.trim();
+                if (!userAnswer) return; // Puste pole
+                answerInput.disabled = true; // Zablokuj pole po sprawdzeniu
+            }
+
+            // Porównanie (case-insensitive)
+            // UWAGA: Nie obsługuje specjalnie '...' ani '-ing' - będzie wymagać dokładnego wpisania.
+            const isCorrect = userAnswer.toLowerCase() === currentCorrectAnswer.toLowerCase();
+            const verbProgress = userProgress[currentVerbData.translation];
+
+            feedbackElement.style.display = 'block';
+            questionContainer.classList.add('feedback-shown'); // Dodaj klasę do blokowania hover na opcjach
+            checkButton.disabled = true; // Wyłącz Sprawdź
+            nextButton.disabled = false; // Włącz Następne
+
+            if (isCorrect) {
+                feedbackElement.className = 'feedback correct';
+                feedbackElement.textContent = 'Poprawnie!';
+
+                if (isMCMode) {
+                    verbProgress.mcCorrectStreak++;
+                    if (!verbProgress.learnedMC && verbProgress.mcCorrectStreak >= MC_LEARN_THRESHOLD) {
+                        verbProgress.learnedMC = true;
+                        feedbackElement.textContent += ` Gratulacje! Zwrot opanowany w trybie wyboru.`;
+                    } else if (!verbProgress.learnedMC) {
+                         feedbackElement.textContent += ` Dobra passa: ${verbProgress.mcCorrectStreak}/${MC_LEARN_THRESHOLD}`;
+                    }
+                } else { // Tryb pisania
+                    verbProgress.typingCorrectStreak++;
+                    if (!verbProgress.learnedTyping && verbProgress.typingCorrectStreak >= TYPING_LEARN_THRESHOLD) {
+                        verbProgress.learnedTyping = true;
+                        feedbackElement.textContent += ` Gratulacje! Zwrot opanowany w trybie pisania.`;
+                    } else if (!verbProgress.learnedTyping) {
+                         feedbackElement.textContent += ` Dobra passa: ${verbProgress.typingCorrectStreak}/${TYPING_LEARN_THRESHOLD}`;
+                    }
+                }
+            } else { // Niepoprawna odpowiedź
+                feedbackElement.className = 'feedback incorrect';
+                feedbackElement.textContent = `Niepoprawnie. Poprawna odpowiedź: "${currentCorrectAnswer}"`;
+
+                // Resetuj passę dla danego trybu
+                if (isMCMode) {
+                    verbProgress.mcCorrectStreak = 0;
+                } else {
+                    verbProgress.typingCorrectStreak = 0;
+                }
+
+                // W trybie MCQ, podświetl poprawną i błędną opcję
+                 if (isMCMode) {
+                     const options = optionsContainer.querySelectorAll('.option');
+                     options.forEach(opt => {
+                        opt.classList.remove('selected'); // Usuń zaznaczenie użytkownika
+                         if (opt.textContent.toLowerCase() === currentCorrectAnswer.toLowerCase()) {
+                             opt.classList.add('correct');
+                         } else if (opt === selectedOptionElement) { // Jeśli to była wybrana opcja
+                             opt.classList.add('incorrect');
+                         }
+                     });
+                 }
+            }
+
+            saveUserProgress();
+            updateStats();
+            if(!isMCMode || !isCorrect) { // Jeśli pisanie lub błąd w MCQ, przenieś fokus na Następne
+                nextButton.focus();
+            }
+        }
+
+        /** Obsługuje reset całego postępu */
+        function handleResetProgress() {
+            if (confirm('Czy na pewno chcesz zresetować CAŁY postęp nauki dla wszystkich trybów? Tej operacji nie można cofnąć.')) {
+                localStorage.removeItem(PROGRESS_STORAGE_KEY);
+                initializeProgressData(); // Zresetuj stan w pamięci
+                feedbackElement.className = 'feedback info';
+                feedbackElement.textContent = 'Postęp został zresetowany.';
+                feedbackElement.style.display = 'block';
+                // Odśwież pytanie w bieżącym trybie
+                setMode(currentMode);
+                 // Ukryj info po chwili
+                 setTimeout(() => {
+                    if (feedbackElement.classList.contains('info')) { // Sprawdź czy nadal jest info
+                        feedbackElement.style.display = 'none';
+                    }
+                 }, 3000);
+            }
+        }
+
+        // --- Inicjalizacja i Event Listeners ---
+
+        function initializeApp() {
+            verbData = parseVerbData(rawVerbList);
+            if (verbData.length === 0) {
+                promptElement.textContent = "Błąd: Brak danych czasowników.";
+                console.error("Nie udało się sparsować danych czasowników.");
+                return;
+            }
+            loadUserProgress();
+            setupEventListeners();
+            setMode(currentMode); // Ustaw tryb początkowy
+        }
+
+        function setupEventListeners() {
+            // Przyciski kontrolne
+            checkButton.addEventListener('click', checkAnswer);
+            nextButton.addEventListener('click', setNextQuestion);
+            resetButton.addEventListener('click', handleResetProgress);
+
+            // Przyciski trybów
+            modeButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    setMode(e.target.dataset.mode);
+                });
+            });
+
+            // Pole do wpisywania
+            answerInput.addEventListener('keypress', (e) => {
+                // Sprawdź odpowiedź po naciśnięciu Enter, jeśli przycisk jest aktywny
+                if (e.key === 'Enter' && !checkButton.disabled) {
+                    e.preventDefault(); // Zapobiegaj domyślnej akcji (np. submit formularza)
+                    checkAnswer();
+                }
+            });
+            answerInput.addEventListener('input', () => {
+                // Włącz przycisk Sprawdź w trybie pisania, jeśli pole nie jest puste
+                if (currentMode === 'mode4') {
+                    checkButton.disabled = answerInput.value.trim() === '';
+                }
+            });
+        }
+
+        // --- Start Aplikacji ---
+        window.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>
