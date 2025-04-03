@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poradnik: E-mail o urządzeniu elektronicznym - Egzamin Ósmoklasisty</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Dodatkowe style dla płynniejszego przejścia i wyglądu */
+        .step-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, margin-top 0.5s ease-out;
+            margin-top: 0;
+        }
+        .step-content.visible {
+            max-height: 1000px; /* Wystarczająco duża wartość */
+            margin-top: 1rem; /* Dodaj margines górny po rozwinięciu */
+            transition: max-height 0.5s ease-in, margin-top 0.5s ease-in;
+        }
+        /* Styl dla przycisku "Pokaż/Ukryj" */
+        .toggle-button {
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+         /* Styl dla przycisków akcji */
+        .action-button {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        /* Styl dla obszaru tekstowego */
+        textarea {
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        textarea:focus {
+            border-color: #3b82f6; /* Tailwind blue-500 */
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 font-sans text-gray-800 p-4 md:p-8">
+    <div class="container mx-auto max-w-3xl bg-white rounded-2xl shadow-xl p-6 md:p-10">
+        <header class="text-center mb-8 border-b pb-4 border-indigo-200">
+            <h1 class="text-3xl md:text-4xl font-bold text-indigo-700 mb-2">Egzamin Ósmoklasisty: E-mail o nowym urządzeniu</h1>
+            <p class="text-lg text-gray-600">Cześć! Ten poradnik pomoże Ci krok po kroku napisać e-mail na egzaminie!</p>
+            <p class="mt-2 text-sm text-gray-500">Nie martw się! Zrobimy to razem, spokojnie, małymi krokami. Każdy krok jest bardzo prosty!</p>
+        </header>
+        <div class="mb-8 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+            <h2 class="text-xl font-semibold text-indigo-600 mb-2">Zadanie Egzaminacyjne:</h2>
+            <p class="text-gray-700">Otrzymałeś/otrzymałaś w prezencie nowe urządzenie elektroniczne. W e-mailu do kolegi z Anglii:</p>
+            <ul class="list-disc list-inside text-gray-700 mt-2 pl-4">
+                <li>napisz, jakie urządzenie dostałeś/dostałaś i od kogo</li>
+                <li>opisz, do czego używasz tego urządzenia</li>
+                <li>wyjaśnij, co Ci się w nim podoba, a co nie</li>
+                <li>zapytaj kolegę, jakie urządzenie elektroniczne chciałby dostać.</li>
+            </ul>
+            <p class="mt-2 text-gray-700">Napisz swoją wypowiedź w języku angielskim. Podpisz się jako XYZ.</p>
+            <p class="mt-2 text-gray-700">Długość: 50-120 słów (nie licząc początku)</p>
+            <div class="mt-3 p-2 bg-white rounded-lg border border-blue-200">
+                <p class="font-medium text-blue-700">Początek e-maila (już podany):</p>
+                <p class="text-blue-600 pl-2 mt-1 font-medium">Hi Mark,<br>Guess what! I've just got a new electronic device.</p>
+            </div>
+        </div>
+        <div class="mb-6 bg-white rounded-lg shadow-md border border-gray-200">
+            <button onclick="toggleStep('step0-content')" class="toggle-button w-full text-left p-4 bg-gray-100 hover:bg-gray-200 rounded-t-lg font-semibold text-lg text-gray-700 flex justify-between items-center">
+                <span>Krok 0: Przydatne Słówka (Kliknij, aby zobaczyć!)</span>
+                <span class="text-xl arrow">▼</span>
+            </button>
+            <div id="step0-content" class="step-content p-4 border-t border-gray-200">
+                <p class="mb-3 text-gray-600">Oto słówka, które pomogą Ci napisać e-mail. Nie musisz używać wszystkich!</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <h3 class="font-semibold text-indigo-600 mb-1">Urządzenia elektroniczne:</h3>
+                        <ul class="list-disc list-inside text-sm">
+                            <li><code class="bg-indigo-50 px-1 rounded">a tablet</code> - tablet</li>
+                            <li><code class="bg-indigo-50 px-1 rounded">a smartphone</code> - smartfon</li>
+                            <li><code class="bg-indigo-50 px-1 rounded">an e-reader</code> - czytnik e-booków</li>
+                            <li><code class="bg-indigo-50 px-1 rounded">an MP3 player</code> - odtwarzacz MP3</li>
+                            <li><code class="bg-indigo-50 px-1 rounded">a games console</code> - konsola do gier</li>
+                            <li><code class="bg-indigo-50 px-1 rounded">a digital camera</code> - aparat cyfrowy</li>
+                            <li><code class="bg-indigo-50 px-1 rounded">a smartwatch</code> - zegarek inteligentny</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-indigo-600 mb-1">Od kogo można dostać:</h3>
+                        <ul class="list-disc list-inside text-sm">
+                             <li><code class="bg-indigo-50 px-1 rounded">from my parents</code> - od moich rodziców</li>
+                             <li><code class="bg-indigo-50 px-1 rounded">from my grandparents</code> - od dziadków</li>
+                             <li><code class="bg-indigo-50 px-1 rounded">from my mom/dad</code> - od mamy/taty</li>
+                             <li><code class="bg-indigo-50 px-1 rounded">for my birthday</code> - na urodziny</li>
+                             <li><code class="bg-indigo-50 px-1 rounded">for Christmas</code> - na Gwiazdkę</li>
+                        </ul>
+                    </div>
+                     <div>
+                        <h3 class="font-semibold text-indigo-600 mb-1">Do czego używać urządzenia:</h3>
+                        <ul class="list-disc list-inside text-sm">
+                             <li><code class="bg-indigo-50 px-1 rounded">play games</code> - grać w gry</li>
+                             <li><code class="bg-indigo-50 px-1 rounded">listen to music</code> - słuchać muzyki</li>
+                             <li><code class="bg-indigo-50 px-1 rounded">take photos</code> - robić zdjęcia</li>
+                             <li><code class="bg-indigo-50 px-1 rounded">watch films/videos</code> - oglądać filmy</li>
+                             <li><code class="bg-indigo-50 px-1 rounded">download files</code> - ściągać pliki</li>
+                             <li><code class="bg-indigo-50 px-1 rounded">surf the Internet</code> - surfować po internecie</li>
+                             <li><code class="bg-indigo-50 px-1 rounded">chat online</code> - rozmawiać na czacie</li>
+                             <li><code class="bg-indigo-50 px-1 rounded">send emails</code> - wysyłać e-maile</li>
+                             <li><code class="bg-indigo-50 px-1 rounded">text friends</code> - wysyłać SMS-y</li>
+                             <li><code class="bg-indigo-50 px-1 rounded">read e-books</code> - czytać e-booki</li>
+                        </ul>
+                    </div>
+                     <div>
+                        <h3 class="font-semibold text-indigo-600 mb-1">Co się podoba/nie podoba:</h3>
+                        <ul class="list-disc list-inside text-sm">
+                            <li><code class="bg-indigo-50 px-1 rounded">I like that it's...</code> - Podoba mi się, że jest...</li>
+                            <li><code class="bg-indigo-50 px-1 rounded">I don't like that it's...</code> - Nie podoba mi się, że jest...</li>
+                            <li><code class="bg-indigo-50 px-1 rounded">practical</code> - praktyczne</li>
+                            <li><code class="bg-indigo-50 px-1 rounded">easy to use</code> - łatwe w użyciu</li>
+                            <li><code class="bg-indigo-50 px-1 rounded">too big/small</code> - za duże/małe</li>
+                            <li><code class="bg-indigo-50 px-1 rounded">the battery dies quickly</code> - bateria szybko się wyczerpuje</li>
+                            <li><code class="bg-indigo-50 px-1 rounded">it sometimes crashes</code> - czasami się zawiesza</li>
+                            <li><code class="bg-indigo-50 px-1 rounded">I can't stand that...</code> - Nie znoszę, że...</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="steps-container">
+            <div class="mb-6 bg-white rounded-lg shadow-md border border-gray-200">
+                <button onclick="toggleStep('step1-content')" class="toggle-button w-full text-left p-4 bg-blue-100 hover:bg-blue-200 rounded-t-lg font-semibold text-lg text-blue-800 flex justify-between items-center">
+                    <span>Krok 1: Jakie urządzenie i od kogo</span>
+                    <span class="text-xl arrow">▼</span>
+                </button>
+                <div id="step1-content" class="step-content p-4 border-t border-blue-200">
+                    <p class="text-gray-700 mb-3">W pierwszym akapicie napiszesz, jakie urządzenie dostałaś i od kogo je otrzymałaś.</p>
+                    <p class="text-gray-700 mb-2"><strong>1. Wybierz jedno urządzenie z listy:</strong></p>
+                    <ul class="grid grid-cols-2 gap-2 mb-3">
+                        <li class="bg-blue-50 p-2 rounded flex items-center">
+                            <input type="radio" name="device" id="tablet" class="mr-2">
+                            <label for="tablet">a tablet (tablet)</label>
+                        </li>
+                        <li class="bg-blue-50 p-2 rounded flex items-center">
+                            <input type="radio" name="device" id="smartphone" class="mr-2">
+                            <label for="smartphone">a smartphone (smartfon)</label>
+                        </li>
+                        <li class="bg-blue-50 p-2 rounded flex items-center">
+                            <input type="radio" name="device" id="ereader" class="mr-2">
+                            <label for="ereader">an e-reader (czytnik e-booków)</label>
+                        </li>
+                        <li class="bg-blue-50 p-2 rounded flex items-center">
+                            <input type="radio" name="device" id="mp3player" class="mr-2">
+                            <label for="mp3player">an MP3 player (odtwarzacz MP3)</label>
+                        </li>
+                        <li class="bg-blue-50 p-2 rounded flex items-center">
+                            <input type="radio" name="device" id="console" class="mr-2">
+                            <label for="console">a games console (konsola do gier)</label>
+                        </li>
+                        <li class="bg-blue-50 p-2 rounded flex items-center">
+                            <input type="radio" name="device" id="camera" class="mr-2">
+                            <label for="camera">a digital camera (aparat cyfrowy)</label>
+                        </li>
+                    </ul>
+                    <p class="text-gray-700 mb-2"><strong>2. Wybierz, od kogo dostałaś urządzenie:</strong></p>
+                    <ul class="grid grid-cols-2 gap-2 mb-3">
+                        <li class="bg-blue-50 p-2 rounded flex items-center">
+                            <input type="radio" name="from" id="parents" class="mr-2">
+                            <label for="parents">from my parents (od rodziców)</label>
+                        </li>
+                        <li class="bg-blue-50 p-2 rounded flex items-center">
+                            <input type="radio" name="from" id="grandparents" class="mr-2">
+                            <label for="grandparents">from my grandparents (od dziadków)</label>
+                        </li>
+                        <li class="bg-blue-50 p-2 rounded flex items-center">
+                            <input type="radio" name="from" id="mom" class="mr-2">
+                            <label for="mom">from my mom (od mamy)</label>
+                        </li>
+                        <li class="bg-blue-50 p-2 rounded flex items-center">
+                            <input type="radio" name="from" id="dad" class="mr-2">
+                            <label for="dad">from my dad (od taty)</label>
+                        </li>
+                    </ul>
+                    <p class="text-gray-700 mb-2"><strong>3. Wybierz okazję, z jakiej dostałaś prezent:</strong></p>
+                    <ul class="grid grid-cols-2 gap-2 mb-3">
+                        <li class="bg-blue-50 p-2 rounded flex items-center">
+                            <input type="radio" name="occasion" id="birthday" class="mr-2">
+                            <label for="birthday">for my birthday (na urodziny)</label>
+                        </li>
+                        <li class="bg-blue-50 p-2 rounded flex items-center">
+                            <input type="radio" name="occasion" id="christmas" class="mr-2">
+                            <label for="christmas">for Christmas (na Gwiazdkę)</label>
+                        </li>
+                        <li class="bg-blue-50 p-2 rounded flex items-center">
+                            <input type="radio" name="occasion" id="nooccasion" class="mr-2">
+                            <label for="nooccasion">as a surprise (jako niespodziankę)</label>
+                        </li>
+                    </ul>
+                    
+                    <div class="mt-3 bg-blue-50 p-3 rounded-lg">
+                       <p class="font-medium text-blue-800 mb-2">Przykłady gotowych zdań:</p>
+                       <ul class="list-disc list-inside text-blue-700 mb-2 pl-2">
+                          <li>It's a tablet that I got from my parents for my birthday.</li>
+                          <li>My grandparents gave me a smartphone for Christmas.</li>
+                          <li>I received a digital camera from my mom as a surprise.</li>
+                       </ul>
+                    </div>
+                    
+                    <p class="text-gray-700 font-medium mt-3">✍️ Teraz ułóż i zapisz swoje zdanie o urządzeniu:</p>
+                    <textarea id="step1-answer" class="w-full p-2 mt-1 border border-blue-300 rounded" rows="2" placeholder="Napisz tutaj swoje zdanie..."></textarea>
+                    
+                    <div class="mt-3 text-center">
+                       <button onclick="saveStepAndContinue('step1-answer')" class="action-button bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-5 rounded-full text-sm">
+                           Zapisałam! Następny krok 👍
+                       </button>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-6 bg-white rounded-lg shadow-md border border-gray-200 opacity-50" id="step2">
+                <button onclick="toggleStep('step2-content')" class="toggle-button w-full text-left p-4 bg-green-100 hover:bg-green-200 rounded-t-lg font-semibold text-lg text-green-800 flex justify-between items-center" disabled>
+                    <span>Krok 2: Do czego używasz urządzenia</span>
+                    <span class="text-xl arrow">▼</span>
+                </button>
+                <div id="step2-content" class="step-content p-4 border-t border-green-200">
+                    <p class="text-gray-700 mb-3">Teraz napiszesz, do czego używasz swojego urządzenia. Wymień co najmniej 2-3 czynności.</p>
+                    <p class="text-gray-700 mb-2"><strong>Wybierz 2-3 czynności z listy:</strong></p>
+                    <div class="grid grid-cols-2 gap-2 mb-3">
+                        <div class="bg-green-50 p-2 rounded flex items-center">
+                            <input type="checkbox" id="games" class="mr-2 activity-checkbox">
+                            <label for="games">play games (grać w gry)</label>
+                        </div>
+                        <div class="bg-green-50 p-2 rounded flex items-center">
+                            <input type="checkbox" id="music" class="mr-2 activity-checkbox">
+                            <label for="music">listen to music (słuchać muzyki)</label>
+                        </div>
+                        <div class="bg-green-50 p-2 rounded flex items-center">
+                            <input type="checkbox" id="photos" class="mr-2 activity-checkbox">
+                            <label for="photos">take photos (robić zdjęcia)</label>
+                        </div>
+                        <div class="bg-green-50 p-2 rounded flex items-center">
+                            <input type="checkbox" id="videos" class="mr-2 activity-checkbox">
+                            <label for="videos">watch videos (oglądać filmy)</label>
+                        </div>
+                        <div class="bg-green-50 p-2 rounded flex items-center">
+                            <input type="checkbox" id="internet" class="mr-2 activity-checkbox">
+                            <label for="internet">surf the Internet (surfować po internecie)</label>
+                        </div>
+                        <div class="bg-green-50 p-2 rounded flex items-center">
+                            <input type="checkbox" id="chat" class="mr-2 activity-checkbox">
+                            <label for="chat">chat online (rozmawiać na czacie)</label>
+                        </div>
+                        <div class="bg-green-50 p-2 rounded flex items-center">
+                            <input type="checkbox" id="emails" class="mr-2 activity-checkbox">
+                            <label for="emails">send emails (wysyłać e-maile)</label>
+                        </div>
+                        <div class="bg-green-50 p-2 rounded flex items-center">
+                            <input type="checkbox" id="ebooks" class="mr-2 activity-checkbox">
+                            <label for="ebooks">read e-books (czytać e-booki)</label>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3 bg-green-50 p-3 rounded-lg">
+                       <p class="font-medium text-green-800 mb-2">Przykłady zdań:</p>
+                       <ul class="list-disc list-inside text-green-700 mb-2 pl-2">
+                          <li>I use it to play games and watch videos.</li>
+                          <li>I use my new device to take photos and surf the Internet.</li>
+                          <li>I mainly use it for listening to music and reading e-books.</li>
+                       </ul>
+                    </div>
+                    
+                    <p class="text-gray-700 font-medium mt-3">✍️ Teraz napisz, do czego używasz urządzenia:</p>
+                    <textarea id="step2-answer" class="w-full p-2 mt-1 border border-green-300 rounded" rows="3" placeholder="Napisz tutaj swoje zdanie..."></textarea>
+                    
+                    <div class="mt-3 text-center">
+                       <button onclick="saveStepAndContinue('step2-answer')" class="action-button bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-5 rounded-full text-sm">
+                           Zapisałam! Co dalej? ✅
+                       </button>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-6 bg-white rounded-lg shadow-md border border-gray-200 opacity-50" id="step3">
+                <button onclick="toggleStep('step3-content')" class="toggle-button w-full text-left p-4 bg-yellow-100 hover:bg-yellow-200 rounded-t-lg font-semibold text-lg text-yellow-800 flex justify-between items-center" disabled>
+                    <span>Krok 3: Co Ci się podoba, a co nie</span>
+                    <span class="text-xl arrow">▼</span>
+                </button>
+                <div id="step3-content" class="step-content p-4 border-t border-yellow-200">
+                    <p class="text-gray-700 mb-3">W tej części napiszesz, co Ci się podoba w urządzeniu, a co Ci się nie podoba.</p>
+                    <div class="mb-4">
+                        <p class="text-gray-700 mb-2"><strong>1. Co Ci się podoba? Wybierz jedną opcję:</strong></p>
+                        <ul class="grid grid-cols-1 gap-2 mb-3">
+                            <li class="bg-yellow-50 p-2 rounded flex items-center">
+                                <input type="radio" name="like" id="practical" class="mr-2">
+                                <label for="practical">I like that it's practical. (Podoba mi się, że jest praktyczne.)</label>
+                            </li>
+                            <li class="bg-yellow-50 p-2 rounded flex items-center">
+                                <input type="radio" name="like" id="easy" class="mr-2">
+                                <label for="easy">I like that it's easy to use. (Podoba mi się, że jest łatwe w użyciu.)</label>
+                            </li>
+                            <li class="bg-yellow-50 p-2 rounded flex items-center">
+                                <input type="radio" name="like" id="screen" class="mr-2">
+                                <label for="screen">I like the screen size. (Podoba mi się rozmiar ekranu.)</label>
+                            </li>
+                            <li class="bg-yellow-50 p-2 rounded flex items-center">
+                                <input type="radio" name="like" id="battery" class="mr-2">
+                                <label for="battery">I like that the battery lasts long. (Podoba mi się, że bateria długo trzyma.)</label>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <p class="text-gray-700 mb-2"><strong>2. Co Ci się NIE podoba? Wybierz jedną opcję:</strong></p>
+                        <ul class="grid grid-cols-1 gap-2 mb-3">
+                            <li class="bg-yellow-50 p-2 rounded flex items-center">
+                                <input type="radio" name="dislike" id="size" class="mr-2">
+                                <label for="size">I don't like that it's too big/small. (Nie podoba mi się, że jest za duże/małe.)</label>
+                            </li>
+                            <li class="bg-yellow-50 p-2 rounded flex items-center">
+                                <input type="radio" name="dislike" id="batterydies" class="mr-2">
+                                <label for="batterydies">I don't like that the battery dies quickly. (Nie podoba mi się, że bateria szybko się rozładowuje.)</label>
+                            </li>
+                            <li class="bg-yellow-50 p-2 rounded flex items-center">
+                                <input type="radio" name="dislike" id="crashes" class="mr-2">
+                                <label for="crashes">I don't like that it sometimes crashes. (Nie podoba mi się, że czasami się zawiesza.)</label>
+                            </li>
+                            <li class="bg-yellow-50 p-2 rounded flex items-center">
+                                <input type="radio" name="dislike" id="charge" class="mr-2">
+                                <label for="charge">I can't stand that it's difficult to charge. (Nie znoszę, że trudno je naładować.)</label>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-3 bg-yellow-50 p-3 rounded-lg">
+                       <p class="font-medium text-yellow-800 mb-2">Przykład całej wypowiedzi:</p>
+                       <p class="text-yellow-700 mb-2 pl-2">I like that it's easy to use. However, I don't like that the battery dies quickly when I play games.</p>
+                       <p class="text-yellow-600 italic mb-2 pl-2">Pamiętaj, aby użyć słowa "However" (Jednakże) między pozytywną a negatywną opinią!</p>
+                    </div>
+                    
+                    <p class="text-gray-700 font-medium mt-3">✍️ Teraz napisz, co Ci się podoba, a co nie:</p>
+                    <textarea id="step3-answer" class="w-full p-2 mt-1 border border-yellow-300 rounded" rows="3" placeholder="Napisz tutaj swoje zdanie..."></textarea>
+                    
+                    <div class="mt-3 text-center">
+                       <button onclick="saveStepAndContinue('step3-answer')" class="action-button bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-5 rounded-full text-sm">
+                           Zapisałam! Co teraz? 🤔
+                       </button>
+                    </div>
+                </div>
+            </div>
+             <div class="mb-6 bg-white rounded-lg shadow-md border border-gray-200 opacity-50" id="step4">
+                <button onclick="toggleStep('step4-content')" class="toggle-button w-full text-left p-4 bg-purple-100 hover:bg-purple-200 rounded-t-lg font-semibold text-lg text-purple-800 flex justify-between items-center" disabled>
+                    <span>Krok 4: Pytanie do kolegi</span>
+                     <span class="text-xl arrow">▼</span>
+                </button>
+                <div id="step4-content" class="step-content p-4 border-t border-purple-200">
+                    <p class="text-gray-700 mb-3">W ostatniej części zadasz koledze pytanie o to, jakie urządzenie elektroniczne on chciałby dostać.</p>
+                    <p class="text-gray-700 mb-2"><strong>Wybierz jedno pytanie z listy:</strong></p>
+                    <ul class="grid grid-cols-1 gap-2 mb-3">
+                        <li class="bg-purple-50 p-2 rounded flex items-center">
+                            <input type="radio" name="question" id="question1" class="mr-2">
+                            <label for="question1">What electronic device would you like to get? (Jakie urządzenie elektroniczne chciałbyś dostać?)</label>
+                        </li>
+                        <li class="bg-purple-50 p-2 rounded flex items-center">
+                            <input type="radio" name="question" id="question2" class="mr-2">
+                            <label for="question2">What gadget would you like to have? (Jaki gadżet chciałbyś mieć?)</label>
+                        </li>
+                        <li class="bg-purple-50 p-2 rounded flex items-center">
+                            <input type="radio" name="question" id="question3" class="mr-2">
+                            <label for="question3">Is there any electronic device you want to get? (Czy jest jakieś urządzenie elektroniczne, które chciałbyś dostać?)</label>
+                        </li>
+                        <li class="bg-purple-50 p-2 rounded flex items-center">
+                            <input type="radio" name="question" id="question4" class="mr-2">
+                            <label for="question4">What's your dream electronic device? (Jakie jest twoje wymarzone urządzenie elektroniczne?)</label>
+                        </li>
+                    </ul>
+                    
+                    <p class="text-gray-700 font-medium mt-3">✍️ Napisz wybrane pytanie:</p>
+                    <textarea id="step4-answer" class="w-full p-2 mt-1 border border-purple-300 rounded" rows="2" placeholder="Napisz tutaj swoje pytanie..."></textarea>
+                    
+                    <div class="mt-3 text-center">
+                       <button onclick="saveStepAndContinue('step4-answer')" class="action-button bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-5 rounded-full text-sm">
+                           Zapisałam! Prawie koniec! 🎉
+                       </button>
+                    </div>
+                </div>
+            </div>
+             <div class="mb-6 bg-white rounded-lg shadow-md border border-gray-200 opacity-50" id="step5">
+                <button onclick="toggleStep('step5-content')" class="toggle-button w-full text-left p-4 bg-pink-100 hover:bg-pink-200 rounded-t-lg font-semibold text-lg text-pink-800 flex justify-between items-center" disabled>
+                    <span>Krok 5: Zakończenie i podpis</span>
+                     <span class="text-xl arrow">▼</span>
+                </button>
+                <div id="step5-content" class="step-content p-4 border-t border-pink-200">
+                    <p class="text-gray-700 mb-3">Na koniec dodasz zwrot pożegnalny i podpiszesz się jako XYZ.</p>
+                    <p class="text-gray-700 mb-2"><strong>Wybierz zakończenie:</strong></p>
+                    <ul class="grid grid-cols-1 gap-2 mb-3">
+                        <li class="bg-pink-50 p-2 rounded flex items-center">
+                            <input type="radio" name="ending" id="ending1" class="mr-2">
+                            <label for="ending1">Write back soon, (Odpisz wkrótce,)</label>
+                        </li>
+                        <li class="bg-pink-50 p-2 rounded flex items-center">
+                            <input type="radio" name="ending" id="ending2" class="mr-2">
+                            <label for="ending2">That's all for now, (To wszystko na teraz,)</label>
+                        </li>
+                        <li class="bg-pink-50 p-2 rounded flex items-center">
+                            <input type="radio" name="ending" id="ending3" class="mr-2">
+                            <label for="ending3">Bye for now, (Na razie,)</label>
+                        </li>
+                    </ul>
+                    
+                    <p class="text-gray-700 mb-3"><strong>Podpis:</strong> Po wybranym zakończeniu wpisz XYZ (tak jak wymaga zadanie).</p>
+                    
+                    <div class="mt-3 bg-pink-50 p-3 rounded-lg">
+                       <p class="font-medium text-pink-800 mb-2">Przykład zakończenia:</p>
+                       <p class="text-pink-700 mb-2 pl-2">Write back soon,<br>XYZ</p>
+                    </div>
+                    
+                    <p class="text-gray-700 font-medium mt-3">✍️ Napisz swoje zakończenie:</p>
+                    <textarea id="step5-answer" class="w-full p-2 mt-1 border border-pink-300 rounded" rows="2" placeholder="Napisz tutaj swoje zakończenie..."></textarea>
+                    
+                    <div class="mt-3 text-center">
+                       <button onclick="saveStepAndContinue('step5-answer')" class="action-button bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-5 rounded-full text-sm">
+                           Zapisałam! Teraz złożę wszystko! 👏
+                       </button>
+                    </div>
+                </div>
+            </div>
+        </div> <div class="mb-6 bg-white rounded-lg shadow-xl border border-gray-200 opacity-50" id="step6">
+             <button onclick="toggleStep('step6-content')" class="toggle-button w-full text-left p-4 bg-indigo-100 hover:bg-indigo-200 rounded-t-lg font-semibold text-lg text-indigo-800 flex justify-between items-center" disabled>
+                <span>Krok 6: Twój GOTOWY e-mail!</span>
+                 <span class="text-xl arrow">▼</span>
+            </button>
+            <div id="step6-content" class="step-content p-4 border-t border-indigo-200">
+                <p class="text-gray-700 mb-3">Świetna robota! Teraz złożymy wszystkie części w jeden kompletny e-mail! Poniżej znajdziesz gotowy e-mail:</p>
+                
+                <div class="bg-white p-4 rounded-lg border-2 border-indigo-300 mb-4">
+                    <p class="text-gray-800 mb-2"><strong>Subject:</strong> New electronic device</p>
+                    <p class="text-gray-800">Hi Mark,</p>
+                    <p class="text-gray-800">Guess what! I've just got a new electronic device. <span id="step1-result" class="text-indigo-700 font-medium"></span></p>
+                    <p class="text-gray-800"><span id="step2-result" class="text-indigo-700 font-medium"></span></p>
+                    <p class="text-gray-800"><span id="step3-result" class="text-indigo-700 font-medium"></span></p>
+                    <p class="text-gray-800"><span id="step4-result" class="text-indigo-700 font-medium"></span></p>
+                    <p class="text-gray-800"><span id="step5-result" class="text-indigo-700 font-medium"></span></p>
+                </div>
+                
+                <div class="mt-3 p-3 bg-yellow-50 rounded-lg">
+                    <p class="font-bold text-yellow-800 mb-1">Sprawdź, czy Twój e-mail:</p>
+                    <ul class="list-disc list-inside text-yellow-700 mb-3 pl-2">
+                        <li>Ma podane urządzenie i od kogo je dostałaś</li>
+                        <li>Opisuje, do czego używasz urządzenia</li>
+                        <li>Zawiera informację, co Ci się podoba i co Ci się nie podoba</li>
+                        <li>Zawiera pytanie do kolegi o urządzenie</li>
+                        <li>Ma zakończenie i podpis XYZ</li>
+                        <li>Ma 50-120 słów (nie licząc "Hi Mark, Guess what! I've just got a new electronic device.")</li>
+                    </ul>
+                </div>
+                
+                <p class="text-gray-700 font-medium mt-4">✍️ Możesz skopiować cały e-mail lub nanieść poprawki:</p>
+                <textarea id="final-email" class="w-full p-3 mt-1 border border-indigo-300 rounded" rows="12" placeholder="Twój e-mail pojawi się tutaj po wypełnieniu wszystkich kroków"></textarea>
+                
+                <div class="mt-3 text-center">
+                    <button id="generate-email-btn" onclick="generateFinalEmail()" class="action-button bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-full text-base">
+                        Wygeneruj pełny e-mail
+                    </button>
+                    <button onclick="checkWordCount()" class="action-button ml-3 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-8 rounded-full text-base">
+                        Sprawdź liczbę słów
+                    </button>
+                </div>
+                
+                <div id="word-count-result" class="mt-3 text-center hidden">
+                    <p class="text-gray-700 font-medium">Liczba słów: <span id="word-count" class="font-bold text-indigo-700">0</span> <span class="text-sm text-gray-500">(nie licząc początku)</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="mb-6 bg-white rounded-lg shadow-md border border-gray-200 opacity-50" id="step7">
+            <button onclick="toggleStep('step7-content')" class="toggle-button w-full text-left p-4 bg-lime-100 hover:bg-lime-200 rounded-t-lg font-semibold text-lg text-lime-800 flex justify-between items-center" disabled>
+                <span>Krok 7: Gratulacje i pomocne wskazówki!</span>
+                 <span class="text-xl arrow">▼</span>
+            </button>
+            <div id="step7-content" class="step-content p-4 border-t border-lime-200">
+                <p class="text-2xl font-bold text-center text-lime-700 mb-4">Brawo! Twój e-mail jest gotowy! 🏆</p>
+                <p class="text-gray-700 mb-3">Spisałaś się doskonale! Stworzyłaś kompletny e-mail spełniający wszystkie wymagania zadania egzaminacyjnego.</p>
+                
+                <div class="mt-3 p-4 bg-lime-50 rounded-lg">
+                    <p class="font-bold text-lime-800 mb-2">Sprawdź, czy pamiętasz kluczowe elementy:</p>
+                    <ul class="list-none text-gray-700 mb-3 pl-2 space-y-1">
+                        <li class="flex items-start">
+                            <span class="text-lime-600 font-bold mr-2">✓</span> Zawsze zaczynaj od informacji "jakie" urządzenie i "od kogo" je dostałaś
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-lime-600 font-bold mr-2">✓</span> Opisuj do czego używasz urządzenia używając "I use it to..."
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-lime-600 font-bold mr-2">✓</span> Przy opisie zalet i wad używaj "I like that..." i "I don't like that..."
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-lime-600 font-bold mr-2">✓</span> Pamiętaj o słowie "However" między tym co lubisz a tym czego nie lubisz
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-lime-600 font-bold mr-2">✓</span> Zadawaj pytanie używając "What", "Which" lub "Is there any..."
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-lime-600 font-bold mr-2">✓</span> Kończ e-mail zwrotem pożegnalnym i podpisem XYZ
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="mt-4 p-4 bg-indigo-50 rounded-lg">
+                    <p class="font-bold text-indigo-800 mb-2">Wskazówki do zapamiętania:</p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <li>Pilnuj, żeby zawsze wypełnić WSZYSTKIE 4 podpunkty zadania</li>
+                        <li>Sprawdzaj liczbę słów - od 50 do 120 to dobra długość</li>
+                        <li>Używaj prostych zdań, jeśli nie jesteś pewna bardziej skomplikowanych konstrukcji</li>
+                        <li>Zawsze sprawdź, czy podpisałaś się tak jak w poleceniu (tutaj: XYZ)</li>
+                        <li>Nie musisz pisać tematu e-maila w zadaniu egzaminacyjnym (chyba że jest w poleceniu)</li>
+                    </ul>
+                </div>
+                
+                <p class="mt-4 text-center text-2xl">🎉 GRATULACJE! 🎉</p>
+                <p class="text-center text-gray-700">Jesteś gotowa na zadanie egzaminacyjne!</p>
+            </div>
+        </div>
+    </div> <script>
+        // Tablica na zapisane odpowiedzi z kroków
+        let savedAnswers = {
+            'step1-answer': '',
+            'step2-answer': '',
+            'step3-answer': '',
+            'step4-answer': '',
+            'step5-answer': ''
+        };
+        
+        // Funkcja do pokazywania/ukrywania treści kroku
+        function toggleStep(contentId) {
+            const content = document.getElementById(contentId);
+            if (!content) return;
+            
+            const button = content.previousElementSibling; // Przycisk jest bezpośrednio przed treścią
+            if (!button) return;
+            
+            const arrow = button.querySelector('.arrow');
+            if (!arrow) return;
+            
+            if (button.disabled) return; // Nie reaguj, jeśli przycisk jest wyłączony
+            
+            if (content.classList.contains('visible')) {
+                content.classList.remove('visible');
+                arrow.textContent = '▼'; // Strzałka w dół
+                button.classList.remove('rounded-b-none'); // Usuń brak zaokrąglenia na dole przycisku
+                button.classList.add('rounded-b-lg'); // Dodaj zaokrąglenie na dole przycisku
+            } else {
+                content.classList.add('visible');
+                arrow.textContent = '▲'; // Strzałka w górę
+                button.classList.remove('rounded-b-lg'); // Usuń zaokrąglenie na dole przycisku
+                button.classList.add('rounded-b-none'); // Dodaj brak zaokrąglenia, gdy treść jest widoczna
+            }
+        }
+        
+        // Funkcja do zapisywania odpowiedzi i przejścia do następnego kroku
+        function saveStepAndContinue(textareaId) {
+            const textarea = document.getElementById(textareaId);
+            if (!textarea) return;
+            
+            // Zapisz odpowiedź
+            savedAnswers[textareaId] = textarea.value.trim();
+            
+            // Znajdź bieżący krok
+            const currentStepDiv = textarea.closest('.step-content').parentElement;
+            
+            // Oznacz jako ukończony
+            markStepAsDone(currentStepDiv);
+            
+            // Znajdź następny krok
+            let nextStep = currentStepDiv.nextElementSibling;
+            while (nextStep && !nextStep.id?.startsWith('step')) {
+                nextStep = nextStep.nextElementSibling;
+            }
+            
+            // Aktywuj następny krok
+            if (nextStep && nextStep.id?.startsWith('step')) {
+                activateStep(nextStep);
+                // Opcjonalnie przewiń do następnego kroku
+                nextStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            
+            // Aktualizuj wyniki w podsumowaniu
+            updateResults();
+        }
+        
+        // Funkcja do oznaczania kroku jako ukończonego
+        function markStepAsDone(stepDiv) {
+            if (!stepDiv) return;
+            
+            const stepButton = stepDiv.querySelector('button');
+            if (!stepButton) return;
+            
+            const actionButton = stepDiv.querySelector('.action-button');
+            if (actionButton) {
+                actionButton.textContent = 'Ukończone! ✔️';
+                actionButton.classList.remove('bg-blue-500', 'bg-green-500', 'bg-yellow-500', 'bg-purple-500', 'bg-pink-500', 'hover:bg-blue-600', 'hover:bg-green-600', 'hover:bg-yellow-600', 'hover:bg-purple-600', 'hover:bg-pink-600');
+                actionButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+                actionButton.disabled = true;
+            }
+            
+            // Dodaj klasę dla ukończonego kroku
+            stepDiv.classList.add('step-done');
+        }
+        
+        // Funkcja do aktywowania kroku
+        function activateStep(stepDiv) {
+            if (!stepDiv) return;
+            
+            // Usuń przezroczystość
+            stepDiv.classList.remove('opacity-50');
+            
+            // Aktywuj przycisk
+            const stepButton = stepDiv.querySelector('button');
+            if (stepButton) {
+                stepButton.disabled = false;
+            }
+            
+            // Opcjonalnie - automatycznie otwórz następny krok
+            setTimeout(() => {
+                const contentId = stepDiv.querySelector('.step-content')?.id;
+                if (contentId) {
+                    toggleStep(contentId);
+                }
+            }, 500);
+        }
+        
+        // Funkcja do aktualizacji wyników w podsumowaniu
+        function updateResults() {
+            // Dla każdego zapisanego kroku, aktualizuj odpowiedni element wyniku
+            for (const [stepId, answer] of Object.entries(savedAnswers)) {
+                const resultId = stepId.replace('answer', 'result');
+                const resultElement = document.getElementById(resultId);
+                if (resultElement && answer) {
+                    resultElement.textContent = answer;
+                }
+            }
+        }
+        
+        // Funkcja generująca pełny e-mail
+        function generateFinalEmail() {
+            const emailStart = "Subject: New electronic device\n\nHi Mark,\nGuess what! I've just got a new electronic device. ";
+            const emailContent = 
+                savedAnswers['step1-answer'] + "\n\n" + 
+                savedAnswers['step2-answer'] + "\n\n" + 
+                savedAnswers['step3-answer'] + "\n\n" + 
+                savedAnswers['step4-answer'] + "\n\n" + 
+                savedAnswers['step5-answer'];
+            
+            const finalEmail = document.getElementById('final-email');
+            finalEmail.value = emailStart + emailContent;
+            
+            // Pokaż licznik słów
+            checkWordCount();
+        }
+        
+        // Funkcja do sprawdzania liczby słów
+        function checkWordCount() {
+            const finalEmail = document.getElementById('final-email');
+            if (!finalEmail) return;
+            
+            // Usuń początek e-maila z liczenia
+            const contentOnly = finalEmail.value.replace("Subject: New electronic device\n\nHi Mark,\nGuess what! I've just got a new electronic device. ", "");
+            
+            // Podziel na słowa i policz
+            const words = contentOnly.trim().split(/\s+/).filter(word => word.length > 0);
+            const wordCount = words.length;
+            
+            // Wyświetl liczbę słów
+            const wordCountElement = document.getElementById('word-count');
+            if (wordCountElement) {
+                wordCountElement.textContent = wordCount;
+            }
+            
+            // Pokaż wynik liczenia
+            const resultDiv = document.getElementById('word-count-result');
+            if (resultDiv) {
+                resultDiv.classList.remove('hidden');
+                
+                // Dodaj kolorowanie, jeśli liczba słów jest poza zakresem
+                if (wordCount < 50) {
+                    wordCountElement.classList.add('text-red-600');
+                    wordCountElement.classList.remove('text-green-600', 'text-indigo-700');
+                } else if (wordCount > 120) {
+                    wordCountElement.classList.add('text-red-600');
+                    wordCountElement.classList.remove('text-green-600', 'text-indigo-700');
+                } else {
+                    wordCountElement.classList.add('text-green-600');
+                    wordCountElement.classList.remove('text-red-600', 'text-indigo-700');
+                }
+            }
+        }
+        
+        // Inicjalizacja
+        document.addEventListener('DOMContentLoaded', () => {
+            // Ustaw tylko pierwszy krok jako aktywny
+            const steps = document.querySelectorAll('div[id^="step"]');
+            steps.forEach((step, index) => {
+                const button = step.querySelector('button.toggle-button');
+                if (index === 0) { // Pierwszy krok
+                    step.classList.remove('opacity-50');
+                    if (button) button.disabled = false;
+                } else {
+                    step.classList.add('opacity-50');
+                    if (button) button.disabled = true;
+                }
+                
+                // Dodaj zaokrąglenie dołu przycisków na starcie
+                if (button) button.classList.add('rounded-b-lg');
+            });
+            
+            // Obsługa kroku 0 - słowniczka
+            const step0Button = document.querySelector('#step0-content')?.previousElementSibling;
+            if (step0Button) step0Button.classList.add('rounded-b-lg');
+            
+            // Automatycznie otwórz pierwszy krok
+            setTimeout(() => {
+                toggleStep('step1-content');
+            }, 500);
+        });
+    </script>
+</body>
+</html>
