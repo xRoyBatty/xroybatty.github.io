@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nauka na Pamięć dla Dzieci v2</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Bardziej nowoczesna czcionka */
+            line-height: 1.6;
+            padding: 20px;
+            background-color: #e6f7ff; /* Jaśniejszy niebieski */
+            color: #333;
+        }
+        h1, h2 {
+            color: #0056b3;
+            text-align: center;
+        }
+        #input-section, #learning-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        textarea#text-input {
+            width: 95%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            min-height: 150px; /* Minimalna wysokość */
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #007bff; /* Bardziej żywy niebieski */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:active {
+             transform: scale(0.98); /* Lekkie wciśnięcie */
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        #navigation-buttons, #action-buttons {
+            text-align: center;
+            margin-top: 20px;
+            display: flex; /* Ułatwia rozmieszczenie */
+            justify-content: center; /* Wyśrodkowanie przycisków */
+            flex-wrap: wrap; /* Zawijanie przycisków na mniejszych ekranach */
+        }
+        #text-display {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background-color: #fdfdfd;
+            font-size: 1.1em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            min-height: 100px; /* Zapewnia trochę miejsca nawet przy krótkim tekście */
+        }
+        .hidden-input {
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            padding: 2px 4px;
+            font-size: 1em;
+            text-align: center;
+            background-color: #fff; /* Lepszy kontrast */
+        }
+        .hidden-input.letter {
+            width: 1.2em;
+            margin: 0 1px;
+        }
+         .hidden-input.word {
+            min-width: 50px;
+            margin: 0 3px;
+        }
+        .hidden-input.sentence {
+             display: block;
+             width: 95%;
+             min-height: 40px;
+             margin: 10px auto;
+             font-size: 1em;
+             white-space: pre-wrap;
+             padding: 5px; /* Dodany padding */
+             resize: vertical; /* Pozwala na zmianę wysokości */
+        }
+
+        .correct {
+            border-color: #28a745; /* Bootstrap success green */
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .incorrect {
+            border-color: #dc3545; /* Bootstrap danger red */
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        #feedback {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 15px;
+            min-height: 1.2em;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        #feedback.success {
+             background-color: #d4edda;
+             color: #155724;
+        }
+         #feedback.error {
+             background-color: #f8d7da;
+             color: #721c24;
+        }
+         #stage-instructions {
+            font-style: italic;
+            color: #555;
+            text-align: center;
+            margin-bottom: 15px;
+         }
+         #difficulty-settings {
+             margin-top: 20px;
+             padding: 15px;
+             border: 1px dashed #ccc;
+             border-radius: 5px;
+             background-color: #f9f9f9;
+         }
+         .difficulty-control {
+             margin-bottom: 10px;
+             display: flex; /* Ułatwia wyrównanie */
+             align-items: center; /* Wyrównanie w pionie */
+             justify-content: center; /* Wyśrodkowanie */
+             flex-wrap: wrap; /* Zawijanie na małych ekranach */
+         }
+         .difficulty-control label {
+             margin-right: 10px;
+             font-weight: bold;
+         }
+         .difficulty-control input[type="number"] {
+             width: 60px;
+             padding: 5px;
+             border: 1px solid #ccc;
+             border-radius: 4px;
+             margin-right: 5px;
+         }
+          .difficulty-control .max-info {
+             font-size: 0.9em;
+             color: #666;
+         }
+         /* Ukrywanie nieaktywnych kontrolek trudności */
+         .difficulty-control:not(.active) {
+             display: none;
+         }
+
+         #reset-button {
+             background-color: #dc3545; /* Czerwony */
+         }
+         #reset-button:hover {
+             background-color: #c82333;
+         }
+         #repeat-stage-button {
+             background-color: #ffc107; /* Żółty/Pomarańczowy */
+             color: #333;
+         }
+         #repeat-stage-button:hover {
+             background-color: #e0a800;
+         }
+
+    </style>
+</head>
+<body>
+
+    <h1>Nauka tekstu na pamięć v2</h1>
+
+    <div id="input-section">
+        <h2>Wprowadź tekst</h2>
+        <p>Wklej lub wpisz poniżej tekst, którego chcesz się nauczyć:</p>
+        <textarea id="text-input" placeholder="Tutaj wpisz swój tekst..."></textarea><br>
+        <button id="start-button" style="display: block; margin: 15px auto;">Zacznij naukę!</button>
+    </div>
+
+    <div id="learning-section" style="display: none;">
+        <h2 id="stage-title">Etap X</h2>
+        <p id="stage-instructions">Instrukcje...</p>
+
+        <!-- Ustawienia Trudności -->
+        <div id="difficulty-settings">
+            <h3>Dostosuj trudność etapu:</h3>
+            <div id="letter-difficulty" class="difficulty-control">
+                <label for="letters-to-hide">Ukryj liter:</label>
+                <input type="number" id="letters-to-hide" name="letters-to-hide" min="0" value="10">
+                <span class="max-info">(max: <span id="max-letters">0</span>)</span>
+            </div>
+            <div id="word-difficulty" class="difficulty-control">
+                <label for="words-to-hide">Ukryj słów:</label>
+                <input type="number" id="words-to-hide" name="words-to-hide" min="0" value="5">
+                 <span class="max-info">(max: <span id="max-words">0</span>)</span>
+            </div>
+            <div id="sentence-difficulty" class="difficulty-control">
+                <label for="sentences-to-hide">Ukryj zdań:</label>
+                <input type="number" id="sentences-to-hide" name="sentences-to-hide" min="0" value="1">
+                 <span class="max-info">(max: <span id="max-sentences">0</span>)</span>
+            </div>
+        </div>
+
+        <div id="text-display">
+            <!-- Treść dynamiczna etapu -->
+        </div>
+
+        <div id="action-buttons">
+             <button id="check-button">Sprawdź odpowiedzi</button>
+             <button id="repeat-stage-button">Powtórz Etap</button>
+        </div>
+
+        <p id="feedback"></p>
+
+        <div id="navigation-buttons">
+            <button id="prev-stage" disabled>Poprzedni Etap</button>
+            <button id="next-stage">Następny Etap</button>
+        </div>
+         <button id="reset-button" style="display: block; margin: 20px auto;">Zacznij od nowa z innym tekstem</button>
+    </div>
+
+    <script>
+        // --- Elementy DOM ---
+        const textInput = document.getElementById('text-input');
+        const startButton = document.getElementById('start-button');
+        const inputSection = document.getElementById('input-section');
+        const learningSection = document.getElementById('learning-section');
+        const stageTitle = document.getElementById('stage-title');
+        const stageInstructions = document.getElementById('stage-instructions');
+        const textDisplay = document.getElementById('text-display');
+        const checkButton = document.getElementById('check-button');
+        const repeatStageButton = document.getElementById('repeat-stage-button');
+        const feedback = document.getElementById('feedback');
+        const prevStageButton = document.getElementById('prev-stage');
+        const nextStageButton = document.getElementById('next-stage');
+        const resetButton = document.getElementById('reset-button');
+
+        // Kontrolki trudności
+        const letterDifficultyControl = document.getElementById('letter-difficulty');
+        const wordDifficultyControl = document.getElementById('word-difficulty');
+        const sentenceDifficultyControl = document.getElementById('sentence-difficulty');
+        const lettersToHideInput = document.getElementById('letters-to-hide');
+        const wordsToHideInput = document.getElementById('words-to-hide');
+        const sentencesToHideInput = document.getElementById('sentences-to-hide');
+        const maxLettersSpan = document.getElementById('max-letters');
+        const maxWordsSpan = document.getElementById('max-words');
+        const maxSentencesSpan = document.getElementById('max-sentences');
+
+        // --- Zmienne Stanu ---
+        let originalText = '';
+        let currentStage = 0; // 0: Input, 1: Letters, 2: Words, 3: Sentences
+        const totalStages = 3;
+        let maxCounts = { letters: 0, words: 0, sentences: 0 };
+        let textParts = []; // Przechowuje podział tekstu na słowa/separatory
+        let sentences = []; // Przechowuje podział tekstu na zdania
+
+        // --- Funkcje Pomocnicze ---
+
+        // Fisher-Yates (Knuth) Shuffle
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Swap
+            }
+        }
+
+        // Dzieli tekst na zdania
+        function splitIntoSentences(text) {
+             return text.split(/(?<=[.!?])\s+/g).filter(s => s.trim().length > 0);
+        }
+
+        // Dzieli tekst na słowa i separatory
+        function splitIntoParts(text) {
+            return text.split(/(\s+|[.,!?;:()"'`~@#$%^&*+=<>{}|\\\[\]\/-])/g).filter(part => part);
+        }
+
+        // Liczy elementy możliwe do ukrycia
+        function calculateMaxCounts(text) {
+            let letterCount = 0;
+            for (let char of text) {
+                if (char.match(/[a-ząćęłńóśźż]/i)) {
+                    letterCount++;
+                }
+            }
+
+            textParts = splitIntoParts(text);
+            let wordCount = 0;
+            textParts.forEach(part => {
+                if (part.match(/[a-ząćęłńóśźż]/i)) { // Liczymy tylko części zawierające litery jako słowa
+                    wordCount++;
+                }
+            });
+
+            sentences = splitIntoSentences(text);
+            let sentenceCount = sentences.length;
+
+            return { letters: letterCount, words: wordCount, sentences: sentenceCount };
+        }
+
+        // Pobiera i waliduje liczbę elementów do ukrycia z inputu
+        function getNumberToHide(inputId, maxAllowed) {
+            const inputElement = document.getElementById(inputId);
+            let value = parseInt(inputElement.value, 10);
+
+            if (isNaN(value) || value < 0) {
+                value = 0; // Wartość domyślna lub minimalna
+            }
+            value = Math.min(value, maxAllowed); // Nie przekraczaj maksimum
+            inputElement.value = value; // Zaktualizuj input, jeśli wartość była nieprawidłowa
+            return value;
+        }
+
+        // --- Logika Wyświetlania Etapów ---
+
+        function displayStage(stage) {
+            currentStage = stage;
+            feedback.textContent = ''; // Reset feedback
+            feedback.className = ''; // Reset klas feedbacku
+            textDisplay.innerHTML = ''; // Clear previous content
+
+            // Aktualizacja tytułu i instrukcji
+            stageTitle.textContent = `Etap ${stage}`;
+
+            // Pokaż/ukryj odpowiednie kontrolki trudności
+            letterDifficultyControl.classList.toggle('active', stage === 1);
+            wordDifficultyControl.classList.toggle('active', stage === 2);
+            sentenceDifficultyControl.classList.toggle('active', stage === 3);
+
+            switch(stage) {
+                case 1:
+                    stageInstructions.textContent = 'Wpisz brakujące litery w puste pola.';
+                    generateLetterStage();
+                    break;
+                case 2:
+                    stageInstructions.textContent = 'Wpisz brakujące słowa w puste pola.';
+                    generateWordStage();
+                    break;
+                case 3:
+                    stageInstructions.textContent = 'Wpisz brakujące zdania w puste pola.';
+                    generateSentenceStage();
+                    break;
+                default:
+                     resetToInput();
+                     return;
+            }
+
+            updateNavigationButtons();
+        }
+
+         // ETAP 1: Litery
+        function generateLetterStage() {
+            const numToHide = getNumberToHide('letters-to-hide', maxCounts.letters);
+            let content = '';
+            const hideableIndices = []; // Indeksy liter, które można ukryć
+
+            for (let i = 0; i < originalText.length; i++) {
+                if (originalText[i].match(/[a-ząćęłńóśźż]/i)) {
+                    hideableIndices.push(i);
+                }
+            }
+
+            shuffleArray(hideableIndices);
+            const indicesToHide = new Set(hideableIndices.slice(0, numToHide)); // Użyj Set dla szybkiego sprawdzania
+
+            for (let i = 0; i < originalText.length; i++) {
+                const char = originalText[i];
+                if (indicesToHide.has(i)) {
+                    content += `<input type="text" class="hidden-input letter" maxlength="1" data-original="${char.toLowerCase()}" />`;
+                } else {
+                    content += char;
+                }
+            }
+            textDisplay.innerHTML = content;
+        }
+
+        // ETAP 2: Wyrazy
+        function generateWordStage() {
+            const numToHide = getNumberToHide('words-to-hide', maxCounts.words);
+            let content = '';
+            const hideableWordIndices = []; // Indeksy w `textParts`, które są słowami
+
+            textParts.forEach((part, index) => {
+                if (part.match(/[a-ząćęłńóśźż]/i)) {
+                    hideableWordIndices.push(index);
+                }
+            });
+
+            shuffleArray(hideableWordIndices);
+            const indicesToHide = new Set(hideableWordIndices.slice(0, numToHide));
+
+            textParts.forEach((part, index) => {
+                 if (indicesToHide.has(index)) {
+                     const wordLength = part.length;
+                     content += `<input type="text" class="hidden-input word" style="width: ${Math.max(50, wordLength * 9)}px;" data-original="${part.toLowerCase()}" />`; // Zwiększono mnożnik szerokości
+                 } else {
+                     content += part;
+                 }
+            });
+            textDisplay.innerHTML = content;
+        }
+
+        // ETAP 3: Zdania
+        function generateSentenceStage() {
+            const numToHide = getNumberToHide('sentences-to-hide', maxCounts.sentences);
+            let content = '';
+            const hideableSentenceIndices = Array.from(sentences.keys()); // Indeksy 0, 1, 2...
+
+            shuffleArray(hideableSentenceIndices);
+            const indicesToHide = new Set(hideableSentenceIndices.slice(0, numToHide));
+
+            let currentTextIndex = 0; // Śledzi pozycję w oryginalnym tekście
+
+            sentences.forEach((sentence, index) => {
+                const originalSentenceTrimmed = sentence.trim();
+                const sentenceEndIndexInFullText = originalText.indexOf(originalSentenceTrimmed, currentTextIndex) + originalSentenceTrimmed.length;
+                let actualSentenceWithWhitespace = originalText.substring(currentTextIndex, sentenceEndIndexInFullText);
+
+                // Znajdź białe znaki *po* zdaniu, aby je zachować
+                 let trailingWhitespace = "";
+                 let nextCharIndex = sentenceEndIndexInFullText;
+                 while (nextCharIndex < originalText.length && originalText[nextCharIndex].match(/\s/)) {
+                     trailingWhitespace += originalText[nextCharIndex];
+                     nextCharIndex++;
+                 }
+                 actualSentenceWithWhitespace += trailingWhitespace; // Dodaj białe znaki do zdania
+
+                if (indicesToHide.has(index) && originalSentenceTrimmed.length > 0) {
+                     content += `<p style="color: #888; margin-bottom: 5px;">[Miejsce na zdanie ${index + 1}]</p>`;
+                     content += `<textarea class="hidden-input sentence" data-original="${originalSentenceTrimmed.toLowerCase()}"></textarea>`;
+                     // Dodajemy puste linie, jeśli były po oryginalnym zdaniu
+                     content += trailingWhitespace.replace(/[^\n]/g, ''); // Zachowaj tylko nowe linie
+                } else {
+                    content += actualSentenceWithWhitespace; // Wyświetl oryginalne zdanie z białymi znakami
+                }
+                 currentTextIndex = sentenceEndIndexInFullText + trailingWhitespace.length; // Przesuń indeks za białe znaki
+            });
+
+             // Dodaj resztę tekstu, jeśli coś zostało (np. tekst bez znaku końca zdania na końcu)
+             if (currentTextIndex < originalText.length) {
+                 content += originalText.substring(currentTextIndex);
+             }
+
+            textDisplay.innerHTML = content;
+        }
+
+
+        // --- Sprawdzanie Odpowiedzi ---
+
+        function checkAnswers() {
+            const inputs = textDisplay.querySelectorAll('.hidden-input');
+            let correctCount = 0;
+            let totalInputs = inputs.length;
+
+            if (totalInputs === 0) {
+                 feedback.textContent = "Nie ma nic do sprawdzenia na tym etapie.";
+                 feedback.className = '';
+                 feedback.style.color = '#555';
+                 return;
+            }
+
+            inputs.forEach(input => {
+                const original = input.dataset.original;
+                const userAnswer = input.value.trim().toLowerCase();
+                // Normalizacja dla porównania (szczególnie ważne dla zdań)
+                const normalize = (str) => str.replace(/\s+/g, ' ').trim();
+                const normalizedOriginal = normalize(original);
+                const normalizedUserAnswer = normalize(userAnswer);
+
+                input.classList.remove('correct', 'incorrect'); // Reset classes
+
+                 if (normalizedUserAnswer === normalizedOriginal) {
+                    input.classList.add('correct');
+                    correctCount++;
+                } else {
+                    input.classList.add('incorrect');
+                }
+            });
+
+            feedback.classList.remove('success', 'error'); // Reset klas feedbacku
+            if (correctCount === totalInputs) {
+                feedback.textContent = 'Gratulacje! Wszystko poprawnie!';
+                feedback.classList.add('success');
+            } else {
+                feedback.textContent = `Poprawnie: ${correctCount} z ${totalInputs}. Spróbuj poprawić błędy!`;
+                 feedback.classList.add('error');
+            }
+        }
+
+        // --- Nawigacja i Akcje ---
+
+        function updateNavigationButtons() {
+            prevStageButton.disabled = (currentStage <= 1);
+            nextStageButton.disabled = (currentStage >= totalStages);
+        }
+
+        function goToPrevStage() {
+            if (currentStage > 1) {
+                displayStage(currentStage - 1);
+            }
+        }
+
+        function goToNextStage() {
+            if (currentStage < totalStages) {
+                displayStage(currentStage + 1);
+            }
+        }
+
+        function repeatCurrentStage() {
+            if (currentStage >= 1 && currentStage <= totalStages) {
+                displayStage(currentStage); // Po prostu wywołaj ponownie, użyje aktualnych ustawień trudności
+            }
+        }
+
+        // --- Inicjalizacja i Reset ---
+
+        function startGame() {
+            originalText = textInput.value.trim();
+            if (originalText.length === 0) {
+                alert('Proszę wpisać jakiś tekst!');
+                return;
+            }
+
+            // Oblicz i zapisz maksima
+            maxCounts = calculateMaxCounts(originalText);
+
+            // Ustaw wartości maksymalne w inputach i spanach
+            lettersToHideInput.max = maxCounts.letters;
+            maxLettersSpan.textContent = maxCounts.letters;
+            wordsToHideInput.max = maxCounts.words;
+            maxWordsSpan.textContent = maxCounts.words;
+            sentencesToHideInput.max = maxCounts.sentences;
+            maxSentencesSpan.textContent = maxCounts.sentences;
+
+            // Ustaw domyślne wartości inputów (np. procent maksimów)
+            lettersToHideInput.value = Math.min(maxCounts.letters, Math.max(1, Math.floor(maxCounts.letters * 0.3)));
+            wordsToHideInput.value = Math.min(maxCounts.words, Math.max(1, Math.floor(maxCounts.words * 0.4)));
+            sentencesToHideInput.value = Math.min(maxCounts.sentences, Math.max(1, Math.floor(maxCounts.sentences * 0.5)));
+
+
+            inputSection.style.display = 'none';
+            learningSection.style.display = 'block';
+            displayStage(1); // Start from stage 1 (Letters)
+        }
+
+        function resetToInput() {
+            inputSection.style.display = 'block';
+            learningSection.style.display = 'none';
+            textInput.value = '';
+            originalText = '';
+            currentStage = 0;
+            feedback.textContent = '';
+            feedback.className = '';
+            textDisplay.innerHTML = '';
+            maxCounts = { letters: 0, words: 0, sentences: 0 }; // Reset maksów
+        }
+
+        // --- Event Listeners ---
+
+        startButton.addEventListener('click', startGame);
+        checkButton.addEventListener('click', checkAnswers);
+        repeatStageButton.addEventListener('click', repeatCurrentStage);
+        prevStageButton.addEventListener('click', goToPrevStage);
+        nextStageButton.addEventListener('click', goToNextStage);
+        resetButton.addEventListener('click', resetToInput);
+
+        // Dodaj listener, aby zmiana wartości w inpucie trudności od razu odświeżała etap
+        [lettersToHideInput, wordsToHideInput, sentencesToHideInput].forEach(input => {
+            input.addEventListener('change', () => {
+                // Sprawdź, czy wartość jest w zakresie, zanim odświeżysz
+                const maxVal = parseInt(input.max, 10);
+                let currentVal = parseInt(input.value, 10);
+                if (isNaN(currentVal) || currentVal < 0) {
+                    input.value = 0;
+                } else if (currentVal > maxVal) {
+                    input.value = maxVal;
+                }
+                // Odśwież tylko jeśli etap jest aktywny
+                 if ((input === lettersToHideInput && currentStage === 1) ||
+                     (input === wordsToHideInput && currentStage === 2) ||
+                     (input === sentencesToHideInput && currentStage === 3)) {
+                     repeatCurrentStage();
+                 }
+            });
+        });
+
+
+    </script>
+
+</body>
+</html>
