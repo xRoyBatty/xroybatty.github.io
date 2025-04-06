@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Essay View</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .tab-navigation {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .tab-button {
+            padding: 10px 15px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background-color: #eee;
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+            border-bottom: none;
+        }
+        .tab-button.active {
+            background-color: #fff;
+            border-bottom: 1px solid #fff;
+            position: relative;
+            top: 1px;
+            font-weight: bold;
+        }
+        .essay-content {
+            display: none;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 0 5px 5px 5px;
+            margin-top: -1px;
+            white-space: pre-wrap;
+            background-color: #fff;
+        }
+        .essay-content.active {
+            display: block;
+        }
+        .task-prompt {
+            background-color: #eef;
+            border-left: 5px solid #aab;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            font-style: italic;
+            color: #445;
+        }
+        .error, .style-issue {
+            /* No cursor pointer, as it's not clickable */
+            padding: 0 2px;
+            border-radius: 3px;
+            transition: background-color 0.3s, text-decoration-color 0.3s;
+        }
+        .error {
+            background-color: #fff7b2; /* Light yellow */
+            text-decoration: underline wavy red;
+        }
+        .style-issue {
+            background-color: #d4edda; /* Light green */
+            text-decoration: underline dotted #155724; /* Dotted green */
+        }
+        .critical-error {
+            text-decoration-style: double !important; /* Force double underline */
+            text-decoration-thickness: 1.5px;
+        }
+        /* Style for filtered out errors */
+        .filtered-out {
+             background-color: transparent !important;
+             text-decoration-color: transparent !important; /* Make underline transparent */
+         }
+        #filter-controls {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #eee;
+            border-radius: 5px;
+        }
+        #filter-controls label {
+            margin-right: 15px;
+            cursor: pointer;
+        }
+         #filter-controls input {
+             margin-right: 5px;
+             cursor: pointer;
+         }
+         /* Hide the explanation box completely */
+         #explanation-box {
+             display: none !important;
+         }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Student Essay View</h1>
+    <p>This view shows your essays with highlights indicating areas for discussion. Follow your teacher's guidance.</p>
+
+    <div class="tab-navigation">
+        <button class="tab-button active" onclick="showEssay('essay1')">Essay 1: Intelligent Houses</button>
+        <button class="tab-button" onclick="showEssay('essay2')">Essay 2: Art Circle Letter</button>
+        <button class="tab-button" onclick="showEssay('essay3')">Essay 3: Road Safety Letter</button>
+    </div>
+
+    <div id="filter-controls">
+        <strong>Filter Error Categories (as guided by teacher):</strong><br>
+        <label><input type="checkbox" class="filter-checkbox" value="grammar" checked onchange="applyFilters()"> Grammar</label>
+        <label><input type="checkbox" class="filter-checkbox" value="lexis" checked onchange="applyFilters()"> Lexis/Word Choice</label>
+        <label><input type="checkbox" class="filter-checkbox" value="style" checked onchange="applyFilters()"> Style/Register</label>
+        <label><input type="checkbox" class="filter-checkbox" value="spelling" checked onchange="applyFilters()"> Spelling</label>
+        <label><input type="checkbox" class="filter-checkbox" value="punctuation" checked onchange="applyFilters()"> Punctuation</label>
+        <label><input type="checkbox" class="filter-checkbox" value="content" checked onchange="applyFilters()"> Content/Task</label>
+    </div>
+
+    <div id="essay1" class="essay-content active">
+        <blockquote class="task-prompt">
+            <b>Polecenie:</b> „Inteligentne domy" to takie, w których instalacje i urzadzenia (np. oswietlenie, temperatura, klimatyzacja) sterowane sa automatyeznie. Czy zamieszkanie w takim domu to dobry pomysi? Napisz rozprawke, w której wyrazisz swoja opinie na ten temat, odnoszac sie do nastepujacych aspektów: wygody, kosztow, bezpieczenstwa.
+        </blockquote>
+        <h2>Essay 1: Intelligent Houses (Rozprawka)</h2>
+“Intelligent houses” has been a hot topic recently. These houses have installations and devices that are automatically controlled. Aspects such as comfort, cost and safety are significant to consider if one wants to move into an “intelligent house”. These technologies can make home-life easier as well as more complicated. In my opinion, living in an intelligent house is not a good idea.
+
+First and foremost, comfort is what everybody is looking for when moving in. Home is a place where one feels cozy and enjoyable. <span class="style-issue" data-category="style">Simpleness is what people seek</span> in automatically controlled lighting, temperature, air conditioning etc. It seems like a small, not a significant change for household members, but might make their life easier. However, there can be some complications that <span class="error critical-error" data-category="lexis">solutioning</span> would be <span class="style-issue" data-category="style">ten times harder</span> than usual. <span class="error critical-error" data-category="grammar">What if the internet would be lagging?</span> <span class="error critical-error" data-category="grammar">What if the software would be hacked?</span> There are some questions that new technology <span class="error" data-category="spelling">can not</span> answer <span class="style-issue" data-category="style">due to it being just recently put on the worldwide market</span>. Thus, if one is considering living in an intelligent house, they should consider the unpredictable phenomena that might contribute to their <span class="error critical-error" data-category="lexis">comfortness</span>.
+
+On the other hand, intelligent houses are <span class="error" data-category="lexis">not for low budget people</span>. Big investment might not always equal less <span class="error" data-category="lexis">spendings</span> in the future. <span class="error critical-error" data-category="grammar">As technology like automatically controlled installations and devices are not so tested and examined as common solutions, due to their recent premiere, can be problematic.</span> <span class="error critical-error" data-category="grammar">Tiny changes in software and the whole installation is working differently.</span> Consequently, it can be a <span class="style-issue" data-category="style">huge financial burden</span> when it comes to repairs.
+
+Last but not least is the aspect of safety. Hacking and <span class="error" data-category="lexis">cyber-robberies</span> happen more often nowadays with rapidly evolving technology. Having a whole house programmed with one software is a great opportunity for cyber-criminals. Safety of household members as well as material goods can be put at risk. Obviously, <span class="error critical-error" data-category="grammar">this is not certain to have a house robbed having intelligent installations</span>, but there is always a slight chance of danger.
+
+Summarizing, living in a world where technology is all around us can be misleading. We do not have to have every element of our lives put in software and having artificial intelligence do all the work for us. I think it is better to limit the impact of high-tech on our lives and <span class="style-issue" data-category="style">be still independent on our own</span>.
+    </div>
+
+    <div id="essay2" class="essay-content">
+        <blockquote class="task-prompt">
+            <b>Polecenie:</b> Studiujesz na uczelni za granicą i chcesz założyć koło zainteresowań dotyczące dziedziny, którą się pasjonujesz. Napisz list do władz uczelni, w którym przedstawisz swoje dotychczasowe doświadczenia w tej dziedzinie, nakreślisz zakres planowanych działań i omówisz korzyści dla uczelni wynikające z wdrożenia tego pomysłu.
+        </blockquote>
+        <h2>Essay 2: Art Circle Letter (List Formalny)</h2>
+<span class="style-issue" data-category="style">Dear Dean’s Office,</span>
+
+<span class="style-issue critical-error" data-category="style">Lately I have developed the idea of</span> creating a <span class="error critical-error" data-category="lexis">circle of interests</span> on our campus. I think it could be a fantastic idea for students to embrace their passion and <span class="style-issue" data-category="lexis">gather people around through their hobby</span>. My idea would be to start an Artistic circle.
+
+<span class="error critical-error" data-category="grammar">My experience in fine arts starts early</span> in my <span class="style-issue" data-category="lexis">pre-school years</span>. <span class="error critical-error" data-category="grammar">I had begun to draw and paint before I have learned to speak.</span> My passion continuously grew as I got older and more aware of the world surrounding me. It has always been my <span class="error" data-category="lexis">gateway from</span> stress and <span class="error" data-category="lexis">pejorative emotions</span>. I took art classes in high school and <span class="error" data-category="grammar">I had been taking part</span> in many art contests. In my free time <span class="style-issue" data-category="style">I am educating myself in art studies</span>, so I believe I could be an <span class="style-issue critical-error" data-category="lexis">incredible</span> coordinator of <span class="error" data-category="grammar">Art circle</span>.
+
+First semester, we would <span class="style-issue critical-error" data-category="style">get to know each other as members who share love for one passion</span>. We would paint and draw <span class="error" data-category="grammar">in each of one’s preferred subjects</span>. <span class="error" data-category="grammar">Developing each’s best skill</span> would be the next step of becoming better artists. <span class="error" data-category="grammar">The members of Art circle</span> could learn from each other new things and <span class="error" data-category="lexis">get more knowledge about art</span>. After some time, it could be possible to even compete in art competitions and represent our <span class="error critical-error" data-category="spelling">Collage</span>.
+
+Art connects people, embraces feelings and develops one’s mental health. It is beneficial for students who struggle with mental health, stress issues and low self-esteem. Furthermore, it can be <span class="error critical-error" data-category="spelling">beneficial for the collage image</span>. The school would be <span class="error critical-error" data-category="grammar">developing not only student’s intellectual knowledge but also manual skills</span>. Moreover, <span class="error" data-category="punctuation">students who struggle with finding friends, could find themselves</span> surrounded by people who <span class="error" data-category="punctuation">share the same passion which might benefit their social life</span>.
+
+I hope you <span class="error critical-error" data-category="grammar">take my idea under consideration</span>, as <span class="style-issue critical-error" data-category="style">art is the rhythm of the human soul and needs to be disclosed from each of those who love humanity studies</span>, and not only.
+
+<span class="style-issue" data-category="style">Kindest regards,</span>
+XYZ
+    </div>
+
+     <div id="essay3" class="essay-content">
+         <blockquote class="task-prompt">
+             <b>Polecenie:</b> Aby zwrócić uwagę na problem bezpieczeństwa na drodze, coraz częściej wykorzystuje się reklamy i kampanie społeczne. Napisz list do gazety. Opisz w nim ciekawą reklamę dotyczącą bezpieczeństwa na drodze, wyraź swoją opinię na temat skuteczności tego typu reklam w przeciwdziałaniu wypadkom i zaproponuj inne rozwiązania, które mogą przyczynić się do poprawy sytuacji na drogach.
+         </blockquote>
+        <h2>Essay 3: Road Safety Letter (List do Gazety)</h2>
+<span class="style-issue" data-category="style">Dear Editors,</span>
+
+<span class="style-issue" data-category="style">I’m writing to you with the idea to raise awareness about dangers on the road.</span>
+Advertisements and campaigns are very often used to point out the importance of safety on
+the road. Many drivers in recent years have been reckless behind the wheel. Awareness of
+the possible dangers on the road is a significant aspect of <span class="error critical-error" data-category="lexis">remaining safety</span> <span class="style-issue" data-category="lexis">during routes</span>.
+
+<span class="error critical-error" data-category="content">My idea for safe driving is a TV advertisement.</span> It would visualize the tragedy of car accidents
+that can be caused by reckless drivers. <span class="error critical-error" data-category="grammar">There is many examples</span> of situations that can be
+used, such as drunk driving, <span class="error" data-category="grammar">exceeding speed limit</span>, driving without a license, <span class="style-issue" data-category="style">showing off to
+friends</span>, driving a <span class="error" data-category="lexis">broken or overused vehicle</span> etc. Each of the situations would contain a
+perspective of the driver and the victim. <span class="style-issue" data-category="grammar">Drivers' perspective before the accident should
+present the behavior or cause of the accident, however the victim's life before the accident
+should be shown as</span> <span class="style-issue" data-category="lexis">jubilant</span>, <span class="style-issue" data-category="style">their whole being should be cheerful</span> and seen as important, for
+example <span class="error" data-category="grammar">in the surrounding of</span> friends or family. The moment of crash would be tragic and
+<span class="style-issue" data-category="punctuation">gut wrenching</span>. <span class="style-issue" data-category="lexis">Post the accident</span> there would be <span class="error" data-category="lexis">a glance of the victim's family and friends
+grief</span>, <span class="error critical-error" data-category="spelling">buring their cheerful beloved</span>, or the victim being injured for the rest of their life.
+Furthermore, there should be a moment for the <span class="error critical-error" data-category="lexis">culprit’s excruciating guilt that would hold in
+for eternity</span>. The whole advertisement should have <span class="style-issue" data-category="lexis">accurate exposure, lighting</span>, background
+music and <span class="error" data-category="lexis">relevant actors</span>, to <span class="style-issue critical-error" data-category="lexis">express the baggage of emotions</span> <span class="error" data-category="lexis">holding onto reckless driving</span>.
+
+Scientists confirm that <span class="style-issue" data-category="style">fear can robustly deter</span> people from doing something perilous.
+<span class="error critical-error" data-category="lexis">Fearfulness of committing a life sentence on someone</span> can be successful in encouraging
+people to drive safely.
+
+<span class="error critical-error" data-category="content"></span>
+I hope you will take my suggestion under consideration.
+
+<span class="style-issue" data-category="style">With respect,</span>
+xyz
+    </div>
+
+</div>
+
+<!-- Explanation Box is removed or permanently hidden in student version -->
+<!-- <div id="explanation-box"> ... </div> -->
+
+<script>
+    // JavaScript remains largely the same, but click listeners won't be added
+    // or the showExplanation function will do nothing.
+    // Filtering functionality is kept.
+
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const essayContents = document.querySelectorAll('.essay-content');
+    const filterCheckboxes = document.querySelectorAll('.filter-checkbox');
+
+    // Function to show the selected essay
+    function showEssay(essayId) {
+        essayContents.forEach(content => content.classList.remove('active'));
+        tabButtons.forEach(button => button.classList.remove('active'));
+        document.getElementById(essayId).classList.add('active');
+        document.querySelector(`.tab-button[onclick="showEssay('${essayId}')"]`).classList.add('active');
+        // Apply filters to the newly shown essay
+        applyFilters();
+    }
+
+    // Function to apply filters based on checkboxes
+    function applyFilters() {
+        const checkedCategories = new Set();
+        filterCheckboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                checkedCategories.add(checkbox.value);
+            }
+        });
+
+        document.querySelectorAll('.error, .style-issue').forEach(span => {
+            const category = span.getAttribute('data-category');
+            if (category && !checkedCategories.has(category)) {
+                span.classList.add('filtered-out');
+            } else {
+                span.classList.remove('filtered-out');
+            }
+        });
+    }
+
+    // Initial setup: Show the first essay and apply initial filters
+    document.addEventListener('DOMContentLoaded', () => {
+        showEssay('essay1');
+    });
+
+    // NOTE: No event listeners added to .error or .style-issue spans
+    // NOTE: Explanation box related functions (show/hide) are removed or disabled
+
+</script>
+
+</body>
+</html>
