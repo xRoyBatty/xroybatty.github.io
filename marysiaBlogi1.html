@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Przegląd Wpisów na Bloga</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .tab-navigation {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            display: flex; /* Use flexbox for tabs */
+            flex-wrap: wrap; /* Allow tabs to wrap on smaller screens */
+        }
+        .tab-button {
+            padding: 10px 15px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background-color: #eee;
+            margin-right: 5px;
+            margin-bottom: -1px; /* Overlap border slightly */
+            border-radius: 5px 5px 0 0;
+            border-bottom: none;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .tab-button:hover {
+            background-color: #ddd;
+        }
+        .tab-button.active {
+            background-color: #fff;
+            border-bottom: 1px solid #fff;
+            position: relative;
+            top: 1px;
+            font-weight: bold;
+            border-color: #ccc #ccc #fff #ccc; /* Match border appearance */
+        }
+        .blog-content {
+            display: none;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 0 5px 5px 5px;
+            margin-top: -1px; /* Connect content to active tab */
+            background-color: #fff;
+        }
+        .blog-content.active {
+            display: block;
+        }
+        .task-prompt {
+            background-color: #eef;
+            border-left: 5px solid #aab;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            font-style: italic;
+            color: #445;
+            border-radius: 3px;
+        }
+        .task-prompt ul {
+            margin-top: 5px;
+            padding-left: 20px;
+        }
+        /* Error Highlighting Styles */
+        .error, .style-issue, .logic-issue {
+            padding: 0 2px;
+            border-radius: 3px;
+            transition: background-color 0.3s, text-decoration-color 0.3s;
+        }
+        .error[data-category="spelling"] {
+            background-color: #fff7b2;
+            text-decoration: underline wavy #e65100;
+        }
+        .error[data-category="grammar"] {
+            background-color: #ffcdd2;
+            text-decoration: underline wavy #b71c1c;
+        }
+        .error[data-category="lexis"] {
+            background-color: #bbdefb;
+            text-decoration: underline wavy #0d47a1;
+        }
+         .logic-issue {
+             background-color: #ffccbc;
+             text-decoration: underline dashed #bf360c;
+             font-weight: bold;
+         }
+        .style-issue {
+            background-color: #dcedc8;
+            text-decoration: underline dotted #33691e;
+        }
+        .error[data-category="punctuation"] {
+            background-color: #e1bee7; /* Light purple */
+            text-decoration: underline dotted #4a148c; /* Dotted dark purple */
+        }
+        /* Filtered Out Style */
+        .filtered-out {
+             background-color: transparent !important;
+             text-decoration-color: transparent !important;
+         }
+        #filter-controls {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+        #filter-controls strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+        #filter-controls label {
+            margin-right: 15px;
+            cursor: pointer;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+         #filter-controls input {
+             margin-right: 5px;
+             cursor: pointer;
+             vertical-align: middle;
+         }
+        /* Scoring Table Styles */
+         .scoring-section {
+            margin-top: 30px;
+            border-top: 2px solid #eee;
+            padding-top: 20px;
+         }
+         .scoring-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+         }
+         .scoring-table th, .scoring-table td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+         }
+         .scoring-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+         }
+         .scoring-table td:nth-child(2) { /* Score column */
+            text-align: center;
+            font-weight: bold;
+            width: 80px; /* Fixed width for score */
+         }
+        .total-score td {
+            font-weight: bold;
+            background-color: #e8f5e9; /* Light green for total */
+        }
+        /* Exercises Section Styles */
+        .exercises-section {
+            margin-top: 30px;
+            border-top: 2px solid #eee;
+            padding-top: 20px;
+        }
+        .exercises-section h3 {
+            margin-bottom: 15px;
+            color: #0056b3; /* Darker blue for heading */
+        }
+        .exercises-section ol {
+            padding-left: 25px;
+        }
+        .exercises-section li {
+            margin-bottom: 12px;
+        }
+        .exercises-section strong { /* Highlight keywords in exercises */
+            color: #d81b60; /* Pinkish color */
+        }
+        .exercises-section code { /* For showing code/corrections */
+            background-color: #f0f0f0;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+
+        /* Ensure paragraphs have breathing room */
+        .blog-post-text p {
+            margin-bottom: 1em;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Przegląd Wpisów na Bloga</h1>
+    <p>Poniżej znajdują się Twoje wpisy z zaznaczonymi błędami oraz oceną punktową. Wykorzystaj sekcję ćwiczeń, aby poprawić swoje umiejętności.</p>
+
+    <div class="tab-navigation">
+        <button class="tab-button active" onclick="showBlog('blog1')">Wpis 1: Wycieczka Rowerowa</button>
+        <button class="tab-button" onclick="showBlog('blog2')">Wpis 2: Wyjazd na Mecz</button>
+    </div>
+
+    <div id="filter-controls">
+        <strong>Filtruj Kategorie Błędów:</strong><br>
+        <label><input type="checkbox" class="filter-checkbox" value="grammar" checked onchange="applyFilters()"> Gramatyka</label>
+        <label><input type="checkbox" class="filter-checkbox" value="lexis" checked onchange="applyFilters()"> Słownictwo (Lexis)</label>
+        <label><input type="checkbox" class="filter-checkbox" value="logic" checked onchange="applyFilters()"> Logika/Treść</label>
+        <label><input type="checkbox" class="filter-checkbox" value="spelling" checked onchange="applyFilters()"> Ortografia</label>
+        <label><input type="checkbox" class="filter-checkbox" value="punctuation" checked onchange="applyFilters()"> Interpunkcja</label>
+        <label><input type="checkbox" class="filter-checkbox" value="style" checked onchange="applyFilters()"> Styl/Rejestr</label>
+    </div>
+
+    <!-- Blog Post 1 Content -->
+    <div id="blog1" class="blog-content active">
+        <blockquote class="task-prompt">
+            <b>Przykładowe Polecenie:</b> Po raz pierwszy wybrałeś się w podróż rowerem za granicę. Podziel się swoimi wrażeniami na blogu:
+            <ul>
+                <li>Poinformuj, jak się przygotowałeś do wyjazdu.</li>
+                <li>Opisz miejsce które najbardziej Ci się podobało</li>
+                <li>Zrelacjonuj wydarzenie, które szczególnie utkwiło Ci w pamięci</li>
+                <li>Doradź czytelnikom, jak uniknąć popełnionych przez Ciebie błędów.</li>
+            </ul>
+        </blockquote>
+        <h2>Wpis 1: Moja Pierwsza Zagraniczna Wycieczka Rowerowa!</h2>
+        <div class="blog-post-text">
+            <p>Hi <span class="error" data-category="spelling">guyaso</span>!</p>
+            <p>Thanks for all <span class="error" data-category="grammar">yours</span> <span class="error" data-category="spelling">commeuts</span> under my last <span class="error" data-category="lexis">past</span>.</p>
+            <p>Last week, <span class="error" data-category="grammar">I</span> decided to go on a <span class="error" data-category="lexis">like</span> trip to <span class="error" data-category="spelling">italy</span> <span class="error" data-category="spelling">beacause</span> I <span class="error" data-category="grammar">wouled</span> to eat some good pizza.</p>
+            <p>I prepared for 3 months. <span class="error" data-category="grammar">Itrained</span> for fitness <span class="error" data-category="spelling">aud</span> rode a lot of <span class="error" data-category="lexis">like</span>. <span class="error" data-category="grammar">Thad</span> to buy a new <span class="error" data-category="lexis">like</span> to <span class="error" data-category="spelling">ve</span> a <span class="error" data-category="spelling">comtortable</span> <span class="error" data-category="spelling">aud</span> <span class="error" data-category="spelling">Ilought</span> shoes<span class="error" data-category="punctuation">,</span> a helmet<span class="error" data-category="punctuation">,</span> <span class="error" data-category="spelling">aud</span> clothes especially <span class="error" data-category="spelling">foy</span> long journeys on the <span class="error" data-category="lexis">lue</span>.</p>
+            <p>At first I visited <span class="error" data-category="spelling">Mediolaw</span> which I liked immediately <span class="error" data-category="spelling">beacause</span> I <span class="error" data-category="spelling">risited</span> the beautiful cathedral there.</p>
+            <p>What I remember <span class="error" data-category="lexis">mast</span> is <span class="error" data-category="grammar">wheu</span> <span class="error" data-category="grammar">Ispeut</span> my last <span class="error" data-category="spelling">wight</span> there with real <span class="error" data-category="spelling">Italious</span> who took me into their home. It was amazing!!</p>
+            <p>This trip was <span class="logic-issue" data-category="logic">forgettable</span>, however<span class="error" data-category="punctuation">,</span> the weather was really good.</p>
+            <p>Unfortunately<span class="error" data-category="punctuation">,</span> I forgot about proper hydration <span class="error" data-category="spelling">aud</span> breaks during the trip, so I <span class="error" data-category="lexis">tell</span> really <span class="error" data-category="lexis">had</span> afterwards.</p>
+            <p>That is why you <span class="error" data-category="grammar">most</span> <span class="error" data-category="spelling">ramember</span> about good <span class="error" data-category="spelling">hyration!</span> <span class="error" data-category="spelling">aud</span> appropriate breaks during such a trip.</p>
+            <p><span class="error" data-category="spelling">Till</span> the next time<span class="error" data-category="punctuation">!</span></p>
+        </div>
+
+        <div class="scoring-section">
+            <h3>Szczegółowa Punktacja (wg Kryteriów Matury Podstawowej)</h3>
+            <table class="scoring-table">
+                <thead>
+                    <tr>
+                        <th>Kryterium</th>
+                        <th>Ocena</th>
+                        <th>Komentarz</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Treść</td>
+                        <td>5 / 5</td>
+                        <td>Wszystkie punkty polecenia zrealizowane i rozwinięte.</td>
+                    </tr>
+                    <tr>
+                        <td>Spójność i Logika</td>
+                        <td>1 / 2</td>
+                        <td>Praca w większości spójna, ale zawiera błąd logiczny ("forgettable"), który zaburza przekaz.</td>
+                    </tr>
+                    <tr>
+                        <td>Zakres Środków Językowych</td>
+                        <td>2 / 3</td>
+                        <td>Zakres wystarczający dla poziomu podstawowego, ale ograniczony i z powtórzeniami (np. 'like').</td>
+                    </tr>
+                    <tr>
+                        <td>Poprawność Środków Językowych</td>
+                        <td>1 / 2</td>
+                        <td>Liczne błędy (ortograficzne, gramatyczne, leksykalne), które zakłócają odbiór, ale nie uniemożliwiają komunikacji.</td>
+                    </tr>
+                    <tr class="total-score">
+                        <td>Łącznie</td>
+                        <td>9 / 12</td>
+                        <td>Dobra realizacja treści, ale praca wymaga znaczącej poprawy w zakresie poprawności i logiki.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="exercises-section">
+            <h3>Ćwiczenia - Popraw i Rozszerz</h3>
+            <ol>
+                <li>
+                    <strong>Ortografia:</strong> Popraw następujące słowa z tekstu: <code>guyaso</code>, <code>commeuts</code>, <code>italy</code>, <code>beacause</code>, <code>aud</code>, <code>ve comtortable</code>, <code>Ilought</code>, <code>foy</code>, <code>Mediolaw</code>, <code>risited</code>, <code>wight</code>, <code>Italious</code>, <code>ramember</code>, <code>hyration</code>, <code>Till</code>.
+                </li>
+                <li>
+                    <strong>Słownictwo (Lexis):</strong> Słowo 'bike' (rower) zostało wielokrotnie błędnie zapisane jako 'like'. Zapamiętaj poprawną pisownię! Znajdź w tekście i popraw inne błędy leksykalne: <code>past</code> (powinno być 'post'), <code>lue</code> (powinno być 'bike'), <code>mast</code> (powinno być 'most'). Co autor prawdopodobnie chciał napisać zamiast <code>forgettable</code>? Jaka jest poprawna forma dla <code>tell really had</code> (myślał o 'felt really bad')?
+                </li>
+                 <li>
+                    <strong>Gramatyka - Zaimki dzierżawcze:</strong> Popraw zwrot <code>yours comments</code>. Jaki zaimek dzierżawczy powinien tu być użyty? (Podpowiedź: 'your')
+                 </li>
+                <li>
+                    <strong>Gramatyka - Czasowniki modalne:</strong> Autor napisał <code>you most ramember</code>. Popraw czasownik modalny na <code>must</code>. Kiedy używamy 'must', a kiedy np. 'should'?
+                </li>
+                <li>
+                    <strong>Gramatyka - Interpunkcja:</strong> W zdaniu <code>Ilought shoes a helmet aud clothes</code> brakuje przecinków przy wyliczaniu. Wstaw je poprawnie. Gdzie jeszcze w tekście warto dodać przecinki?
+                </li>
+                <li>
+                    <strong>Logika i Spójność:</strong> Zwrot <code>This trip was forgettable, however...</code> jest nielogiczny w kontekście pozytywnych wspomnień. Zmień słowo <code>forgettable</code> na takie, które pasuje do opisu (np. `unforgettable`, `memorable`). Jak ten jeden błąd wpływa na odbiór całego akapitu?
+                </li>
+                 <li>
+                    <strong>Rozwiń Opis:</strong> Akapit o Mediolanie jest krótki. Dodaj jedno lub dwa zdania opisujące, co jeszcze Ci się podobało lub co robiłeś/robiłaś przy katedrze.
+                 </li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Blog Post 2 Content -->
+    <div id="blog2" class="blog-content">
+         <blockquote class="task-prompt">
+            <b>Przykładowe Polecenie:</b> Niedawno wybrałeś/wybrałaś się samotnie za granicę na ważne dla Ciebie wydarzenie sportowe. Podziel się swoimi wrażeniami na blogu:
+            <ul>
+                <li>Poinformuj, dlaczego zdecydowałeś/zdecydowałaś się jechać sam/sama.</li>
+                <li>Zrelacjonuj niezwykłe spotkanie, które miało miejsce podczas wyjazdu.</li>
+                <li>Opisz pamiątkę, która jest dla Ciebie szczególnie ważna.</li>
+                <li>Udziel czytelnikom rad dotyczących bezpieczeństwa podczas samotnych podróży.</li>
+            </ul>
+        </blockquote>
+        <h2>Wpis 2: Samotny Wyjazd na Mecz Marzeń!</h2>
+         <div class="blog-post-text">
+            <p>Hi everyone!</p>
+            <p>I’m back from my trip. I went on it all by myself.</p>
+            <p>I went to Spain alone for a Barcelona match because I'm a big fan!!</p>
+            <p>I was alone because all my friends are fans of <span class="error" data-category="grammar">another clubs</span> hahah</p>
+            <p>What is your favorite club?</p>
+            <p>You won’t guess who I met on my way for coffee!</p>
+            <p>I met Robert Lewandowski who was also going to the same place for coffee.
+            I managed to talk to him. He's a really cool guy.</p>
+            <p><span class="style-issue" data-category="grammar">Being in the Barcelona stadium</span> I bought their T-shirt and it was my great souvenir
+            from that trip. It was my biggest dream! I hung this T-shirt on the wall in my room.</p>
+            <p>Remember that if you go somewhere alone, you have to watch out for people.
+            Keep your belongings close to you and do not walk on busy streets with your phone in your back pocket as someone can easily snatch it from you. I would like to hear from you on this topic.</p>
+            <p>You can share your travel experience!</p>
+        </div>
+
+        <div class="scoring-section">
+             <h3>Szczegółowa Punktacja (wg Kryteriów Matury Podstawowej)</h3>
+             <table class="scoring-table">
+                 <thead>
+                     <tr>
+                         <th>Kryterium</th>
+                         <th>Ocena</th>
+                         <th>Komentarz</th>
+                     </tr>
+                 </thead>
+                 <tbody>
+                     <tr>
+                         <td>Treść</td>
+                         <td>5 / 5</td>
+                         <td>Wszystkie punkty polecenia zrealizowane i w pełni rozwinięte.</td>
+                     </tr>
+                     <tr>
+                         <td>Spójność i Logika</td>
+                         <td>2 / 2</td>
+                         <td>Praca jest logiczna, dobrze zorganizowana i bardzo spójna.</td>
+                     </tr>
+                     <tr>
+                         <td>Zakres Środków Językowych</td>
+                         <td>3 / 3</td>
+                         <td>Zakres środków adekwatny dla poziomu podstawowego, wystarczający do precyzyjnego opisu.</td>
+                     </tr>
+                     <tr>
+                         <td>Poprawność Środków Językowych</td>
+                         <td>2 / 2</td>
+                         <td>Bardzo wysoka poprawność językowa, nieliczne drobne błędy niezakłócające komunikacji.</td>
+                     </tr>
+                     <tr class="total-score">
+                         <td>Łącznie</td>
+                         <td>12 / 12</td>
+                         <td>Bardzo dobra praca, spełniająca wszystkie wymagania na poziomie podstawowym.</td>
+                     </tr>
+                 </tbody>
+             </table>
+         </div>
+
+         <div class="exercises-section">
+             <h3>Ćwiczenia - Utrwal i Wzbogać</h3>
+             <ol>
+                 <li>
+                    <strong>Gramatyka - 'Other' vs 'Another':</strong> W tekście użyto <code>another clubs</code>. W liczbie mnogiej używamy <strong>'other'</strong>. Popraw to zdanie. Kiedy używamy 'another'? (Podpowiedź: z rzeczownikami policzalnymi w liczbie pojedynczej).
+                 </li>
+                 <li>
+                    <strong>Gramatyka - Zdania imiesłowowe (Participial Clauses):</strong> Zdanie <code>Being in the Barcelona stadium I bought...</code> jest przykładem konstrukcji, która może być czasem niejasna (tzw. 'dangling participle'). Chociaż w mowie potocznej jest akceptowalne, jak można je przeredagować, aby było bardziej formalne i jednoznaczne? Użyj np. <strong>'When I was...'</strong> lub <strong>'While I was...'</strong>.
+                 </li>
+                 <li>
+                    <strong>Gramatyka - Przedimki (Articles):</strong> W zdaniu <code>it was my great souvenir</code> można by dodać przedimek nieokreślony przed przymiotnikiem. Napisz zdanie z przedimkiem: `It was a great souvenir for me...`. Kiedy zazwyczaj używamy 'a/an'?
+                 </li>
+                 <li>
+                    <strong>Słownictwo - Synonimy:</strong> Znajdź synonimy dla słów/zwrotów użytych w tekście:
+                       *   `a big fan` (np. `a huge supporter`, `an enthusiast`)
+                       *   `managed to talk to him` (np. `had the opportunity to speak with him`, `succeeded in talking to him`)
+                       *   `really cool guy` (np. `very friendly person`, `genuinely nice man`)
+                       *   `watch out for people` (np. `be careful around others`, `be aware of your surroundings`)
+                 </li>
+                 <li>
+                    <strong>Rozwiń Opis Wydarzenia:</strong> Spotkanie z Robertem Lewandowskim jest opisane krótko. Dodaj jedno zdanie o tym, o czym rozmawialiście lub jak się czułeś/czułaś podczas tej rozmowy.
+                 </li>
+                 <li>
+                    <strong>Styl Blogowy:</strong> Zwróć uwagę na zwroty typowe dla bloga użyte w tekście (<code>Hi everyone!</code>, <code>You won't guess...</code>, pytania do czytelników). Jakie inne zwroty można użyć, aby zaangażować czytelników? (np. <code>Let me know in the comments!</code>, <code>What do you think?</code>)
+                 </li>
+             </ol>
+         </div>
+    </div>
+
+</div>
+
+<!-- Explanation Box is removed -->
+
+<script>
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const blogContents = document.querySelectorAll('.blog-content');
+    const filterCheckboxes = document.querySelectorAll('.filter-checkbox');
+
+    // Function to show the selected blog post
+    function showBlog(blogId) {
+        blogContents.forEach(content => content.classList.remove('active'));
+        tabButtons.forEach(button => button.classList.remove('active'));
+        document.getElementById(blogId).classList.add('active');
+        document.querySelector(`.tab-button[onclick="showBlog('${blogId}')"]`).classList.add('active');
+        // Apply filters to the newly shown blog post
+        applyFilters();
+    }
+
+    // Function to apply filters based on checkboxes
+    function applyFilters() {
+        const checkedCategories = new Set();
+        filterCheckboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                checkedCategories.add(checkbox.value);
+            }
+        });
+
+        // Apply/remove 'filtered-out' class to all relevant spans
+        document.querySelectorAll('.error, .style-issue, .logic-issue').forEach(span => {
+            const category = span.getAttribute('data-category');
+            if (category && !checkedCategories.has(category)) {
+                span.classList.add('filtered-out');
+            } else {
+                span.classList.remove('filtered-out');
+            }
+        });
+    }
+
+    // Initial setup: Show the first blog post and apply initial filters
+    document.addEventListener('DOMContentLoaded', () => {
+        showBlog('blog1');
+    });
+
+</script>
+
+</body>
+</html>
