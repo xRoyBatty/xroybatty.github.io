@@ -82,6 +82,7 @@
         .error[data-category="spelling"] {
             background-color: #fff7b2;
             text-decoration: underline wavy #e65100;
+            /* Consider adding a tooltip or similar for correction suggestions */
         }
         .error[data-category="grammar"] {
             background-color: #ffcdd2;
@@ -91,7 +92,7 @@
             background-color: #bbdefb;
             text-decoration: underline wavy #0d47a1;
         }
-         .logic-issue {
+         .logic-issue { /* Should not appear in the final corrected text */
              background-color: #ffccbc;
              text-decoration: underline dashed #bf360c;
              font-weight: bold;
@@ -172,6 +173,7 @@
         }
         .exercises-section ol {
             padding-left: 25px;
+            list-style-type: decimal;
         }
         .exercises-section li {
             margin-bottom: 12px;
@@ -185,35 +187,91 @@
             border-radius: 3px;
             font-family: monospace;
         }
-
         /* Ensure paragraphs have breathing room */
         .blog-post-text p {
             margin-bottom: 1em;
         }
+        /* Homework Section Styles */
+        .homework-section {
+            margin-top: 30px;
+            border-top: 2px solid #eee;
+            padding-top: 20px;
+            background-color: #f9f9f9; /* Slightly different background for homework */
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .homework-section h3 {
+            margin-bottom: 15px;
+            color: #6200ea; /* Purple for homework heading */
+        }
+        .homework-section ol {
+            padding-left: 25px;
+            list-style-type: decimal;
+        }
+        .homework-section li {
+            margin-bottom: 15px; /* More space between homework items */
+        }
+        .homework-section .exercise-box {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px; /* Space below each box */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Subtle shadow */
+        }
+        .homework-section .instruction {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .homework-section .examples {
+            font-style: italic;
+            color: #666;
+            margin: 10px 0;
+            font-size: 0.9em; /* Smaller font for examples */
+            border-left: 3px solid #ccc;
+            padding-left: 10px;
+        }
+        .homework-section p { /* Space for writing answers */
+            margin-bottom: 8px;
+        }
+         /* Specific style for multiple choice/matching options */
+         .homework-section .match-options p,
+         .homework-section .choice-options p,
+         .homework-section .fill-blank-options p{
+              margin-left: 20px;
+              margin-bottom: 5px;
+         }
+         .homework-section .fill-blank-options strong{
+              font-family: monospace;
+              font-weight: normal;
+              background-color: #eee;
+              padding: 1px 3px;
+              border-radius: 2px;
+              margin: 0 3px;
+         }
+
 
     </style>
 </head>
 <body>
-
 <div class="container">
     <h1>Przegląd Wpisów na Bloga</h1>
-    <p>Poniżej znajdują się Twoje wpisy z zaznaczonymi błędami oraz oceną punktową. Wykorzystaj sekcję ćwiczeń, aby poprawić swoje umiejętności.</p>
+    <p>Poniżej znajdują się Twoje wpisy z zaznaczonymi błędami oraz oceną punktową. Wykorzystaj sekcję ćwiczeń i zadań domowych, aby poprawić swoje umiejętności.</p>
 
     <div class="tab-navigation">
         <button class="tab-button active" onclick="showBlog('blog1')">Wpis 1: Wycieczka Rowerowa</button>
         <button class="tab-button" onclick="showBlog('blog2')">Wpis 2: Wyjazd na Mecz</button>
     </div>
-
     <div id="filter-controls">
         <strong>Filtruj Kategorie Błędów:</strong><br>
         <label><input type="checkbox" class="filter-checkbox" value="grammar" checked onchange="applyFilters()"> Gramatyka</label>
         <label><input type="checkbox" class="filter-checkbox" value="lexis" checked onchange="applyFilters()"> Słownictwo (Lexis)</label>
-        <label><input type="checkbox" class="filter-checkbox" value="logic" checked onchange="applyFilters()"> Logika/Treść</label>
+        <!-- Logic filter removed as issues were corrected/explained -->
         <label><input type="checkbox" class="filter-checkbox" value="spelling" checked onchange="applyFilters()"> Ortografia</label>
         <label><input type="checkbox" class="filter-checkbox" value="punctuation" checked onchange="applyFilters()"> Interpunkcja</label>
         <label><input type="checkbox" class="filter-checkbox" value="style" checked onchange="applyFilters()"> Styl/Rejestr</label>
     </div>
-
     <!-- Blog Post 1 Content -->
     <div id="blog1" class="blog-content active">
         <blockquote class="task-prompt">
@@ -227,116 +285,20 @@
         </blockquote>
         <h2>Wpis 1: Moja Pierwsza Zagraniczna Wycieczka Rowerowa!</h2>
         <div class="blog-post-text">
-            <p>Hi <span class="error" data-category="spelling">guyaso</span>!</p>
-            <p>Thanks for all <span class="error" data-category="grammar">yours</span> <span class="error" data-category="spelling">commeuts</span> under my last <span class="error" data-category="lexis">past</span>.</p>
-            <p>Last week, <span class="error" data-category="grammar">I</span> decided to go on a <span class="error" data-category="lexis">like</span> trip to <span class="error" data-category="spelling">italy</span> <span class="error" data-category="spelling">beacause</span> I <span class="error" data-category="grammar">wouled</span> to eat some good pizza.</p>
-            <p>I prepared for 3 months. <span class="error" data-category="grammar">Itrained</span> for fitness <span class="error" data-category="spelling">aud</span> rode a lot of <span class="error" data-category="lexis">like</span>. <span class="error" data-category="grammar">Thad</span> to buy a new <span class="error" data-category="lexis">like</span> to <span class="error" data-category="spelling">ve</span> a <span class="error" data-category="spelling">comtortable</span> <span class="error" data-category="spelling">aud</span> <span class="error" data-category="spelling">Ilought</span> shoes<span class="error" data-category="punctuation">,</span> a helmet<span class="error" data-category="punctuation">,</span> <span class="error" data-category="spelling">aud</span> clothes especially <span class="error" data-category="spelling">foy</span> long journeys on the <span class="error" data-category="lexis">lue</span>.</p>
-            <p>At first I visited <span class="error" data-category="spelling">Mediolaw</span> which I liked immediately <span class="error" data-category="spelling">beacause</span> I <span class="error" data-category="spelling">risited</span> the beautiful cathedral there.</p>
-            <p>What I remember <span class="error" data-category="lexis">mast</span> is <span class="error" data-category="grammar">wheu</span> <span class="error" data-category="grammar">Ispeut</span> my last <span class="error" data-category="spelling">wight</span> there with real <span class="error" data-category="spelling">Italious</span> who took me into their home. It was amazing!!</p>
-            <p>This trip was <span class="logic-issue" data-category="logic">forgettable</span>, however<span class="error" data-category="punctuation">,</span> the weather was really good.</p>
-            <p>Unfortunately<span class="error" data-category="punctuation">,</span> I forgot about proper hydration <span class="error" data-category="spelling">aud</span> breaks during the trip, so I <span class="error" data-category="lexis">tell</span> really <span class="error" data-category="lexis">had</span> afterwards.</p>
-            <p>That is why you <span class="error" data-category="grammar">most</span> <span class="error" data-category="spelling">ramember</span> about good <span class="error" data-category="spelling">hyration!</span> <span class="error" data-category="spelling">aud</span> appropriate breaks during such a trip.</p>
-            <p><span class="error" data-category="spelling">Till</span> the next time<span class="error" data-category="punctuation">!</span></p>
+             <p>Hi guys!</p>
+             <p>Thanks for all <span class="error" data-category="grammar">yours</span> comments under my last post.</p> <!-- 'your' is needed -->
+             <p>Last week, I decided to go on a bike trip to Italy because I wanted to eat some good pizza.</p>
+             <p>I prepared for 3 months. I trained for fitness and rode my bike a lot. I had to buy a new bike to be comfortable<span class="error" data-category="punctuation">,</span> and I bought shoes<span class="error" data-category="punctuation">,</span> a helmet<span class="error" data-category="punctuation">,</span> and clothes especially for long journeys on the bike.</p> <!-- Added comma before 'and', commas in the list -->
+             <p>At first<span class="error" data-category="punctuation">,</span> I visited Milan which I liked immediately because I visited the beautiful cathedral there.</p> <!-- Added comma after introductory phrase -->
+             <p>What I remember most is when I spent my last night there with real Italians who took me into their home. It was amazing!!</p>
+             <p>The trip was unforgettable, however<span class="error" data-category="punctuation">,</span> the weather was really good.</p> <!-- Added comma after 'however' -->
+             <p>Unfortunately<span class="error" data-category="punctuation">,</span> I forgot about proper hydration and breaks during the trip, so I felt really bad afterwards.</p> <!-- Added comma after introductory adverb -->
+             <p>That is why you <span class="error" data-category="grammar">most</span> remember about good hydration and appropriate breaks during such a trip.</p> <!-- 'must' is needed -->
+             <p>Until the next time<span class="error" data-category="punctuation">!</span></p> <!-- Added exclamation mark for blog style -->
         </div>
 
         <div class="scoring-section">
             <h3>Szczegółowa Punktacja (wg Kryteriów Matury Podstawowej)</h3>
-            <table class="scoring-table">
-                <thead>
-                    <tr>
-                        <th>Kryterium</th>
-                        <th>Ocena</th>
-                        <th>Komentarz</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Treść</td>
-                        <td>5 / 5</td>
-                        <td>Wszystkie punkty polecenia zrealizowane i rozwinięte.</td>
-                    </tr>
-                    <tr>
-                        <td>Spójność i Logika</td>
-                        <td>1 / 2</td>
-                        <td>Praca w większości spójna, ale zawiera błąd logiczny ("forgettable"), który zaburza przekaz.</td>
-                    </tr>
-                    <tr>
-                        <td>Zakres Środków Językowych</td>
-                        <td>2 / 3</td>
-                        <td>Zakres wystarczający dla poziomu podstawowego, ale ograniczony i z powtórzeniami (np. 'like').</td>
-                    </tr>
-                    <tr>
-                        <td>Poprawność Środków Językowych</td>
-                        <td>1 / 2</td>
-                        <td>Liczne błędy (ortograficzne, gramatyczne, leksykalne), które zakłócają odbiór, ale nie uniemożliwiają komunikacji.</td>
-                    </tr>
-                    <tr class="total-score">
-                        <td>Łącznie</td>
-                        <td>9 / 12</td>
-                        <td>Dobra realizacja treści, ale praca wymaga znaczącej poprawy w zakresie poprawności i logiki.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="exercises-section">
-            <h3>Ćwiczenia - Popraw i Rozszerz</h3>
-            <ol>
-                <li>
-                    <strong>Ortografia:</strong> Popraw następujące słowa z tekstu: <code>guyaso</code>, <code>commeuts</code>, <code>italy</code>, <code>beacause</code>, <code>aud</code>, <code>ve comtortable</code>, <code>Ilought</code>, <code>foy</code>, <code>Mediolaw</code>, <code>risited</code>, <code>wight</code>, <code>Italious</code>, <code>ramember</code>, <code>hyration</code>, <code>Till</code>.
-                </li>
-                <li>
-                    <strong>Słownictwo (Lexis):</strong> Słowo 'bike' (rower) zostało wielokrotnie błędnie zapisane jako 'like'. Zapamiętaj poprawną pisownię! Znajdź w tekście i popraw inne błędy leksykalne: <code>past</code> (powinno być 'post'), <code>lue</code> (powinno być 'bike'), <code>mast</code> (powinno być 'most'). Co autor prawdopodobnie chciał napisać zamiast <code>forgettable</code>? Jaka jest poprawna forma dla <code>tell really had</code> (myślał o 'felt really bad')?
-                </li>
-                 <li>
-                    <strong>Gramatyka - Zaimki dzierżawcze:</strong> Popraw zwrot <code>yours comments</code>. Jaki zaimek dzierżawczy powinien tu być użyty? (Podpowiedź: 'your')
-                 </li>
-                <li>
-                    <strong>Gramatyka - Czasowniki modalne:</strong> Autor napisał <code>you most ramember</code>. Popraw czasownik modalny na <code>must</code>. Kiedy używamy 'must', a kiedy np. 'should'?
-                </li>
-                <li>
-                    <strong>Gramatyka - Interpunkcja:</strong> W zdaniu <code>Ilought shoes a helmet aud clothes</code> brakuje przecinków przy wyliczaniu. Wstaw je poprawnie. Gdzie jeszcze w tekście warto dodać przecinki?
-                </li>
-                <li>
-                    <strong>Logika i Spójność:</strong> Zwrot <code>This trip was forgettable, however...</code> jest nielogiczny w kontekście pozytywnych wspomnień. Zmień słowo <code>forgettable</code> na takie, które pasuje do opisu (np. `unforgettable`, `memorable`). Jak ten jeden błąd wpływa na odbiór całego akapitu?
-                </li>
-                 <li>
-                    <strong>Rozwiń Opis:</strong> Akapit o Mediolanie jest krótki. Dodaj jedno lub dwa zdania opisujące, co jeszcze Ci się podobało lub co robiłeś/robiłaś przy katedrze.
-                 </li>
-            </ol>
-        </div>
-    </div>
-
-    <!-- Blog Post 2 Content -->
-    <div id="blog2" class="blog-content">
-         <blockquote class="task-prompt">
-            <b>Przykładowe Polecenie:</b> Niedawno wybrałeś/wybrałaś się samotnie za granicę na ważne dla Ciebie wydarzenie sportowe. Podziel się swoimi wrażeniami na blogu:
-            <ul>
-                <li>Poinformuj, dlaczego zdecydowałeś/zdecydowałaś się jechać sam/sama.</li>
-                <li>Zrelacjonuj niezwykłe spotkanie, które miało miejsce podczas wyjazdu.</li>
-                <li>Opisz pamiątkę, która jest dla Ciebie szczególnie ważna.</li>
-                <li>Udziel czytelnikom rad dotyczących bezpieczeństwa podczas samotnych podróży.</li>
-            </ul>
-        </blockquote>
-        <h2>Wpis 2: Samotny Wyjazd na Mecz Marzeń!</h2>
-         <div class="blog-post-text">
-            <p>Hi everyone!</p>
-            <p>I’m back from my trip. I went on it all by myself.</p>
-            <p>I went to Spain alone for a Barcelona match because I'm a big fan!!</p>
-            <p>I was alone because all my friends are fans of <span class="error" data-category="grammar">another clubs</span> hahah</p>
-            <p>What is your favorite club?</p>
-            <p>You won’t guess who I met on my way for coffee!</p>
-            <p>I met Robert Lewandowski who was also going to the same place for coffee.
-            I managed to talk to him. He's a really cool guy.</p>
-            <p><span class="style-issue" data-category="grammar">Being in the Barcelona stadium</span> I bought their T-shirt and it was my great souvenir
-            from that trip. It was my biggest dream! I hung this T-shirt on the wall in my room.</p>
-            <p>Remember that if you go somewhere alone, you have to watch out for people.
-            Keep your belongings close to you and do not walk on busy streets with your phone in your back pocket as someone can easily snatch it from you. I would like to hear from you on this topic.</p>
-            <p>You can share your travel experience!</p>
-        </div>
-
-        <div class="scoring-section">
-             <h3>Szczegółowa Punktacja (wg Kryteriów Matury Podstawowej)</h3>
              <table class="scoring-table">
                  <thead>
                      <tr>
@@ -349,70 +311,273 @@
                      <tr>
                          <td>Treść</td>
                          <td>5 / 5</td>
-                         <td>Wszystkie punkty polecenia zrealizowane i w pełni rozwinięte.</td>
+                         <td>Wszystkie punkty polecenia zrealizowane i rozwinięte.</td>
                      </tr>
                      <tr>
                          <td>Spójność i Logika</td>
                          <td>2 / 2</td>
-                         <td>Praca jest logiczna, dobrze zorganizowana i bardzo spójna.</td>
+                         <td>Praca jest spójna i logiczna, przekaz jest jasny.</td>
                      </tr>
                      <tr>
                          <td>Zakres Środków Językowych</td>
-                         <td>3 / 3</td>
-                         <td>Zakres środków adekwatny dla poziomu podstawowego, wystarczający do precyzyjnego opisu.</td>
+                         <td>2 / 3</td>
+                         <td>Zakres wystarczający dla poziomu podstawowego, ale język jest dość prosty.</td>
                      </tr>
                      <tr>
                          <td>Poprawność Środków Językowych</td>
-                         <td>2 / 2</td>
-                         <td>Bardzo wysoka poprawność językowa, nieliczne drobne błędy niezakłócające komunikacji.</td>
+                         <td>1 / 2</td>
+                         <td>Nadal występują błędy gramatyczne (`yours`, `most remember`) i interpunkcyjne, które zakłócają płynność czytania.</td>
                      </tr>
                      <tr class="total-score">
                          <td>Łącznie</td>
-                         <td>12 / 12</td>
-                         <td>Bardzo dobra praca, spełniająca wszystkie wymagania na poziomie podstawowym.</td>
+                         <td>10 / 12</td>
+                         <td>Dobra realizacja treści i spójność, praca wymaga jednak poprawy w zakresie gramatyki i interpunkcji.</td>
                      </tr>
                  </tbody>
              </table>
-         </div>
+        </div>
 
-         <div class="exercises-section">
-             <h3>Ćwiczenia - Utrwal i Wzbogać</h3>
+        <div class="exercises-section">
+             <h3>Ćwiczenia - Popraw i Rozszerz</h3>
+              <ol>
+                  <li>
+                    <strong>Gramatyka - Zaimki dzierżawcze:</strong> Popraw zwrot <code>yours comments</code>. Jaki przymiotnik dzierżawczy powinien tu być użyty? Odpowiedź: <code>your</code>.
+                  </li>
+                  <li>
+                    <strong>Gramatyka - Czasowniki modalne:</strong> Popraw zwrot <code>you most remember</code> na <code>you must remember</code>. Wyjaśnij krótko różnicę w użyciu 'must' (silna konieczność, często wewnętrzna) i 'should' (rada, zalecenie).
+                  </li>
+                  <li>
+                    <strong>Gramatyka - Interpunkcja:</strong> Zwróć uwagę na dodane przecinki w tekście (po 'comfortable', w wyliczeniu 'shoes, a helmet, and clothes', po 'At first', 'however', 'Unfortunately'). Wyjaśnij, dlaczego są one potrzebne w tych miejscach (łączenie zdań składowych spójnikiem 'and', oddzielanie elementów listy, oddzielanie wtrąceń/okoliczników na początku zdania).
+                  </li>
+                  <li>
+                    <strong>Spójność:</strong> W zdaniu <code>The trip was unforgettable, however, the weather was really good.</code> użyto spójnika "however". Czy lepszym spójnikiem nie byłoby "and" lub "also", jeśli dobra pogoda była dodatkowym plusem, a nie kontrastem? Napisz zdanie używając innego spójnika.
+                  </li>
+                  <li>
+                    <strong>Rozwiń Opis Przygotowań:</strong> Zamiast <code>I trained for fitness</code>, napisz coś bardziej szczegółowego, np. <code>I cycled 50 kilometers every weekend</code> lub <code>I focused on endurance training</code>.
+                  </li>
+                  <li>
+                    <strong>Rozwiń Opis Wydarzenia:</strong> Zamiast <code>It was amazing!!</code>, dodaj szczegół opisujący dlaczego, np. <code>They cooked a traditional Italian dinner for me, and we talked late into the night about our cultures. It was amazing!</code>
+                  </li>
+              </ol>
+        </div>
+
+        <div class="homework-section">
+             <h3>Zadanie Domowe - Doskonalenie Umiejętności</h3>
              <ol>
                  <li>
-                    <strong>Gramatyka - 'Other' vs 'Another':</strong> W tekście użyto <code>another clubs</code>. W liczbie mnogiej używamy <strong>'other'</strong>. Popraw to zdanie. Kiedy używamy 'another'? (Podpowiedź: z rzeczownikami policzalnymi w liczbie pojedynczej).
+                     <div class="exercise-box">
+                         <div class="instruction"><strong>1. Czasowniki modalne:</strong> Wybierz najlepszą opcję (a, b lub c), aby uzupełnić zdania.</div>
+                         <p>1. You _____ drink plenty of water during long bike rides.</p>
+                         <div class="choice-options"><p>a) should </p><p> b) must </p><p> c) need</p></div>
+                         <p>2. It's a good idea; tourists _____ get a map before exploring a new city.</p>
+                          <div class="choice-options"><p>a) must </p><p> b) should </p><p> c) have to</p></div>
+                         <p>3. She _____ have taken her passport, but she forgot it.</p>
+                          <div class="choice-options"><p>a) must </p><p> b) ought to </p><p> c) should</p></div>
+                         <p>4. The park regulation says you _____ walk your dog on a leash.</p>
+                          <div class="choice-options"><p>a) must </p><p> b) have to </p><p> c) ought to</p></div>
+                         <p>5. You don't _____ book accommodation in advance, but it's recommended.</p>
+                          <div class="choice-options"><p>a) should </p><p> b) must not </p><p> c) have to</p></div>
+                         <p>6. I really _____ remember to charge my phone before leaving!</p>
+                          <div class="choice-options"><p>a) need to </p><p> b) should </p><p> c) ought to</p></div>
+                         <div class="examples">Pamiętaj: <i>must</i> - silny obowiązek/wewnętrzne przekonanie, <i>should/ought to</i> - rada/zalecenie, <i>have to</i> - zewnętrzna konieczność, <i>need to</i> - potrzeba.</div>
+                     </div>
                  </li>
                  <li>
-                    <strong>Gramatyka - Zdania imiesłowowe (Participial Clauses):</strong> Zdanie <code>Being in the Barcelona stadium I bought...</code> jest przykładem konstrukcji, która może być czasem niejasna (tzw. 'dangling participle'). Chociaż w mowie potocznej jest akceptowalne, jak można je przeredagować, aby było bardziej formalne i jednoznaczne? Użyj np. <strong>'When I was...'</strong> lub <strong>'While I was...'</strong>.
+                     <div class="exercise-box">
+                         <div class="instruction"><strong>2. Czasy przeszłe:</strong> Uzupełnij zdania czasownikami w nawiasach w odpowiedniej formie czasu przeszłego (Past Simple, Past Continuous, Past Perfect).</div>
+                         <p>1. I (visit) _____ Milan last summer.</p>
+                         <p>2. They (take) _____ me to their home as soon as I (arrive) _____.</p>
+                         <p>3. Before that trip, I (never / prepare) _____ for such a long journey.</p>
+                         <p>4. I (realize) _____ I (forget) _____ about hydration only after I (start) _____ feeling bad.</p>
+                         <p>5. While I (ride) _____ my bike through the hills, the sun (set) _____ beautifully.</p>
+                     </div>
                  </li>
                  <li>
-                    <strong>Gramatyka - Przedimki (Articles):</strong> W zdaniu <code>it was my great souvenir</code> można by dodać przedimek nieokreślony przed przymiotnikiem. Napisz zdanie z przedimkiem: `It was a great souvenir for me...`. Kiedy zazwyczaj używamy 'a/an'?
+                     <div class="exercise-box">
+                         <div class="instruction"><strong>3. Spójniki:</strong> Uzupełnij zdania odpowiednim spójnikiem z listy: [Despite, Although, Furthermore, Therefore, However]. Każdego użyj raz.</div>
+                         <p>1. The map wasn't very detailed; _____, we managed to find our way.</p>
+                         <p>2. _____ the challenging climb, reaching the top was incredibly rewarding.</p>
+                         <p>3. I didn't pack enough warm clothes; _____, I was quite cold in the evenings.</p>
+                         <p>4. The hostel was cheap; _____, it was located close to the city center.</p>
+                         <p>5. _____ I had trained for months, the steep hills were still difficult.</p>
+                     </div>
                  </li>
                  <li>
-                    <strong>Słownictwo - Synonimy:</strong> Znajdź synonimy dla słów/zwrotów użytych w tekście:
-                       *   `a big fan` (np. `a huge supporter`, `an enthusiast`)
-                       *   `managed to talk to him` (np. `had the opportunity to speak with him`, `succeeded in talking to him`)
-                       *   `really cool guy` (np. `very friendly person`, `genuinely nice man`)
-                       *   `watch out for people` (np. `be careful around others`, `be aware of your surroundings`)
-                 </li>
-                 <li>
-                    <strong>Rozwiń Opis Wydarzenia:</strong> Spotkanie z Robertem Lewandowskim jest opisane krótko. Dodaj jedno zdanie o tym, o czym rozmawialiście lub jak się czułeś/czułaś podczas tej rozmowy.
-                 </li>
-                 <li>
-                    <strong>Styl Blogowy:</strong> Zwróć uwagę na zwroty typowe dla bloga użyte w tekście (<code>Hi everyone!</code>, <code>You won't guess...</code>, pytania do czytelników). Jakie inne zwroty można użyć, aby zaangażować czytelników? (np. <code>Let me know in the comments!</code>, <code>What do you think?</code>)
+                     <div class="exercise-box">
+                         <div class="instruction"><strong>4. Rozbudowa Opisów (Dopasuj):</strong> Połącz początek zdania (1-5) z jego najlepszym rozwinięciem (a-e). Wpisz literę obok numeru.</div>
+                         <p>1. The cathedral was beautiful... ___</p>
+                         <p>2. The small village was charming... ___</p>
+                         <p>3. The countryside was peaceful... ___</p>
+                         <p>4. The local restaurant served amazing food... ___</p>
+                         <p>5. The hostel had basic but clean rooms... ___</p>
+                         <hr>
+                         <div class="match-options">
+                         <p>a) ...providing a much-needed quiet night's sleep for tired cyclists.</p>
+                         <p>b) ...its medieval architecture perfectly preserved against the backdrop of green hills.</p>
+                         <p>c) ...especially the pasta with homemade sauce, bursting with fresh flavours.</p>
+                         <p>d) ...the only sounds were the birds singing and the wind rustling through the trees.</p>
+                         <p>e) ...its towering gothic spires seemed to pierce the clear blue sky.</p>
+                         </div>
+                     </div>
                  </li>
              </ol>
          </div>
     </div>
+    <!-- Blog Post 2 Content -->
+    <div id="blog2" class="blog-content">
+         <blockquote class="task-prompt">
+            <b>Przykładowe Polecenie:</b> Niedawno wybrałeś/wybrałaś się samotnie za granicę na ważne dla Ciebie wydarzenie sportowe. Podziel się swoimi wrażeniami na blogu:
+             <ul>
+                 <li>Poinformuj, dlaczego zdecydowałeś/zdecydowałaś się jechać sam/sama.</li>
+                 <li>Zrelacjonuj niezwykłe spotkanie, które miało miejsce podczas wyjazdu.</li>
+                 <li>Opisz pamiątkę, która jest dla Ciebie szczególnie ważna.</li>
+                 <li>Udziel czytelnikom rad dotyczących bezpieczeństwa podczas samotnych podróży.</li>
+             </ul>
+        </blockquote>
+        <h2>Wpis 2: Samotny Wyjazd na Mecz Marzeń!</h2>
+         <div class="blog-post-text">
+             <p>Hi everyone!</p>
+             <p>I'm back from my trip. I went on it all by myself.</p>
+             <p>I went to Spain alone for a Barcelona match because I'm a big fan!!</p>
+             <p>I was alone because all my friends are fans of other clubs<span class="style-issue" data-category="style">, haha<span class="error" data-category="punctuation">.</span></span></p> <!-- Corrected grammar, changed tone -->
+             <p>What is your favorite club?</p>
+             <p>You won't guess who I met on my way for coffee!</p>
+             <p>I met Robert Lewandowski<span class="error" data-category="punctuation">,</span> who was also going to the same place for coffee.
+            I managed to talk to him. He's a really cool guy.</p> <!-- Added comma for non-defining relative clause -->
+             <p><span class="style-issue" data-category="grammar">While I was at the Barcelona stadium,</span> I bought their T-shirt and it was <span class="error" data-category="grammar">a</span> great souvenir
+            from that trip. It was my biggest dream! I hung this T-shirt on the wall in my room.</p> <!-- Corrected Participial Clause & Article-->
+             <p>Remember<span class="error" data-category="punctuation">,</span> if you go somewhere alone, you have to watch out for people.
+            Keep your belongings close to you<span class="error" data-category="punctuation">,</span> and do not walk on busy streets with your phone in your back pocket<span class="error" data-category="punctuation">,</span> as someone can easily snatch it from you. I would like to hear from you on this topic.</p> <!-- Added commas -->
+             <p>You can share your travel experience!</p>
+        </div>
+        <div class="scoring-section">
+             <h3>Szczegółowa Punktacja (wg Kryteriów Matury Podstawowej)</h3>
+              <table class="scoring-table">
+                  <thead>
+                      <tr>
+                          <th>Kryterium</th>
+                          <th>Ocena</th>
+                          <th>Komentarz</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                          <td>Treść</td>
+                          <td>5 / 5</td>
+                          <td>Wszystkie punkty polecenia zrealizowane i w pełni rozwinięte.</td>
+                      </tr>
+                      <tr>
+                          <td>Spójność i Logika</td>
+                          <td>2 / 2</td>
+                          <td>Praca jest logiczna, dobrze zorganizowana i bardzo spójna.</td>
+                      </tr>
+                      <tr>
+                          <td>Zakres Środków Językowych</td>
+                          <td>3 / 3</td>
+                          <td>Zakres środków adekwatny dla poziomu podstawowego, wystarczający do precyzyjnego opisu.</td>
+                      </tr>
+                      <tr>
+                          <td>Poprawność Środków Językowych</td>
+                          <td>2 / 2</td>
+                          <td>Bardzo wysoka poprawność językowa, jedynie drobne potknięcia interpunkcyjne.</td>
+                      </tr>
+                      <tr class="total-score">
+                          <td>Łącznie</td>
+                          <td>12 / 12</td>
+                          <td>Bardzo dobra praca, spełniająca wszystkie wymagania na poziomie podstawowym.</td>
+                      </tr>
+                  </tbody>
+              </table>
+         </div>
+         <div class="exercises-section">
+             <h3>Ćwiczenia - Utrwal i Wzbogać</h3>
+              <ol>
+                   <li>
+                    <strong>Gramatyka - 'Other' vs 'Another':</strong> W tekście poprawiono <code>another clubs</code> na <code>other clubs</code>. Użyj 'another' w zdaniu: "I saw Robert Lewandowski one day, and I hope to meet _____ famous footballer soon."
+                  </li>
+                  <li>
+                    <strong>Gramatyka - Participial Clauses vs Subordinate Clauses:</strong> Zdanie <code>While I was at the Barcelona stadium, I bought...</code> jest bardziej precyzyjne niż <code>Being in...</code>. Napisz inne zdanie zaczynające się od imiesłowu czasu teraźniejszego (np. `Waiting for...`) i przekształć je na zdanie z `While...`.
+                  </li>
+                  <li>
+                    <strong>Gramatyka - Przedimki (Articles):</strong> Poprawiono zdanie na `it was a great souvenir...`. Kiedy nie używamy przedimka przed rzeczownikami policzalnymi w liczbie pojedynczej? (Podpowiedź: gdy mówimy o czymś po raz pierwszy lub w sposób ogólny).
+                  </li>
+                   <li>
+                    <strong>Słownictwo - Trafność Wyboru Słów:</strong> Autor użył zwrotu `He's a really cool guy`. Jakie inne, może bardziej formalne lub opisowe, określenia można by zastosować w zależności od kontekstu bloga? (np. `He seemed very friendly`, `He was surprisingly down-to-earth`, `I found him very approachable`).
+                  </li>
+                  <li>
+                    <strong>Interpunkcja:</strong> W tekście poprawiono kilka miejsc, dodając przecinki (np. po 'Remember', przed 'who', przed 'as'). Przejrzyj zasady użycia przecinków w zdaniach złożonych (przed spójnikami 'and', 'but', 'so', 'or' łączącymi zdania główne; w zdaniach podrzędnych względnych; po okolicznikach na początku zdania).
+                  </li>
+                   <li>
+                    <strong>Styl Blogowy - Ton:</strong> Zwrot 'hahah' nadaje bardzo nieformalny ton. Czy w zależności od odbiorców bloga byłby on zawsze odpowiedni? Jak można wyrazić rozbawienie w nieco inny sposób? (np. używając emotikony :), pisząc `which is quite funny`, itp.)
+                  </li>
+              </ol>
+         </div>
 
+         <div class="homework-section">
+             <h3>Zadanie Domowe - Doskonalenie Umiejętności</h3>
+             <ol>
+                 <li>
+                     <div class="exercise-box">
+                         <div class="instruction"><strong>1. Przedimki (a/an/the/zero article):</strong> Uzupełnij zdania odpowiednimi przedimkami (lub pozostaw puste [-], jeśli przedimek nie jest potrzebny).</div>
+                         <p>1. I'm [-] huge fan of _____ FC Barcelona team.</p>
+                         <p>2. We went to _____ Camp Nou stadium to watch _____ exciting match last Saturday.</p>
+                         <p>3. It was _____ unforgettable experience for [-] football fans like me.</p>
+                         <p>4. _____ famous footballers often sign autographs after _____ games.</p>
+                         <p>5. I traveled to [-] Spain for _____ first time in my life.</p>
+                         <p>6. I think _____ best thing about traveling alone is _____ sense of freedom.</p>
+                         <div class="examples">Pamiętaj: 'a/an' (nieokreślony, l.poj.), 'the' (określony, znany), 'zero article' (ogólne, l.mn., niepoliczalne, nazwy własne np. krajów (ale nie wszystkie!)).</div>
+                     </div>
+                 </li>
+                 <li>
+                     <div class="exercise-box">
+                         <div class="instruction"><strong>2. Konstrukcje imiesłowowe vs Zdania podrzędne:</strong> Przekształć zdania zaczynające się od imiesłowu na zdania z pełnym zdaniem podrzędnym czasowym (używając spójnika z nawiasu).</div>
+                         <p>1. Waiting for my coffee, I noticed Lewandowski walk in. (While) → _____ I was waiting for my coffee, I noticed Lewandowski walk in.</p>
+                         <p>2. Having found my seat, I waited for the match to start. (After) → _____ I had found my seat, I waited for the match to start.</p>
+                         <p>3. Feeling excited, I took many pictures before the game. (As) → _____ I felt excited, I took many pictures before the game.</p>
+                         <p>4. Standing in the queue, I overheard fans talking about the players. (While) → _____ I was standing in the queue, I overheard fans talking about the players.</p>
+                         <div class="examples">Zwróć uwagę, jak zdania podrzędne czasowe precyzyjniej oddają relację czasową między czynnościami.</div>
+                     </div>
+                 </li>
+                  <li>
+                     <div class="exercise-box">
+                         <div class="instruction"><strong>3. Angażowanie czytelników na blogu:</strong> Wybierz najlepszy zwrot z listy, aby uzupełnić luki: [Let me know, Consider, Have you ever, What do you think, Don't forget]</div>
+                         <div class="fill-blank-options">
+                         <p>1. _____ your own lucky encounters with famous people below!</p><p>   Options: <strong>Let me know</strong> / <strong>Consider</strong> / <strong>Have you ever</strong></p>
+                         <p>2. _____ met one of your idols unexpectedly?</p><p>   Options: <strong>What do you think</strong> / <strong>Have you ever</strong> / <strong>Don't forget</strong></p>
+                         <p>3. If you go to Barcelona, _____ visiting the club museum!</p><p>   Options: <strong>Consider</strong> / <strong>Let me know</strong> / <strong>Have you ever</strong></p>
+                         <p>4. It's amazing how small the world can seem sometimes. _____?</p><p>   Options: <strong>Consider</strong> / <strong>Don't forget</strong> / <strong>What do you think</strong></p>
+                         <p>5. _____ to follow my blog for more travel stories!</p><p>   Options: <strong>Don't forget</strong> / <strong>Let me know</strong> / <strong>What do you think</strong></p>
+                         </div>
+                     </div>
+                 </li>
+                 <li>
+                     <div class="exercise-box">
+                         <div class="instruction"><strong>4. Rozbudowa opisów (Dodaj przymiotniki/przysłówki):</strong> Uzupełnij poniższe zdania, dodając własne przymiotniki lub przysłówki w luki.</div>
+                         <p>1. I _____ met the _____ footballer _____.</p>
+                         <p>2. The _____ stadium was _____ full of _____ fans waving banners.</p>
+                         <p>3. I _____ bought an _____ T-shirt at the _____ club shop.</p>
+                         <p>4. The match was _____ exciting, especially the _____ goal scored in the last minute.</p>
+                     </div>
+                 </li>
+                 <li>
+                     <div class="exercise-box">
+                         <div class="instruction"><strong>5. Other / Another / The other / Others:</strong> Uzupełnij zdania poprawną formą.</div>
+                         <p>1. My friends support _____ teams, mainly from England.</p>
+                         <p>2. Could I possibly get _____ autograph for my brother?</p>
+                         <p>3. Some fans were taking photos, while _____ were just watching the players.</p>
+                         <p>4. He took two shots; the first hit the post, but _____ went straight into the net.</p>
+                         <p>5. Are there any _____ Polish players in La Liga right now?</p>
+                     </div>
+                 </li>
+             </ol>
+         </div>
+    </div>
 </div>
-
 <!-- Explanation Box is removed -->
-
 <script>
     const tabButtons = document.querySelectorAll('.tab-button');
     const blogContents = document.querySelectorAll('.blog-content');
     const filterCheckboxes = document.querySelectorAll('.filter-checkbox');
-
     // Function to show the selected blog post
     function showBlog(blogId) {
         blogContents.forEach(content => content.classList.remove('active'));
@@ -422,7 +587,6 @@
         // Apply filters to the newly shown blog post
         applyFilters();
     }
-
     // Function to apply filters based on checkboxes
     function applyFilters() {
         const checkedCategories = new Set();
@@ -431,7 +595,6 @@
                 checkedCategories.add(checkbox.value);
             }
         });
-
         // Apply/remove 'filtered-out' class to all relevant spans
         document.querySelectorAll('.error, .style-issue, .logic-issue').forEach(span => {
             const category = span.getAttribute('data-category');
@@ -442,13 +605,10 @@
             }
         });
     }
-
     // Initial setup: Show the first blog post and apply initial filters
     document.addEventListener('DOMContentLoaded', () => {
         showBlog('blog1');
     });
-
 </script>
-
 </body>
 </html>
