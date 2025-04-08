@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Essay View: Nowe Listy (Uczeń)</title>
+    <style>
+         body{font-family:sans-serif;line-height:1.6;margin:20px;background-color:#f4f4f4;color:#333}.container{max-width:900px;margin:auto;background:#fff;padding:20px;border-radius:8px;box-shadow:0 0 10px rgba(0,0,0,.1)}.tab-navigation{border-bottom:1px solid #ccc;padding-bottom:10px;margin-bottom:20px}.tab-button{padding:10px 15px;cursor:pointer;border:1px solid #ccc;background-color:#eee;margin-right:5px;border-radius:5px 5px 0 0;border-bottom:none}.tab-button.active{background-color:#fff;border-bottom:1px solid #fff;position:relative;top:1px;font-weight:bold}.essay-content{display:none;border:1px solid #ccc;padding:15px;border-radius:0 5px 5px 5px;margin-top:-1px;white-space:pre-wrap;background-color:#fff}.essay-content.active{display:block}.task-prompt{background-color:#eef;border-left:5px solid #aab;padding:10px 15px;margin-bottom:15px;font-style:italic;color:#445}.error,.style-issue{padding:0 2px;border-radius:3px;transition:background-color .3s,text-decoration-color .3s}.error{background-color:#fff7b2;text-decoration:underline wavy red}.style-issue{background-color:#d4edda;text-decoration:underline dotted #155724}.critical-error{text-decoration-style:double!important;text-decoration-thickness:1.5px}.filtered-out{background-color:transparent!important;text-decoration-color:transparent!important}#filter-controls{margin-top:20px;padding:10px;background-color:#eee;border-radius:5px}#filter-controls label{margin-right:15px;cursor:pointer}#filter-controls input{margin-right:5px;cursor:pointer}#explanation-box{display:none!important}
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Essay View: Nowe Listy (Uczeń)</h1>
+    <p>Tekst z podświetleniami wskazującymi obszary do dyskusji. Użyj filtrów zgodnie z instrukcją nauczyciela.</p>
+
+     <div class="tab-navigation">
+        <button class="tab-button active" onclick="showEssay('essay_wolontariat')">List 1: Wolontariat</button>
+        <button class="tab-button" onclick="showEssay('essay_silownie')">List 2: Siłownie</button>
+    </div>
+
+    <div id="filter-controls">
+        <strong>Filtruj Kategorie (wg wskazówek nauczyciela):</strong><br>
+        <label><input type="checkbox" class="filter-checkbox" value="grammar" checked onchange="applyFilters()"> Gramatyka</label>
+        <label><input type="checkbox" class="filter-checkbox" value="lexis" checked onchange="applyFilters()"> Leksyka/Słownictwo</label>
+        <label><input type="checkbox" class="filter-checkbox" value="style" checked onchange="applyFilters()"> Styl/Rejestr</label>
+        <label><input type="checkbox" class="filter-checkbox" value="spelling" checked onchange="applyFilters()"> Ortografia</label>
+        <label><input type="checkbox" class="filter-checkbox" value="punctuation" checked onchange="applyFilters()"> Interpunkcja</label>
+        <label><input type="checkbox" class="filter-checkbox" value="logic" checked onchange="applyFilters()"> Logika/Spójność</label>
+        <label><input type="checkbox" class="filter-checkbox" value="content" checked onchange="applyFilters()"> Treść/Zgodność</label>
+    </div>
+
+    <!-- Essay 1 Content: Wolontariat -->
+    <div id="essay_wolontariat" class="essay-content active">
+        <blockquote class="task-prompt">
+            <b>Polecenie:</b> Studiujesz za granicą i martwi Cię problem izolacji społecznej wśród starszych mieszkańców miasta, w którym znajduje się Twoja uczelnia. Napisz list formalny do Koordynatora ds. Kontaktów Społecznych Uczelni (University's Community Outreach Coordinator), w którym zaproponujesz utworzenie studenckiego programu wolontariatu wspierającego lokalnych seniorów. W swoim liście: opisz swoje dotychczasowe doświadczenia, które mogą być istotne, nakreśl potencjalne działania w ramach programu oraz wyjaśnij korzyści płynące z takiego programu dla studentów, seniorów i wizerunku uczelni.
+        </blockquote>
+        <h2>List Formalny: Wolontariat dla Seniorów</h2>
+Dear University’s Community Outreach Coordinator,
+<span class="style-issue" data-category="style">I want to express my concerns</span> about the issue of social isolation <span class="error" data-category="grammar">of elderly</span> in our town. <span class="style-issue" data-category="lexis">Old people tend to fall into many illnesses</span> that <span class="style-issue" data-category="style">distressingly contribute to their usual lifestyle</span>. <span class="style-issue" data-category="logic">Nurseries provide high quality health care, but mental health is often put aside</span>. My intention is to suggest a solution to this problem.
+
+Starting a student volunteer program, which supports local seniors<span class="error" data-category="grammar"></span><span class="style-issue" data-category="style"> might have an impressive impact on the social isolation of elderly</span>. During high school I was a volunteer at my local <span class="error critical-error" data-category="lexis">Nursery home</span>. My duties were to <span class="style-issue" data-category="lexis">ensure entertainment</span> and keep them company. <span class="style-issue" data-category="punctuation">A once in a while escape</span> from boredom<span class="style-issue" data-category="grammar">, that is in a nursery home,</span> turned out to be a cure for their sadness. Many of them had lost their loved ones or their family abandoned them due to their sickness. Consequently<span class="error critical-error" data-category="grammar"> they were put up with</span> not only physical pain but also mental pain. <span class="error" data-category="grammar">This experience has gained me a lot of knowledge</span> and empathy<span class="error critical-error" data-category="grammar"> as well as the elderly had their benefits of having me there</span>. I believe all of the students on our campus should have a chance to make someone’s day better.
+
+Students could play card or board games with pensioners, or do <span class="error" data-category="spelling">signing classes</span>. <span class="error critical-error" data-category="grammar">Every activity would be valuable as long as they are suited for elderly physical condition.</span> Art classes, manual activities or various types of quizzes are what older people <span class="style-issue" data-category="punctuation">crave the most!</span> Students could go <span class="error" data-category="spelling">t0</span> a local <span class="error critical-error" data-category="lexis">Nursery home</span> after classes and by these simple activities, they could have a <span class="style-issue" data-category="lexis">relevant</span> impact on the social life <span class="error" data-category="grammar">of elderly</span>. Furthermore, students would <span class="style-issue" data-category="lexis">gain consciousness about</span> the importance of caring for others, they would gain more empathy and <span class="style-issue" data-category="lexis">a will to help</span>. Meanwhile, seniors would have a more joyful time<span class="error critical-error" data-category="lexis"> which profits their mental health</span>. Last but not least, our school would have a fantastic public image of <span class="error critical-error" data-category="lexis">emphatic socially working students</span>.
+
+I hope you take my suggestion into consideration.
+Yours faithfully,
+XYZ
+    </div>
+
+    <!-- Essay 2 Content: Siłownie -->
+      <div id="essay_silownie" class="essay-content">
+         <blockquote class="task-prompt">
+             <b>Polecenie:</b> Twoja lokalna gazeta opublikowała artykuły na temat niedawnej inicjatywy władz miasta dotyczącej instalacji sprzętu do ćwiczeń na świeżym powietrzu (siłowni plenerowych) w kilku parkach publicznych. Napisz list do redakcji, w którym: opiszesz jeden konkretny przykład nowego sprzętu, który widziałeś(-aś) w lokalnym parku, wyrazisz swoją opinię na temat dotychczasowej skuteczności i użyteczności tej inicjatywy oraz zaproponujesz dwa inne, różne sposoby, w jakie władze miasta mogłyby ulepszyć lub lepiej wykorzystać publiczne tereny zielone w Twoim mieście.
+         </blockquote>
+        <h2>List do Redakcji: Siłownie Plenerowe</h2>
+<span class="style-issue critical-error" data-category="style">To whom it may concern,</span>
+
+I am writing to you to share my point of view on outdoor gyms. <span class="style-issue" data-category="style">As I talked to people,</span> I came to the conclusion that <span class="style-issue" data-category="logic">there are too many open air gyms when the town’s budget can offer other various types of activities.</span> In my opinion <span class="style-issue" data-category="lexis">the area of the gyms</span> could be used differently.
+
+As an individual, I have seen machines in outdoor gyms that practically don’t make sense, when it comes to a <span class="style-issue" data-category="style">sporty lifestyle</span>. For instance, <span class="error" data-category="grammar">a machine that’s meant probably for weight lifting.</span> <span class="style-issue" data-category="style">People sit on the bench and with arms lift the weight of their own body.</span> <span class="style-issue" data-category="style">As I talked to a physiotherapist,</span> it turned out that it is impossible to build muscle on this machine. Moreover, the correct position of the body that should be maintained is disturbed. Thus, <span class="error" data-category="punctuation">long term practice</span> on that machine might lead to injuries.
+
+On the other hand, some machines are practical. The pull-up bar is very useful for <span class="error" data-category="grammar">people who during their cardio practice, want to stop for a stretch or some <span class="style-issue" data-category="lexis">light lifting exercise</span></span>. Nonetheless, outdoor gyms are mostly bustling with children who treat it like a playground. In that case, the gym’s purpose is not fulfilled.
+
+Instead of building <span class="style-issue" data-category="style">other pointless outdoor gyms</span>, the area can be used differently. In <span class="error critical-error" data-category="grammar">local park could be build a playground for dogs.</span> <span class="error" data-category="lexis">People living in a block of flats</span> do not have a lot of choices when it comes to going for a walk with their dog. The park might seem like an ideal place, moreover, the dogs would have their special area where they could run and play leash-free. The place would be surrounded by a fence, thus they <span class="error" data-category="grammar">don’t run away</span> and dog owners would be assured about their <span class="error critical-error" data-category="lexis">pupil’s safety</span>. <span class="style-issue" data-category="style">Outdoor public swimming pools can also have fantastic usage</span> especially for people who <span class="error" data-category="spelling">can not</span> afford <span class="style-issue" data-category="style">proper air conditioning for summer</span>. It would be exciting for the kids to have a place where they can meet with their friends to play in the water.
+
+Yours faithfully,
+XYZ
+    </div>
+
+    <!-- Explanation Box removed -->
+</div>
+
+<script>
+    // JS for filtering and tabs, but no click listener for explanations
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const essayContents = document.querySelectorAll('.essay-content');
+    const filterCheckboxes = document.querySelectorAll('.filter-checkbox');
+
+    function showEssay(essayId) {
+        essayContents.forEach(content => content.classList.remove('active'));
+        tabButtons.forEach(button => button.classList.remove('active'));
+        const targetEssay = document.getElementById(essayId);
+        if (targetEssay) {
+            targetEssay.classList.add('active');
+        }
+        const targetButton = document.querySelector(`.tab-button[onclick="showEssay('${essayId}')"]`);
+        if (targetButton) {
+            targetButton.classList.add('active');
+        }
+        applyFilters();
+    }
+
+    function applyFilters() {
+        const checkedCategories = new Set();
+        filterCheckboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                checkedCategories.add(checkbox.value);
+            }
+        });
+        document.querySelectorAll('.error, .style-issue').forEach(span => {
+            const category = span.getAttribute('data-category');
+            if (category && !checkedCategories.has(category)) {
+                span.classList.add('filtered-out');
+            } else {
+                span.classList.remove('filtered-out');
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        showEssay('essay_wolontariat'); // Show the first essay initially
+    });
+</script>
+
+</body>
+</html>
