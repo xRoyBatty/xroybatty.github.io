@@ -1141,13 +1141,13 @@
             }
         });
 
-        // -------- HANGMAN GAME LOGIC --------
+           // -------- HANGMAN GAME LOGIC --------
 
         // 1. Przygotowanie Danych Słów
         const hangmanWordsByCategory = {
             'Pory Dnia': [ { word: "morning", hint: "Rano" }, { word: "afternoon", hint: "Popołudnie" }, { word: "evening", hint: "Wieczór" }, { word: "night", hint: "Noc" } ],
             'Dni Tygodnia': [ { word: "monday", hint: "Poniedziałek" }, { word: "tuesday", hint: "Wtorek" },{ word: "wednesday", hint: "Środa" }, { word: "thursday", hint: "Czwartek" }, { word: "friday", hint: "Piątek" }, { word: "saturday", hint: "Sobota" }, { word: "sunday", hint: "Niedziela" } ],
-            'Godziny': [ { word: "o'clock", hint: "Pełna godzina" }, { word: "half past", hint: "Wpół do" }, { word: "quarter past", hint: "Kwadrans po" }, { word: "quarter to", hint: "Za kwadrans" } ],
+            'Godziny': [ { word: "o'clock", hint: "Pełna godzina (użyj ' !)" }, { word: "half past", hint: "Wpół do" }, { word: "quarter past", hint: "Kwadrans po" }, { word: "quarter to", hint: "Za kwadrans" } ], // Dodano podpowiedź dla o'clock
             'Liczby': [ { word: "eleven", hint: "11" }, { word: "twelve", hint: "12" }, { word: "thirteen", hint: "13" }, { word: "fourteen", hint: "14" }, { word: "fifteen", hint: "15" }, { word: "twenty", hint: "20" }, { word: "thirty", hint: "30" }, { word: "forty", hint: "40" }, { word: "fifty", hint: "50" }, { word: "hundred", hint: "100" } ],
             'Częstotliwość': [ { word: "always", hint: "Zawsze" }, { word: "usually", hint: "Zazwyczaj" }, { word: "often", hint: "Często" }, { word: "sometimes", hint: "Czasami" }, { word: "never", hint: "Nigdy" } ],
             'Czynności': [ { word: "get up", hint: "Wstawać" }, { word: "go to bed", hint: "Iść spać" }, { word: "homework", hint: "Praca domowa" }, { word: "breakfast", hint: "Śniadanie" }, { word: "lunch", hint: "Drugie śniadanie" }, { word: "dinner", hint: "Obiad/Kolacja" }, { word: "shower", hint: "Prysznic" }, { word: "tidy room", hint: "Sprzątać pokój" }, { word: "watch tv", hint: "Oglądać TV" }, { word: "listen music", hint: "Słuchać muzyki" } ]
@@ -1163,7 +1163,9 @@
         let hangmanMaxAttempts = 6;
         let hangmanScore = 0;
         let hangmanWordIndex = 0;
-        let hangmanCompletedCategories = new Set(progressData.hangman ? (progressData.hangman.completedCategories || []) : []);
+        // Wczytaj ukończone kategorie z progressData, jeśli istnieją
+        let hangmanCompletedCategories = new Set(progressData.hangman && Array.isArray(progressData.hangman.completedCategories) ? progressData.hangman.completedCategories : []);
+
 
         // 3. Referencje do Elementów Wisielca
         const hangmanSetupSection = document.getElementById('hangmanSetupSection');
@@ -1176,9 +1178,9 @@
         const hangmanWordDisplay = document.getElementById('hangmanWordDisplay');
         const hangmanKeyboardContainer = document.getElementById('hangmanKeyboard');
         const hangmanMessageDisplay = document.getElementById('hangmanMessage');
-        const hangmanStartButton = hangmanSetupSection.querySelector('.check-button'); // Znajdź przycisk startowy w sekcji setupu
-        const hangmanNextWordButton = hangmanGameSection.querySelector('.hangman-game-controls button:nth-child(1)');
-        const hangmanShowSetupButton = hangmanGameSection.querySelector('.hangman-game-controls button:nth-child(2)');
+        const hangmanStartButton = hangmanSetupSection ? hangmanSetupSection.querySelector('.check-button') : null; // Znajdź przycisk startowy w sekcji setupu
+        const hangmanNextWordButton = hangmanGameSection ? hangmanGameSection.querySelector('.hangman-game-controls button:nth-child(1)') : null;
+        const hangmanShowSetupButton = hangmanGameSection ? hangmanGameSection.querySelector('.hangman-game-controls button:nth-child(2)') : null;
 
 
         // 4. Funkcje Wisielca
@@ -1193,6 +1195,7 @@
         }
 
         function hangmanInitializeSetup() {
+            if (!hangmanCategoryButtonsContainer) return; // Sprawdź czy element istnieje
             hangmanCategoryButtonsContainer.innerHTML = ''; // Wyczyść stare przyciski
             for (const category in hangmanWordsByCategory) {
                 const button = document.createElement('button');
@@ -1205,32 +1208,51 @@
                   }
                 hangmanCategoryButtonsContainer.appendChild(button);
             }
-             // Ustaw podświetlenie dla prób
-             document.querySelectorAll('#hangmanAttemptsSelector button').forEach(btn => {
-                 btn.classList.toggle('active', parseInt(btn.dataset.attempts) === hangmanMaxAttempts);
-                  // Dodaj EventListener do przycisków prób (jeśli nie ma go globalnie)
-                   if (!btn.onclick) { // Proste sprawdzenie, czy listener już istnieje
-                      const attempts = parseInt(btn.dataset.attempts);
-                      btn.addEventListener('click', () => selectHangmanAttempts(attempts, btn));
-                   }
-             });
+             // Ustaw podświetlenie dla prób i dodaj listenery (tylko raz)
+             if (hangmanAttemptsSelector && !hangmanAttemptsSelector.dataset.listenersAttached) {
+                 document.querySelectorAll('#hangmanAttemptsSelector button').forEach(btn => {
+                    const attempts = parseInt(btn.dataset.attempts);
+                    btn.addEventListener('click', () => selectHangmanAttempts(attempts, btn));
+                    btn.classList.toggle('active', attempts === hangmanMaxAttempts); // Ustaw aktywny przycisk
+                  });
+                 hangmanAttemptsSelector.dataset.listenersAttached = 'true'; // Oznacz, że listenery zostały dodane
+             } else if (hangmanAttemptsSelector) {
+                  // Tylko aktualizuj klasę active, jeśli listenery już są
+                 document.querySelectorAll('#hangmanAttemptsSelector button').forEach(btn => {
+                     btn.classList.toggle('active', parseInt(btn.dataset.attempts) === hangmanMaxAttempts);
+                 });
+             }
         }
+
 
         function selectHangmanCategory(category, buttonElement) {
             hangmanCurrentCategory = category;
-            document.querySelectorAll('#hangmanCategoryButtons button').forEach(btn => btn.classList.remove('active'));
+             if (hangmanCategoryButtonsContainer) {
+                hangmanCategoryButtonsContainer.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+            }
             if(buttonElement) buttonElement.classList.add('active');
         }
 
         function selectHangmanAttempts(attempts, buttonElement) {
             hangmanMaxAttempts = attempts;
-            hangmanRemainingAttempts = attempts;
-            document.querySelectorAll('#hangmanAttemptsSelector button').forEach(btn => btn.classList.remove('active'));
-            if(buttonElement) buttonElement.classList.add('active');
-            if(hangmanAttemptsDisplay) hangmanAttemptsDisplay.textContent = `Pozostałe próby: ${hangmanRemainingAttempts}`;
-        }
+            // Resetuj bieżące próby tylko jeśli gra nie jest w toku
+            if (hangmanGameSection && hangmanGameSection.classList.contains('hidden')) {
+                hangmanRemainingAttempts = attempts;
+             } else {
+                 // Jeśli gra jest w toku, zaktualizuj tylko max i obecny stan prób
+                 hangmanRemainingAttempts = Math.min(hangmanRemainingAttempts, attempts); // Nie zwiększaj prób w trakcie gry
+             }
 
-        function hangmanStartGame() { // Ta funkcja teraz będzie wywołana przez EventListener
+             if (hangmanAttemptsSelector) {
+                 hangmanAttemptsSelector.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+             }
+            if(buttonElement) buttonElement.classList.add('active');
+            // Zawsze aktualizuj wyświetlanie prób
+            hangmanUpdateAttemptsDisplay();
+         }
+
+
+        function hangmanStartGame() { // Wywołana przez EventListener
             if (!hangmanCurrentCategory) {
                 alert("Proszę wybrać kategorię słówek!");
                 return;
@@ -1246,102 +1268,145 @@
         }
 
         function hangmanLoadNextWord() {
-            if (hangmanWordIndex >= hangmanCurrentWords.length) {
-                if(hangmanMessageDisplay) hangmanMessageDisplay.textContent = `Gratulacje! Ukończyłeś kategorię: ${hangmanCurrentCategory}!`;
-                hangmanMarkCategoryComplete(hangmanCurrentCategory);
-                disableHangmanKeyboard();
-                // Pokaż przycisk powrotu zamiast "Następne słowo"
-                if(hangmanNextWordButton) hangmanNextWordButton.style.display = 'none';
-                if(hangmanShowSetupButton) hangmanShowSetupButton.style.display = 'inline-block'; // Pokaż przycisk powrotu do setupu
-                return;
-            }
-             // Pokaż przycisk "Następne słowo"
-             if(hangmanNextWordButton) hangmanNextWordButton.style.display = 'inline-block';
-            hangmanCurrentWord = hangmanCurrentWords[hangmanWordIndex];
-            hangmanGuessedLetters = [];
-            hangmanRemainingAttempts = hangmanMaxAttempts; // Resetuj próby dla nowego słowa
-            hangmanUpdateAttemptsDisplay();
-            if(hangmanMessageDisplay) hangmanMessageDisplay.textContent = '';
-            if(hangmanHintDisplay) hangmanHintDisplay.textContent = `Hint: ${hangmanCurrentWord.hint}`;
-            hangmanUpdateWordDisplay();
-            createHangmanKeyboard();
-            hangmanDraw(0);
-        }
+             if (hangmanWordIndex >= hangmanCurrentWords.length) {
+                 if(hangmanMessageDisplay) hangmanMessageDisplay.textContent = `Gratulacje! Ukończyłeś kategorię: ${hangmanCurrentCategory}!`;
+                 hangmanMarkCategoryComplete(hangmanCurrentCategory); // Zapisz postęp
+                 disableHangmanKeyboard();
+                 if(hangmanNextWordButton) hangmanNextWordButton.style.display = 'none'; // Ukryj następne
+                 if(hangmanShowSetupButton) hangmanShowSetupButton.style.display = 'inline-block'; // Pokaż powrót
+                 return;
+             }
+             // Resetuj stan dla nowego słowa
+             hangmanCurrentWord = hangmanCurrentWords[hangmanWordIndex];
+             hangmanGuessedLetters = [];
+             hangmanRemainingAttempts = hangmanMaxAttempts; // Pełna liczba prób
+             hangmanUpdateAttemptsDisplay();
+             if(hangmanMessageDisplay) hangmanMessageDisplay.textContent = '';
+             if(hangmanHintDisplay) hangmanHintDisplay.textContent = `Hint: ${hangmanCurrentWord.hint}`;
+             hangmanUpdateWordDisplay();
+             createHangmanKeyboard(); // Odśwież klawiaturę (włącz przyciski)
+             if(hangmanCanvas) hangmanDraw(0); // Zresetuj rysunek
+
+             // Pokaż/ukryj przyciski kontrolne
+             if(hangmanNextWordButton) hangmanNextWordButton.style.display = 'inline-block'; // Zawsze pokazuj "Następne" na początku słowa
+             if(hangmanShowSetupButton) hangmanShowSetupButton.style.display = 'none'; // Ukryj "Zmień kategorię" podczas gry
+              // Od razu wyłącz przycisk "Następne słowo", będzie włączony po odgadnięciu
+              if (hangmanNextWordButton) hangmanNextWordButton.disabled = true;
+         }
+
 
         function hangmanUpdateWordDisplay() {
             if (!hangmanCurrentWord || !hangmanWordDisplay) return;
              const display = hangmanCurrentWord.word.toUpperCase().split('').map(letter => {
+                 // Obsługa spacji - wyświetlaj jako podwójną spację dla lepszej widoczności
                  if (letter === ' ') return '\u00A0\u00A0';
+                 // Apostrof i litery - pokaż jeśli odgadnięte, inaczej '_'
                  return hangmanGuessedLetters.includes(letter) ? letter : '_';
              }).join(' ');
              hangmanWordDisplay.textContent = display;
         }
 
         function createHangmanKeyboard() {
-             if (!hangmanKeyboardContainer) return;
-             hangmanKeyboardContainer.innerHTML = '';
-             'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(letter => {
-                 const button = document.createElement('button');
-                 button.textContent = letter;
-                 button.dataset.letter = letter;
-                 button.addEventListener('click', () => hangmanGuessLetter(letter)); // Użyj EventListener
-                 button.disabled = hangmanGuessedLetters.includes(letter);
-                 hangmanKeyboardContainer.appendChild(button);
-             });
+            if (!hangmanKeyboardContainer) return; // Sprawdź, czy element istnieje
+            hangmanKeyboardContainer.innerHTML = ''; // Wyczyść poprzednią klawiaturę
+
+            // Dodaj litery A-Z
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(letter => {
+                const button = document.createElement('button');
+                button.textContent = letter;
+                button.dataset.letter = letter; // Użyj atrybutu, żeby łatwo znaleźć przycisk
+                button.addEventListener('click', () => hangmanGuessLetter(letter)); // Przypisz obsługę kliknięcia
+                // Wyłącz przycisk, jeśli litera została już odgadnięta w bieżącym słowie
+                button.disabled = hangmanGuessedLetters.includes(letter);
+                hangmanKeyboardContainer.appendChild(button);
+            });
+
+            // Dodaj apostrof (') jako klikalny przycisk
+            const apostropheButton = document.createElement('button');
+            apostropheButton.textContent = "'"; // Wyświetlany tekst przycisku
+            apostropheButton.dataset.letter = "'"; // Traktuj apostrof jak "literę" do odgadnięcia
+            apostropheButton.addEventListener('click', () => hangmanGuessLetter("'")); // Przypisz tę samą funkcję obsługi
+            // Wyłącz przycisk, jeśli apostrof został już "odgadnięty" (kliknięty)
+            apostropheButton.disabled = hangmanGuessedLetters.includes("'");
+            apostropheButton.style.minWidth = '30px'; // Opcjonalnie: dostosuj szerokość
+            hangmanKeyboardContainer.appendChild(apostropheButton);
         }
 
+
         function hangmanGuessLetter(letter) {
-             if (hangmanGuessedLetters.includes(letter) || !hangmanCurrentWord || hangmanRemainingAttempts <= 0) return;
+            // Sprawdź, czy znak już był zgadywany, czy gra się skończyła, czy słowo istnieje
+            if (hangmanGuessedLetters.includes(letter) || !hangmanCurrentWord || hangmanRemainingAttempts <= 0) return;
 
-             hangmanGuessedLetters.push(letter);
-             const button = hangmanKeyboardContainer.querySelector(`button[data-letter="${letter}"]`);
-             if (button) button.disabled = true;
+            hangmanGuessedLetters.push(letter); // Dodaj odgadnięty znak (literę lub apostrof)
 
-             const wordUpper = hangmanCurrentWord.word.toUpperCase();
-             if (!wordUpper.includes(letter)) {
-                 hangmanRemainingAttempts--;
-                 hangmanUpdateAttemptsDisplay();
-                   if (hangmanCanvas) { // Sprawdź czy canvas istnieje
-                     hangmanDraw(hangmanMaxAttempts - hangmanRemainingAttempts);
-                 }
+            // Znajdź i wyłącz odpowiedni przycisk na klawiaturze
+            const button = hangmanKeyboardContainer ? hangmanKeyboardContainer.querySelector(`button[data-letter="${letter}"]`) : null;
+            if (button) button.disabled = true;
 
-                 if (hangmanRemainingAttempts <= 0) {
-                     if(hangmanMessageDisplay) hangmanMessageDisplay.textContent = `Koniec prób! Słowo to: ${wordUpper}`;
-                     disableHangmanKeyboard();
-                     if(hangmanWordDisplay) hangmanWordDisplay.textContent = wordUpper.split('').join(' ');
-                     // Pokaż tylko przycisk powrotu
-                      if(hangmanNextWordButton) hangmanNextWordButton.style.display = 'none';
-                      if(hangmanShowSetupButton) hangmanShowSetupButton.style.display = 'inline-block';
-                 }
-             } else {
-                 hangmanUpdateWordDisplay();
-                 checkHangmanWordComplete();
-             }
+            const wordUpper = hangmanCurrentWord.word.toUpperCase();
+
+            // Sprawdź, czy odgadnięty znak (litera lub apostrof) znajduje się w słowie
+            if (!wordUpper.includes(letter)) {
+                hangmanRemainingAttempts--;
+                hangmanUpdateAttemptsDisplay();
+                if (hangmanCanvas) {
+                    hangmanDraw(hangmanMaxAttempts - hangmanRemainingAttempts);
+                }
+
+                if (hangmanRemainingAttempts <= 0) {
+                    if(hangmanMessageDisplay) hangmanMessageDisplay.textContent = `Koniec prób! Słowo to: ${wordUpper}`;
+                    disableHangmanKeyboard();
+                    if(hangmanWordDisplay) hangmanWordDisplay.textContent = wordUpper.split('').join(' ');
+                    if(hangmanNextWordButton) hangmanNextWordButton.style.display = 'none'; // Ukryj next
+                    if(hangmanShowSetupButton) hangmanShowSetupButton.style.display = 'inline-block'; // Pokaż setup
+                }
+            } else {
+                // Znak poprawny, zaktualizuj i sprawdź ukończenie
+                hangmanUpdateWordDisplay();
+                checkHangmanWordComplete();
+            }
          }
 
 
         function checkHangmanWordComplete() {
              if (!hangmanCurrentWord) return;
              const wordUpper = hangmanCurrentWord.word.toUpperCase();
-             const isComplete = wordUpper.split('').every(letter => letter === ' ' || hangmanGuessedLetters.includes(letter));
+             // Sprawdź, czy każdy znak (który nie jest spacją) został odgadnięty
+             const isComplete = wordUpper.split('').every(letter =>
+                 letter === ' ' || hangmanGuessedLetters.includes(letter)
+             );
 
              if (isComplete) {
                  hangmanScore++;
                  hangmanUpdateScoreDisplay();
                  if(hangmanMessageDisplay) hangmanMessageDisplay.textContent = 'Dobrze! Słowo odgadnięte!';
-                 disableHangmanKeyboard();
-                 // Zaznacz kategorię jako rozpoczętą/ukończoną, jeśli to pierwsze słowo w niej
-                 if (!hangmanCompletedCategories.has(hangmanCurrentCategory)) {
-                     hangmanMarkCategoryComplete(hangmanCurrentCategory);
-                 }
-                 // Pokaż przycisk "Następne słowo" lub powrotu, jeśli to ostatnie słowo
-                 if (hangmanWordIndex >= hangmanCurrentWords.length - 1) {
-                     if(hangmanNextWordButton) hangmanNextWordButton.style.display = 'none';
-                     if(hangmanShowSetupButton) hangmanShowSetupButton.style.display = 'inline-block';
+                 disableHangmanKeyboard(); // Wyłącz klawiaturę po odgadnięciu
+
+                  // Zaznacz kategorię jako rozpoczętą/ukończoną (jeśli to pierwsze słowo)
+                  if (!hangmanCompletedCategories.has(hangmanCurrentCategory)) {
+                      hangmanMarkCategoryComplete(hangmanCurrentCategory);
+                  }
+
+                 // Włącz przycisk "Następne słowo" lub "Zmień kategorię"
+                 if (hangmanWordIndex >= hangmanCurrentWords.length - 1) { // Ostatnie słowo w kategorii
+                      if(hangmanNextWordButton) {
+                          hangmanNextWordButton.style.display = 'none'; // Ukryj "Następne"
+                          hangmanNextWordButton.disabled = true;
+                      }
+                       if(hangmanShowSetupButton) {
+                           hangmanShowSetupButton.style.display = 'inline-block'; // Pokaż "Zmień kategorię"
+                           hangmanShowSetupButton.disabled = false;
+                       }
                      if(hangmanMessageDisplay) hangmanMessageDisplay.textContent += ` Gratulacje, ukończyłeś kategorię: ${hangmanCurrentCategory}!`;
-                 } else {
-                      if(hangmanNextWordButton) hangmanNextWordButton.style.display = 'inline-block';
-                      if(hangmanShowSetupButton) hangmanShowSetupButton.style.display = 'none';
+                 } else { // Są jeszcze słowa w kategorii
+                      if(hangmanNextWordButton) {
+                         hangmanNextWordButton.style.display = 'inline-block';
+                         hangmanNextWordButton.disabled = false; // Włącz przycisk
+                       }
+                       if(hangmanShowSetupButton) {
+                           hangmanShowSetupButton.style.display = 'none';
+                           hangmanShowSetupButton.disabled = true;
+                       }
                  }
              }
          }
@@ -1351,24 +1416,25 @@
              if (!isLocalStorageAvailable()) return;
              const initialSize = hangmanCompletedCategories.size;
              hangmanCompletedCategories.add(category);
-             // Zapisz tylko jeśli dodano nową kategorię
-              if (hangmanCompletedCategories.size > initialSize) {
-                  progressData.hangman.completed = hangmanCompletedCategories.size;
-                  // Dodajmy jawnie listę ukończonych kategorii do zapisu
-                  progressData.hangman.completedCategories = Array.from(hangmanCompletedCategories);
-                  localStorage.setItem(storageKey, JSON.stringify(progressData));
-                  updateProgressDisplays(); // Aktualizuj pasek postępu na dashboardzie
-                  // Aktualizuj wygląd przycisku kategorii
-                   const catButton = hangmanCategoryButtonsContainer ? hangmanCategoryButtonsContainer.querySelector(`button[data-category="${category}"]`) : null;
-                   if (catButton) {
-                       catButton.style.backgroundColor = 'var(--correct-color)';
-                       catButton.title = "Kategoria ukończona!";
-                   }
-              }
+              // Zapisz tylko jeśli dodano nową kategorię (liczba ukończonych się zwiększyła)
+             if (hangmanCompletedCategories.size > initialSize) {
+                 progressData.hangman.completed = hangmanCompletedCategories.size;
+                 progressData.hangman.completedCategories = Array.from(hangmanCompletedCategories); // Zapisz listę
+                 localStorage.setItem(storageKey, JSON.stringify(progressData));
+                 updateProgressDisplays(); // Aktualizuj pasek postępu na dashboardzie
+                  // Aktualizuj wygląd przycisku kategorii w setupie
+                 const catButton = hangmanCategoryButtonsContainer ? hangmanCategoryButtonsContainer.querySelector(`button[data-category="${category}"]`) : null;
+                 if (catButton) {
+                     catButton.style.backgroundColor = 'var(--correct-color)';
+                     catButton.title = "Kategoria ukończona!";
+                 }
+             }
          }
 
 
         function hangmanNextWord() { // Wywołana przez EventListener
+             // Wyłącz przycisk natychmiast, aby uniknąć podwójnego kliknięcia
+             if(hangmanNextWordButton) hangmanNextWordButton.disabled = true;
             hangmanWordIndex++;
             hangmanLoadNextWord();
         }
@@ -1377,7 +1443,7 @@
              if(hangmanMessageDisplay) hangmanMessageDisplay.textContent = ''; // Wyczyść komunikaty
              if(hangmanGameSection) hangmanGameSection.classList.add('hidden');
              if(hangmanSetupSection) hangmanSetupSection.classList.remove('hidden');
-             hangmanInitializeSetup(); // Odśwież przyciski kategorii
+             hangmanInitializeSetup(); // Odśwież przyciski kategorii i ich status
         }
 
 
@@ -1388,38 +1454,39 @@
        // Funkcja Rysowania Wisielca
         function hangmanDraw(stage) {
             if (!hangmanCtx) {
-                 // Spróbuj pobrać context ponownie, jeśli nie istnieje
                  hangmanCanvas = document.getElementById('hangmanCanvas');
                  if (hangmanCanvas) hangmanCtx = hangmanCanvas.getContext('2d');
-                 else return; // Nie można rysować bez canvasu
+                 else return;
              }
             hangmanCtx.clearRect(0, 0, hangmanCanvas.width, hangmanCanvas.height);
             hangmanCtx.strokeStyle = '#333';
             hangmanCtx.lineWidth = 4;
             hangmanCtx.lineCap = 'round';
 
-            const drawStage = Math.min(stage, hangmanMaxAttempts); // Upewnij się, że nie rysujemy więcej niż max prób
-            const totalDrawStages = 8; // Mamy 8 elementów do narysowania (baza, słup, belka, sznur, głowa, tułów, 2 ręce, 2 nogi)
-            const stageIncrement = totalDrawStages / hangmanMaxAttempts; // Jaką część rysunku dodać na jedną pomyłkę
+             // Uproszczone rysowanie, mapowanie etapów na elementy wisielca
+             const drawParts = [
+                 () => { /* Baza */ hangmanCtx.beginPath(); hangmanCtx.moveTo(30, 280); hangmanCtx.lineTo(220, 280); hangmanCtx.stroke(); },
+                 () => { /* Słup */ hangmanCtx.beginPath(); hangmanCtx.moveTo(60, 280); hangmanCtx.lineTo(60, 40); hangmanCtx.stroke(); },
+                 () => { /* Belka */ hangmanCtx.beginPath(); hangmanCtx.moveTo(60, 40); hangmanCtx.lineTo(150, 40); hangmanCtx.stroke(); },
+                 () => { /* Sznur */ hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 40); hangmanCtx.lineTo(150, 80); hangmanCtx.stroke(); },
+                 () => { /* Głowa */ hangmanCtx.beginPath(); hangmanCtx.arc(150, 100, 20, 0, Math.PI * 2); hangmanCtx.stroke(); },
+                 () => { /* Tułów */ hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 120); hangmanCtx.lineTo(150, 190); hangmanCtx.stroke(); },
+                 () => { /* Lewa ręka */ hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 140); hangmanCtx.lineTo(110, 170); hangmanCtx.stroke(); },
+                 () => { /* Prawa ręka */ hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 140); hangmanCtx.lineTo(190, 170); hangmanCtx.stroke(); },
+                 () => { /* Lewa Noga */ hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 190); hangmanCtx.lineTo(120, 240); hangmanCtx.stroke(); },
+                 () => { /* Prawa Noga */ hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 190); hangmanCtx.lineTo(180, 240); hangmanCtx.stroke(); }
+             ];
 
-            // Kolejno rysuj elementy w zależności od zaawansowania 'stage'
-            if (drawStage >= 1 * stageIncrement) { /* Baza */ hangmanCtx.beginPath(); hangmanCtx.moveTo(30, 280); hangmanCtx.lineTo(220, 280); hangmanCtx.stroke(); }
-            if (drawStage >= 2 * stageIncrement) { /* Słup */ hangmanCtx.beginPath(); hangmanCtx.moveTo(60, 280); hangmanCtx.lineTo(60, 40); hangmanCtx.stroke(); }
-            if (drawStage >= 3 * stageIncrement) { /* Belka */ hangmanCtx.beginPath(); hangmanCtx.moveTo(60, 40); hangmanCtx.lineTo(150, 40); hangmanCtx.stroke(); }
-            if (drawStage >= 4 * stageIncrement) { /* Sznur */ hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 40); hangmanCtx.lineTo(150, 80); hangmanCtx.stroke(); }
-            if (drawStage >= 5 * stageIncrement) { /* Głowa */ hangmanCtx.beginPath(); hangmanCtx.arc(150, 100, 20, 0, Math.PI * 2); hangmanCtx.stroke(); }
-            if (drawStage >= 6 * stageIncrement) { /* Tułów */ hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 120); hangmanCtx.lineTo(150, 190); hangmanCtx.stroke(); }
-            if (drawStage >= 7 * stageIncrement) { /* Lewa ręka */ hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 140); hangmanCtx.lineTo(110, 170); hangmanCtx.stroke(); }
-            if (drawStage >= 8 * stageIncrement) { /* Prawa ręka */ hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 140); hangmanCtx.lineTo(190, 170); hangmanCtx.stroke(); }
-             // Nogi pojawiają się jako ostatnie, rozłożone na pozostałe etapy błędów
-             const legStageStart = 8 * stageIncrement; 
-             const remainingStagesForLegs = Math.max(1, hangmanMaxAttempts - 8); // Minimum 1 etap na nogi
-             const leftLegStage = legStageStart + (remainingStagesForLegs > 1 ? (1/2) * stageIncrement : 0); // Lewa noga w połowie pozostałych etapów (jeśli więcej niż 1)
-             const rightLegStage = legStageStart + stageIncrement * (remainingStagesForLegs / 2); // Prawa noga na końcu
+              // Wylicz ile części narysować na podstawie błędów i max prób
+             const stagesToDraw = Math.min(drawParts.length, Math.ceil(stage * (drawParts.length / hangmanMaxAttempts)));
 
-             if (drawStage >= legStageStart + 0.01) { /* Lewa Noga */hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 190); hangmanCtx.lineTo(120, 240); hangmanCtx.stroke(); }
-             if (drawStage >= legStageStart + stageIncrement) { /* Prawa Noga */hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 190); hangmanCtx.lineTo(180, 240); hangmanCtx.stroke(); }
-        }
+              for (let i = 0; i < stagesToDraw; i++) {
+                  if (drawParts[i]) {
+                      drawParts[i]();
+                  }
+              }
+          }
+
 
         // --- Przypisanie EventListenerów do przycisków Wisielca ---
          if (hangmanStartButton) {
@@ -1428,16 +1495,18 @@
         if (hangmanNextWordButton) {
              hangmanNextWordButton.addEventListener('click', hangmanNextWord);
              hangmanNextWordButton.style.display = 'none'; // Ukryj na początku
+             hangmanNextWordButton.disabled = true; // Wyłącz na początku
          }
          if (hangmanShowSetupButton) {
              hangmanShowSetupButton.addEventListener('click', hangmanShowSetup);
-             hangmanShowSetupButton.style.display = 'inline-block'; // Pokaż na początku w grze
+             hangmanShowSetupButton.style.display = 'none'; // Ukryj na początku, pokaż po skończeniu/błędzie
+             hangmanShowSetupButton.disabled = false;
          }
-        // Listener do przycisków prób - dodany w hangmanInitializeSetup
+         // Listener do przycisków prób jest dodawany w hangmanInitializeSetup
 
-        // --- INITIALIZATION ---
-        loadProgress();
-        updateProgressDisplays();
+        // --- FINAL INITIALIZATION ---
+        loadProgress(); // Wczytaj zapisany postęp (lub domyślny)
+        updateProgressDisplays(); // Zaktualizuj paski postępu na dashboardzie
 
         // Inicjalizacja Canvas Wisielca (jeśli element istnieje)
         hangmanCanvas = document.getElementById('hangmanCanvas');
@@ -1447,9 +1516,7 @@
             console.error("Hangman canvas element not found!");
         }
         // Inicjalizacja przycisków kategorii itp. dla Wisielca zostanie wywołana przy wejściu do sekcji
-        // hangmanInitializeSetup(); // Niepotrzebne tutaj, wywoływane w showSection
-
-    }); // Koniec DOMContentLoaded
+        // hangmanInitializeSetup(); // Już niepotrzebne tutaj, wywoływane w showSection
 </script>
 </body>
 </html>
