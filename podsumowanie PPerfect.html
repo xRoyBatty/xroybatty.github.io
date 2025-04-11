@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktywny Arkusz: Present Perfect i Słownictwo Kulinarne</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --primary-dark: #388e3c;
+            --secondary-color: #2196F3;
+            --secondary-dark: #1976d2;
+            --accent-color: #ff9800;
+            --accent-dark: #f57c00;
+            --success-color: #66bb6a;
+            --danger-color: #ef5350;
+            --light-bg: #f9f9f9;
+            --dark-bg: #2c3e50;
+            --text-dark: #333;
+            --text-light: #fff;
+            --border-color: #e0e0e0;
+            --card-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            padding: 0;
+            margin: 0;
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar / Menu */
+        .sidebar {
+            width: 280px;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            transition: var(--transition);
+            z-index: 100;
+        }
+        
+        .sidebar-header {
+            padding: 0 20px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-header h2 {
+            font-size: 1.25rem;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+        
+        .sidebar-header p {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+        
+        .progress-summary {
+            padding: 15px 20px;
+            background-color: rgba(0,0,0,0.2);
+            margin: 15px 0;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%; /* Will be updated with JS */
+            transition: width 0.5s ease;
+        }
+        
+        .menu-items {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+        
+        .menu-item {
+            padding: 0;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .menu-item a {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .menu-item:hover a, 
+        .menu-item.active a {
+            background-color: rgba(76, 175, 80, 0.2);
+            padding-left: 25px;
+        }
+        
+        .menu-item i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .menu-item .progress-indicator {
+            display: inline-block;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.1);
+            margin-left: auto;
+            text-align: center;
+            line-height: 22px;
+            font-size: 0.7rem;
+        }
+        
+        .menu-item .progress-indicator.completed {
+            background-color: var(--success-color);
+        }
+        
+        .sidebar-footer {
+            padding: 15px 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .sidebar-toggle {
+            position: fixed;
+            left: 280px;
+            top: 20px;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 99;
+            box-shadow: var(--card-shadow);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            margin-left: 280px;
+            transition: var(--transition);
+        }
+        
+        /* Dashboard */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-item {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .dashboard-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        
+        .dashboard-item-header {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .dashboard-item-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background-color: rgba(76, 175, 80, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+        
+        .dashboard-item-icon i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .dashboard-item-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .dashboard-item-body {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 20px;
+            height: 70px;
+            overflow: hidden;
+        }
+        
+        .dashboard-item-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .progress-text {
+            font-size: 0.85rem;
+            color: #777;
+        }
+        
+        .progress-circle {
+            position: relative;
+            width: 40px;
+            height: 40px;
+        }
+        
+        .progress-circle svg {
+            width: 40px;
+            height: 40px;
+            transform: rotate(-90deg);
+        }
+        
+        .progress-circle circle {
+            fill: none;
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke: #eee;
+        }
+        
+        .progress-circle .progress {
+            stroke: var(--primary-color);
+            transition: stroke-dashoffset 0.5s ease;
+        }
+        
+        .progress-circle .percentage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        /* Section Content */
+        .section-content {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+            display: none; /* Hidden by default */
+        }
+        
+        .section-header {
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            margin: 0;
+        }
+        
+        .section-nav {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .nav-button {
+            background-color: #f5f5f5;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        
+        .nav-button:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .nav-button.primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .nav-button.primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .explanation {
+            background-color: rgba(33, 150, 243, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .explanation h3 {
+            color: var(--secondary-dark);
+            margin-bottom: 15px;
+        }
+        
+        .explanation ul, .explanation ol {
+            padding-left: 20px;
+        }
+        
+        .explanation li {
+            margin-bottom: 8px;
+        }
+        
+        .quiz {
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .question {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .question:last-child {
+            border-bottom: none;
+        }
+        
+        .question p {
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .answer-input {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            width: auto;
+            transition: var(--transition);
+        }
+        
+        .answer-input:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
+        }
+        
+        .answer-input.correct {
+            border-color: var(--success-color);
+            background-color: rgba(102, 187, 106, 0.1);
+        }
+        
+        .answer-input.incorrect {
+            border-color: var(--danger-color);
+            background-color: rgba(239, 83, 80, 0.1);
+        }
+        
+        select.answer-input {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 15px;
+            padding-right: 35px;
+        }
+        
+        .quiz-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .check-button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        
+        .check-button:hover {
+            background-color: var(--secondary-dark);
+        }
+        
+        /* Answers Section */
+        .answers-section {
+            background-color: rgba(76, 175, 80, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        
+        .answers-section h3 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+        }
+        
+        .answers-content {
+            display: none;
+        }
+        
+        .answer-group {
+            margin-bottom: 15px;
+        }
+        
+        .answer-group h4 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: var(--primary-dark);
+        }
+        
+        .toggle-answers-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            margin-bottom: 15px;
+        }
+        
+        .toggle-answers-button:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        /* When sidebar is collapsed */
+        body.sidebar-collapsed .sidebar {
+            width: 70px;
+            overflow: visible;
+        }
+        
+        body.sidebar-collapsed .sidebar-header {
+            padding: 20px 0;
+        }
+        
+        body.sidebar-collapsed .sidebar-header h2, 
+        body.sidebar-collapsed .sidebar-header p,
+        body.sidebar-collapsed .progress-summary,
+        body.sidebar-collapsed .sidebar-footer {
+            display: none;
+        }
+        
+        body.sidebar-collapsed .menu-item a {
+            padding: 15px 0;
+            justify-content: center;
+        }
+        
+        body.sidebar-collapsed .menu-item i {
+            margin: 0;
+            font-size: 1.3rem;
+        }
+        
+        body.sidebar-collapsed .menu-item span,
+        body.sidebar-collapsed .menu-item .progress-indicator {
+            display: none;
+        }
+        
+        body.sidebar-collapsed .main-content {
+            margin-left: 70px;
+        }
+        
+        body.sidebar-collapsed .sidebar-toggle {
+            left: 70px;
+        }
+        
+        /* Tooltip for collapsed sidebar */
+        body.sidebar-collapsed .menu-item a:hover::after {
+            content: attr(data-title);
+            position: absolute;
+            left: 70px;
+            top: 0;
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: nowrap;
+            z-index: 1;
+            box-shadow: var(--card-shadow);
+        }
+        
+        /* Mobile styles */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 0;
+                opacity: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .sidebar-toggle {
+                left: 20px;
+                background-color: var(--primary-color);
+            }
+            
+            body.sidebar-open .sidebar {
+                width: 280px;
+                opacity: 1;
+            }
+            
+            body.sidebar-open .sidebar-toggle {
+                left: 280px;
+            }
+            
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar / Menu -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>Interaktywny Arkusz</h2>
+            <p>Present Perfect i Słownictwo Kulinarne</p>
+        </div>
+        
+        <div class="progress-summary">
+            <p>Całkowity postęp: <span id="total-progress">0%</span></p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-bar-fill"></div>
+            </div>
+        </div>
+        
+        <ul class="menu-items">
+            <li class="menu-item active" data-section="dashboard">
+                <a href="#dashboard" data-title="Strona Główna">
+                    <i class="fas fa-home"></i>
+                    <span>Strona Główna</span>
+                </a>
+            </li>
+            <li class="menu-item" data-section="section-1">
+                <a href="#section-1" data-title="Present Perfect: Struktura">
+                    <i class="fas fa-book"></i>
+                    <span>Sekcja I: Present Perfect: Struktura</span>
+                    <div class="progress-indicator" id="progress-1">0%</div>
+                </a>
+            </li>
+            <li class="menu-item" data-section="section-2">
+                <a href="#section-2" data-title="Present Perfect: Pytania">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Sekcja II: Present Perfect: Pytania</span>
+                    <div class="progress-indicator" id="progress-2">0%</div>
+                </a>
+            </li>
+            <li class="menu-item" data-section="section-3">
+                <a href="#section-3" data-title="Formy Czasowników">
+                    <i class="fas fa-language"></i>
+                    <span>Sekcja III: Formy Czasowników</span>
+                    <div class="progress-indicator" id="progress-3">0%</div>
+                </a>
+            </li>
+            <li class="menu-item" data-section="section-4">
+                <a href="#section-4" data-title="Szyk Zdań">
+                    <i class="fas fa-sort-alpha-down"></i>
+                    <span>Sekcja IV: Szyk Zdań</span>
+                    <div class="progress-indicator" id="progress-4">0%</div>
+                </a>
+            </li>
+            <li class="menu-item" data-section="section-5">
+                <a href="#section-5" data-title="Słownictwo: Gotowanie">
+                    <i class="fas fa-utensils"></i>
+                    <span>Sekcja V: Słownictwo: Gotowanie</span>
+                    <div class="progress-indicator" id="progress-5">0%</div>
+                </a>
+            </li>
+            <li class="menu-item" data-section="section-6">
+                <a href="#section-6" data-title="Słownictwo: Smaki">
+                    <i class="fas fa-apple-alt"></i>
+                    <span>Sekcja VI: Słownictwo: Smaki</span>
+                    <div class="progress-indicator" id="progress-6">0%</div>
+                </a>
+            </li>
+        </ul>
+        
+        <div class="sidebar-footer">
+            <p>© 2025 Interaktywny Arkusz</p>
+        </div>
+    </div>
+    
+    <!-- Sidebar Toggle Button -->
+    <div class="sidebar-toggle" id="sidebar-toggle">
+        <i class="fas fa-chevron-left"></i>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Dashboard / Home -->
+        <div class="section-content" id="dashboard" style="display: block;">
+            <div class="section-header">
+                <h2 class="section-title">Strona Główna</h2>
+            </div>
+            
+            <p style="margin-bottom: 20px;">Witaj w interaktywnym arkuszu do nauki czasu Present Perfect i słownictwa kulinarnego. Wybierz sekcję, aby rozpocząć naukę. Twój postęp będzie zapisywany automatycznie.</p>
+            
+            <div class="dashboard">
+                <div class="dashboard-item" data-section="section-1">
+                    <div class="dashboard-item-header">
+                        <div class="dashboard-item-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h3 class="dashboard-item-title">Struktura Present Perfect</h3>
+                    </div>
+                    <div class="dashboard-item-body">
+                        Poznaj podstawową strukturę czasu Present Perfect, nauczysz się tworzyć zdania twierdzące i przeczące.
+                    </div>
+                    <div class="dashboard-item-footer">
+                        <span class="progress-text">Postęp</span>
+                        <div class="progress-circle" data-section="1">
+                            <svg viewBox="0 0 36 36">
+                                <circle cx="18" cy="18" r="16" stroke-dasharray="100" stroke-dashoffset="0"></circle>
+                                <circle class="progress" cx="18" cy="18" r="16" stroke-dasharray="100" stroke-dashoffset="100"></circle>
+                            </svg>
+                            <div class="percentage">0%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-item" data-section="section-2">
+                    <div class="dashboard-item-header">
+                        <div class="dashboard-item-icon">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <h3 class="dashboard-item-title">Pytania i Odpowiedzi</h3>
+                    </div>
+                    <div class="dashboard-item-body">
+                        Naucz się tworzyć pytania w czasie Present Perfect i odpowiadać na nie używając krótkich odpowiedzi.
+                    </div>
+                    <div class="dashboard-item-footer">
+                        <span class="progress-text">Postęp</span>
+                        <div class="progress-circle" data-section="2">
+                            <svg viewBox="0 0 36 36">
+                                <circle cx="18" cy="18" r="16" stroke-dasharray="100" stroke-dashoffset="0"></circle>
+                                <circle class="progress" cx="18" cy="18" r="16" stroke-dasharray="100" stroke-dashoffset="100"></circle>
+                            </svg>
+                            <div class="percentage">0%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-item" data-section="section-3">
+                    <div class="dashboard-item-header">
+                        <div class="dashboard-item-icon">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <h3 class="dashboard-item-title">Formy Czasowników</h3>
+                    </div>
+                    <div class="dashboard-item-body">
+                        Poznaj formy regularne i nieregularne czasowników w Past Participle (III forma), które są używane w Present Perfect.
+                    </div>
+                    <div class="dashboard-item-footer">
+                        <span class="progress-text">Postęp</span>
+                        <div class="progress-circle" data-section="3">
+                            <svg viewBox="0 0 36 36">
+                                <circle cx="18" cy="18" r="16" stroke-dasharray="100" stroke-dashoffset="0"></circle>
+                                <circle class="progress" cx="18" cy="18" r="16" stroke-dasharray="100" stroke-dashoffset="100"></circle>
+                            </svg>
+                            <div class="percentage">0%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-item" data-section="section-4">
+                    <div class="dashboard-item-header">
+                        <div class="dashboard-item-icon">
+                            <i class="fas fa-sort-alpha-down"></i>
+                        </div>
+                        <h3 class="dashboard-item-title">Szyk Zdań</h3>
+                    </div>
+                    <div class="dashboard-item-body">
+                        Dowiedz się, jaki jest poprawny szyk wyrazów w zdaniach w czasie Present Perfect w różnych typach zdań.
+                    </div>
+                    <div class="dashboard-item-footer">
+                        <span class="progress-text">Postęp</span>
+                        <div class="progress-circle" data-section="4">
+                            <svg viewBox="0 0 36 36">
+                                <circle cx="18" cy="18" r="16" stroke-dasharray="100" stroke-dashoffset="0"></circle>
+                                <circle class="progress" cx="18" cy="18" r="16" stroke-dasharray="100" stroke-dashoffset="100"></circle>
+                            </svg>
+                            <div class="percentage">0%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-item" data-section="section-5">
+                    <div class="dashboard-item-header">
+                        <div class="dashboard-item-icon">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <h3 class="dashboard-item-title">Słownictwo: Gotowanie</h3>
+                    </div>
+                    <div class="dashboard-item-body">
+                        Naucz się słownictwa związanego z gotowaniem, jedzeniem i sprzętem kuchennym w języku angielskim.
+                    </div>
+                    <div class="dashboard-item-footer">
+                        <span class="progress-text">Postęp</span>
+                        <div class="progress-circle" data-section="5">
+                            <svg viewBox="0 0 36 36">
+                                <circle cx="18" cy="18" r="16" stroke-dasharray="100" stroke-dashoffset="0"></circle>
+                                <circle class="progress" cx="18" cy="18" r="16" stroke-dasharray="100" stroke-dashoffset="100"></circle>
+                            </svg>
+                            <div class="percentage">0%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-item" data-section="section-6">
+                    <div class="dashboard-item-header">
+                        <div class="dashboard-item-icon">
+                            <i class="fas fa-apple-alt"></i>
+                        </div>
+                        <h3 class="dashboard-item-title">Słownictwo: Smaki</h3>
+                    </div>
+                    <div class="dashboard-item-body">
+                        Poznaj przymiotniki opisujące smaki oraz przydatne wyrażenia związane z jedzeniem w języku angielskim.
+                    </div>
+                    <div class="dashboard-item-footer">
+                        <span class="progress-text">Postęp</span>
+                        <div class="progress-circle" data-section="6">
+                            <svg viewBox="0 0 36 36">
+                                <circle cx="18" cy="18" r="16" stroke-dasharray="100" stroke-dashoffset="0"></circle>
+                                <circle class="progress" cx="18" cy="18" r="16" stroke-dasharray="100" stroke-dashoffset="100"></circle>
+                            </svg>
+                            <div class="percentage">0%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section 1: Present Perfect Structure -->
+        <div class="section-content" id="section-1">
+            <div class="section-header">
+                <h2 class="section-title">Sekcja I: Struktura Czasu Present Perfect</h2>
+                <div class="section-nav">
+                    <button class="nav-button" id="back-to-home-1">
+                        <i class="fas fa-home"></i> Strona Główna
+                    </button>
+                    <button class="nav-button primary" id="toggle-explanation-1">
+                        <i class="fas fa-lightbulb"></i> Pokaż Wyjaśnienie
+                    </button>
+                </div>
+            </div>
+            
+            <div class="explanation" id="explanation-1">
+                <h3>Wyjaśnienie: Struktura Czasu Present Perfect (Zdania Twierdzące i Przeczące)</h3>
+                <p>Czas Present Perfect tworzymy używając operatora <strong>have</strong> lub <strong>has</strong> oraz <strong>III formy czasownika (Past Participle)</strong>.</p>
+                <ul>
+                    <li><strong>Have</strong> używamy z: I, you, we, they</li>
+                    <li><strong>Has</strong> używamy z: he, she, it</li>
+                </ul>
+                <p><strong>Zdania Twierdzące:</strong> Podmiot + <code>have</code>/<code>has</code> + Past Participle</p>
+                <ul>
+                    <li>I <strong>have washed</strong> the vegetables. (Skrót: I<strong>'ve</strong> washed...)</li>
+                    <li>Millie <strong>has made</strong> a pie. (Skrót: Millie<strong>'s</strong> made...)</li>
+                    <li>Martin <strong>has baked</strong> this cake.</li>
+                    <li>Our guests <strong>have gone</strong> home.</li>
+                </ul>
+                <p><strong>Zdania Przeczące:</strong> Podmiot + <code>haven't</code>/<code>hasn't</code> + Past Participle</p>
+                <ul>
+                    <li>I <strong>haven't touched</strong> your biscuits! (Można też: I<strong>'ve not</strong> touched...)</li>
+                    <li>Dad <strong>hasn't cleaned</strong> the house yet.</li>
+                </ul>
+            </div>
+            
+            <div class="quiz" id="quiz-1">
+                <h3>Ćwiczenia: Zdania Twierdzące i Przeczące</h3>
+                <p>Uzupełnij luki poprawną formą czasownika w czasie Present Perfect (twierdzącą lub przeczącą, zgodnie z podpowiedzią).</p>
+                
+                <div class="question">
+                    <p>1. She __________ (finish) her homework. (+)</p>
+                    <input type="text" class="answer-input" data-answer="has finished">
+                </div>
+                
+                <div class="question">
+                    <p>2. We __________ (not see) this film yet. (-)</p>
+                    <input type="text" class="answer-input" data-answer="haven't seen">
+                </div>
+                
+                <div class="question">
+                    <p>3. My brother __________ (eat) all the chocolate! (+)</p>
+                    <input type="text" class="answer-input" data-answer="has eaten">
+                </div>
+                
+                <div class="question">
+                    <p>4. They __________ (visit) London several times. (+)</p>
+                    <input type="text" class="answer-input" data-answer="have visited">
+                </div>
+                
+                <div class="question">
+                    <p>5. I __________ (not speak) to John today. (-)</p>
+                    <input type="text" class="answer-input" data-answer="haven't spoken">
+                </div>
+                
+                <div class="question">
+                    <p>6. The cat __________ (drink) its milk. (+)</p>
+                    <input type="text" class="answer-input" data-answer="has drunk">
+                </div>
+                
+                <div class="quiz-navigation">
+                    <button class="check-button" id="check-answers-1">
+                        <i class="fas fa-check-circle"></i> Sprawdź odpowiedzi
+                    </button>
+                </div>
+            </div>
+            
+            <div class="answers-section" id="answers-section-1">
+                <button class="toggle-answers-button" id="toggle-answers-1">Pokaż odpowiedzi</button>
+                <div class="answers-content" id="answers-content-1">
+                    <h3>Odpowiedzi:</h3>
+                    <div class="answer-group">
+                        <p>1. She <strong>has finished</strong> her homework.</p>
+                        <p>2. We <strong>haven't seen</strong> this film yet.</p>
+                        <p>3. My brother <strong>has eaten</strong> all the chocolate!</p>
+                        <p>4. They <strong>have visited</strong> London several times.</p>
+                        <p>5. I <strong>haven't spoken</strong> to John today.</p>
+                        <p>6. The cat <strong>has drunk</strong> its milk.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section 2: Questions and Short Answers -->
+        <div class="section-content" id="section-2">
+            <div class="section-header">
+                <h2 class="section-title">Sekcja II: Pytania i Krótkie Odpowiedzi w Present Perfect</h2>
+                <div class="section-nav">
+                    <button class="nav-button" id="back-to-home-2">
+                        <i class="fas fa-home"></i> Strona Główna
+                    </button>
+                    <button class="nav-button primary" id="toggle-explanation-2">
+                        <i class="fas fa-lightbulb"></i> Pokaż Wyjaśnienie
+                    </button>
+                </div>
+            </div>
+            
+            <div class="explanation" id="explanation-2">
+                <h3>Wyjaśnienie: Pytania i Krótkie Odpowiedzi w Present Perfect</h3>
+                <p><strong>Pytania</strong> w Present Perfect tworzymy przez inwersję: <code>Have</code>/<code>Has</code> + Podmiot + (ever) + Past Participle?</p>
+                <ul>
+                    <li><strong>Has</strong> Doctor Q <strong>taken off</strong> his lab coat?</li>
+                    <li><strong>Have</strong> you ever <strong>roasted</strong> a chicken?</li>
+                </ul>
+                <p><strong>Krótkie Odpowiedzi:</strong> Zgadzają się z operatorem (<code>have</code>/<code>has</code>) i zaimkiem.</p>
+                <ul>
+                    <li>Yes, + zaimek + <code>have</code>/<code>has</code>.</li>
+                    <li>No, + zaimek + <code>haven't</code>/<code>hasn't</code>.</li>
+                </ul>
+                <ul>
+                    <li>Has he ever won a competition? <strong>No, he hasn't.</strong></li>
+                    <li>Have you finished your test? <strong>Yes, I have.</strong> / <strong>Yes, we have.</strong></li>
+                </ul>
+            </div>
+            
+            <div class="quiz" id="quiz-2">
+                <h3>Ćwiczenia: Pytania i Krótkie Odpowiedzi</h3>
+                
+                <p>A. Odpowiedz krótko na pytania, zgodnie z informacją w nawiasie.</p>
+                <div class="question">
+                    <p>1. Has she finished her work? (Yes)</p>
+                    <input type="text" class="answer-input" data-answer="Yes, she has.">
+                </div>
+                
+                <div class="question">
+                    <p>2. Have they arrived yet? (No)</p>
+                    <input type="text" class="answer-input" data-answer="No, they haven't.">
+                </div>
+                
+                <div class="question">
+                    <p>3. Have you ever been to Spain? (Yes, ty odpowiadasz)</p>
+                    <input type="text" class="answer-input" data-answer="Yes, I have.">
+                </div>
+                
+                <div class="question">
+                    <p>4. Has Mark called? (No)</p>
+                    <input type="text" class="answer-input" data-answer="No, he hasn't.">
+                </div>
+                
+                <p>B. Ułóż pytania w czasie Present Perfect z podanych słów.</p>
+                <div class="question">
+                    <p>5. (you / ever / eat / sushi)</p>
+                    <input type="text" class="answer-input" data-answer="Have you ever eaten sushi?">
+                </div>
+                
+                <div class="question">
+                    <p>6. (he / tidy / his room)</p>
+                    <input type="text" class="answer-input" data-answer="Has he tidied his room?">
+                </div>
+                
+                <div class="quiz-navigation">
+                    <button class="check-button" id="check-answers-2">
+                        <i class="fas fa-check-circle"></i> Sprawdź odpowiedzi
+                    </button>
+                </div>
+            </div>
+            
+            <div class="answers-section" id="answers-section-2">
+                <button class="toggle-answers-button" id="toggle-answers-2">Pokaż odpowiedzi</button>
+                <div class="answers-content" id="answers-content-2">
+                    <h3>Odpowiedzi:</h3>
+                    <div class="answer-group">
+                        <p>A. Krótkie odpowiedzi:</p>
+                        <p>1. <strong>Yes, she has.</strong></p>
+                        <p>2. <strong>No, they haven't.</strong></p>
+                        <p>3. <strong>Yes, I have.</strong></p>
+                        <p>4. <strong>No, he hasn't.</strong></p>
+                    </div>
+                    <div class="answer-group">
+                        <p>B. Pytania:</p>
+                        <p>5. <strong>Have you ever eaten sushi?</strong></p>
+                        <p>6. <strong>Has he tidied his room?</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section 3: Verb Forms -->
+        <div class="section-content" id="section-3">
+            <div class="section-header">
+                <h2 class="section-title">Sekcja III: Formy Czasowników (Regularne/Nieregularne) i Past Participle</h2>
+                <div class="section-nav">
+                    <button class="nav-button" id="back-to-home-3">
+                        <i class="fas fa-home"></i> Strona Główna
+                    </button>
+                    <button class="nav-button primary" id="toggle-explanation-3">
+                        <i class="fas fa-lightbulb"></i> Pokaż Wyjaśnienie
+                    </button>
+                </div>
+            </div>
+            
+            <div class="explanation" id="explanation-3">
+                <h3>Wyjaśnienie: Formy Czasowników i Past Participle</h3>
+                <p>W Present Perfect używamy <strong>III formy czasownika (Past Participle)</strong>.</p>
+                <p><strong>Regularne:</strong> końcówka <strong>-ed</strong> (np. washed, baked, added, sliced, chopped, cleaned, peeled, tidied, finished).</p>
+                <p><strong>Nieregularne:</strong> Trzeba zapamiętać (np. go -> gone, drink -> drunk, do -> done, have -> had, take -> taken, eat -> eaten, make -> made, buy -> bought, see -> seen, speak -> spoken).</p>
+                <p>Formy w czasie Perfect mogą być <strong>regularne</strong> lub <strong>nieregularne</strong>.</p>
+            </div>
+            
+            <div class="quiz" id="quiz-3">
+                <h3>Ćwiczenia: Formy Czasowników</h3>
+                <p>Podaj formę Past Participle (III formę) dla następujących czasowników:</p>
+                
+                <div class="question">
+                    <p>1. make -> </p>
+                    <input type="text" class="answer-input" data-answer="made">
+                </div>
+                
+                <div class="question">
+                    <p>2. watch -> </p>
+                    <input type="text" class="answer-input" data-answer="watched">
+                </div>
+                
+                <div class="question">
+                    <p>3. go -> </p>
+                    <input type="text" class="answer-input" data-answer="gone">
+                </div>
+                
+                <div class="question">
+                    <p>4. clean -> </p>
+                    <input type="text" class="answer-input" data-answer="cleaned">
+                </div>
+                
+                <div class="question">
+                    <p>5. drink -> </p>
+                    <input type="text" class="answer-input" data-answer="drunk">
+                </div>
+                
+                <div class="question">
+                    <p>6. bake -> </p>
+                    <input type="text" class="answer-input" data-answer="baked">
+                </div>
+                
+                <div class="question">
+                    <p>7. see -> </p>
+                    <input type="text" class="answer-input" data-answer="seen">
+                </div>
+                
+                <div class="question">
+                    <p>8. add -> </p>
+                    <input type="text" class="answer-input" data-answer="added">
+                </div>
+                
+                <div class="quiz-navigation">
+                    <button class="check-button" id="check-answers-3">
+                        <i class="fas fa-check-circle"></i> Sprawdź odpowiedzi
+                    </button>
+                </div>
+            </div>
+            
+            <div class="answers-section" id="answers-section-3">
+                <button class="toggle-answers-button" id="toggle-answers-3">Pokaż odpowiedzi</button>
+                <div class="answers-content" id="answers-content-3">
+                    <h3>Odpowiedzi:</h3>
+                    <div class="answer-group">
+                        <p>1. make -> <strong>made</strong></p>
+                        <p>2. watch -> <strong>watched</strong></p>
+                        <p>3. go -> <strong>gone</strong></p>
+                        <p>4. clean -> <strong>cleaned</strong></p>
+                        <p>5. drink -> <strong>drunk</strong></p>
+                        <p>6. bake -> <strong>baked</strong></p>
+                        <p>7. see -> <strong>seen</strong></p>
+                        <p>8. add -> <strong>added</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section 4: Sentence Structure -->
+        <div class="section-content" id="section-4">
+            <div class="section-header">
+                <h2 class="section-title">Sekcja IV: Szyk Zdań w Present Perfect</h2>
+                <div class="section-nav">
+                    <button class="nav-button" id="back-to-home-4">
+                        <i class="fas fa-home"></i> Strona Główna
+                    </button>
+                    <button class="nav-button primary" id="toggle-explanation-4">
+                        <i class="fas fa-lightbulb"></i> Pokaż Wyjaśnienie
+                    </button>
+                </div>
+            </div>
+            
+            <div class="explanation" id="explanation-4">
+                <h3>Wyjaśnienie: Szyk Zdań w Present Perfect</h3>
+                <p>Przypomnijmy podstawowy szyk zdania:</p>
+                <ul>
+                    <li><strong>Twierdzenie:</strong> Podmiot + <code>have</code>/<code>has</code> + Past Participle (+ reszta).<br><em>We <strong>have tidied</strong> the living room.</em></li>
+                    <li><strong>Przeczenie:</strong> Podmiot + <code>haven't</code>/<code>hasn't</code> + Past Participle (+ reszta).<br><em>Gran <strong>hasn't made</strong> dessert.</em></li>
+                    <li><strong>Pytanie:</strong> <code>Have</code>/<code>Has</code> + Podmiot + (ever) + Past Participle (+ reszta)?<br><em><strong>Have</strong> you ever <strong>been</strong> on TV?</em></li>
+                </ul>
+                <p>Przysłówki jak <code>ever</code>, <code>never</code>, <code>just</code>, <code>already</code> zwykle idą między <code>have/has</code> a Past Participle. Przysłówki jak <code>yet</code>, <code>today</code> zwykle idą na koniec.</p>
+            </div>
+            
+            <div class="quiz" id="quiz-4">
+                <h3>Ćwiczenia: Szyk Zdań</h3>
+                <p>Ułóż poprawne zdania lub pytania z podanych wyrazów.</p>
+                
+                <div class="question">
+                    <p>1. never / I / sushi / eaten / have / .</p>
+                    <input type="text" class="answer-input" data-answer="I have never eaten sushi.">
+                </div>
+                
+                <div class="question">
+                    <p>2. finished / homework / you / your / yet / have / ?</p>
+                    <input type="text" class="answer-input" data-answer="Have you finished your homework yet?">
+                </div>
+                
+                <div class="question">
+                    <p>3. hasn't / she / letter / the / written / .</p>
+                    <input type="text" class="answer-input" data-answer="She hasn't written the letter.">
+                </div>
+                
+                <div class="question">
+                    <p>4. already / they / film / seen / have / that / .</p>
+                    <input type="text" class="answer-input" data-answer="They have already seen that film.">
+                </div>
+                
+                <div class="quiz-navigation">
+                    <button class="check-button" id="check-answers-4">
+                        <i class="fas fa-check-circle"></i> Sprawdź odpowiedzi
+                    </button>
+                </div>
+            </div>
+            
+            <div class="answers-section" id="answers-section-4">
+                <button class="toggle-answers-button" id="toggle-answers-4">Pokaż odpowiedzi</button>
+                <div class="answers-content" id="answers-content-4">
+                    <h3>Odpowiedzi:</h3>
+                    <div class="answer-group">
+                        <p>1. <strong>I have never eaten sushi.</strong></p>
+                        <p>2. <strong>Have you finished your homework yet?</strong></p>
+                        <p>3. <strong>She hasn't written the letter.</strong></p>
+                        <p>4. <strong>They have already seen that film.</strong> (lub <strong>They have seen that film already.</strong>)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section 5: Cooking Vocabulary -->
+        <div class="section-content" id="section-5">
+            <div class="section-header">
+                <h2 class="section-title">Sekcja V: Słownictwo: Gotowanie, Jedzenie i Sprzęt Kuchenny</h2>
+                <div class="section-nav">
+                    <button class="nav-button" id="back-to-home-5">
+                        <i class="fas fa-home"></i> Strona Główna
+                    </button>
+                    <button class="nav-button primary" id="toggle-explanation-5">
+                        <i class="fas fa-lightbulb"></i> Pokaż Wyjaśnienie
+                    </button>
+                </div>
+            </div>
+            
+            <div class="explanation" id="explanation-5">
+                <h3>Wyjaśnienie: Słownictwo: Gotowanie, Jedzenie i Sprzęt Kuchenny</h3>
+                <p>Kluczowe słówka:</p>
+                <ul>
+                    <li><strong>Czasowniki:</strong> beat (ubijać), peel (obierać), slice (kroić w plasterki), chop (siekać), prepare (przygotowywać), fry (smażyć), roast (piec mięso), bake (piec ciasto/chleb), boil (gotować w wodzie), cook (gotować ogólnie), add (dodawać).</li>
+                    <li><strong>Rzeczowniki:</strong> recipe (przepis), dessert (deser), pot (garnek), fork (widelec), knife (nóż), spoon (łyżka), cup (filiżanka/kubek), plate (talerz), garlic (czosnek), onion (cebula), frying pan (patelnia), vegetables (warzywa), cutlery (sztućce).</li>
+                </ul>
+            </div>
+            
+            <div class="quiz" id="quiz-5">
+                <h3>Ćwiczenia: Słownictwo Kulinarne</h3>
+                <p>Wybierz lub wpisz odpowiednie słowo.</p>
+                
+                <div class="question">
+                    <p>1. To cut potatoes into very small pieces is to __________ them.</p>
+                    <select class="answer-input" data-answer="chop">
+                        <option value="">--wybierz--</option>
+                        <option value="slice">slice</option>
+                        <option value="chop">chop</option>
+                        <option value="peel">peel</option>
+                    </select>
+                </div>
+                
+                <div class="question">
+                    <p>2. You use a __________ to eat soup.</p>
+                    <select class="answer-input" data-answer="spoon">
+                        <option value="">--wybierz--</option>
+                        <option value="fork">fork</option>
+                        <option value="knife">knife</option>
+                        <option value="spoon">spoon</option>
+                    </select>
+                </div>
+                
+                <div class="question">
+                    <p>3. A list of instructions to cook something is a __________.</p>
+                    <input type="text" class="answer-input" data-answer="recipe">
+                </div>
+                
+                <div class="question">
+                    <p>4. To cook meat in the oven is to __________ it.</p>
+                    <select class="answer-input" data-answer="roast">
+                        <option value="">--wybierz--</option>
+                        <option value="fry">fry</option>
+                        <option value="roast">roast</option>
+                        <option value="boil">boil</option>
+                    </select>
+                </div>
+                
+                <div class="question">
+                    <p>5. What do you use to fry eggs? A __________.</p>
+                    <input type="text" class="answer-input" data-answer="frying pan">
+                </div>
+                
+                <div class="question">
+                    <p>6. Before you cook potatoes, you usually __________ them.</p>
+                    <select class="answer-input" data-answer="peel">
+                        <option value="">--wybierz--</option>
+                        <option value="beat">beat</option>
+                        <option value="peel">peel</option>
+                        <option value="add">add</option>
+                    </select>
+                </div>
+                
+                <div class="question">
+                    <p>7. Is an onion a fruit or a vegetable?</p>
+                    <input type="text" class="answer-input" data-answer="vegetable">
+                </div>
+                
+                <div class="quiz-navigation">
+                    <button class="check-button" id="check-answers-5">
+                        <i class="fas fa-check-circle"></i> Sprawdź odpowiedzi
+                    </button>
+                </div>
+            </div>
+            
+            <div class="answers-section" id="answers-section-5">
+                <button class="toggle-answers-button" id="toggle-answers-5">Pokaż odpowiedzi</button>
+                <div class="answers-content" id="answers-content-5">
+                    <h3>Odpowiedzi:</h3>
+                    <div class="answer-group">
+                        <p>1. <strong>chop</strong></p>
+                        <p>2. <strong>spoon</strong></p>
+                        <p>3. <strong>recipe</strong></p>
+                        <p>4. <strong>roast</strong></p>
+                        <p>5. <strong>frying pan</strong></p>
+                        <p>6. <strong>peel</strong></p>
+                        <p>7. <strong>vegetable</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section 6: Flavors Vocabulary -->
+        <div class="section-content" id="section-6">
+            <div class="section-header">
+                <h2 class="section-title">Sekcja VI: Słownictwo: Przymiotniki (Smaki) i Wyrażenia</h2>
+                <div class="section-nav">
+                    <button class="nav-button" id="back-to-home-6">
+                        <i class="fas fa-home"></i> Strona Główna
+                    </button>
+                    <button class="nav-button primary" id="toggle-explanation-6">
+                        <i class="fas fa-lightbulb"></i> Pokaż Wyjaśnienie
+                    </button>
+                </div>
+            </div>
+            
+            <div class="explanation" id="explanation-6">
+                <h3>Wyjaśnienie: Przymiotniki (Smaki) i Wyrażenia</h3>
+                <p>Przymiotniki opisujące smak:</p>
+                <ul>
+                    <li><strong>sour:</strong> kwaśny</li>
+                    <li><strong>sweet:</strong> słodki</li>
+                    <li><strong>salty:</strong> słony</li>
+                    <li><strong>spicy/hot:</strong> ostry, pikantny</li>
+                    <li><strong>delicious/tasty/yummy:</strong> pyszny</li>
+                    <li><strong>disgusting/horrible:</strong> obrzydliwy</li>
+                </ul>
+                <p><strong>Przeciwieństwa:</strong> sweet <-> sour; delicious <-> disgusting.</p>
+                <p><strong>Wyrażenie:</strong> "I don't mind" = Wszystko mi jedno / Nie mam nic przeciwko.</p>
+            </div>
+            
+            <div class="quiz" id="quiz-6">
+                <h3>Ćwiczenia: Smaki i Wyrażenia</h3>
+                <p>Wybierz lub wpisz odpowiednie słowo.</p>
+                
+                <div class="question">
+                    <p>1. Lemons are usually very __________.</p>
+                    <select class="answer-input" data-answer="sour">
+                        <option value="">--wybierz--</option>
+                        <option value="sweet">sweet</option>
+                        <option value="sour">sour</option>
+                        <option value="salty">salty</option>
+                    </select>
+                </div>
+                
+                <div class="question">
+                    <p>2. Sugar and honey taste __________.</p>
+                    <input type="text" class="answer-input" data-answer="sweet">
+                </div>
+                
+                <div class="question">
+                    <p>3. This soup has too much salt. It's too __________.</p>
+                    <input type="text" class="answer-input" data-answer="salty">
+                </div>
+                
+                <div class="question">
+                    <p>4. "Would you like pizza or pasta?" "Oh, __________."</p>
+                    <select class="answer-input" data-answer="i don't mind">
+                        <option value="">--wybierz--</option>
+                        <option value="i delicious">I delicious</option>
+                        <option value="i don't mind">I don't mind</option>
+                        <option value="i disgusting">I disgusting</option>
+                    </select>
+                </div>
+                
+                <div class="question">
+                    <p>5. What is the opposite of 'delicious'?</p>
+                    <input type="text" class="answer-input" data-answer="disgusting">
+                </div>
+                
+                <div class="question">
+                    <p>6. Chillies are very __________.</p>
+                    <select class="answer-input" data-answer="spicy">
+                        <option value="">--wybierz--</option>
+                        <option value="spicy">spicy</option>
+                        <option value="sour">sour</option>
+                        <option value="sweet">sweet</option>
+                    </select>
+                </div>
+                
+                <div class="quiz-navigation">
+                    <button class="check-button" id="check-answers-6">
+                        <i class="fas fa-check-circle"></i> Sprawdź odpowiedzi
+                    </button>
+                </div>
+            </div>
+            
+            <div class="answers-section" id="answers-section-6">
+                <button class="toggle-answers-button" id="toggle-answers-6">Pokaż odpowiedzi</button>
+                <div class="answers-content" id="answers-content-6">
+                    <h3>Odpowiedzi:</h3>
+                    <div class="answer-group">
+                        <p>1. <strong>sour</strong></p>
+                        <p>2. <strong>sweet</strong></p>
+                        <p>3. <strong>salty</strong></p>
+                        <p>4. <strong>I don't mind</strong></p>
+                        <p>5. <strong>disgusting</strong> (lub <strong>horrible</strong>)</p>
+                        <p>6. <strong>spicy</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if localStorage is available
+            function isLocalStorageAvailable() {
+                try {
+                    localStorage.setItem('test', 'test');
+                    localStorage.removeItem('test');
+                    return true;
+                } catch(e) {
+                    return false;
+                }
+            }
+            
+            // Initialize or get progress data
+            let progressData = {};
+            if (isLocalStorageAvailable()) {
+                const savedData = localStorage.getItem('worksheetProgress');
+                if (savedData) {
+                    progressData = JSON.parse(savedData);
+                } else {
+                    // Initialize with default values
+                    progressData = {
+                        section1: { completed: 0, total: 6 },
+                        section2: { completed: 0, total: 6 },
+                        section3: { completed: 0, total: 8 },
+                        section4: { completed: 0, total: 4 },
+                        section5: { completed: 0, total: 7 },
+                        section6: { completed: 0, total: 6 }
+                    };
+                    localStorage.setItem('worksheetProgress', JSON.stringify(progressData));
+                }
+            }
+            
+            // Update progress displays
+            function updateProgressDisplays() {
+                if (!isLocalStorageAvailable()) return;
+                
+                // Calculate total progress
+                let totalCompleted = 0;
+                let totalQuestions = 0;
+                
+                for (let section in progressData) {
+                    totalCompleted += progressData[section].completed;
+                    totalQuestions += progressData[section].total;
+                    
+                    // Update section progress
+                    const sectionNumber = section.replace('section', '');
+                    const progressPercent = Math.round((progressData[section].completed / progressData[section].total) * 100);
+                    
+                    // Update sidebar indicators
+                    const progressIndicator = document.getElementById(`progress-${sectionNumber}`);
+                    if (progressIndicator) {
+                        progressIndicator.textContent = `${progressPercent}%`;
+                        if (progressPercent >= 100) {
+                            progressIndicator.classList.add('completed');
+                        }
+                    }
+                    
+                    // Update dashboard circles
+                    const dashboardCircle = document.querySelector(`.progress-circle[data-section="${sectionNumber}"]`);
+                    if (dashboardCircle) {
+                        const progressCircle = dashboardCircle.querySelector('.progress');
+                        const percentageText = dashboardCircle.querySelector('.percentage');
+                        
+                        if (progressCircle && percentageText) {
+                            // SVG circle animation
+                            const radius = 16;
+                            const circumference = 2 * Math.PI * radius;
+                            const offset = circumference - (progressPercent / 100 * circumference);
+                            
+                            progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+                            progressCircle.style.strokeDashoffset = offset;
+                            
+                            percentageText.textContent = `${progressPercent}%`;
+                        }
+                    }
+                }
+                
+                // Update total progress
+                const totalProgressPercent = Math.round((totalCompleted / totalQuestions) * 100);
+                const totalProgressText = document.getElementById('total-progress');
+                const progressBarFill = document.getElementById('progress-bar-fill');
+                
+                if (totalProgressText && progressBarFill) {
+                    totalProgressText.textContent = `${totalProgressPercent}%`;
+                    progressBarFill.style.width = `${totalProgressPercent}%`;
+                }
+            }
+            
+            // Save progress
+            function saveProgress(section, completed) {
+                if (!isLocalStorageAvailable()) return;
+                
+                progressData[section].completed = completed;
+                localStorage.setItem('worksheetProgress', JSON.stringify(progressData));
+                updateProgressDisplays();
+            }
+            
+            // Check answers for a section
+            function checkAnswers(sectionId) {
+                const section = document.getElementById(`section-${sectionId}`);
+                if (!section) return;
+                
+                const inputs = section.querySelectorAll('.answer-input');
+                let correctCount = 0;
+                
+                inputs.forEach(input => {
+                    const userAnswer = input.value.trim().toLowerCase();
+                    const correctAnswer = input.dataset.answer.trim().toLowerCase();
+                    
+                    if (userAnswer === correctAnswer) {
+                        input.classList.add('correct');
+                        input.classList.remove('incorrect');
+                        correctCount++;
+                    } else if (userAnswer !== '') {
+                        input.classList.add('incorrect');
+                        input.classList.remove('correct');
+                    }
+                });
+                
+                // Save progress
+                saveProgress(`section${sectionId}`, correctCount);
+                
+                // Show section answers if all correct
+                if (correctCount === inputs.length) {
+                    alert('Świetnie! Wszystkie odpowiedzi są poprawne!');
+                } else {
+                    alert(`Masz ${correctCount} z ${inputs.length} poprawnych odpowiedzi. Spróbuj ponownie!`);
+                }
+            }
+            
+            // Navigation - show specified section
+            function showSection(sectionId) {
+                // Hide all sections
+                document.querySelectorAll('.section-content').forEach(section => {
+                    section.style.display = 'none';
+                });
+                
+                // Show selected section
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.style.display = 'block';
+                }
+                
+                // Update active menu item
+                document.querySelectorAll('.menu-item').forEach(item => {
+                    if (item.dataset.section === sectionId) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+                
+                // On mobile, close sidebar after selection
+                if (window.innerWidth <= 768) {
+                    document.body.classList.remove('sidebar-open');
+                }
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }
+            
+            // Toggle sidebar on mobile
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        document.body.classList.toggle('sidebar-open');
+                    } else {
+                        document.body.classList.toggle('sidebar-collapsed');
+                        
+                        // Update toggle icon
+                        const icon = this.querySelector('i');
+                        if (icon) {
+                            if (document.body.classList.contains('sidebar-collapsed')) {
+                                icon.className = 'fas fa-chevron-right';
+                            } else {
+                                icon.className = 'fas fa-chevron-left';
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Menu item click handlers
+            document.querySelectorAll('.menu-item a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.closest('.menu-item').dataset.section;
+                    showSection(sectionId);
+                });
+            });
+            
+            // Dashboard item click handlers
+            document.querySelectorAll('.dashboard-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const sectionId = this.dataset.section;
+                    showSection(sectionId);
+                });
+            });
+            
+            // Back to home buttons
+            document.querySelectorAll('[id^="back-to-home-"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    showSection('dashboard');
+                });
+            });
+            
+            // Toggle explanation buttons
+            document.querySelectorAll('[id^="toggle-explanation-"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const sectionId = this.id.split('-').pop();
+                    const explanation = document.getElementById(`explanation-${sectionId}`);
+                    
+                    if (explanation) {
+                        if (explanation.style.display === 'none') {
+                            explanation.style.display = 'block';
+                            this.innerHTML = '<i class="fas fa-eye-slash"></i> Ukryj Wyjaśnienie';
+                        } else {
+                            explanation.style.display = 'none';
+                            this.innerHTML = '<i class="fas fa-lightbulb"></i> Pokaż Wyjaśnienie';
+                        }
+                    }
+                });
+            });
+            
+            // Check answers buttons
+            document.querySelectorAll('[id^="check-answers-"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const sectionId = this.id.split('-').pop();
+                    checkAnswers(sectionId);
+                });
+            });
+            
+            // Toggle answers buttons
+            document.querySelectorAll('[id^="toggle-answers-"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const sectionId = this.id.split('-').pop();
+                    const answersContent = document.getElementById(`answers-content-${sectionId}`);
+                    
+                    if (answersContent) {
+                        if (answersContent.style.display === 'none' || answersContent.style.display === '') {
+                            answersContent.style.display = 'block';
+                            this.textContent = 'Ukryj odpowiedzi';
+                        } else {
+                            answersContent.style.display = 'none';
+                            this.textContent = 'Pokaż odpowiedzi';
+                        }
+                    }
+                });
+            });
+            
+            // Initialize progress displays
+            updateProgressDisplays();
+            
+            // Handle responsive behavior
+            function handleResponsiveLayout() {
+                if (window.innerWidth <= 768) {
+                    document.body.classList.remove('sidebar-collapsed');
+                    document.body.classList.remove('sidebar-open');
+                    
+                    const sidebarToggleIcon = document.querySelector('#sidebar-toggle i');
+                    if (sidebarToggleIcon) {
+                        sidebarToggleIcon.className = 'fas fa-bars';
+                    }
+                } else {
+                    const sidebarToggleIcon = document.querySelector('#sidebar-toggle i');
+                    if (sidebarToggleIcon && document.body.classList.contains('sidebar-collapsed')) {
+                        sidebarToggleIcon.className = 'fas fa-chevron-right';
+                    } else if (sidebarToggleIcon) {
+                        sidebarToggleIcon.className = 'fas fa-chevron-left';
+                    }
+                }
+            }
+            
+            // Initial call for responsive layout
+            handleResponsiveLayout();
+            
+            // Listen for window resize
+            window.addEventListener('resize', handleResponsiveLayout);
+        });
+    </script>
+</body>
+</html>
