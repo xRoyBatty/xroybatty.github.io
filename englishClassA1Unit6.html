@@ -860,7 +860,7 @@
          </div>
     </div>
 
-    <!-- Hangman Section (NEW) -->
+    <!-- Hangman Section (NEW - Poprawiony HTML) -->
     <div class="section-container hangman-section" id="hangman-section">
         <div class="section-header">
             <button class="back-button" data-section="hangman-section"><i class="fas fa-arrow-left"></i></button>
@@ -872,17 +872,19 @@
                  <div class="hangman-setup-section" id="hangmanSetupSection">
                      <h3>Wybierz kategorię słówek:</h3>
                      <div class="hangman-category-buttons" id="hangmanCategoryButtons">
-                         <!-- Buttons will be added by JS -->
+                         <!-- Przyciski kategorii zostaną dodane przez JavaScript -->
                      </div>
                      <h3 style="margin-top: 20px;">Wybierz liczbę prób:</h3>
                      <div class="hangman-attempts-selector" id="hangmanAttemptsSelector">
+                         <!-- Przyciski prób - upewnij się, że NIE mają onclick -->
                          <button data-attempts="8">8</button>
                          <button data-attempts="7">7</button>
                          <button data-attempts="6" class="active">6</button>
                          <button data-attempts="5">5</button>
                          <button data-attempts="4">4</button>
                      </div>
-                     <button class="check-button" onclick="hangmanStartGame()">Start Wisielec!</button>
+                     <!-- Usunięto onclick, dodano id -->
+                     <button class="check-button" id="hangmanStartButton">Start Wisielec!</button>
                  </div>
 
                  <!-- Game Screen -->
@@ -895,8 +897,10 @@
                      <div class="hangman-keyboard" id="hangmanKeyboard"></div>
                      <div class="hangman-message" id="hangmanMessage"></div>
                      <div class="hangman-game-controls" style="margin-top: 25px;">
-                         <button class="check-button" onclick="hangmanNextWord()">Następne słowo</button>
-                         <button class="check-button" onclick="hangmanShowSetup()">Zmień kategorię</button>
+                         <!-- Usunięto onclick -->
+                         <button class="check-button">Następne słowo</button>
+                         <!-- Usunięto onclick -->
+                         <button class="check-button">Zmień kategorię</button>
                      </div>
                  </div>
              </div>
