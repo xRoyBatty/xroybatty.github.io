@@ -913,503 +913,539 @@
             <button class="continue-button" id="continue-button">Kontynuuj naukę</button>
         </div>
     </div>
-    
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // -------- CORE APP LOGIC (Progress, Navigation, Rewards) --------
-            
-            const storageKey = 'kidsEnglishProgressV3'; // Increment version if data structure changes significantly
-            const defaultProgress = {
-                time: { completed: 0, total: 7 },
-                days: { completed: 0, total: 8 },
-                clock: { completed: 0, total: 9 },
-                numbers: { completed: 0, total: 10 }, // 5 MC + 5 fill-in
-                presentSimple: { completed: 0, total: 11 },
-                adverbs: { completed: 0, total: 9 },
-                vocabulary: { completed: 0, total: 10 },
-                 // Hangman progress: completed = categories started/won first word in, total = number of categories
-                hangman: { completed: 0, total: 6 } // Time, Days, Clock, Numbers, Adverbs, Vocabulary
-            };
-            let progressData = {};
+    document.addEventListener('DOMContentLoaded', function() {
+        // -------- CORE APP LOGIC (Progress, Navigation, Rewards) --------
+        
+        const storageKey = 'kidsEnglishProgressV3'; // Klucz localStorage
+        const defaultProgress = {
+            time: { completed: 0, total: 7 }, // 4 MC + 3 fill-in fields
+            days: { completed: 0, total: 8 }, // 5 MC + 3 fill-in
+            clock: { completed: 0, total: 9 }, // 5 MC + 4 fill-in
+            numbers: { completed: 0, total: 10 }, // 5 MC + 5 fill-in
+            presentSimple: { completed: 0, total: 11 }, // 6 MC + 5 fill-in
+            adverbs: { completed: 0, total: 9 }, // 5 MC + 4 fill-in
+            vocabulary: { completed: 0, total: 10 }, // 6 MC + 4 fill-in
+            hangman: { completed: 0, total: 6 } // 6 kategorii
+        };
+        let progressData = {};
 
-            function isLocalStorageAvailable() { /* ... (bez zmian) ... */ try { localStorage.setItem('test','test');localStorage.removeItem('test'); return true; } catch(e) { return false; }}
+        // --- LocalStorage Handling ---
+        function isLocalStorageAvailable() {
+            try { localStorage.setItem('test', 'test'); localStorage.removeItem('test'); return true; } catch(e) { return false; }
+        }
 
-            function loadProgress() {
-                if (!isLocalStorageAvailable()) {
-                    progressData = JSON.parse(JSON.stringify(defaultProgress)); // Use deep copy of default if no storage
-                    console.warn("LocalStorage not available. Progress will not be saved.");
-                    return;
-                }
-                const savedData = localStorage.getItem(storageKey);
-                if (savedData) {
-                    try {
-                         progressData = JSON.parse(savedData);
-                         // Ensure all keys from defaultProgress exist, add if missing, update total
-                         for (const key in defaultProgress) {
-                             if (!progressData[key] || typeof progressData[key].completed !== 'number' || typeof progressData[key].total !== 'number') {
-                                 progressData[key] = { ...defaultProgress[key] }; // Copy default if missing/invalid
-                             } else {
-                                 progressData[key].total = defaultProgress[key].total; // Always update total from default
-                             }
-                         }
-                         // Remove keys no longer in defaultProgress (optional cleanup)
-                          for (const key in progressData) {
-                              if (!defaultProgress[key]) {
-                                  delete progressData[key];
-                              }
-                          }
-                    }  catch (e) {
-                         console.error("Error parsing saved progress, resetting.", e);
-                         progressData = JSON.parse(JSON.stringify(defaultProgress));
-                         localStorage.setItem(storageKey, JSON.stringify(progressData)); // Save the reset state
+        function loadProgress() {
+            if (!isLocalStorageAvailable()) {
+                progressData = JSON.parse(JSON.stringify(defaultProgress));
+                console.warn("LocalStorage not available. Progress will not be saved.");
+                return;
+            }
+            const savedData = localStorage.getItem(storageKey);
+            if (savedData) {
+                try {
+                    progressData = JSON.parse(savedData);
+                    // Sprawdź i uzupełnij brakujące lub zaktualizuj 'total'
+                    for (const key in defaultProgress) {
+                        if (!progressData[key] || typeof progressData[key].completed !== 'number' || typeof progressData[key].total !== 'number') {
+                            progressData[key] = { ...defaultProgress[key] };
+                        } else {
+                            progressData[key].total = defaultProgress[key].total; // Zawsze aktualizuj total
+                        }
                     }
-                 } else {
-                     progressData = JSON.parse(JSON.stringify(defaultProgress));
-                     localStorage.setItem(storageKey, JSON.stringify(progressData));
-                 }
-            }
-
-
-            function updateProgressDisplays() { /* ... (bez zmian - iterates through progressData) ... */
-                if (!isLocalStorageAvailable()) return;
-                for (const sectionKey in progressData) {
-                    const sectionData = progressData[sectionKey];
-                    const progressBar = document.getElementById(`${sectionKey}-progress`);
-                    if (progressBar && sectionData.total > 0) {
-                         const progressPercent = Math.round((sectionData.completed / sectionData.total) * 100);
-                         progressBar.style.width = `${progressPercent}%`;
-                    } else if (progressBar) {
-                         progressBar.style.width = '0%';
+                     // Usuń stare klucze (opcjonalnie)
+                    for (const key in progressData) {
+                        if (!defaultProgress[key]) { delete progressData[key]; }
                     }
+                } catch (e) {
+                    console.error("Error parsing saved progress, resetting.", e);
+                    progressData = JSON.parse(JSON.stringify(defaultProgress));
+                    localStorage.setItem(storageKey, JSON.stringify(progressData));
+                }
+            } else {
+                progressData = JSON.parse(JSON.stringify(defaultProgress));
+                localStorage.setItem(storageKey, JSON.stringify(progressData));
+            }
+        }
+
+        // --- Update Progress Displays ---
+        function updateProgressDisplays() {
+            if (!isLocalStorageAvailable()) return;
+            for (const sectionKey in progressData) {
+                const sectionData = progressData[sectionKey];
+                const progressBar = document.getElementById(`${sectionKey}-progress`);
+                if (progressBar && sectionData.total > 0) {
+                    const progressPercent = Math.round((sectionData.completed / sectionData.total) * 100);
+                    progressBar.style.width = `${progressPercent}%`;
+                } else if (progressBar) {
+                    progressBar.style.width = '0%';
                 }
             }
-            
-            function saveProgress(sectionKey, correctAnswersCount) { /* ... (slightly modified for clarity) ... */
-                 if (!isLocalStorageAvailable() || !progressData[sectionKey]) return;
-                 const sectionData = progressData[sectionKey];
-                 const maxCompleted = sectionData.total;
-                 // Update completed count - ensure it doesn't go over total
-                 progressData[sectionKey].completed = Math.max(0, Math.min(correctAnswersCount, maxCompleted));
+        }
+        
+        // --- Save Progress ---
+        function saveProgress(sectionKey, correctAnswersCount) {
+            if (!isLocalStorageAvailable() || !progressData[sectionKey]) return;
+            const sectionData = progressData[sectionKey];
+            const maxCompleted = sectionData.total;
+            const currentCompleted = Math.max(0, Math.min(correctAnswersCount, maxCompleted));
 
-                 localStorage.setItem(storageKey, JSON.stringify(progressData));
-                 updateProgressDisplays();
+            // Aktualizuj tylko jeśli nowy wynik jest lepszy lub równy (lub jeśli to hangman - tam liczymy kategorie)
+            if (sectionKey === 'hangman' || currentCompleted >= sectionData.completed) {
+                progressData[sectionKey].completed = currentCompleted;
+                localStorage.setItem(storageKey, JSON.stringify(progressData));
+                updateProgressDisplays();
 
-                 if (correctAnswersCount >= maxCompleted) {
-                    // Only show reward if it's not the hangman section (handled separately)
-                     if (sectionKey !== 'hangman') {
-                         showReward();
-                     }
-                 }
+                // Pokaż nagrodę tylko dla standardowych sekcji po ich ukończeniu
+                if (sectionKey !== 'hangman' && correctAnswersCount >= maxCompleted) {
+                    showReward();
+                }
             }
-            
-            function showReward() { /* ... (bez zmian) ... */ const rewardAnimation = document.getElementById('reward-animation'); if(rewardAnimation) rewardAnimation.classList.add('show'); }
-            const continueButton = document.getElementById('continue-button');
-             if (continueButton) {
-                 continueButton.addEventListener('click', function() {
-                     const rewardAnimation = document.getElementById('reward-animation');
-                     if(rewardAnimation) rewardAnimation.classList.remove('show');
-                 });
-             }
-
-              // --- Navigation ---
-              function showSection(sectionId) {
-                  hideAllSections();
-                   const section = document.getElementById(sectionId);
-                   if (section) {
-                       section.style.display = 'block';
-                       // If entering Hangman, maybe initialize setup screen
-                       if(sectionId === 'hangman-section') {
-                           hangmanInitializeSetup(); // Initialize categories etc.
-                       }
-                   } else {
-                        // Fallback to dashboard if section not found
-                        const dashboard = document.querySelector('.dashboard');
-                        if (dashboard) dashboard.style.display = 'grid';
-                   }
-                  window.scrollTo(0, 0);
-              }
-
-              function hideAllSections() {
-                  document.querySelectorAll('.section-container').forEach(container => {
-                      container.style.display = 'none';
-                  });
-                  // Also hide dashboard if showing a section
-                  const dashboard = document.querySelector('.dashboard');
-                   if (dashboard) dashboard.style.display = 'none';
-              }
-             document.querySelectorAll('.module-card').forEach(card => { card.addEventListener('click', function() { showSection(this.dataset.section); }); });
-             document.querySelectorAll('.back-button').forEach(button => {
-                 button.addEventListener('click', function() {
-                    hideAllSections();
-                    const dashboard = document.querySelector('.dashboard');
-                    if (dashboard) dashboard.style.display = 'grid'; // Show dashboard when going back
-                     // If coming back from hangman game, hide game section
-                     if (this.dataset.section === 'hangman-section') {
-                         document.getElementById('hangmanGameSection').classList.add('hidden');
-                         document.getElementById('hangmanSetupSection').classList.remove('hidden');
-                     }
-
-                 });
+        }
+        
+        // --- Reward Animation ---
+        function showReward() {
+            const rewardAnimation = document.getElementById('reward-animation');
+            if(rewardAnimation) rewardAnimation.classList.add('show');
+        }
+        const continueButton = document.getElementById('continue-button');
+        if (continueButton) {
+             continueButton.addEventListener('click', function() {
+                 const rewardAnimation = document.getElementById('reward-animation');
+                 if(rewardAnimation) rewardAnimation.classList.remove('show');
              });
-            
-             // --- Option Selection Handler ---
-             document.querySelectorAll('.options-grid').forEach(grid => { /* ... (bez zmian) ... */
-                 const options = grid.querySelectorAll('.option-item');
-                 options.forEach(option => {
-                     option.addEventListener('click', function() {
-                         options.forEach(opt => opt.classList.remove('selected'));
-                         this.classList.add('selected');
-                     });
-                 });
-             });
+        }
 
-             // --- Check Answers Function (for standard sections)---
-             function checkSectionAnswers(sectionId) {
-                 const sectionElement = document.getElementById(sectionId);
-                 if (!sectionElement) return;
-
-                 let correctCount = 0;
-                 let totalCheckable = 0;
-
-                 // 1. Check Multiple Choice Options
-                 const optionsGrids = sectionElement.querySelectorAll('.options-grid');
-                 totalCheckable += optionsGrids.length;
-                 optionsGrids.forEach(grid => { /* ... (logic bez zmian) ... */
-                      const selectedOption = grid.querySelector('.option-item.selected');
-                      const correctAnswer = grid.dataset.correct; // Use dataset.correct directly
-                      grid.querySelectorAll('.option-item').forEach(opt => opt.classList.remove('correct', 'incorrect'));
-                      if (selectedOption) {
-                          if (selectedOption.textContent.trim() === correctAnswer.trim()) { // Exact match needed now
-                              selectedOption.classList.add('correct');
-                              correctCount++;
-                          } else {
-                              selectedOption.classList.add('incorrect');
-                              grid.querySelectorAll('.option-item').forEach(opt => {
-                                 if (opt.textContent.trim() === correctAnswer.trim()) { opt.classList.add('correct'); }
-                              });
-                          }
-                      }
-                 });
-
-                 // 2. Check Fill-in-the-Blank Inputs
-                 const fillBlankInputs = sectionElement.querySelectorAll('.fill-blank');
-                 totalCheckable += fillBlankInputs.length;
-                 fillBlankInputs.forEach(input => { /* ... (logic bez zmian) ... */
-                      const userAnswer = input.value.trim().toLowerCase();
-                      const correctAnswer = input.dataset.answer.trim().toLowerCase();
-                      input.classList.remove('correct', 'incorrect');
-                      if (userAnswer === correctAnswer) {
-                          input.classList.add('correct');
-                          correctCount++;
-                      } else if (userAnswer !== '') {
-                          input.classList.add('incorrect');
-                      }
-                 });
-
-                 const sectionKey = sectionId.replace('-section', '');
-                 saveProgress(sectionKey, correctCount); // Save based on correct answers
-                 
-                 // Provide feedback
-                 alert(`Twój wynik w tej sekcji: ${correctCount}/${totalCheckable} poprawnych odpowiedzi!`);
-
-                 // Recalculate total in case HTML changed
-                 if (isLocalStorageAvailable() && progressData[sectionKey] && progressData[sectionKey].total !== totalCheckable) {
-                     console.warn(`Updating total questions for section ${sectionKey} from ${progressData[sectionKey].total} to ${totalCheckable}`);
-                     progressData[sectionKey].total = totalCheckable;
-                     localStorage.setItem(storageKey, JSON.stringify(progressData));
-                 }
-             }
-
-             // Attach Check Button Listeners (for standard sections)
-             document.querySelectorAll('.check-button').forEach(button => {
-                 const sectionIdToCheck = button.dataset.check;
-                 if (sectionIdToCheck !== 'hangman-section') { // Exclude hangman check button
-                    button.addEventListener('click', function() {
-                         checkSectionAnswers(sectionIdToCheck);
-                    });
-                 }
-              });
-
-            // -------- HANGMAN GAME LOGIC --------
-
-            // 1. Word Data Preparation
-            const hangmanWordsByCategory = {
-                'Pory Dnia': [
-                    { word: "morning", hint: "Rano" }, { word: "afternoon", hint: "Popołudnie" },
-                    { word: "evening", hint: "Wieczór" }, { word: "night", hint: "Noc" }
-                ],
-                'Dni Tygodnia': [
-                    { word: "monday", hint: "Poniedziałek" }, { word: "tuesday", hint: "Wtorek" },
-                    { word: "wednesday", hint: "Środa" }, { word: "thursday", hint: "Czwartek" },
-                    { word: "friday", hint: "Piątek" }, { word: "saturday", hint: "Sobota" },
-                    { word: "sunday", hint: "Niedziela" }
-                ],
-                'Godziny': [
-                    { word: "o'clock", hint: "Pełna godzina" }, { word: "half past", hint: "Wpół do" },
-                    { word: "quarter past", hint: "Kwadrans po" }, { word: "quarter to", hint: "Za kwadrans" }
-                ],
-                'Liczby': [
-                    { word: "eleven", hint: "11" }, { word: "twelve", hint: "12" }, { word: "thirteen", hint: "13" },
-                    { word: "fourteen", hint: "14" }, { word: "fifteen", hint: "15" }, { word: "twenty", hint: "20" },
-                    { word: "thirty", hint: "30" }, { word: "forty", hint: "40" }, { word: "fifty", hint: "50" },
-                    { word: "hundred", hint: "100" }
-                ],
-                 'Częstotliwość': [
-                    { word: "always", hint: "Zawsze" }, { word: "usually", hint: "Zazwyczaj" },
-                    { word: "often", hint: "Często" }, { word: "sometimes", hint: "Czasami" },
-                    { word: "never", hint: "Nigdy" }
-                 ],
-                'Czynności': [
-                    { word: "get up", hint: "Wstawać" }, { word: "go to bed", hint: "Iść spać" },
-                    { word: "homework", hint: "Praca domowa" }, { word: "breakfast", hint: "Śniadanie" },
-                    { word: "lunch", hint: "Drugie śniadanie" }, { word: "dinner", hint: "Obiad/Kolacja" },
-                    { word: "shower", hint: "Prysznic" }, { word: "tidy room", hint: "Sprzątać pokój" },
-                    { word: "watch tv", hint: "Oglądać TV" }, { word: "listen music", hint: "Słuchać muzyki" } // Removed "to" for simplicity
-                 ]
-            };
-
-            // 2. Hangman Variables
-            let hangmanCanvas, hangmanCtx;
-            let hangmanCurrentCategory = '';
-            let hangmanCurrentWords = [];
-            let hangmanCurrentWord = null;
-            let hangmanGuessedLetters = [];
-            let hangmanRemainingAttempts = 6;
-            let hangmanMaxAttempts = 6;
-            let hangmanScore = 0;
-            let hangmanWordIndex = 0;
-             let hangmanCompletedCategories = new Set(progressData.hangman ? progressData.hangman.completedCategories || [] : []); // Load completed categories
-
-             // 3. Hangman Element References
-            const hangmanSetupSection = document.getElementById('hangmanSetupSection');
-            const hangmanGameSection = document.getElementById('hangmanGameSection');
-            const hangmanCategoryButtonsContainer = document.getElementById('hangmanCategoryButtons');
-            const hangmanAttemptsSelector = document.getElementById('hangmanAttemptsSelector');
-            const hangmanScoreDisplay = document.getElementById('hangmanScore');
-            const hangmanAttemptsDisplay = document.getElementById('hangmanAttempts');
-            const hangmanHintDisplay = document.getElementById('hangmanHint');
-            const hangmanWordDisplay = document.getElementById('hangmanWordDisplay');
-            const hangmanKeyboardContainer = document.getElementById('hangmanKeyboard');
-            const hangmanMessageDisplay = document.getElementById('hangmanMessage');
-
-            // 4. Hangman Functions
-
-            function hangmanInitializeSetup() {
-                // Populate category buttons
-                hangmanCategoryButtonsContainer.innerHTML = ''; // Clear previous buttons
-                for (const category in hangmanWordsByCategory) {
-                    const button = document.createElement('button');
-                    button.textContent = category;
-                    button.dataset.category = category;
-                    button.onclick = () => selectHangmanCategory(category, button);
-                    // Highlight if category started/completed
-                     if (hangmanCompletedCategories.has(category)) {
-                         button.style.backgroundColor = 'var(--correct-color)'; // Indicate completed
-                         button.title = "Kategoria ukończona!";
-                      }
-                    hangmanCategoryButtonsContainer.appendChild(button);
+        // --- Navigation ---
+        function showSection(sectionId) {
+            hideAllSections();
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.style.display = 'block';
+                if(sectionId === 'hangman-section') {
+                    hangmanInitializeSetup(); // Zainicjuj przyciski kategorii Wisielca
                 }
-                 // Set initial attempts highlight
-                 document.querySelectorAll('#hangmanAttemptsSelector button').forEach(btn => {
-                      btn.classList.toggle('active', parseInt(btn.dataset.attempts) === hangmanMaxAttempts);
-                 });
+            } else {
+                const dashboard = document.querySelector('.dashboard');
+                if (dashboard) dashboard.style.display = 'grid';
             }
+            window.scrollTo(0, 0);
+        }
 
-            function selectHangmanCategory(category, buttonElement) {
-                 hangmanCurrentCategory = category;
-                 // Optional: Highlight selected button visually
-                 document.querySelectorAll('#hangmanCategoryButtons button').forEach(btn => btn.classList.remove('active'));
-                 if(buttonElement) buttonElement.classList.add('active');
-                 console.log("Selected category:", category); // For debugging
-            }
-
-             function selectHangmanAttempts(attempts, buttonElement) {
-                 hangmanMaxAttempts = attempts;
-                 hangmanRemainingAttempts = attempts; // Reset attempts when changing max
-                 document.querySelectorAll('#hangmanAttemptsSelector button').forEach(btn => btn.classList.remove('active'));
-                 if(buttonElement) buttonElement.classList.add('active');
-                 if(hangmanAttemptsDisplay) hangmanAttemptsDisplay.textContent = `Pozostałe próby: ${hangmanRemainingAttempts}`; // Update display immediately
-            }
-             // Attach listeners to attempts buttons AFTER they are created
-             document.querySelectorAll('#hangmanAttemptsSelector button').forEach(button => {
-                 button.addEventListener('click', () => selectHangmanAttempts(parseInt(button.dataset.attempts), button));
-             });
-
-
-            function hangmanStartGame() {
-                if (!hangmanCurrentCategory) {
-                    alert("Proszę wybrać kategorię słówek!");
-                    return;
+        function hideAllSections() {
+            document.querySelectorAll('.section-container').forEach(container => {
+                container.style.display = 'none';
+            });
+            const dashboard = document.querySelector('.dashboard');
+            if (dashboard) dashboard.style.display = 'none';
+        }
+        document.querySelectorAll('.module-card').forEach(card => { card.addEventListener('click', function() { showSection(this.dataset.section); }); });
+        document.querySelectorAll('.back-button').forEach(button => {
+            button.addEventListener('click', function() {
+                hideAllSections();
+                const dashboard = document.querySelector('.dashboard');
+                if (dashboard) dashboard.style.display = 'grid';
+                if (this.dataset.section === 'hangman-section') { // Dodatkowe czyszczenie dla Wisielca
+                    document.getElementById('hangmanGameSection').classList.add('hidden');
+                    document.getElementById('hangmanSetupSection').classList.remove('hidden');
                 }
-                hangmanScore = 0; // Reset score for the new session in this category
-                hangmanUpdateScoreDisplay();
-                hangmanCurrentWords = shuffleArray([...hangmanWordsByCategory[hangmanCurrentCategory]]);
-                hangmanWordIndex = 0;
-
-                hangmanSetupSection.classList.add('hidden');
-                hangmanGameSection.classList.remove('hidden');
-                hangmanLoadNextWord();
-            }
-
-            function hangmanLoadNextWord() {
-                if (hangmanWordIndex >= hangmanCurrentWords.length) {
-                    hangmanMessageDisplay.textContent = `Gratulacje! Ukończyłeś kategorię: ${hangmanCurrentCategory}!`;
-                    hangmanMarkCategoryComplete(hangmanCurrentCategory); // Mark and save completion
-                    disableHangmanKeyboard();
-                    return;
-                }
-
-                hangmanCurrentWord = hangmanCurrentWords[hangmanWordIndex];
-                hangmanGuessedLetters = [];
-                hangmanRemainingAttempts = hangmanMaxAttempts; // Reset for new word
-                hangmanUpdateAttemptsDisplay();
-                hangmanMessageDisplay.textContent = '';
-                hangmanHintDisplay.textContent = `Hint: ${hangmanCurrentWord.hint}`;
-                hangmanUpdateWordDisplay();
-                createHangmanKeyboard();
-                hangmanDraw(0); // Reset hangman drawing
-            }
-
-            function hangmanUpdateWordDisplay() {
-                 if (!hangmanCurrentWord) return;
-                 const display = hangmanCurrentWord.word.toUpperCase().split('').map(letter => {
-                     if (letter === ' ') return '\u00A0\u00A0'; // Represent space clearly
-                     return hangmanGuessedLetters.includes(letter) ? letter : '_';
-                 }).join(' ');
-                 hangmanWordDisplay.textContent = display;
-            }
-
-            function createHangmanKeyboard() {
-                 hangmanKeyboardContainer.innerHTML = '';
-                 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(letter => {
-                     const button = document.createElement('button');
-                     button.textContent = letter;
-                     button.dataset.letter = letter;
-                     button.onclick = () => hangmanGuessLetter(letter);
-                      // Keep disabled if letter already guessed for current word
-                      button.disabled = hangmanGuessedLetters.includes(letter);
-                     hangmanKeyboardContainer.appendChild(button);
-                 });
-            }
-
-            function hangmanGuessLetter(letter) {
-                if (hangmanGuessedLetters.includes(letter) || !hangmanCurrentWord) return;
-
-                hangmanGuessedLetters.push(letter);
-                const button = hangmanKeyboardContainer.querySelector(`button[data-letter="${letter}"]`);
-                if (button) button.disabled = true;
-
-                const wordUpper = hangmanCurrentWord.word.toUpperCase();
-                if (!wordUpper.includes(letter)) {
-                    hangmanRemainingAttempts--;
-                    hangmanUpdateAttemptsDisplay();
-                    hangmanDraw(hangmanMaxAttempts - hangmanRemainingAttempts);
-
-                    if (hangmanRemainingAttempts <= 0) {
-                        hangmanMessageDisplay.textContent = `Koniec prób! Słowo to: ${hangmanCurrentWord.word.toUpperCase()}`;
-                        disableHangmanKeyboard();
-                        // Optionally reveal the word fully
-                        hangmanWordDisplay.textContent = wordUpper.split('').join(' ');
-                        // Don't auto-advance, let user click "Next Word"
-                    }
-                } else {
-                    hangmanUpdateWordDisplay();
-                    checkHangmanWordComplete();
-                }
-            }
-
-            function checkHangmanWordComplete() {
-                 if (!hangmanCurrentWord) return;
-                 const wordUpper = hangmanCurrentWord.word.toUpperCase();
-                 const isComplete = wordUpper.split('').every(letter => letter === ' ' || hangmanGuessedLetters.includes(letter));
-
-                 if (isComplete) {
-                     hangmanScore++;
-                     hangmanUpdateScoreDisplay();
-                     hangmanMessageDisplay.textContent = 'Dobrze! Słowo odgadnięte!';
-                     disableHangmanKeyboard();
-                     // Don't auto-advance immediately. User clicks "Next Word".
-                      // Mark category as started/completed IF it wasn't already
-                       if (!hangmanCompletedCategories.has(hangmanCurrentCategory)) {
-                           hangmanMarkCategoryComplete(hangmanCurrentCategory);
-                       }
-                 }
-            }
-
-            function hangmanMarkCategoryComplete(category) {
-                 if (!isLocalStorageAvailable()) return;
-                 hangmanCompletedCategories.add(category);
-                 // Update the main progressData for hangman
-                  progressData.hangman.completed = hangmanCompletedCategories.size;
-                  // Save the overall progress data, which now includes updated hangman state
-                  localStorage.setItem(storageKey, JSON.stringify(progressData));
-                  // Update the dashboard progress bar
-                 updateProgressDisplays();
-                 // Update category button appearance in setup too
-                 const catButton = hangmanCategoryButtonsContainer.querySelector(`button[data-category="${category}"]`);
-                 if(catButton) {
-                      catButton.style.backgroundColor = 'var(--correct-color)';
-                      catButton.title = "Kategoria ukończona!";
-                 }
-            }
-
-            function hangmanNextWord() {
-                hangmanWordIndex++;
-                hangmanLoadNextWord();
-            }
-
-
-            function hangmanUpdateScoreDisplay() { hangmanScoreDisplay.textContent = `Wynik (poprawne słowa): ${hangmanScore}`; }
-            function hangmanUpdateAttemptsDisplay() { hangmanAttemptsDisplay.textContent = `Pozostałe próby: ${hangmanRemainingAttempts}`; }
-            function disableHangmanKeyboard() { hangmanKeyboardContainer.querySelectorAll('button').forEach(btn => btn.disabled = true); }
-            function hangmanShowSetup() { hangmanGameSection.classList.add('hidden'); hangmanSetupSection.classList.remove('hidden'); }
-
-            // Hangman Drawing
-            function hangmanDraw(stage) {
-                 if(!hangmanCtx) return; // Ensure context exists
-                hangmanCtx.clearRect(0, 0, hangmanCanvas.width, hangmanCanvas.height);
-                hangmanCtx.strokeStyle = '#333'; // Darker color
-                hangmanCtx.lineWidth = 4; // Thicker lines
-                hangmanCtx.lineCap = 'round'; // Rounded ends
-
-                // Base
-                if (stage >= 1) { hangmanCtx.beginPath(); hangmanCtx.moveTo(30, 280); hangmanCtx.lineTo(220, 280); hangmanCtx.stroke(); }
-                // Pole
-                if (stage >= 2) { hangmanCtx.beginPath(); hangmanCtx.moveTo(60, 280); hangmanCtx.lineTo(60, 40); hangmanCtx.lineTo(150, 40); hangmanCtx.stroke(); }
-                // Rope
-                if (stage >= 3) { hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 40); hangmanCtx.lineTo(150, 80); hangmanCtx.stroke(); }
-                // Head
-                if (stage >= 4) { hangmanCtx.beginPath(); hangmanCtx.arc(150, 100, 20, 0, Math.PI * 2); hangmanCtx.stroke(); }
-                // Body
-                if (stage >= 5) { hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 120); hangmanCtx.lineTo(150, 190); hangmanCtx.stroke(); }
-                // Left Arm
-                if (stage >= 6) { hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 140); hangmanCtx.lineTo(110, 160); hangmanCtx.stroke(); }
-                // Right Arm
-                if (stage >= 7) { hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 140); hangmanCtx.lineTo(190, 160); hangmanCtx.stroke(); }
-                 // Left Leg
-                 if (stage >= 8 && hangmanMaxAttempts >= 8) { hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 190); hangmanCtx.lineTo(120, 240); hangmanCtx.stroke(); }
-                 // Right Leg (Only draw if max attempts allow for 8 distinct stages or more)
-                 if (stage >= (hangmanMaxAttempts >= 8 ? 8 : 7) && hangmanRemainingAttempts <= 0) { // Draw last leg on final failure if few attempts
-                    hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 190); hangmanCtx.lineTo(180, 240); hangmanCtx.stroke();
-                 } else if (stage >= 8 && hangmanMaxAttempts >= 8) { // Standard draw for 8+ attempts
-                     hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 190); hangmanCtx.lineTo(180, 240); hangmanCtx.stroke();
-                 }
-            }
-
-
-            // --- INITIALIZATION ---
-            loadProgress(); // Load progress first
-            updateProgressDisplays(); // Update dashboard bars
-            // Get Canvas context for Hangman AFTER DOM is loaded
-             hangmanCanvas = document.getElementById('hangmanCanvas');
-             if(hangmanCanvas) {
-                 hangmanCtx = hangmanCanvas.getContext('2d');
-             } else {
-                  console.error("Hangman canvas not found!");
-             }
-            hangmanInitializeSetup(); // Prepare category buttons etc.
-
+            });
         });
-    </script>
+       
+        // --- Option Selection Handler ---
+        document.querySelectorAll('.options-grid').forEach(grid => {
+            const options = grid.querySelectorAll('.option-item');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Odznacz inne opcje w tej samej grupie
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    // Zaznacz klikniętą opcję
+                    this.classList.add('selected');
+                });
+            });
+        });
+
+        // --- Check Answers Function (for standard sections)---
+        function checkSectionAnswers(sectionId) {
+            const sectionElement = document.getElementById(sectionId);
+            if (!sectionElement) return;
+
+            let correctCount = 0;
+            let totalCheckable = 0;
+
+            // 1. Sprawdź opcje Multiple Choice
+            const optionsGrids = sectionElement.querySelectorAll('.options-grid');
+            totalCheckable += optionsGrids.length;
+            optionsGrids.forEach(grid => {
+                const selectedOption = grid.querySelector('.option-item.selected');
+                const correctAnswer = grid.dataset.correct; // Odpowiedź z data-correct
+                grid.querySelectorAll('.option-item').forEach(opt => opt.classList.remove('correct', 'incorrect'));
+
+                if (selectedOption) {
+                    // Używamy dokładnego porównania (po usunięciu ew. spacji na końcach)
+                    if (selectedOption.textContent.trim() === correctAnswer.trim()) {
+                        selectedOption.classList.add('correct');
+                        correctCount++;
+                    } else {
+                        selectedOption.classList.add('incorrect');
+                        // Podświetl poprawną odpowiedź dla informacji zwrotnej
+                        grid.querySelectorAll('.option-item').forEach(opt => {
+                            if (opt.textContent.trim() === correctAnswer.trim()) {
+                                opt.classList.add('correct');
+                            }
+                        });
+                    }
+                } // Jeśli nic nie zaznaczono, jest źle, nie dodajemy punktu
+            });
+
+            // 2. Sprawdź pola do uzupełnienia
+            const fillBlankInputs = sectionElement.querySelectorAll('.fill-blank');
+            totalCheckable += fillBlankInputs.length;
+            fillBlankInputs.forEach(input => {
+                const userAnswer = input.value.trim().toLowerCase(); // Porównujemy małymi literami
+                const correctAnswer = input.dataset.answer.trim().toLowerCase();
+                input.classList.remove('correct', 'incorrect');
+                if (userAnswer && userAnswer === correctAnswer) { // Sprawdzamy czy coś wpisano
+                    input.classList.add('correct');
+                    correctCount++;
+                } else if (userAnswer !== '') { // Oznacz błąd tylko jeśli coś wpisano
+                    input.classList.add('incorrect');
+                }
+            });
+
+            const sectionKey = sectionId.replace('-section', '');
+            saveProgress(sectionKey, correctCount); // Zapisz postęp
+
+            // Pokaż wynik
+            alert(`Twój wynik w tej sekcji: ${correctCount}/${totalCheckable} poprawnych odpowiedzi!`);
+
+            // Zaktualizuj total w localStorage jeśli się różni (na wypadek zmian w HTML)
+            if (isLocalStorageAvailable() && progressData[sectionKey] && progressData[sectionKey].total !== totalCheckable) {
+                console.warn(`Aktualizacja liczby pytań dla sekcji ${sectionKey} z ${progressData[sectionKey].total} do ${totalCheckable}`);
+                progressData[sectionKey].total = totalCheckable;
+                localStorage.setItem(storageKey, JSON.stringify(progressData));
+            }
+        }
+
+        // --- Attach Check Button Listeners (for standard sections)---
+        document.querySelectorAll('.check-button').forEach(button => {
+            const sectionIdToCheck = button.dataset.check;
+            if (sectionIdToCheck) { // Sprawdź czy atrybut data-check istnieje
+                button.addEventListener('click', function() {
+                    checkSectionAnswers(sectionIdToCheck);
+                });
+            }
+        });
+
+        // -------- HANGMAN GAME LOGIC --------
+
+        // 1. Przygotowanie Danych Słów
+        const hangmanWordsByCategory = {
+            'Pory Dnia': [ { word: "morning", hint: "Rano" }, { word: "afternoon", hint: "Popołudnie" }, { word: "evening", hint: "Wieczór" }, { word: "night", hint: "Noc" } ],
+            'Dni Tygodnia': [ { word: "monday", hint: "Poniedziałek" }, { word: "tuesday", hint: "Wtorek" },{ word: "wednesday", hint: "Środa" }, { word: "thursday", hint: "Czwartek" }, { word: "friday", hint: "Piątek" }, { word: "saturday", hint: "Sobota" }, { word: "sunday", hint: "Niedziela" } ],
+            'Godziny': [ { word: "o'clock", hint: "Pełna godzina" }, { word: "half past", hint: "Wpół do" }, { word: "quarter past", hint: "Kwadrans po" }, { word: "quarter to", hint: "Za kwadrans" } ],
+            'Liczby': [ { word: "eleven", hint: "11" }, { word: "twelve", hint: "12" }, { word: "thirteen", hint: "13" }, { word: "fourteen", hint: "14" }, { word: "fifteen", hint: "15" }, { word: "twenty", hint: "20" }, { word: "thirty", hint: "30" }, { word: "forty", hint: "40" }, { word: "fifty", hint: "50" }, { word: "hundred", hint: "100" } ],
+            'Częstotliwość': [ { word: "always", hint: "Zawsze" }, { word: "usually", hint: "Zazwyczaj" }, { word: "often", hint: "Często" }, { word: "sometimes", hint: "Czasami" }, { word: "never", hint: "Nigdy" } ],
+            'Czynności': [ { word: "get up", hint: "Wstawać" }, { word: "go to bed", hint: "Iść spać" }, { word: "homework", hint: "Praca domowa" }, { word: "breakfast", hint: "Śniadanie" }, { word: "lunch", hint: "Drugie śniadanie" }, { word: "dinner", hint: "Obiad/Kolacja" }, { word: "shower", hint: "Prysznic" }, { word: "tidy room", hint: "Sprzątać pokój" }, { word: "watch tv", hint: "Oglądać TV" }, { word: "listen music", hint: "Słuchać muzyki" } ]
+        };
+
+        // 2. Zmienne Wisielca
+        let hangmanCanvas, hangmanCtx;
+        let hangmanCurrentCategory = '';
+        let hangmanCurrentWords = [];
+        let hangmanCurrentWord = null;
+        let hangmanGuessedLetters = [];
+        let hangmanRemainingAttempts = 6;
+        let hangmanMaxAttempts = 6;
+        let hangmanScore = 0;
+        let hangmanWordIndex = 0;
+        let hangmanCompletedCategories = new Set(progressData.hangman ? (progressData.hangman.completedCategories || []) : []);
+
+        // 3. Referencje do Elementów Wisielca
+        const hangmanSetupSection = document.getElementById('hangmanSetupSection');
+        const hangmanGameSection = document.getElementById('hangmanGameSection');
+        const hangmanCategoryButtonsContainer = document.getElementById('hangmanCategoryButtons');
+        const hangmanAttemptsSelector = document.getElementById('hangmanAttemptsSelector');
+        const hangmanScoreDisplay = document.getElementById('hangmanScore');
+        const hangmanAttemptsDisplay = document.getElementById('hangmanAttempts');
+        const hangmanHintDisplay = document.getElementById('hangmanHint');
+        const hangmanWordDisplay = document.getElementById('hangmanWordDisplay');
+        const hangmanKeyboardContainer = document.getElementById('hangmanKeyboard');
+        const hangmanMessageDisplay = document.getElementById('hangmanMessage');
+        const hangmanStartButton = hangmanSetupSection.querySelector('.check-button'); // Znajdź przycisk startowy w sekcji setupu
+        const hangmanNextWordButton = hangmanGameSection.querySelector('.hangman-game-controls button:nth-child(1)');
+        const hangmanShowSetupButton = hangmanGameSection.querySelector('.hangman-game-controls button:nth-child(2)');
+
+
+        // 4. Funkcje Wisielca
+
+        function shuffleArray(array) { // Prosta funkcja tasująca
+             const newArray = [...array];
+             for (let i = newArray.length - 1; i > 0; i--) {
+                 const j = Math.floor(Math.random() * (i + 1));
+                 [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+             }
+             return newArray;
+        }
+
+        function hangmanInitializeSetup() {
+            hangmanCategoryButtonsContainer.innerHTML = ''; // Wyczyść stare przyciski
+            for (const category in hangmanWordsByCategory) {
+                const button = document.createElement('button');
+                button.textContent = category;
+                button.dataset.category = category;
+                button.addEventListener('click', () => selectHangmanCategory(category, button)); // Użyj EventListener
+                 if (hangmanCompletedCategories.has(category)) {
+                     button.style.backgroundColor = 'var(--correct-color)';
+                     button.title = "Kategoria ukończona!";
+                  }
+                hangmanCategoryButtonsContainer.appendChild(button);
+            }
+             // Ustaw podświetlenie dla prób
+             document.querySelectorAll('#hangmanAttemptsSelector button').forEach(btn => {
+                 btn.classList.toggle('active', parseInt(btn.dataset.attempts) === hangmanMaxAttempts);
+                  // Dodaj EventListener do przycisków prób (jeśli nie ma go globalnie)
+                   if (!btn.onclick) { // Proste sprawdzenie, czy listener już istnieje
+                      const attempts = parseInt(btn.dataset.attempts);
+                      btn.addEventListener('click', () => selectHangmanAttempts(attempts, btn));
+                   }
+             });
+        }
+
+        function selectHangmanCategory(category, buttonElement) {
+            hangmanCurrentCategory = category;
+            document.querySelectorAll('#hangmanCategoryButtons button').forEach(btn => btn.classList.remove('active'));
+            if(buttonElement) buttonElement.classList.add('active');
+        }
+
+        function selectHangmanAttempts(attempts, buttonElement) {
+            hangmanMaxAttempts = attempts;
+            hangmanRemainingAttempts = attempts;
+            document.querySelectorAll('#hangmanAttemptsSelector button').forEach(btn => btn.classList.remove('active'));
+            if(buttonElement) buttonElement.classList.add('active');
+            if(hangmanAttemptsDisplay) hangmanAttemptsDisplay.textContent = `Pozostałe próby: ${hangmanRemainingAttempts}`;
+        }
+
+        function hangmanStartGame() { // Ta funkcja teraz będzie wywołana przez EventListener
+            if (!hangmanCurrentCategory) {
+                alert("Proszę wybrać kategorię słówek!");
+                return;
+            }
+            hangmanScore = 0;
+            hangmanUpdateScoreDisplay();
+            hangmanCurrentWords = shuffleArray([...hangmanWordsByCategory[hangmanCurrentCategory]]);
+            hangmanWordIndex = 0;
+
+            if(hangmanSetupSection) hangmanSetupSection.classList.add('hidden');
+            if(hangmanGameSection) hangmanGameSection.classList.remove('hidden');
+            hangmanLoadNextWord();
+        }
+
+        function hangmanLoadNextWord() {
+            if (hangmanWordIndex >= hangmanCurrentWords.length) {
+                if(hangmanMessageDisplay) hangmanMessageDisplay.textContent = `Gratulacje! Ukończyłeś kategorię: ${hangmanCurrentCategory}!`;
+                hangmanMarkCategoryComplete(hangmanCurrentCategory);
+                disableHangmanKeyboard();
+                // Pokaż przycisk powrotu zamiast "Następne słowo"
+                if(hangmanNextWordButton) hangmanNextWordButton.style.display = 'none';
+                if(hangmanShowSetupButton) hangmanShowSetupButton.style.display = 'inline-block'; // Pokaż przycisk powrotu do setupu
+                return;
+            }
+             // Pokaż przycisk "Następne słowo"
+             if(hangmanNextWordButton) hangmanNextWordButton.style.display = 'inline-block';
+            hangmanCurrentWord = hangmanCurrentWords[hangmanWordIndex];
+            hangmanGuessedLetters = [];
+            hangmanRemainingAttempts = hangmanMaxAttempts; // Resetuj próby dla nowego słowa
+            hangmanUpdateAttemptsDisplay();
+            if(hangmanMessageDisplay) hangmanMessageDisplay.textContent = '';
+            if(hangmanHintDisplay) hangmanHintDisplay.textContent = `Hint: ${hangmanCurrentWord.hint}`;
+            hangmanUpdateWordDisplay();
+            createHangmanKeyboard();
+            hangmanDraw(0);
+        }
+
+        function hangmanUpdateWordDisplay() {
+            if (!hangmanCurrentWord || !hangmanWordDisplay) return;
+             const display = hangmanCurrentWord.word.toUpperCase().split('').map(letter => {
+                 if (letter === ' ') return '\u00A0\u00A0';
+                 return hangmanGuessedLetters.includes(letter) ? letter : '_';
+             }).join(' ');
+             hangmanWordDisplay.textContent = display;
+        }
+
+        function createHangmanKeyboard() {
+             if (!hangmanKeyboardContainer) return;
+             hangmanKeyboardContainer.innerHTML = '';
+             'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(letter => {
+                 const button = document.createElement('button');
+                 button.textContent = letter;
+                 button.dataset.letter = letter;
+                 button.addEventListener('click', () => hangmanGuessLetter(letter)); // Użyj EventListener
+                 button.disabled = hangmanGuessedLetters.includes(letter);
+                 hangmanKeyboardContainer.appendChild(button);
+             });
+        }
+
+        function hangmanGuessLetter(letter) {
+             if (hangmanGuessedLetters.includes(letter) || !hangmanCurrentWord || hangmanRemainingAttempts <= 0) return;
+
+             hangmanGuessedLetters.push(letter);
+             const button = hangmanKeyboardContainer.querySelector(`button[data-letter="${letter}"]`);
+             if (button) button.disabled = true;
+
+             const wordUpper = hangmanCurrentWord.word.toUpperCase();
+             if (!wordUpper.includes(letter)) {
+                 hangmanRemainingAttempts--;
+                 hangmanUpdateAttemptsDisplay();
+                   if (hangmanCanvas) { // Sprawdź czy canvas istnieje
+                     hangmanDraw(hangmanMaxAttempts - hangmanRemainingAttempts);
+                 }
+
+                 if (hangmanRemainingAttempts <= 0) {
+                     if(hangmanMessageDisplay) hangmanMessageDisplay.textContent = `Koniec prób! Słowo to: ${wordUpper}`;
+                     disableHangmanKeyboard();
+                     if(hangmanWordDisplay) hangmanWordDisplay.textContent = wordUpper.split('').join(' ');
+                     // Pokaż tylko przycisk powrotu
+                      if(hangmanNextWordButton) hangmanNextWordButton.style.display = 'none';
+                      if(hangmanShowSetupButton) hangmanShowSetupButton.style.display = 'inline-block';
+                 }
+             } else {
+                 hangmanUpdateWordDisplay();
+                 checkHangmanWordComplete();
+             }
+         }
+
+
+        function checkHangmanWordComplete() {
+             if (!hangmanCurrentWord) return;
+             const wordUpper = hangmanCurrentWord.word.toUpperCase();
+             const isComplete = wordUpper.split('').every(letter => letter === ' ' || hangmanGuessedLetters.includes(letter));
+
+             if (isComplete) {
+                 hangmanScore++;
+                 hangmanUpdateScoreDisplay();
+                 if(hangmanMessageDisplay) hangmanMessageDisplay.textContent = 'Dobrze! Słowo odgadnięte!';
+                 disableHangmanKeyboard();
+                 // Zaznacz kategorię jako rozpoczętą/ukończoną, jeśli to pierwsze słowo w niej
+                 if (!hangmanCompletedCategories.has(hangmanCurrentCategory)) {
+                     hangmanMarkCategoryComplete(hangmanCurrentCategory);
+                 }
+                 // Pokaż przycisk "Następne słowo" lub powrotu, jeśli to ostatnie słowo
+                 if (hangmanWordIndex >= hangmanCurrentWords.length - 1) {
+                     if(hangmanNextWordButton) hangmanNextWordButton.style.display = 'none';
+                     if(hangmanShowSetupButton) hangmanShowSetupButton.style.display = 'inline-block';
+                     if(hangmanMessageDisplay) hangmanMessageDisplay.textContent += ` Gratulacje, ukończyłeś kategorię: ${hangmanCurrentCategory}!`;
+                 } else {
+                      if(hangmanNextWordButton) hangmanNextWordButton.style.display = 'inline-block';
+                      if(hangmanShowSetupButton) hangmanShowSetupButton.style.display = 'none';
+                 }
+             }
+         }
+
+
+        function hangmanMarkCategoryComplete(category) {
+             if (!isLocalStorageAvailable()) return;
+             const initialSize = hangmanCompletedCategories.size;
+             hangmanCompletedCategories.add(category);
+             // Zapisz tylko jeśli dodano nową kategorię
+              if (hangmanCompletedCategories.size > initialSize) {
+                  progressData.hangman.completed = hangmanCompletedCategories.size;
+                  // Dodajmy jawnie listę ukończonych kategorii do zapisu
+                  progressData.hangman.completedCategories = Array.from(hangmanCompletedCategories);
+                  localStorage.setItem(storageKey, JSON.stringify(progressData));
+                  updateProgressDisplays(); // Aktualizuj pasek postępu na dashboardzie
+                  // Aktualizuj wygląd przycisku kategorii
+                   const catButton = hangmanCategoryButtonsContainer ? hangmanCategoryButtonsContainer.querySelector(`button[data-category="${category}"]`) : null;
+                   if (catButton) {
+                       catButton.style.backgroundColor = 'var(--correct-color)';
+                       catButton.title = "Kategoria ukończona!";
+                   }
+              }
+         }
+
+
+        function hangmanNextWord() { // Wywołana przez EventListener
+            hangmanWordIndex++;
+            hangmanLoadNextWord();
+        }
+
+        function hangmanShowSetup() { // Wywołana przez EventListener
+             if(hangmanMessageDisplay) hangmanMessageDisplay.textContent = ''; // Wyczyść komunikaty
+             if(hangmanGameSection) hangmanGameSection.classList.add('hidden');
+             if(hangmanSetupSection) hangmanSetupSection.classList.remove('hidden');
+             hangmanInitializeSetup(); // Odśwież przyciski kategorii
+        }
+
+
+        function hangmanUpdateScoreDisplay() { if(hangmanScoreDisplay) hangmanScoreDisplay.textContent = `Wynik (poprawne słowa): ${hangmanScore}`; }
+        function hangmanUpdateAttemptsDisplay() { if(hangmanAttemptsDisplay) hangmanAttemptsDisplay.textContent = `Pozostałe próby: ${hangmanRemainingAttempts}`; }
+        function disableHangmanKeyboard() { if(hangmanKeyboardContainer) hangmanKeyboardContainer.querySelectorAll('button').forEach(btn => btn.disabled = true);}
+
+       // Funkcja Rysowania Wisielca
+        function hangmanDraw(stage) {
+            if (!hangmanCtx) {
+                 // Spróbuj pobrać context ponownie, jeśli nie istnieje
+                 hangmanCanvas = document.getElementById('hangmanCanvas');
+                 if (hangmanCanvas) hangmanCtx = hangmanCanvas.getContext('2d');
+                 else return; // Nie można rysować bez canvasu
+             }
+            hangmanCtx.clearRect(0, 0, hangmanCanvas.width, hangmanCanvas.height);
+            hangmanCtx.strokeStyle = '#333';
+            hangmanCtx.lineWidth = 4;
+            hangmanCtx.lineCap = 'round';
+
+            const drawStage = Math.min(stage, hangmanMaxAttempts); // Upewnij się, że nie rysujemy więcej niż max prób
+            const totalDrawStages = 8; // Mamy 8 elementów do narysowania (baza, słup, belka, sznur, głowa, tułów, 2 ręce, 2 nogi)
+            const stageIncrement = totalDrawStages / hangmanMaxAttempts; // Jaką część rysunku dodać na jedną pomyłkę
+
+            // Kolejno rysuj elementy w zależności od zaawansowania 'stage'
+            if (drawStage >= 1 * stageIncrement) { /* Baza */ hangmanCtx.beginPath(); hangmanCtx.moveTo(30, 280); hangmanCtx.lineTo(220, 280); hangmanCtx.stroke(); }
+            if (drawStage >= 2 * stageIncrement) { /* Słup */ hangmanCtx.beginPath(); hangmanCtx.moveTo(60, 280); hangmanCtx.lineTo(60, 40); hangmanCtx.stroke(); }
+            if (drawStage >= 3 * stageIncrement) { /* Belka */ hangmanCtx.beginPath(); hangmanCtx.moveTo(60, 40); hangmanCtx.lineTo(150, 40); hangmanCtx.stroke(); }
+            if (drawStage >= 4 * stageIncrement) { /* Sznur */ hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 40); hangmanCtx.lineTo(150, 80); hangmanCtx.stroke(); }
+            if (drawStage >= 5 * stageIncrement) { /* Głowa */ hangmanCtx.beginPath(); hangmanCtx.arc(150, 100, 20, 0, Math.PI * 2); hangmanCtx.stroke(); }
+            if (drawStage >= 6 * stageIncrement) { /* Tułów */ hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 120); hangmanCtx.lineTo(150, 190); hangmanCtx.stroke(); }
+            if (drawStage >= 7 * stageIncrement) { /* Lewa ręka */ hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 140); hangmanCtx.lineTo(110, 170); hangmanCtx.stroke(); }
+            if (drawStage >= 8 * stageIncrement) { /* Prawa ręka */ hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 140); hangmanCtx.lineTo(190, 170); hangmanCtx.stroke(); }
+             // Nogi pojawiają się jako ostatnie, rozłożone na pozostałe etapy błędów
+             const legStageStart = 8 * stageIncrement; 
+             const remainingStagesForLegs = Math.max(1, hangmanMaxAttempts - 8); // Minimum 1 etap na nogi
+             const leftLegStage = legStageStart + (remainingStagesForLegs > 1 ? (1/2) * stageIncrement : 0); // Lewa noga w połowie pozostałych etapów (jeśli więcej niż 1)
+             const rightLegStage = legStageStart + stageIncrement * (remainingStagesForLegs / 2); // Prawa noga na końcu
+
+             if (drawStage >= legStageStart + 0.01) { /* Lewa Noga */hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 190); hangmanCtx.lineTo(120, 240); hangmanCtx.stroke(); }
+             if (drawStage >= legStageStart + stageIncrement) { /* Prawa Noga */hangmanCtx.beginPath(); hangmanCtx.moveTo(150, 190); hangmanCtx.lineTo(180, 240); hangmanCtx.stroke(); }
+        }
+
+        // --- Przypisanie EventListenerów do przycisków Wisielca ---
+         if (hangmanStartButton) {
+             hangmanStartButton.addEventListener('click', hangmanStartGame);
+         }
+        if (hangmanNextWordButton) {
+             hangmanNextWordButton.addEventListener('click', hangmanNextWord);
+             hangmanNextWordButton.style.display = 'none'; // Ukryj na początku
+         }
+         if (hangmanShowSetupButton) {
+             hangmanShowSetupButton.addEventListener('click', hangmanShowSetup);
+             hangmanShowSetupButton.style.display = 'inline-block'; // Pokaż na początku w grze
+         }
+        // Listener do przycisków prób - dodany w hangmanInitializeSetup
+
+        // --- INITIALIZATION ---
+        loadProgress();
+        updateProgressDisplays();
+
+        // Inicjalizacja Canvas Wisielca (jeśli element istnieje)
+        hangmanCanvas = document.getElementById('hangmanCanvas');
+        if (hangmanCanvas) {
+            hangmanCtx = hangmanCanvas.getContext('2d');
+        } else {
+            console.error("Hangman canvas element not found!");
+        }
+        // Inicjalizacja przycisków kategorii itp. dla Wisielca zostanie wywołana przy wejściu do sekcji
+        // hangmanInitializeSetup(); // Niepotrzebne tutaj, wywoływane w showSection
+
+    }); // Koniec DOMContentLoaded
+</script>
 </body>
 </html>
