@@ -461,8 +461,14 @@
             }
 
             // Render dashboard tiles based on learningTexts data
+                        
             function renderDashboard() {
                 textTilesContainer.innerHTML = ''; // Clear existing tiles
+
+                // Get the computed style to access CSS variables
+                const computedStyle = getComputedStyle(document.documentElement); // Use documentElement (root)
+                const defaultTileColor = computedStyle.getPropertyValue('--primary-color').trim(); // Get the value and remove potential whitespace
+
                 if (learningTexts.length === 0) {
                      textTilesContainer.innerHTML = '<p style="text-align:center; color: var(--text-light); grid-column: 1 / -1;">Nie masz jeszcze żadnych tekstów. Dodaj nowy!</p>';
                      return;
@@ -472,12 +478,12 @@
                     const tile = document.createElement('div');
                     tile.classList.add('text-tile');
                     tile.dataset.id = text.id;
-                    tile.style.borderLeftColor = text.color || var(--primary-color); // Use saved color
+                    // CORRECTED LINE: Use the retrieved JS variable 'defaultTileColor' as fallback
+                    tile.style.borderLeftColor = text.color || defaultTileColor;
 
                     // Limit title preview length
                     const titlePreview = text.polish.split('\n')[0] || 'Tekst bez tytułu'; // First line as title
                     const truncatedTitle = titlePreview.length > 40 ? titlePreview.substring(0, 37) + '...' : titlePreview;
-
 
                     tile.innerHTML = `
                         <div class="tile-content">
