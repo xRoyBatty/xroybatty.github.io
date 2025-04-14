@@ -3,690 +3,638 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nauka Angielskiego - Uzupełnianka</title>
+    <title>Dashboard - Nauka Angielskiego</title>
     <style>
-        /* --- CSS Styles --- */
+        /* --- Global Styles & Variables --- */
         :root {
-            --primary-color: #4a90e2;
-            --secondary-color: #f5a623;
-            --background-color: #f4f7f6;
-            --text-color: #333;
-            --container-bg: #ffffff;
-            --border-color: #dce1e6;
-            --correct-color: #d4edda;
-            --incorrect-color: #f8d7da;
-            --correct-border: #c3e6cb;
-            --incorrect-border: #f5c6cb;
-            --input-bg: #f9f9f9;
+            --primary-color: #3498db; /* Nice blue */
+            --secondary-color: #f1c40f; /* Yellow */
+            --accent-color: #e74c3c; /* Red for delete/cancel */
+            --success-color: #2ecc71; /* Green */
+            --background-color: #f4f6f9;
+            --surface-color: #ffffff;
+            --text-color: #34495e;
+            --text-light: #7f8c8d;
+            --border-color: #e1e5ea;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --tile-hover-shadow: rgba(0, 0, 0, 0.15);
+
+            --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: var(--font-family);
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            display: flex;
+            display: flex; /* Needed for vertical centering if content is short */
             justify-content: center;
-            align-items: flex-start; /* Align to top */
             min-height: 100vh;
+            padding: 20px;
         }
 
-        .container {
-            background-color: var(--container-bg);
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        .app-container {
+            background-color: var(--surface-color);
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-color);
             width: 100%;
-            max-width: 800px;
+            max-width: 1000px;
+            overflow: hidden; /* Contain child elements */
+            display: flex;
+            flex-direction: column;
         }
 
-        h1 {
+        h1, h2, h3 {
             color: var(--primary-color);
+            margin-bottom: 15px;
             text-align: center;
-            margin-bottom: 20px;
+        }
+         h1 {
+             background-color: var(--primary-color);
+             color: white;
+             padding: 20px;
+             margin: 0 0 25px 0; /* Remove default margin, add bottom */
+             font-size: 1.8em;
+         }
+         h2 {
+            margin-top: 20px;
+            font-size: 1.5em;
+         }
+
+        /* --- Utility Classes --- */
+        .hidden {
+            display: none !important; /* Force hide */
+        }
+        .content-padding {
+             padding: 20px 30px;
         }
 
-        /* Sekcja Instrukcji */
-        #instructions {
-            background-color: #e9f3fe;
-            border-left: 5px solid var(--primary-color);
-            padding: 15px;
+
+        /* --- Dashboard View --- */
+        #dashboard-view h2 {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
             margin-bottom: 25px;
-            border-radius: 5px;
-        }
-        #instructions h2 {
-            margin-top: 0;
-            color: var(--primary-color);
-            font-size: 1.2em;
-        }
-        #instructions p {
-             margin-bottom: 5px;
         }
 
-        /* Sekcja Wprowadzania */
-        #input-section {
+        .dashboard-actions {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        #text-tiles-container {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Responsive grid */
             gap: 20px;
-            margin-bottom: 20px;
+            padding-bottom: 20px; /* Space at the bottom */
         }
 
-        #input-section label {
-            font-weight: bold;
-            color: var(--primary-color);
-            display: block;
+        .text-tile {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px var(--shadow-color);
+            transition: box-shadow 0.3s ease, transform 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            border-left: 5px solid var(--primary-color); /* Default color indicator */
+        }
+
+        .text-tile:hover {
+            box-shadow: 0 4px 10px var(--tile-hover-shadow);
+            transform: translateY(-3px);
+        }
+
+        .tile-content {
+            flex-grow: 1; /* Take available space */
+            margin-bottom: 15px;
+        }
+        .tile-content h4 {
+            color: var(--text-color);
+            margin-bottom: 8px;
+            font-size: 1.1em;
+            /* Optional: Truncate long titles */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .tile-content p {
+            font-size: 0.9em;
+            color: var(--text-light);
             margin-bottom: 5px;
         }
 
-        textarea {
-            width: 100%;
-            height: 150px;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            font-size: 1em;
-            resize: vertical;
-            background-color: var(--input-bg);
-            box-sizing: border-box; /* Ensure padding doesn't increase size */
+        .tile-actions {
+            display: flex;
+            justify-content: space-between; /* Space out buttons */
+            gap: 10px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+            margin-top: auto; /* Push actions to the bottom */
         }
 
-        /* Przyciski */
-        .button-container {
-            text-align: center;
+        /* --- Edit/Add View --- */
+        #edit-view {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin: 0 30px 30px 30px; /* Add margin */
+            padding: 25px;
+            background-color: #fdfdff; /* Slightly different bg */
+        }
+
+        #edit-view h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+
+        .form-group textarea {
+            width: 100%;
+            height: 200px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1em;
+            resize: vertical;
+            background-color: #fdfdfd;
+        }
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+
+        .color-picker-group label {
+             display: block;
+             font-weight: bold;
+             margin-bottom: 8px;
+             color: var(--primary-color);
+        }
+        .color-picker-group input[type="color"] {
+            width: 60px;
+            height: 35px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            padding: 2px; /* Small padding around color */
+        }
+
+        .edit-actions {
+            text-align: right;
+            margin-top: 25px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+
+        /* --- Game View (Placeholder/Basic structure) --- */
+        #game-view {
+            /* Add styles later when game logic is integrated */
+             padding: 20px 30px;
+        }
+         #game-view .game-controls {
             margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
             display: flex;
             justify-content: center;
             gap: 15px;
             flex-wrap: wrap;
-        }
+         }
+         #game-area-placeholder { /* Placeholder styling */
+             min-height: 200px;
+             border: 1px dashed var(--border-color);
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             color: var(--text-light);
+             border-radius: 8px;
+             background-color: #fafafa;
+         }
+         #results-area-placeholder {
+             margin-top: 20px;
+             padding: 15px;
+             background-color: #e9f3fe;
+             border-radius: 5px;
+             text-align: center;
+             color: var(--text-light);
+         }
 
+
+        /* --- Buttons --- */
         button {
             padding: 10px 20px;
             font-size: 1em;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.1s ease;
+            transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.2s ease;
+            font-weight: 500;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+         button:focus {
+             outline: none;
+             box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3); /* Focus outline */
+         }
+
+        .btn-primary {
             background-color: var(--primary-color);
             color: white;
         }
-
-        button:hover {
-            background-color: #3a7ac0; /* Darker shade */
+        .btn-primary:hover {
+            background-color: #2980b9; /* Darker blue */
         }
-         button:active {
-             transform: scale(0.98);
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+         .btn-secondary:hover {
+            background-color: #f39c12; /* Darker yellow */
+        }
+
+        .btn-danger {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #c0392b; /* Darker red */
+        }
+
+        .btn-success {
+             background-color: var(--success-color);
+             color: white;
          }
-
-        #reset-button {
-            background-color: #dc3545; /* Red for reset */
-        }
-        #reset-button:hover {
-            background-color: #c82333;
-        }
-
-        #next-round-button {
-             background-color: var(--secondary-color);
-        }
-         #next-round-button:hover {
-             background-color: #e09512;
-         }
-
-        /* Sekcja Gry */
-        #game-area {
-            margin-top: 30px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .text-display {
-            background-color: var(--input-bg);
-            padding: 15px;
-            border-radius: 5px;
-            border: 1px solid var(--border-color);
-            min-height: 150px; /* Match textarea height */
-            white-space: pre-wrap; /* Preserve line breaks and spaces */
-            word-wrap: break-word; /* Prevent long words from overflowing */
-        }
-
-         .text-display h3 {
-             margin-top: 0;
-             color: var(--primary-color);
-             border-bottom: 1px solid var(--border-color);
-             padding-bottom: 5px;
-             margin-bottom: 10px;
-         }
-
-        #english-challenge span {
-            display: inline; /* Keep original characters inline */
-        }
-
-        #english-challenge input[type="text"],
-        #english-challenge textarea.sentence-input {
-            border: 1px solid var(--border-color);
-            padding: 2px 4px;
-            margin: 0 2px; /* Add minimal spacing */
-            border-radius: 3px;
-            font-size: 1em; /* Match surrounding text */
-            background-color: white;
-            box-sizing: border-box;
-        }
-        #english-challenge input[type="text"] {
-            width: auto; /* Adjust based on content later? Or use size */
-            text-align: center;
-        }
-
-        #english-challenge textarea.sentence-input {
-            width: 95%; /* Slightly less than container */
-            height: auto;
-            min-height: 1.6em; /* Approx one line height */
-            resize: none; /* Disable resizing */
-            overflow: hidden; /* Hide scrollbar initially */
-            display: block; /* Ensure it takes full width and sits on its own line */
-            margin-bottom: 5px;
-        }
-
-        /* Styling for correct/incorrect inputs */
-        .correct {
-            background-color: var(--correct-color);
-            border-color: var(--correct-border);
-            color: #155724;
-        }
-
-        .incorrect {
-            background-color: var(--incorrect-color);
-            border-color: var(--incorrect-border);
-            color: #721c24;
-        }
-
-        input:disabled, textarea:disabled {
-             background-color: #e9ecef;
-             cursor: not-allowed;
+        .btn-success:hover {
+             background-color: #27ae60; /* Darker green */
          }
 
 
-        /* Sekcja Wyników */
-        #results-area {
-            margin-top: 25px;
-            padding: 15px;
-            background-color: #e9f3fe;
-            border-radius: 5px;
-            text-align: center;
-            font-size: 1.1em;
-        }
-        #results-area span {
-            font-weight: bold;
-            margin: 0 10px;
-            color: var(--primary-color);
-        }
-        #results-area #accuracy {
-            color: var(--secondary-color);
+        .btn-edit, .btn-delete, .btn-study {
+            padding: 6px 12px; /* Smaller buttons for tiles */
+            font-size: 0.9em;
         }
 
-        /* Informacje zwrotne */
-        #feedback {
-            margin-top: 15px;
-            text-align: center;
-            font-weight: bold;
-            min-height: 1.5em; /* Reserve space */
-        }
+         .btn-edit { background-color: var(--primary-color); color: white; }
+         .btn-edit:hover { background-color: #2980b9; }
 
-        /* Ukrywanie elementów */
-        .hidden {
-            display: none;
-        }
+         .btn-delete { background-color: var(--accent-color); color: white; }
+         .btn-delete:hover { background-color: #c0392b; }
 
-        /* Responsywność */
-         @media (max-width: 768px) {
-            .container {
-                padding: 20px;
+         .btn-study { background-color: var(--success-color); color: white; }
+         .btn-study:hover { background-color: #27ae60; }
+
+        /* --- Responsiveness --- */
+        @media (max-width: 768px) {
+             .app-container {
+                 margin: 10px;
+                 padding: 0;
+             }
+             h1 {
+                 font-size: 1.5em;
+                 padding: 15px;
+             }
+            .content-padding {
+                padding: 15px;
             }
-             #input-section, #game-area {
-                 grid-template-columns: 1fr; /* Stack columns on smaller screens */
+             #text-tiles-container {
+                 grid-template-columns: 1fr; /* Stack tiles */
                  gap: 15px;
              }
-             textarea {
-                 height: 120px;
+             .form-grid {
+                 grid-template-columns: 1fr; /* Stack form fields */
+                 gap: 15px;
              }
-             .text-display {
-                 min-height: 120px;
+             .form-group textarea {
+                height: 150px;
              }
-         }
+             .edit-actions {
+                justify-content: center; /* Center buttons on small screens */
+             }
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Interaktywna Nauka Angielskiego</h1>
+    <div class="app-container">
+        <h1>Nauka Angielskiego - Dashboard</h1>
 
-        <!-- Instrukcje -->
-        <div id="instructions">
-            <h2>Jak korzystać?</h2>
-            <p>1. Wpisz tekst po polsku w lewym polu.</p>
-            <p>2. Wpisz DOKŁADNE tłumaczenie tego tekstu po angielsku w prawym polu.</p>
-            <p>3. WAŻNE: Każde zdanie powinno być w nowej linii. Liczba linii musi być taka sama w obu polach.</p>
-            <p>4. Kliknij "Start", aby rozpocząć ćwiczenie.</p>
-            <p>5. Uzupełniaj brakujące fragmenty w tekście angielskim.</p>
-            <p>6. Kliknij "Sprawdź", aby zobaczyć wyniki dla danej rundy.</p>
-            <p>7. Kliknij "Następna Runda", aby przejść do trudniejszego etapu.</p>
-            <p>8. Możesz próbować wielokrotnie, dokładność jest liczona łącznie.</p>
-            <p>9. Kliknij "Resetuj Grę", aby zacząć od nowa z nowym tekstem.</p>
-        </div>
-
-        <!-- Sekcja Wprowadzania Tekstu -->
-        <div id="input-section">
-            <div>
-                <label for="polish-input">Tekst po Polsku (jedno zdanie na linię):</label>
-                <textarea id="polish-input" placeholder="Np.
-To jest mój dom.
-Lubię czytać książki.
-Ona poszła do szkoły o ósmej." spellcheck="false"></textarea>
+        <!-- ==================== DASHBOARD VIEW ==================== -->
+        <div id="dashboard-view" class="content-padding">
+            <h2>Twoje Teksty do Nauki</h2>
+            <div class="dashboard-actions">
+                <button id="add-new-text-btn" class="btn-primary">Dodaj Nowy Tekst</button>
             </div>
-            <div>
-                <label for="english-input">Tekst po Angielsku (jedno zdanie na linię):</label>
-                <textarea id="english-input" placeholder="Np.
-This is my house.
-I like reading books.
-She went to school at eight o'clock." spellcheck="false"></textarea>
+            <div id="text-tiles-container">
+                <!-- Teksty będą wstrzykiwane tutaj przez JS -->
+                <!-- Example Tile Structure (for reference):
+                <div class="text-tile" data-id="1" style="border-left-color: #3498db;">
+                    <div class="tile-content">
+                        <h4>Przykładowy Tytuł (PL)</h4>
+                        <p>Postęp: 75%</p>
+                        <p>Dokładność: 92%</p>
+                    </div>
+                    <div class="tile-actions">
+                        <button class="btn-study" data-id="1">Ucz się</button>
+                        <button class="btn-edit" data-id="1">Edytuj</button>
+                        <button class="btn-delete" data-id="1">Usuń</button>
+                    </div>
+                </div>
+                 -->
             </div>
         </div>
 
-         <div class="button-container">
-             <button id="start-button">Start</button>
-         </div>
+        <!-- ==================== ADD/EDIT TEXT VIEW ==================== -->
+        <div id="edit-view" class="hidden">
+             <!-- Tytuł H2 będzie ustawiany przez JS -->
+            <h2></h2>
+            <input type="hidden" id="edit-text-id"> <!-- Hidden field to store ID when editing -->
 
-        <!-- Sekcja Gry -->
-        <div id="game-area" class="hidden">
-            <div id="polish-display" class="text-display">
-                <h3>Tekst Polski (Oryginał):</h3>
-                <div id="polish-content"></div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="edit-polish-input">Tekst po Polsku (jedno zdanie na linię):</label>
+                    <textarea id="edit-polish-input" placeholder="Wpisz tekst po polsku..." spellcheck="false"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="edit-english-input">Tekst po Angielsku (jedno zdanie na linię):</label>
+                    <textarea id="edit-english-input" placeholder="Wpisz dokładne tłumaczenie..." spellcheck="false"></textarea>
+                </div>
             </div>
-            <div id="english-challenge-container" class="text-display">
-                 <h3 id="challenge-title">Wyzwanie Angielskie (Runda 1):</h3>
-                 <div id="english-challenge"></div>
+
+             <div class="color-picker-group">
+                 <label for="edit-color-input">Wybierz kolor kafelka:</label>
+                 <input type="color" id="edit-color-input" value="#3498db"> <!-- Default color -->
+             </div>
+
+            <div class="edit-actions">
+                <button id="cancel-edit-btn" class="btn-danger">Anuluj</button>
+                <button id="save-text-btn" class="btn-success">Zapisz Tekst</button>
             </div>
         </div>
 
-        <!-- Przyciski kontrolne gry -->
-        <div id="game-controls" class="button-container hidden">
-            <button id="check-button">Sprawdź Odpowiedzi</button>
-            <button id="next-round-button" class="hidden">Następna Runda</button>
-            <button id="reset-button">Resetuj Grę</button>
-        </div>
-
-        <!-- Informacja zwrotna -->
-        <div id="feedback"></div>
-
-        <!-- Sekcja Wyników -->
-        <div id="results-area" class="hidden">
-             Runda: <span id="current-round">0</span> |
-             Punkty: <span id="score">0</span> |
-             Próby (rundy): <span id="attempts">0</span> |
-             Dokładność: <span id="accuracy">N/A</span>
+        <!-- ==================== GAME VIEW (Placeholder) ==================== -->
+        <div id="game-view" class="hidden">
+            <h2>Tryb Nauki: <span id="game-text-title">Nazwa Tekstu</span></h2>
+            <!-- Tutaj w przyszłości znajdzie się interfejs gry (jak w poprzedniej wersji) -->
+             <div id="game-area-placeholder">
+                 <p>Interfejs gry pojawi się tutaj...</p>
+             </div>
+             <div id="results-area-placeholder">
+                 <p>Wyniki pojawią się tutaj...</p>
+             </div>
+             <div class="game-controls">
+                 <button id="check-answer-btn-placeholder" class="btn-primary">Sprawdź (Placeholder)</button>
+                 <button id="next-round-btn-placeholder" class="btn-secondary hidden">Następna Runda (Placeholder)</button>
+                <button id="back-to-dashboard-btn" class="btn-danger">Powrót do Dashboardu</button>
+            </div>
         </div>
 
     </div>
 
     <script>
-        // --- JavaScript Logic ---
         document.addEventListener('DOMContentLoaded', () => {
-            // --- Elementy DOM ---
-            const polishInput = document.getElementById('polish-input');
-            const englishInput = document.getElementById('english-input');
-            const startButton = document.getElementById('start-button');
-            const inputSection = document.getElementById('input-section');
-            const instructionsSection = document.getElementById('instructions');
+            // --- DOM Elements ---
+            const dashboardView = document.getElementById('dashboard-view');
+            const editView = document.getElementById('edit-view');
+            const gameView = document.getElementById('game-view');
+            const textTilesContainer = document.getElementById('text-tiles-container');
+            const addNewTextBtn = document.getElementById('add-new-text-btn');
+            const saveTextBtn = document.getElementById('save-text-btn');
+            const cancelEditBtn = document.getElementById('cancel-edit-btn');
+            const backToDashboardBtn = document.getElementById('back-to-dashboard-btn');
 
-            const gameArea = document.getElementById('game-area');
-            const polishDisplayContent = document.getElementById('polish-content');
-            const englishChallenge = document.getElementById('english-challenge');
-            const challengeTitle = document.getElementById('challenge-title');
+            // Edit Form Elements
+            const editFormTitle = editView.querySelector('h2');
+            const editPolishInput = document.getElementById('edit-polish-input');
+            const editEnglishInput = document.getElementById('edit-english-input');
+            const editColorInput = document.getElementById('edit-color-input');
+            const editTextIdInput = document.getElementById('edit-text-id');
 
-            const gameControls = document.getElementById('game-controls');
-            const checkButton = document.getElementById('check-button');
-            const nextRoundButton = document.getElementById('next-round-button');
-            const resetButton = document.getElementById('reset-button');
-
-            const feedback = document.getElementById('feedback');
-            const resultsArea = document.getElementById('results-area');
-            const currentRoundDisplay = document.getElementById('current-round');
-            const scoreDisplay = document.getElementById('score');
-            const attemptsDisplay = document.getElementById('attempts');
-            const accuracyDisplay = document.getElementById('accuracy');
-
-            // --- Stan Gry ---
-            let originalPolishSentences = [];
-            let originalEnglishSentences = [];
-            let currentRound = 0;
-            let totalScore = 0;
-            let roundAttempts = 0; // Liczba sprawdzeń w ramach wszystkich rund
-            let correctAnswersCount = 0; // Łączna liczba poprawnych odpowiedzi (liter/słów/zdań)
-            let totalAnswersChecked = 0; // Łączna liczba sprawdzonych odpowiedzi
-
-            // --- Funkcje Pomocnicze ---
-            const shuffleArray = (array) => {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
-                }
-                return array;
-            };
-
-            // Dzieli zdanie na słowa (w tym z apostrofami) i inne znaki (spacje, interpunkcja)
-            const splitIntoWordsAndNonWords = (sentence) => {
-                // Regex: \b[\w']+\b matches words including apostrophes
-                //        \W+ matches one or more non-word characters (spaces, punctuation)
-                //        | OR operator
-                return sentence.match(/\b[\w']+\b|\W+/g) || []; // Handle empty sentence
-            };
-
-            // Dostosowuje wysokość textarea do zawartości
-             const autoGrowTextarea = (element) => {
-                 element.style.height = "auto"; // Reset height
-                 element.style.height = (element.scrollHeight) + "px";
-             };
+             // Game View Elements (Placeholders for now)
+             const gameTextTitle = document.getElementById('game-text-title');
 
 
-            // --- Logika Gry ---
+            // --- Mock Data (In a real app, this would come from localStorage or a server) ---
+            let learningTexts = [
+                { id: 1, polish: "To jest mój dom.\nLubię psy.", english: "This is my house.\nI like dogs.", color: "#3498db", accuracy: 85, progress: 70 },
+                { id: 2, polish: "Jaka jest pogoda?\nPada deszcz.", english: "What's the weather like?\nIt's raining.", color: "#f1c40f", accuracy: 92, progress: 100 },
+                 { id: 3, polish: "Muszę iść do sklepu.", english: "I need to go to the shop.", color: "#2ecc71", accuracy: null, progress: 0 }
+            ];
+            let nextId = 4; // Simple ID generator
 
-            const startGame = () => {
-                const polishText = polishInput.value.trim();
-                const englishText = englishInput.value.trim();
+            // --- Functions ---
 
-                if (!polishText || !englishText) {
-                    showFeedback("Wprowadź tekst w obu polach!", true);
-                    return;
-                }
+            // Show specific view, hide others
+            function showView(viewToShow) {
+                dashboardView.classList.add('hidden');
+                editView.classList.add('hidden');
+                gameView.classList.add('hidden');
+                viewToShow.classList.remove('hidden');
+            }
 
-                originalPolishSentences = polishText.split('\n').filter(line => line.trim() !== '');
-                originalEnglishSentences = englishText.split('\n').filter(line => line.trim() !== '');
+            // Render dashboard tiles based on learningTexts data
+            function renderDashboard() {
+                textTilesContainer.innerHTML = ''; // Clear existing tiles
+                if (learningTexts.length === 0) {
+                     textTilesContainer.innerHTML = '<p style="text-align:center; color: var(--text-light); grid-column: 1 / -1;">Nie masz jeszcze żadnych tekstów. Dodaj nowy!</p>';
+                     return;
+                 }
 
-                if (originalPolishSentences.length === 0 || originalEnglishSentences.length === 0) {
-                    showFeedback("Wprowadź przynajmniej jedno zdanie w każdym polu!", true);
-                    return;
-                }
+                learningTexts.forEach(text => {
+                    const tile = document.createElement('div');
+                    tile.classList.add('text-tile');
+                    tile.dataset.id = text.id;
+                    tile.style.borderLeftColor = text.color || var(--primary-color); // Use saved color
 
-                if (originalPolishSentences.length !== originalEnglishSentences.length) {
-                    showFeedback("Liczba linii (zdań) w obu polach musi być taka sama!", true);
-                    return;
-                }
+                    // Limit title preview length
+                    const titlePreview = text.polish.split('\n')[0] || 'Tekst bez tytułu'; // First line as title
+                    const truncatedTitle = titlePreview.length > 40 ? titlePreview.substring(0, 37) + '...' : titlePreview;
 
-                // Reset statystyk gry
-                currentRound = 0;
-                totalScore = 0;
-                roundAttempts = 0;
-                correctAnswersCount = 0;
-                totalAnswersChecked = 0;
-                updateStatsUI();
 
-                // Przygotuj interfejs
-                inputSection.classList.add('hidden');
-                startButton.classList.add('hidden');
-                instructionsSection.classList.add('hidden'); // Ukryj instrukcje podczas gry
-                gameArea.classList.remove('hidden');
-                gameControls.classList.remove('hidden');
-                resultsArea.classList.remove('hidden');
-                nextRoundButton.classList.add('hidden'); // Ukryj na początku
-                checkButton.classList.remove('hidden'); // Pokaż przycisk sprawdzania
-
-                // Wyświetl tekst polski
-                polishDisplayContent.innerHTML = originalPolishSentences.join('<br>');
-
-                // Rozpocznij pierwszą rundę
-                startNextRound();
-            };
-
-            const startNextRound = () => {
-                currentRound++;
-                englishChallenge.innerHTML = ''; // Wyczyść poprzednie wyzwanie
-                showFeedback(''); // Wyczyść poprzednią informację zwrotną
-                challengeTitle.textContent = `Wyzwanie Angielskie (Runda ${currentRound}):`;
-                checkButton.disabled = false;
-                checkButton.classList.remove('hidden');
-                nextRoundButton.classList.add('hidden');
-
-                updateStatsUI(); // Zaktualizuj numer rundy
-
-                switch (currentRound) {
-                    case 1:
-                        challengeTitle.textContent += " Usuń 50% liter";
-                        prepareRoundLetters();
-                        break;
-                    case 2:
-                         challengeTitle.textContent += " Usuń 50% słów";
-                        prepareRoundWords();
-                        break;
-                    case 3:
-                         challengeTitle.textContent += " Usuń 50% zdań";
-                        prepareRoundSentences();
-                        break;
-                    case 4:
-                        challengeTitle.textContent += " Uzupełnij wszystkie zdania";
-                        prepareRoundAllSentences();
-                        break;
-                    default:
-                        endGame();
-                        return; // Zakończ, jeśli nie ma więcej rund
-                }
-                 // Dodaj event listenery do dynamicznie tworzonych textarea
-                 englishChallenge.querySelectorAll('textarea.sentence-input').forEach(textarea => {
-                     textarea.addEventListener('input', () => autoGrowTextarea(textarea));
-                     autoGrowTextarea(textarea); // Ustaw początkową wysokość
-                 });
-            };
-
-            // --- Przygotowanie Rund ---
-
-            const prepareRoundLetters = () => {
-                let challengeHTML = '';
-                originalEnglishSentences.forEach(sentence => {
-                    const chars = sentence.split('');
-                    const letterIndices = [];
-                    chars.forEach((char, index) => {
-                        // Sprawdź czy znak jest literą (proste sprawdzenie dla alfabetu łacińskiego)
-                        if (char.toLowerCase() !== char.toUpperCase() || /[a-zA-Z]/.test(char)) {
-                             letterIndices.push(index);
-                        }
-                    });
-
-                    shuffleArray(letterIndices);
-                    const numLettersToRemove = Math.ceil(letterIndices.length / 2);
-                    const indicesToRemove = new Set(letterIndices.slice(0, numLettersToRemove));
-
-                    let sentenceHTML = '';
-                    chars.forEach((char, index) => {
-                        if (indicesToRemove.has(index)) {
-                            sentenceHTML += `<input type="text" class="letter-input" data-original="${char}" size="1" maxlength="1" spellcheck="false">`;
-                        } else {
-                            sentenceHTML += `<span>${char}</span>`;
-                        }
-                    });
-                    challengeHTML += sentenceHTML + '<br>';
+                    tile.innerHTML = `
+                        <div class="tile-content">
+                            <h4>${truncatedTitle}</h4>
+                             <p>Postęp: ${text.progress !== undefined ? text.progress + '%' : 'N/A'}</p>
+                             <p>Dokładność: ${text.accuracy !== null && text.accuracy !== undefined ? text.accuracy + '%' : 'N/A'}</p>
+                        </div>
+                        <div class="tile-actions">
+                            <button class="btn-study" data-id="${text.id}">Ucz się</button>
+                            <button class="btn-edit" data-id="${text.id}">Edytuj</button>
+                            <button class="btn-delete" data-id="${text.id}">Usuń</button>
+                        </div>
+                    `;
+                    textTilesContainer.appendChild(tile);
                 });
-                englishChallenge.innerHTML = challengeHTML;
-            };
+            }
 
-             const prepareRoundWords = () => {
-                 let challengeHTML = '';
-                 originalEnglishSentences.forEach(sentence => {
-                     const parts = splitIntoWordsAndNonWords(sentence);
-                     const wordIndices = [];
-                     parts.forEach((part, index) => {
-                         // Sprawdź czy część jest słowem (zawiera litery lub apostrof w środku)
-                         if (/\b[\w']+\b/.test(part)) {
-                             wordIndices.push(index);
-                         }
-                     });
+             // Prepare and show the Add/Edit form
+             function showEditForm(textToEdit = null) {
+                 if (textToEdit) {
+                     // Editing existing text
+                     editFormTitle.textContent = 'Edytuj Tekst';
+                     editTextIdInput.value = textToEdit.id;
+                     editPolishInput.value = textToEdit.polish;
+                     editEnglishInput.value = textToEdit.english;
+                     editColorInput.value = textToEdit.color || '#3498db';
+                 } else {
+                     // Adding new text
+                     editFormTitle.textContent = 'Dodaj Nowy Tekst';
+                     editTextIdInput.value = ''; // Clear ID field
+                     editPolishInput.value = '';
+                     editEnglishInput.value = '';
+                     editColorInput.value = '#3498db'; // Reset to default color
+                 }
+                 showView(editView);
+             }
 
-                     shuffleArray(wordIndices);
-                     const numWordsToRemove = Math.ceil(wordIndices.length / 2);
-                     const indicesToRemove = new Set(wordIndices.slice(0, numWordsToRemove));
+             // Save text (add or update)
+             function saveText() {
+                 const id = editTextIdInput.value ? parseInt(editTextIdInput.value, 10) : null;
+                 const polish = editPolishInput.value.trim();
+                 const english = editEnglishInput.value.trim();
+                 const color = editColorInput.value;
 
-                     let sentenceHTML = '';
-                     parts.forEach((part, index) => {
-                         if (indicesToRemove.has(index)) {
-                            // Użyj rozmiaru słowa dla pola input, dodaj margines dla estetyki
-                            const size = Math.max(part.length, 3); // Minimalna szerokość
-                            sentenceHTML += `<input type="text" class="word-input" data-original="${part}" size="${size}" spellcheck="false">`;
-                         } else {
-                             sentenceHTML += `<span>${part.replace(/</g, "<").replace(/>/g, ">")}</span>`; // Escape HTML entities
-                         }
-                     });
-                     challengeHTML += sentenceHTML + '<br>';
-                 });
-                 englishChallenge.innerHTML = challengeHTML;
-             };
+                 if (!polish || !english) {
+                     alert('Pola tekstowe po polsku i angielsku nie mogą być puste!');
+                     return;
+                 }
+                  // Rudimentary line count check
+                  const polishLines = polish.split('\n').filter(line => line.trim() !== '').length;
+                  const englishLines = english.split('\n').filter(line => line.trim() !== '').length;
+                   if (polishLines === 0 || englishLines === 0) {
+                       alert('Wprowadź przynajmniej jedno zdanie w każdym polu!');
+                       return;
+                   }
+                   if (polishLines !== englishLines) {
+                       alert('Liczba linii (zdań) w obu polach musi być taka sama!');
+                       return;
+                   }
 
-             const prepareRoundSentences = () => {
-                 const numSentences = originalEnglishSentences.length;
-                 const sentenceIndices = Array.from({ length: numSentences }, (_, i) => i);
-                 shuffleArray(sentenceIndices);
-                 const numSentencesToRemove = Math.ceil(numSentences / 2);
-                 const indicesToRemove = new Set(sentenceIndices.slice(0, numSentencesToRemove));
 
-                 let challengeHTML = '';
-                 originalEnglishSentences.forEach((sentence, index) => {
-                     if (indicesToRemove.has(index)) {
-                         challengeHTML += `<textarea class="sentence-input" data-original-index="${index}" rows="1" spellcheck="false" placeholder="Wpisz brakujące zdanie..."></textarea><br>`;
-                     } else {
-                         challengeHTML += `<span>${sentence.replace(/</g, "<").replace(/>/g, ">")}</span><br>`;
+                 if (id) {
+                     // Update existing text
+                     const index = learningTexts.findIndex(text => text.id === id);
+                     if (index !== -1) {
+                         learningTexts[index].polish = polish;
+                         learningTexts[index].english = english;
+                         learningTexts[index].color = color;
+                         // Keep existing progress/accuracy or reset if desired
                      }
-                 });
-                 englishChallenge.innerHTML = challengeHTML;
-             };
-
-             const prepareRoundAllSentences = () => {
-                 let challengeHTML = '';
-                 originalEnglishSentences.forEach((sentence, index) => {
-                     challengeHTML += `<textarea class="sentence-input" data-original-index="${index}" rows="1" spellcheck="false" placeholder="Wpisz zdanie..."></textarea><br>`;
-                 });
-                 englishChallenge.innerHTML = challengeHTML;
-             };
-
-            // --- Sprawdzanie Odpowiedzi ---
-
-            const checkAnswers = () => {
-                roundAttempts++; // Zwiększ licznik prób dla bieżącej rundy
-                let roundCorrect = 0;
-                let roundTotalInputs = 0;
-
-                const inputs = englishChallenge.querySelectorAll('input[type="text"], textarea.sentence-input');
-                roundTotalInputs = inputs.length;
-
-                if (roundTotalInputs === 0) return; // Nic do sprawdzenia
-
-                inputs.forEach(input => {
-                    const userAnswer = input.value.trim();
-                    let originalValue = '';
-
-                    if (input.classList.contains('letter-input') || input.classList.contains('word-input')) {
-                        originalValue = input.dataset.original;
-                    } else if (input.classList.contains('sentence-input')) {
-                        const originalIndex = parseInt(input.dataset.originalIndex, 10);
-                        originalValue = originalEnglishSentences[originalIndex].trim();
-                         // Dostosuj wysokość textarea przed oceną, jeśli użytkownik coś wpisał
-                         if(userAnswer) autoGrowTextarea(input);
-                    }
-
-                    // Porównanie bez względu na wielkość liter
-                    const isCorrect = userAnswer.toLowerCase() === originalValue.toLowerCase();
-
-                    input.classList.remove('correct', 'incorrect'); // Reset previous styling
-                    input.classList.add(isCorrect ? 'correct' : 'incorrect');
-                    input.disabled = true; // Zablokuj pole po sprawdzeniu
-
-                    if (isCorrect) {
-                        roundCorrect++;
-                        correctAnswersCount++;
-                    }
-                     totalAnswersChecked++; // Zliczaj każde sprawdzone pole
-                });
-
-                totalScore += roundCorrect; // Dodaj punkty za poprawne odpowiedzi w tej rundzie
-                updateStatsUI();
-
-                showFeedback(`Runda ${currentRound}: Poprawnych ${roundCorrect} z ${roundTotalInputs}.`, false);
-
-                checkButton.disabled = true; // Zablokuj ponowne sprawdzanie
-                checkButton.classList.add('hidden');
-
-                if (currentRound < 4) {
-                     nextRoundButton.classList.remove('hidden'); // Pokaż przycisk następnej rundy
                  } else {
-                     endGame(true); // Zakończ grę po ostatniej rundzie
+                     // Add new text
+                     learningTexts.push({
+                         id: nextId++,
+                         polish: polish,
+                         english: english,
+                         color: color,
+                         accuracy: null, // New text starts with no stats
+                         progress: 0
+                     });
                  }
-            };
 
-            // --- Koniec i Reset Gry ---
+                 renderDashboard();
+                 showView(dashboardView);
+                 // In a real app, you'd save `learningTexts` here
+             }
 
-             const endGame = (completed = false) => {
-                 checkButton.classList.add('hidden');
-                 nextRoundButton.classList.add('hidden');
-                 if (completed) {
-                    showFeedback("Gratulacje! Ukończyłeś wszystkie rundy.", false);
+             // Delete text
+             function deleteText(id) {
+                if (confirm('Czy na pewno chcesz usunąć ten tekst? Tej operacji nie można cofnąć.')) {
+                     learningTexts = learningTexts.filter(text => text.id !== id);
+                     renderDashboard();
+                      // In a real app, you'd save `learningTexts` here
+                }
+             }
+
+            // Start learning mode for a specific text
+            function startLearning(id) {
+                 const text = learningTexts.find(text => text.id === id);
+                 if (text) {
+                     gameTextTitle.textContent = text.polish.split('\n')[0] || 'Wybrany Tekst'; // Use first line as title
+                     console.log("Starting learning for:", text); // Placeholder action
+                     // TODO: Integrate the actual game logic here
+                     // 1. Get polish and english lines:
+                     //    const polishLines = text.polish.split('\n').filter(line => line.trim() !== '');
+                     //    const englishLines = text.english.split('\n').filter(line => line.trim() !== '');
+                     // 2. Clear previous game state (if any)
+                     // 3. Call a function like `initializeGame(polishLines, englishLines)` from the previous script
+                     // 4. Populate #game-area-placeholder and #results-area-placeholder with actual game UI
+                     showView(gameView);
                  } else {
-                    // Może być wywołane np. przez błąd lub ręczne przerwanie (jeśli dodamy taką opcję)
-                    showFeedback("Gra zakończona.", false);
+                    alert("Nie znaleziono tekstu!");
+                    showView(dashboardView); // Go back if text not found
                  }
-                 // Interfejs pozostaje widoczny z wynikami, przycisk reset jest aktywny
-             };
+            }
 
-            const resetGame = () => {
-                // Reset zmiennych stanu
-                originalPolishSentences = [];
-                originalEnglishSentences = [];
-                currentRound = 0;
-                totalScore = 0;
-                roundAttempts = 0;
-                correctAnswersCount = 0;
-                totalAnswersChecked = 0;
-
-                // Reset pól tekstowych
-                polishInput.value = '';
-                englishInput.value = '';
-
-                // Reset interfejsu
-                polishDisplayContent.innerHTML = '';
-                englishChallenge.innerHTML = '';
-                showFeedback('');
-                updateStatsUI(); // Zaktualizuj UI do stanu początkowego
-
-                inputSection.classList.remove('hidden');
-                startButton.classList.remove('hidden');
-                instructionsSection.classList.remove('hidden'); // Pokaż instrukcje ponownie
-                gameArea.classList.add('hidden');
-                gameControls.classList.add('hidden');
-                resultsArea.classList.add('hidden');
-                nextRoundButton.classList.add('hidden');
-                checkButton.classList.remove('hidden'); // Przygotuj na nową grę
-                 checkButton.disabled = false;
-            };
-
-            // --- Aktualizacja UI ---
-
-            const updateStatsUI = () => {
-                currentRoundDisplay.textContent = currentRound;
-                scoreDisplay.textContent = totalScore;
-                attemptsDisplay.textContent = roundAttempts; // Pokazuje liczbę wykonanych sprawdzeń
-                const accuracy = totalAnswersChecked > 0 ? ((correctAnswersCount / totalAnswersChecked) * 100).toFixed(1) : 'N/A';
-                accuracyDisplay.textContent = accuracy === 'N/A' ? 'N/A' : `${accuracy}%`;
-            };
-
-            const showFeedback = (message, isError = false) => {
-                feedback.textContent = message;
-                feedback.style.color = isError ? 'red' : 'green';
-            };
 
             // --- Event Listeners ---
-            startButton.addEventListener('click', startGame);
-            checkButton.addEventListener('click', checkAnswers);
-            nextRoundButton.addEventListener('click', startNextRound);
-            resetButton.addEventListener('click', resetGame);
+            addNewTextBtn.addEventListener('click', () => {
+                showEditForm(); // Show form for adding new text
+            });
+
+            cancelEditBtn.addEventListener('click', () => {
+                showView(dashboardView); // Go back to dashboard without saving
+            });
+
+            saveTextBtn.addEventListener('click', saveText);
+
+             backToDashboardBtn.addEventListener('click', () => {
+                 // TODO: Maybe ask for confirmation if game is in progress?
+                 showView(dashboardView);
+             });
+
+            // Event delegation for buttons within tiles
+            textTilesContainer.addEventListener('click', (event) => {
+                 const button = event.target.closest('button'); // Find the clicked button
+                 if (!button) return; // Exit if click wasn't on a button
+
+                 const id = parseInt(button.dataset.id, 10);
+
+                 if (button.classList.contains('btn-study')) {
+                     startLearning(id);
+                 } else if (button.classList.contains('btn-edit')) {
+                     const textToEdit = learningTexts.find(text => text.id === id);
+                     if (textToEdit) {
+                         showEditForm(textToEdit);
+                     }
+                 } else if (button.classList.contains('btn-delete')) {
+                     deleteText(id);
+                 }
+             });
+
+
+            // --- Initial Setup ---
+            renderDashboard(); // Display initial tiles
+            showView(dashboardView); // Start with the dashboard view
+
         });
     </script>
 
