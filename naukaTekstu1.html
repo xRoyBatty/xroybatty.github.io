@@ -653,14 +653,14 @@
                   englishChallengeContent.innerHTML = challengeHTML;
              };
              // Helper to prevent basic HTML injection if user input has < or >
-             function escapeHtml(unsafe) {
-                 return unsafe
-                      .replace(/&/g, "&")
-                      .replace(/</g, "<")
-                      .replace(/>/g, ">")
-                      .replace(/"/g, """)
-                      .replace(/'/g, "'");
-             }
+            function escapeHtml(unsafe) {
+                return unsafe
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#39;");
+            }
 
 
             // --- Checking Answers ---
