@@ -1,199 +1,400 @@
-// --- Dane Czasowników (takie same jak poprzednio) ---
-const verbData = [
-    { infinitive: "learn", pastSimple: "learned", pastParticiple: "learned", translation: "uczyć się" },
-    { infinitive: "leave", pastSimple: "left", pastParticiple: "left", translation: "opuszczać" },
-    { infinitive: "lose", pastSimple: "lost", pastParticiple: "lost", translation: "zgubić" },
-    { infinitive: "make", pastSimple: "made", pastParticiple: "made", translation: "robić" },
-    { infinitive: "meet", pastSimple: "met", pastParticiple: "met", translation: "spotykać" },
-    { infinitive: "pay", pastSimple: "paid", pastParticiple: "paid", translation: "płacić" },
-    { infinitive: "read", pastSimple: "read", pastParticiple: "read", translation: "czytać" },
-    { infinitive: "put", pastSimple: "put", pastParticiple: "put", translation: "kłaść/położyć" },
-    { infinitive: "ride", pastSimple: "rode", pastParticiple: "ridden", translation: "jeździć" },
-    { infinitive: "run", pastSimple: "ran", pastParticiple: "run", translation: "biegać" },
-    { infinitive: "see", pastSimple: "saw", pastParticiple: "seen", translation: "widzieć" },
-    { infinitive: "sell", pastSimple: "sold", pastParticiple: "sold", translation: "sprzedawać" },
-    { infinitive: "send", pastSimple: "sent", pastParticiple: "sent", translation: "wysyłać" },
-    { infinitive: "sing", pastSimple: "sang", pastParticiple: "sung", translation: "śpiewać" },
-    { infinitive: "sleep", pastSimple: "slept", pastParticiple: "slept", translation: "spać" },
-    { infinitive: "steal", pastSimple: "stole", pastParticiple: "stolen", translation: "kraść" },
-    { infinitive: "swim", pastSimple: "swam", pastParticiple: "swum", translation: "pływać" },
-    { infinitive: "take", pastSimple: "took", pastParticiple: "taken", translation: "brać" },
-    { infinitive: "tell", pastSimple: "told", pastParticiple: "told", translation: "powiedzieć" },
-    { infinitive: "throw", pastSimple: "threw", pastParticiple: "thrown", translation: "rzucać" }
-];
-
-const LEARNED_VERBS_STORAGE_KEY = 'learnedIrregularVerbs_v1';
-
-// --- Referencje DOM ---
-const tableBody = document.getElementById('verbTableBody');
-const hideCountInput = document.getElementById('hideCount');
-const hideFormsBtn = document.getElementById('hideFormsBtn');
-const showAllFormsBtn = document.getElementById('showAllFormsBtn');
-const toggleLearnedBtn = document.getElementById('toggleLearnedBtn');
-
-let learnedVerbs = new Set(); // Zbiór do przechowywania opanowanych bezokoliczników
-
-// --- Funkcje ---
-
-// Funkcja do tasowania tablicy (Fisher-Yates)
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-}
-
-// Wczytywanie stanu opanowanych czasowników z localStorage
-function loadLearnedStatus() {
-    const savedLearned = localStorage.getItem(LEARNED_VERBS_STORAGE_KEY);
-    if (savedLearned) {
-        try {
-            learnedVerbs = new Set(JSON.parse(savedLearned));
-        } catch (e) {
-            console.error("Error loading learned verbs:", e);
-            learnedVerbs = new Set(); // Resetuj w razie błędu
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabela Czasowników Nieregularnych</title>
+    <style>
+        /* --- Podstawowe Style --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
         }
-    } else {
-        learnedVerbs = new Set();
-    }
-    // Uaktualnij klasy wierszy i stan checkboxów po załadowaniu
-    updateLearnedRowsUI();
-}
 
-// Zapisywanie stanu opanowanych czasowników do localStorage
-function saveLearnedStatus() {
-    try {
-        localStorage.setItem(LEARNED_VERBS_STORAGE_KEY, JSON.stringify([...learnedVerbs]));
-    } catch (e) {
-        console.error("Error saving learned verbs:", e);
-    }
-}
+        h1 {
+            text-align: center;
+            color: #0056b3; /* Ciemniejszy niebieski */
+            margin-bottom: 25px;
+        }
 
-// Aktualizacja UI (klas wierszy i checkboxów) na podstawie zbioru learnedVerbs
-function updateLearnedRowsUI() {
-     const rows = tableBody.querySelectorAll('tr');
-     rows.forEach(row => {
-         const checkbox = row.querySelector('input[type="checkbox"]');
-         const verbInfinitive = checkbox.dataset.verb;
-         if (learnedVerbs.has(verbInfinitive)) {
-             row.classList.add('learned-row');
-             checkbox.checked = true;
-         } else {
-             row.classList.remove('learned-row');
-             checkbox.checked = false;
+        .controls {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #e9ecef; /* Jasnoszary */
+            border-radius: 8px;
+            display: flex;
+            flex-wrap: wrap; /* Zawijanie na mniejszych ekranach */
+            gap: 10px; /* Odstępy między elementami */
+            align-items: center; /* Wyrównanie w pionie */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls label {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .controls input[type="number"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 70px; /* Stała szerokość dla inputu */
+        }
+
+        .controls button {
+            padding: 8px 15px;
+            background-color: #007bff; /* Niebieski */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-weight: bold;
+        }
+
+        .controls button:hover {
+            background-color: #0056b3;
+        }
+
+        #toggleLearnedBtn {
+            background-color: #6c757d; /* Szary */
+        }
+        #toggleLearnedBtn:hover {
+            background-color: #5a6268;
+        }
+        #showAllFormsBtn {
+            background-color: #28a745; /* Zielony */
+        }
+        #showAllFormsBtn:hover {
+            background-color: #218838;
+        }
+
+        /* --- Tabela --- */
+        .table-container {
+            overflow-x: auto; /* Umożliwia przewijanie tabeli w poziomie na małych ekranach */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden; /* Aby zaokrąglenie działało z tłem */
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px; /* Więcej paddingu */
+            text-align: left;
+            vertical-align: middle; /* Lepsze wyrównanie w pionie */
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9; /* Zebra dla czytelności */
+        }
+
+        tbody tr:hover {
+            background-color: #e9ecef; /* Podświetlenie wiersza */
+        }
+
+        /* --- Styl dla ukrytych komórek --- */
+        td.verb-form.hidden-form span {
+            visibility: hidden; /* Ukrywa tekst, ale zachowuje miejsce */
+        }
+        /* Opcjonalnie - tło dla ukrytych, by było widać, że coś tam jest */
+        td.verb-form.hidden-form {
+             background-color: #e0e0e0 !important; /* Jasnoszare tło zamiast tekstu, !important by nadpisać hover */
+             color: transparent; /* Upewnia się, że tekst jest niewidoczny */
          }
-     });
-}
 
-// Obsługa zmiany stanu checkboxa "Opanowane"
-function handleLearnedChange(event) {
-    const checkbox = event.target;
-    const verbInfinitive = checkbox.dataset.verb;
-    const row = checkbox.closest('tr'); // Znajdź rodzica - wiersz tabeli
 
-    if (checkbox.checked) {
-        learnedVerbs.add(verbInfinitive);
-        row.classList.add('learned-row');
-    } else {
-        learnedVerbs.delete(verbInfinitive);
-        row.classList.remove('learned-row');
-    }
-    saveLearnedStatus(); // Zapisz zmianę
-}
+        /* --- Styl dla opanowanych wierszy --- */
+        tr.learned-row {
+            /* Stylizacja całego wiersza */
+            opacity: 0.6; /* Lekko przezroczysty */
+            /* Można też dodać np. przekreślenie do komórek tekstowych: */
+            /* text-decoration: line-through; */
+        }
+        tr.learned-row td {
+             /* Można też zmienić tło */
+             /* background-color: #d4edda; */
+        }
 
-// Wypełnianie tabeli danymi czasowników
-function populateTable() {
-    tableBody.innerHTML = ''; // Wyczyść poprzednią zawartość
-    verbData.forEach(verb => {
-        const row = tableBody.insertRow();
+        /* --- Styl dla ukrywania opanowanych wierszy --- */
+        body.hide-learned tr.learned-row {
+            display: none; /* Ukrywa cały wiersz */
+        }
 
-        // 1. Komórka z Checkboxem 'Opanowane'
-        const learnedCell = row.insertCell();
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.dataset.verb = verb.infinitive; // Zapisz bezokolicznik w atrybucie data-*
-        checkbox.addEventListener('change', handleLearnedChange);
-        learnedCell.appendChild(checkbox);
+        /* --- Checkbox --- */
+        td:first-child { /* Pierwsza kolumna (checkbox) */
+            text-align: center;
+        }
+        input[type="checkbox"] {
+            cursor: pointer;
+            transform: scale(1.2); /* Lekkie powiększenie */
+        }
 
-        // 2-5. Komórki z formami czasownika i tłumaczeniem
-        const forms = [verb.infinitive, verb.pastSimple, verb.pastParticiple, verb.translation];
-        forms.forEach((formText, index) => {
-            const cell = row.insertCell();
-             // Dodajemy span do komórek z formami (nie do tłumaczenia)
-             if (index < 3) {
-                 cell.classList.add('verb-form'); // Klasa do identyfikacji komórek z formami
-                 const span = document.createElement('span');
-                 span.textContent = formText;
-                 cell.appendChild(span);
-             } else {
-                 cell.textContent = formText; // Tłumaczenie bez span
-             }
+
+        /* --- Responsywność (Opcjonalnie) --- */
+        @media (max-width: 768px) {
+            th, td {
+                padding: 8px;
+                font-size: 0.9rem; /* Mniejsza czcionka na mniejszych ekranach */
+            }
+            .controls {
+                flex-direction: column;
+                align-items: stretch; /* Przyciski zajmą całą szerokość */
+            }
+            .controls input[type="number"] {
+                width: auto; /* Dostosuj szerokość */
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Tabela Czasowników Nieregularnych - Ćwiczenia</h1>
+
+    <div class="controls">
+        <label for="hideCount">Ukryj losowo form:</label>
+        <input type="number" id="hideCount" value="10" min="0">
+        <button id="hideFormsBtn">Ukryj Formy</button>
+        <button id="showAllFormsBtn">Pokaż Wszystkie</button>
+        <button id="toggleLearnedBtn">Pokaż/Ukryj Opanowane</button>
+    </div>
+
+    <div class="table-container">
+        <table id="verbTable">
+            <thead>
+                <tr>
+                    <th>Opanowane?</th>
+                    <th>Bezokolicznik (Infinitive)</th>
+                    <th>Czas Przeszły (Past Simple)</th>
+                    <th>Imiesłów Bierny (Past Participle)</th>
+                    <th>Tłumaczenie (PL)</th>
+                </tr>
+            </thead>
+            <tbody id="verbTableBody">
+                <!-- Wiersze zostaną dodane przez JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // --- Dane Czasowników (takie same jak poprzednio) ---
+        const verbData = [
+            { infinitive: "learn", pastSimple: "learned", pastParticiple: "learned", translation: "uczyć się" },
+            { infinitive: "leave", pastSimple: "left", pastParticiple: "left", translation: "opuszczać" },
+            { infinitive: "lose", pastSimple: "lost", pastParticiple: "lost", translation: "zgubić" },
+            { infinitive: "make", pastSimple: "made", pastParticiple: "made", translation: "robić" },
+            { infinitive: "meet", pastSimple: "met", pastParticiple: "met", translation: "spotykać" },
+            { infinitive: "pay", pastSimple: "paid", pastParticiple: "paid", translation: "płacić" },
+            { infinitive: "read", pastSimple: "read", pastParticiple: "read", translation: "czytać" },
+            { infinitive: "put", pastSimple: "put", pastParticiple: "put", translation: "kłaść/położyć" },
+            { infinitive: "ride", pastSimple: "rode", pastParticiple: "ridden", translation: "jeździć" },
+            { infinitive: "run", pastSimple: "ran", pastParticiple: "run", translation: "biegać" },
+            { infinitive: "see", pastSimple: "saw", pastParticiple: "seen", translation: "widzieć" },
+            { infinitive: "sell", pastSimple: "sold", pastParticiple: "sold", translation: "sprzedawać" },
+            { infinitive: "send", pastSimple: "sent", pastParticiple: "sent", translation: "wysyłać" },
+            { infinitive: "sing", pastSimple: "sang", pastParticiple: "sung", translation: "śpiewać" },
+            { infinitive: "sleep", pastSimple: "slept", pastParticiple: "slept", translation: "spać" },
+            { infinitive: "steal", pastSimple: "stole", pastParticiple: "stolen", translation: "kraść" },
+            { infinitive: "swim", pastSimple: "swam", pastParticiple: "swum", translation: "pływać" },
+            { infinitive: "take", pastSimple: "took", pastParticiple: "taken", translation: "brać" },
+            { infinitive: "tell", pastSimple: "told", pastParticiple: "told", translation: "powiedzieć" },
+            { infinitive: "throw", pastSimple: "threw", pastParticiple: "thrown", translation: "rzucać" }
+        ];
+
+        const LEARNED_VERBS_STORAGE_KEY = 'learnedIrregularVerbs_v1';
+
+        // --- Referencje DOM ---
+        const tableBody = document.getElementById('verbTableBody');
+        const hideCountInput = document.getElementById('hideCount');
+        const hideFormsBtn = document.getElementById('hideFormsBtn');
+        const showAllFormsBtn = document.getElementById('showAllFormsBtn');
+        const toggleLearnedBtn = document.getElementById('toggleLearnedBtn');
+
+        let learnedVerbs = new Set(); // Zbiór do przechowywania opanowanych bezokoliczników
+
+        // --- Funkcje ---
+
+        // Funkcja do tasowania tablicy (Fisher-Yates)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Wczytywanie stanu opanowanych czasowników z localStorage
+        function loadLearnedStatus() {
+            const savedLearned = localStorage.getItem(LEARNED_VERBS_STORAGE_KEY);
+            if (savedLearned) {
+                try {
+                    learnedVerbs = new Set(JSON.parse(savedLearned));
+                } catch (e) {
+                    console.error("Error loading learned verbs:", e);
+                    learnedVerbs = new Set(); // Resetuj w razie błędu
+                }
+            } else {
+                learnedVerbs = new Set();
+            }
+            // Uaktualnij klasy wierszy i stan checkboxów po załadowaniu
+            updateLearnedRowsUI();
+        }
+
+        // Zapisywanie stanu opanowanych czasowników do localStorage
+        function saveLearnedStatus() {
+            try {
+                localStorage.setItem(LEARNED_VERBS_STORAGE_KEY, JSON.stringify([...learnedVerbs]));
+            } catch (e) {
+                console.error("Error saving learned verbs:", e);
+            }
+        }
+
+        // Aktualizacja UI (klas wierszy i checkboxów) na podstawie zbioru learnedVerbs
+        function updateLearnedRowsUI() {
+             const rows = tableBody.querySelectorAll('tr');
+             rows.forEach(row => {
+                 const checkbox = row.querySelector('input[type="checkbox"]');
+                 if (checkbox) { // Dodano sprawdzenie czy checkbox istnieje
+                    const verbInfinitive = checkbox.dataset.verb;
+                    if (learnedVerbs.has(verbInfinitive)) {
+                        row.classList.add('learned-row');
+                        checkbox.checked = true;
+                    } else {
+                        row.classList.remove('learned-row');
+                        checkbox.checked = false;
+                    }
+                 }
+             });
+        }
+
+        // Obsługa zmiany stanu checkboxa "Opanowane"
+        function handleLearnedChange(event) {
+            const checkbox = event.target;
+            const verbInfinitive = checkbox.dataset.verb;
+            const row = checkbox.closest('tr'); // Znajdź rodzica - wiersz tabeli
+
+            if (checkbox.checked) {
+                learnedVerbs.add(verbInfinitive);
+                row.classList.add('learned-row');
+            } else {
+                learnedVerbs.delete(verbInfinitive);
+                row.classList.remove('learned-row');
+            }
+            saveLearnedStatus(); // Zapisz zmianę
+        }
+
+        // Wypełnianie tabeli danymi czasowników
+        function populateTable() {
+            tableBody.innerHTML = ''; // Wyczyść poprzednią zawartość
+            verbData.forEach(verb => {
+                const row = tableBody.insertRow();
+
+                // 1. Komórka z Checkboxem 'Opanowane'
+                const learnedCell = row.insertCell();
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.dataset.verb = verb.infinitive; // Zapisz bezokolicznik w atrybucie data-*
+                checkbox.addEventListener('change', handleLearnedChange);
+                learnedCell.appendChild(checkbox);
+
+                // 2-5. Komórki z formami czasownika i tłumaczeniem
+                const forms = [verb.infinitive, verb.pastSimple, verb.pastParticiple, verb.translation];
+                forms.forEach((formText, index) => {
+                    const cell = row.insertCell();
+                     // Dodajemy span do komórek z formami (nie do tłumaczenia)
+                     if (index < 3) {
+                         cell.classList.add('verb-form'); // Klasa do identyfikacji komórek z formami
+                         const span = document.createElement('span');
+                         span.textContent = formText;
+                         cell.appendChild(span);
+                     } else {
+                         cell.textContent = formText; // Tłumaczenie bez span
+                     }
+
+                });
+            });
+            // Po wypełnieniu tabeli, załaduj stan checkboxów i wierszy
+            loadLearnedStatus();
+        }
+
+        // Pokazuje wszystkie ukryte formy
+        function showAllForms() {
+            const hiddenCells = tableBody.querySelectorAll('td.verb-form.hidden-form');
+            hiddenCells.forEach(cell => {
+                cell.classList.remove('hidden-form');
+            });
+             // Upewnij się, że input jest wyczyszczony lub ma sensowną wartość
+             hideCountInput.value = Math.max(0, parseInt(hideCountInput.value) || 0);
+        }
+
+        // Ukrywa losową liczbę form
+        function hideRandomForms() {
+            showAllForms(); // Najpierw pokaż wszystko, aby uniknąć problemów przy wielokrotnym klikaniu
+
+            const numToHide = parseInt(hideCountInput.value) || 0;
+            if (numToHide <= 0) return;
+
+            // Zbierz wszystkie komórki z formami (nie tylko widoczne, bo właśnie pokazaliśmy wszystkie)
+            const allFormCells = Array.from(tableBody.querySelectorAll('td.verb-form'));
+
+            if (allFormCells.length === 0) return; // Nic do ukrycia
+
+            shuffleArray(allFormCells); // Potasuj komórki
+
+            // Ukryj maksymalnie tyle, ile jest dostępnych komórek lub ile zażądał użytkownik
+            const actualNumToHide = Math.min(numToHide, allFormCells.length);
+
+            for (let i = 0; i < actualNumToHide; i++) {
+                allFormCells[i].classList.add('hidden-form');
+            }
+        }
+
+        // Przełącza widoczność opanowanych wierszy
+        function toggleLearnedVisibility() {
+            document.body.classList.toggle('hide-learned');
+            // Zaktualizuj tekst przycisku (opcjonalnie)
+            toggleLearnedBtn.textContent = document.body.classList.contains('hide-learned')
+                ? 'Pokaż Opanowane'
+                : 'Ukryj Opanowane';
+        }
+
+
+        // --- Inicjalizacja ---
+        document.addEventListener('DOMContentLoaded', () => {
+            populateTable(); // Wypełnij tabelę przy starcie
+
+            // Dodaj event listenery do przycisków
+            hideFormsBtn.addEventListener('click', hideRandomForms);
+            showAllFormsBtn.addEventListener('click', showAllForms);
+            toggleLearnedBtn.addEventListener('click', toggleLearnedVisibility);
+
+            // Ustaw maksymalną wartość dla inputu 'hideCount'
+            const totalForms = verbData.length * 3; // 3 formy na czasownik
+            if (hideCountInput) { // Sprawdzenie czy element istnieje
+                hideCountInput.max = totalForms;
+                if (parseInt(hideCountInput.value) > totalForms) {
+                    hideCountInput.value = totalForms; // Popraw, jeśli domyślna wartość jest za duża
+                }
+                 // Ustaw początkowy tekst przycisku toggle
+                 toggleLearnedBtn.textContent = document.body.classList.contains('hide-learned')
+                 ? 'Pokaż Opanowane'
+                 : 'Ukryj Opanowane';
+            }
 
         });
-    });
-    // Po wypełnieniu tabeli, załaduj stan checkboxów i wierszy
-    loadLearnedStatus();
-}
-
-// Pokazuje wszystkie ukryte formy
-function showAllForms() {
-    const hiddenCells = tableBody.querySelectorAll('td.verb-form.hidden-form');
-    hiddenCells.forEach(cell => {
-        cell.classList.remove('hidden-form');
-    });
-     // Upewnij się, że input jest wyczyszczony lub ma sensowną wartość
-     hideCountInput.value = Math.max(0, parseInt(hideCountInput.value) || 0);
-}
-
-// Ukrywa losową liczbę form
-function hideRandomForms() {
-    showAllForms(); // Najpierw pokaż wszystko, aby uniknąć problemów przy wielokrotnym klikaniu
-
-    const numToHide = parseInt(hideCountInput.value) || 0;
-    if (numToHide <= 0) return;
-
-    // Zbierz wszystkie komórki z formami (nie tylko widoczne, bo właśnie pokazaliśmy wszystkie)
-    const allFormCells = Array.from(tableBody.querySelectorAll('td.verb-form'));
-
-    if (allFormCells.length === 0) return; // Nic do ukrycia
-
-    shuffleArray(allFormCells); // Potasuj komórki
-
-    // Ukryj maksymalnie tyle, ile jest dostępnych komórek lub ile zażądał użytkownik
-    const actualNumToHide = Math.min(numToHide, allFormCells.length);
-
-    for (let i = 0; i < actualNumToHide; i++) {
-        allFormCells[i].classList.add('hidden-form');
-    }
-}
-
-// Przełącza widoczność opanowanych wierszy
-function toggleLearnedVisibility() {
-    document.body.classList.toggle('hide-learned');
-    // Zaktualizuj tekst przycisku (opcjonalnie)
-    toggleLearnedBtn.textContent = document.body.classList.contains('hide-learned')
-        ? 'Pokaż Opanowane'
-        : 'Ukryj Opanowane';
-}
-
-
-// --- Inicjalizacja ---
-document.addEventListener('DOMContentLoaded', () => {
-    populateTable(); // Wypełnij tabelę przy starcie
-
-    // Dodaj event listenery do przycisków
-    hideFormsBtn.addEventListener('click', hideRandomForms);
-    showAllFormsBtn.addEventListener('click', showAllForms);
-    toggleLearnedBtn.addEventListener('click', toggleLearnedVisibility);
-
-    // Ustaw maksymalną wartość dla inputu 'hideCount'
-    const totalForms = verbData.length * 3; // 3 formy na czasownik
-    hideCountInput.max = totalForms;
-    if (parseInt(hideCountInput.value) > totalForms) {
-        hideCountInput.value = totalForms; // Popraw, jeśli domyślna wartość jest za duża
-    }
-     // Ustaw początkowy tekst przycisku toggle
-     toggleLearnedBtn.textContent = document.body.classList.contains('hide-learned')
-     ? 'Pokaż Opanowane'
-     : 'Ukryj Opanowane';
-});
+    </script>
+</body>
+</html>
