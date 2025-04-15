@@ -65,12 +65,14 @@
         #toggleLearnedBtn:hover {
             background-color: #5a6268;
         }
-        #showAllFormsBtn {
-            background-color: #28a745; /* Zielony */
+         #hideEnglishFormsBtn {
+            background-color: #ffc107; /* Żółty */
+            color: #333;
         }
-        #showAllFormsBtn:hover {
-            background-color: #218838;
+         #hideEnglishFormsBtn:hover {
+            background-color: #e0a800;
         }
+
 
         /* --- Tabela --- */
         .table-container {
@@ -166,6 +168,9 @@
                 width: auto; /* Dostosuj szerokość */
                 margin-bottom: 5px;
             }
+             .controls button { /* Przyciski w kontrolkach */
+                 width: 100%; /* Pełna szerokość na małych ekranach */
+             }
         }
     </style>
 </head>
@@ -175,7 +180,8 @@
     <div class="controls">
         <label for="hideCount">Ukryj losowo pól:</label>
         <input type="number" id="hideCount" value="10" min="0">
-        <button id="hideFormsBtn">Ukryj Pola</button>
+        <button id="hideFormsBtn">Ukryj Losowo</button>
+        <button id="hideEnglishFormsBtn">Ukryj Angielskie</button>
         <button id="showAllFormsBtn">Pokaż Wszystkie</button>
         <button id="toggleLearnedBtn">Pokaż/Ukryj Opanowane</button>
     </div>
@@ -221,12 +227,13 @@
             { infinitive: "throw", pastSimple: "threw", pastParticiple: "thrown", translation: "rzucać" }
         ];
 
-        const LEARNED_VERBS_STORAGE_KEY = 'learnedIrregularVerbs_v3'; // Zmieniony klucz
+        const LEARNED_VERBS_STORAGE_KEY = 'learnedIrregularVerbs_v4'; // Zmieniony klucz
 
         // --- Referencje DOM ---
         const tableBody = document.getElementById('verbTableBody');
         const hideCountInput = document.getElementById('hideCount');
         const hideFormsBtn = document.getElementById('hideFormsBtn');
+        const hideEnglishFormsBtn = document.getElementById('hideEnglishFormsBtn'); // Nowy przycisk
         const showAllFormsBtn = document.getElementById('showAllFormsBtn');
         const toggleLearnedBtn = document.getElementById('toggleLearnedBtn');
 
@@ -338,7 +345,7 @@
             hiddenCells.forEach(cell => {
                 cell.classList.remove('hidden-form');
             });
-             hideCountInput.value = Math.max(0, parseInt(hideCountInput.value) || 0);
+             // hideCountInput.value = Math.max(0, parseInt(hideCountInput.value) || 0); // Nie resetujemy wartości inputu
         }
 
         // Ukrywa losową liczbę form TYLKO w nieopanowanych wierszach
@@ -376,7 +383,6 @@
                     hiddenStatusInRow[rowInfinitive] = { infinitive: false, pastSimple: false, translation: false };
                 }
 
-                // --- SPRAWDZENIE, CZY TO OSTATNIE POLE DO UKRYCIA W WIERSZU ---
                 // Policz, ile pól w tym wierszu jest JUŻ oznaczonych do ukrycia
                 let hiddenCountInThisRow = 0;
                 if (hiddenStatusInRow[rowInfinitive].infinitive) hiddenCountInThisRow++;
@@ -404,6 +410,35 @@
             });
         }
 
+        // Nowa funkcja: Ukrywa wszystkie angielskie formy, zostawia tłumaczenia
+        function hideEnglishForms() {
+            showAllForms(); // Najpierw pokaż wszystko
+
+            // Zbierz wszystkie wiersze, które NIE są oznaczone jako 'learned-row'
+            const unlearnedRows = tableBody.querySelectorAll('tr:not(.learned-row)');
+
+            unlearnedRows.forEach(row => {
+                // Znajdź komórki z formami angielskimi w tym wierszu
+                const infinitiveCell = row.querySelector('td[data-cell-type="infinitive"]');
+                const pastSimpleCell = row.querySelector('td[data-cell-type="pastSimple"]');
+                // Komórka tłumaczenia powinna pozostać widoczna, ale jest częścią hideable-cell
+                const translationCell = row.querySelector('td[data-cell-type="translation"]');
+
+
+                // Ukryj formy angielskie
+                if (infinitiveCell) {
+                    infinitiveCell.classList.add('hidden-form');
+                }
+                if (pastSimpleCell) {
+                    pastSimpleCell.classList.add('hidden-form');
+                }
+                // Tłumaczenie NIE jest ukrywane w tym trybie
+                if (translationCell) {
+                     translationCell.classList.remove('hidden-form'); // Upewnij się, że jest widoczne
+                }
+            });
+        }
+
 
         function toggleLearnedVisibility() {
             document.body.classList.toggle('hide-learned');
@@ -418,8 +453,9 @@
             populateTable();
 
             hideFormsBtn.addEventListener('click', hideRandomForms);
+            hideEnglishFormsBtn.addEventListener('click', hideEnglishForms); // Podłączenie nowego przycisku
             showAllFormsBtn.addEventListener('click', showAllForms);
-            toggleLearnedBtn.addEventListener('click', toggleLearnedVisibility);
+            toggleLearnedBtn.addEventListener('click', toggleLeargedVisibility);
 
             const totalHideableCells = verbData.length * 3; // Infinitive, Past Simple, Translation
             if (hideCountInput) {
