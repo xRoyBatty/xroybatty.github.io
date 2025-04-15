@@ -341,6 +341,8 @@
              hideCountInput.value = Math.max(0, parseInt(hideCountInput.value) || 0);
         }
 
+        // Ukrywa losową liczbę form TYLKO w nieopanowanych wierszach
+        // Zabezpieczenie: Nigdy nie ukrywa ostatniego widocznego pola w wierszu.
         function hideRandomForms() {
             showAllForms(); // Najpierw pokaż wszystko
 
@@ -356,8 +358,9 @@
 
             shuffleArray(candidateCells); // Potasuj kandydatów
 
-            const cellsToActuallyHide = new Set(); // Użyjemy Set, aby łatwo sprawdzać obecność
-            const hiddenFormsInRow = {}; // Obiekt do śledzenia ukrytych form w danym wierszu
+            const cellsToActuallyHide = new Set(); // Użyjemy Set
+            const hiddenStatusInRow = {}; // Obiekt do śledzenia FAKTYCZNIE ukrytych form w danym wierszu
+                                          // Format: { 'infinitive_czasownika': { infinitive: bool, pastSimple: bool, translation: bool } }
 
             for (const candidateCell of candidateCells) {
                 if (cellsToActuallyHide.size >= numToHideRequested) {
@@ -368,32 +371,31 @@
                 const rowInfinitive = row.dataset.infinitive; // ID wiersza
                 const cellType = candidateCell.dataset.cellType;
 
-                // Zainicjuj licznik dla wiersza, jeśli jeszcze nie istnieje
-                if (!hiddenFormsInRow[rowInfinitive]) {
-                    hiddenFormsInRow[rowInfinitive] = { infinitive: false, pastSimple: false, translation: false };
+                // Zainicjuj status dla wiersza, jeśli jeszcze nie istnieje
+                if (!hiddenStatusInRow[rowInfinitive]) {
+                    hiddenStatusInRow[rowInfinitive] = { infinitive: false, pastSimple: false, translation: false };
                 }
 
-                // Sprawdź warunek: czy ukrycie TEJ komórki spowoduje ukrycie obu form I tłumaczenia?
-                // Lub prościej: czy obie formy są już ukryte LUB zostaną ukryte? Jeśli tak, nie ukrywaj tłumaczenia.
+                // --- SPRAWDZENIE, CZY TO OSTATNIE POLE DO UKRYCIA W WIERSZU ---
+                // Policz, ile pól w tym wierszu jest JUŻ oznaczonych do ukrycia
+                let hiddenCountInThisRow = 0;
+                if (hiddenStatusInRow[rowInfinitive].infinitive) hiddenCountInThisRow++;
+                if (hiddenStatusInRow[rowInfinitive].pastSimple) hiddenCountInThisRow++;
+                if (hiddenStatusInRow[rowInfinitive].translation) hiddenCountInThisRow++;
 
-                let wouldHideInfinitive = hiddenFormsInRow[rowInfinitive].infinitive || cellType === 'infinitive';
-                let wouldHidePastSimple = hiddenFormsInRow[rowInfinitive].pastSimple || cellType === 'pastSimple';
-
-                // Warunek specjalny: Jeśli obie formy czasownika miałyby być ukryte...
-                if (wouldHideInfinitive && wouldHidePastSimple) {
-                    // ...to NIE ukrywaj komórki tłumaczenia
-                    if (cellType === 'translation') {
-                        continue; // Pomiń dodawanie tej komórki (tłumaczenia) do ukrycia
-                    }
+                // Jeśli DWA pola są już ukryte, a my próbujemy ukryć TRZECIE, to pomiń
+                if (hiddenCountInThisRow >= 2) {
+                    continue; // Nie ukrywaj ostatniego pola
                 }
 
-                // Jeśli warunek nie został naruszony, dodaj komórkę do ukrycia
+                // Jeśli warunek nie został naruszony (nie próbujemy ukryć ostatniego pola),
+                // dodaj komórkę do ukrycia
                 cellsToActuallyHide.add(candidateCell);
 
-                // Zaktualizuj stan ukrycia dla tego wiersza
-                if (cellType === 'infinitive') hiddenFormsInRow[rowInfinitive].infinitive = true;
-                if (cellType === 'pastSimple') hiddenFormsInRow[rowInfinitive].pastSimple = true;
-                if (cellType === 'translation') hiddenFormsInRow[rowInfinitive].translation = true; // Śledź też tłumaczenie
+                // Zaktualizuj FAKTYCZNY stan ukrycia dla tego wiersza
+                if (cellType === 'infinitive') hiddenStatusInRow[rowInfinitive].infinitive = true;
+                if (cellType === 'pastSimple') hiddenStatusInRow[rowInfinitive].pastSimple = true;
+                if (cellType === 'translation') hiddenStatusInRow[rowInfinitive].translation = true;
             }
 
             // Zastosuj klasę 'hidden-form' do wybranych komórek
