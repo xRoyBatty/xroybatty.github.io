@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tabela Czasowników Nieregularnych</title>
+    <title>Tabela Czasowników Nieregularnych - Ćwiczenia II/III/PL</title>
     <style>
         /* --- Podstawowe Style --- */
         body {
@@ -103,32 +103,32 @@
             background-color: #f9f9f9; /* Zebra dla czytelności */
         }
 
-        tbody tr:hover {
+        tbody tr:hover:not(.learned-row) { /* Nie podświetlaj opanowanych */
             background-color: #e9ecef; /* Podświetlenie wiersza */
         }
 
         /* --- Styl dla ukrytych komórek --- */
-        td.verb-form.hidden-form span {
+        td.hideable-cell.hidden-form span {
             visibility: hidden; /* Ukrywa tekst, ale zachowuje miejsce */
         }
-        /* Opcjonalnie - tło dla ukrytych, by było widać, że coś tam jest */
-        td.verb-form.hidden-form {
+        td.hideable-cell.hidden-form {
              background-color: #e0e0e0 !important; /* Jasnoszare tło zamiast tekstu, !important by nadpisać hover */
              color: transparent; /* Upewnia się, że tekst jest niewidoczny */
-         }
-
+        }
 
         /* --- Styl dla opanowanych wierszy --- */
         tr.learned-row {
-            /* Stylizacja całego wiersza */
-            opacity: 0.6; /* Lekko przezroczysty */
-            /* Można też dodać np. przekreślenie do komórek tekstowych: */
-            /* text-decoration: line-through; */
+            opacity: 0.65; /* Lekko przezroczysty */
         }
-        tr.learned-row td {
-             /* Można też zmienić tło */
-             /* background-color: #d4edda; */
+        /* Nadpisanie styli ukrywania dla opanowanych wierszy - NIC nie ukrywaj */
+        tr.learned-row td.hideable-cell.hidden-form span {
+            visibility: visible !important;
         }
+        tr.learned-row td.hideable-cell.hidden-form {
+            background-color: inherit !important; /* Użyj normalnego tła wiersza */
+            color: inherit !important;           /* Użyj normalnego koloru tekstu */
+        }
+
 
         /* --- Styl dla ukrywania opanowanych wierszy --- */
         body.hide-learned tr.learned-row {
@@ -163,12 +163,12 @@
     </style>
 </head>
 <body>
-    <h1>Tabela Czasowników Nieregularnych - Ćwiczenia</h1>
+    <h1>Tabela Czasowników Nieregularnych - Ćwiczenia (II, III, PL)</h1>
 
     <div class="controls">
-        <label for="hideCount">Ukryj losowo form:</label>
+        <label for="hideCount">Ukryj losowo pól:</label>
         <input type="number" id="hideCount" value="10" min="0">
-        <button id="hideFormsBtn">Ukryj Formy</button>
+        <button id="hideFormsBtn">Ukryj Pola</button>
         <button id="showAllFormsBtn">Pokaż Wszystkie</button>
         <button id="toggleLearnedBtn">Pokaż/Ukryj Opanowane</button>
     </div>
@@ -178,7 +178,6 @@
             <thead>
                 <tr>
                     <th>Opanowane?</th>
-                    <th>Bezokolicznik (Infinitive)</th>
                     <th>Czas Przeszły (Past Simple)</th>
                     <th>Imiesłów Bierny (Past Participle)</th>
                     <th>Tłumaczenie (PL)</th>
@@ -191,8 +190,9 @@
     </div>
 
     <script>
-        // --- Dane Czasowników (takie same jak poprzednio) ---
+        // --- Dane Czasowników ---
         const verbData = [
+            // Używamy bezokolicznika jako unikalnego identyfikatora, mimo że nie jest wyświetlany
             { infinitive: "learn", pastSimple: "learned", pastParticiple: "learned", translation: "uczyć się" },
             { infinitive: "leave", pastSimple: "left", pastParticiple: "left", translation: "opuszczać" },
             { infinitive: "lose", pastSimple: "lost", pastParticiple: "lost", translation: "zgubić" },
@@ -215,7 +215,7 @@
             { infinitive: "throw", pastSimple: "threw", pastParticiple: "thrown", translation: "rzucać" }
         ];
 
-        const LEARNED_VERBS_STORAGE_KEY = 'learnedIrregularVerbs_v1';
+        const LEARNED_VERBS_STORAGE_KEY = 'learnedIrregularVerbs_v2'; // Zmieniony klucz, aby uniknąć konfliktu
 
         // --- Referencje DOM ---
         const tableBody = document.getElementById('verbTableBody');
@@ -224,7 +224,7 @@
         const showAllFormsBtn = document.getElementById('showAllFormsBtn');
         const toggleLearnedBtn = document.getElementById('toggleLearnedBtn');
 
-        let learnedVerbs = new Set(); // Zbiór do przechowywania opanowanych bezokoliczników
+        let learnedVerbs = new Set(); // Zbiór do przechowywania opanowanych bezokoliczników (identyfikatorów)
 
         // --- Funkcje ---
 
@@ -267,8 +267,8 @@
              const rows = tableBody.querySelectorAll('tr');
              rows.forEach(row => {
                  const checkbox = row.querySelector('input[type="checkbox"]');
-                 if (checkbox) { // Dodano sprawdzenie czy checkbox istnieje
-                    const verbInfinitive = checkbox.dataset.verb;
+                 if (checkbox) {
+                    const verbInfinitive = checkbox.dataset.verb; // Używamy infinitive jako ID
                     if (learnedVerbs.has(verbInfinitive)) {
                         row.classList.add('learned-row');
                         checkbox.checked = true;
@@ -283,12 +283,16 @@
         // Obsługa zmiany stanu checkboxa "Opanowane"
         function handleLearnedChange(event) {
             const checkbox = event.target;
-            const verbInfinitive = checkbox.dataset.verb;
-            const row = checkbox.closest('tr'); // Znajdź rodzica - wiersz tabeli
+            const verbInfinitive = checkbox.dataset.verb; // Używamy infinitive jako ID
+            const row = checkbox.closest('tr');
 
             if (checkbox.checked) {
                 learnedVerbs.add(verbInfinitive);
                 row.classList.add('learned-row');
+                // Po oznaczeniu jako opanowany, upewnij się, że wszystkie pola są widoczne
+                row.querySelectorAll('td.hideable-cell').forEach(cell => {
+                    cell.classList.remove('hidden-form');
+                });
             } else {
                 learnedVerbs.delete(verbInfinitive);
                 row.classList.remove('learned-row');
@@ -306,24 +310,18 @@
                 const learnedCell = row.insertCell();
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
-                checkbox.dataset.verb = verb.infinitive; // Zapisz bezokolicznik w atrybucie data-*
+                checkbox.dataset.verb = verb.infinitive; // Używamy infinitive jako ID wiersza
                 checkbox.addEventListener('change', handleLearnedChange);
                 learnedCell.appendChild(checkbox);
 
-                // 2-5. Komórki z formami czasownika i tłumaczeniem
-                const forms = [verb.infinitive, verb.pastSimple, verb.pastParticiple, verb.translation];
-                forms.forEach((formText, index) => {
+                // 2-4. Komórki z formami (II, III) i tłumaczeniem
+                const formsToDisplay = [verb.pastSimple, verb.pastParticiple, verb.translation];
+                formsToDisplay.forEach((formText) => {
                     const cell = row.insertCell();
-                     // Dodajemy span do komórek z formami (nie do tłumaczenia)
-                     if (index < 3) {
-                         cell.classList.add('verb-form'); // Klasa do identyfikacji komórek z formami
-                         const span = document.createElement('span');
-                         span.textContent = formText;
-                         cell.appendChild(span);
-                     } else {
-                         cell.textContent = formText; // Tłumaczenie bez span
-                     }
-
+                    cell.classList.add('hideable-cell'); // Wszystkie 3 mogą być ukryte
+                    const span = document.createElement('span');
+                    span.textContent = formText;
+                    cell.appendChild(span);
                 });
             });
             // Po wypełnieniu tabeli, załaduj stan checkboxów i wierszy
@@ -332,40 +330,41 @@
 
         // Pokazuje wszystkie ukryte formy
         function showAllForms() {
-            const hiddenCells = tableBody.querySelectorAll('td.verb-form.hidden-form');
+            const hiddenCells = tableBody.querySelectorAll('td.hideable-cell.hidden-form');
             hiddenCells.forEach(cell => {
                 cell.classList.remove('hidden-form');
             });
-             // Upewnij się, że input jest wyczyszczony lub ma sensowną wartość
+             // Upewnij się, że input ma sensowną wartość
              hideCountInput.value = Math.max(0, parseInt(hideCountInput.value) || 0);
         }
 
-        // Ukrywa losową liczbę form
+        // Ukrywa losową liczbę form TYLKO w nieopanowanych wierszach
         function hideRandomForms() {
-            showAllForms(); // Najpierw pokaż wszystko, aby uniknąć problemów przy wielokrotnym klikaniu
+            showAllForms(); // Najpierw pokaż wszystko
 
             const numToHide = parseInt(hideCountInput.value) || 0;
             if (numToHide <= 0) return;
 
-            // Zbierz wszystkie komórki z formami (nie tylko widoczne, bo właśnie pokazaliśmy wszystkie)
-            const allFormCells = Array.from(tableBody.querySelectorAll('td.verb-form'));
+            // Zbierz wszystkie komórki do ukrycia TYLKO z wierszy NIE oznaczonych jako 'learned-row'
+            const hideableCellsInUnlearnedRows = Array.from(
+                tableBody.querySelectorAll('tr:not(.learned-row) td.hideable-cell')
+            );
 
-            if (allFormCells.length === 0) return; // Nic do ukrycia
+            if (hideableCellsInUnlearnedRows.length === 0) return; // Nic do ukrycia
 
-            shuffleArray(allFormCells); // Potasuj komórki
+            shuffleArray(hideableCellsInUnlearnedRows); // Potasuj komórki z nieopanowanych wierszy
 
             // Ukryj maksymalnie tyle, ile jest dostępnych komórek lub ile zażądał użytkownik
-            const actualNumToHide = Math.min(numToHide, allFormCells.length);
+            const actualNumToHide = Math.min(numToHide, hideableCellsInUnlearnedRows.length);
 
             for (let i = 0; i < actualNumToHide; i++) {
-                allFormCells[i].classList.add('hidden-form');
+                hideableCellsInUnlearnedRows[i].classList.add('hidden-form');
             }
         }
 
         // Przełącza widoczność opanowanych wierszy
         function toggleLearnedVisibility() {
             document.body.classList.toggle('hide-learned');
-            // Zaktualizuj tekst przycisku (opcjonalnie)
             toggleLearnedBtn.textContent = document.body.classList.contains('hide-learned')
                 ? 'Pokaż Opanowane'
                 : 'Ukryj Opanowane';
@@ -382,11 +381,15 @@
             toggleLearnedBtn.addEventListener('click', toggleLearnedVisibility);
 
             // Ustaw maksymalną wartość dla inputu 'hideCount'
-            const totalForms = verbData.length * 3; // 3 formy na czasownik
-            if (hideCountInput) { // Sprawdzenie czy element istnieje
-                hideCountInput.max = totalForms;
-                if (parseInt(hideCountInput.value) > totalForms) {
-                    hideCountInput.value = totalForms; // Popraw, jeśli domyślna wartość jest za duża
+            // Teraz mamy 3 pola do ukrycia na czasownik
+            const totalHideableCells = verbData.length * 3;
+            if (hideCountInput) {
+                hideCountInput.max = totalHideableCells;
+                 // Popraw wartość początkową, jeśli jest większa niż max
+                if (parseInt(hideCountInput.value) > totalHideableCells) {
+                    hideCountInput.value = Math.floor(totalHideableCells / 2); // Ustaw np. na połowę
+                } else if (parseInt(hideCountInput.value) < 0) {
+                     hideCountInput.value = 0;
                 }
                  // Ustaw początkowy tekst przycisku toggle
                  toggleLearnedBtn.textContent = document.body.classList.contains('hide-learned')
