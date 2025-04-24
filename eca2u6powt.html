@@ -3,388 +3,443 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checklista - Language Test (Rozdział 6)</title>
+    <title>Interaktywna Checklista - Rozdział 6</title>
     <style>
         body {
             font-family: sans-serif;
             line-height: 1.6;
             margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
         h1, h2 {
             color: #0056b3;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 5px;
-        }
-        h2 {
-             margin-top: 30px;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 8px;
+            text-align: center;
         }
         h3 {
             color: #333;
-            margin-top: 20px;
-            font-size: 1.1em;
+            margin-top: 25px;
+            font-size: 1.2em;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
         }
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             cursor: pointer;
-            padding-left: 5px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+            border: 1px solid #eee;
+        }
+        label:hover {
+            background-color: #f0f8ff;
         }
         input[type="checkbox"] {
-            margin-right: 10px;
-            vertical-align: middle; /* Lepsze wyrównanie */
+            margin-right: 12px;
+            vertical-align: middle;
+            transform: scale(1.1); /* Slightly larger checkboxes */
         }
-        .section {
+        .task {
+            display: none; /* Initially hide all tasks */
             margin-bottom: 25px;
-            padding: 15px;
-            border: 1px solid #eee;
+            padding: 20px;
+            border: 1px solid #ddd;
             border-radius: 5px;
-            background-color: #f9f9f9;
+            background-color: #fdfdfd;
         }
-        .task-section {
-            margin-left: 15px;
-            padding-left: 15px;
-            border-left: 2px solid #0056b3;
+        .task.active {
+            display: block; /* Show the current task */
         }
-         .sub-heading {
+        .sub-heading {
             font-weight: bold;
             margin-top: 15px;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
             color: #555;
-         }
-        .instruction {
-            margin-top: 40px;
+            font-size: 1.05em;
+        }
+        .level-basic {
+            /* Optional: Add visual cue for basic items */
+            /* background-color: #e9f5e9; */
+             border-left: 3px solid #4CAF50; /* Green border for basic */
+             padding-left: 10px;
+        }
+        .level-advanced {
+             border-left: 3px solid #FFC107; /* Amber border for advanced */
+             padding-left: 10px;
+             /* font-style: italic; */
+        }
+        .level-tag {
             font-weight: bold;
-            color: #d9534f;
+            font-size: 0.85em;
+            margin-left: 8px;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #fff;
+        }
+        .tag-basic {
+            background-color: #4CAF50; /* Green */
+        }
+        .tag-advanced {
+            background-color: #FF9800; /* Orange */
+        }
+
+        .navigation {
             text-align: center;
-            padding: 10px;
-            border: 1px solid #d9534f;
-            background-color: #f2dede;
+            margin-top: 30px;
+        }
+        button {
+            padding: 12px 25px;
+            font-size: 1em;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.2s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        #summary {
+            display: none; /* Hide summary initially */
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #0056b3;
+            background-color: #e7f3ff;
             border-radius: 5px;
         }
+         #summary h2 {
+             margin-top: 0;
+             color: #0056b3;
+             border-bottom: 1px solid #0056b3;
+         }
+        #summary ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+         #summary li {
+             margin-bottom: 8px;
+             padding: 5px;
+             background-color: #fff;
+             border-radius: 3px;
+             border-left: 4px solid #dc3545; /* Red border for items to review */
+         }
+         #summary h4 {
+             margin-top: 15px;
+             margin-bottom: 5px;
+             color: #333;
+         }
+         .summary-item .level-tag {
+             margin-left: 5px;
+         }
     </style>
 </head>
 <body>
 
-<h1>Checklista do Language Test (Rozdział 6)</h1>
-<p>Zaznacz słowa i zasady gramatyczne, które już znasz i rozumiesz w kontekście każdego zadania. To, co pozostanie nieodznaczone, zapisz w zeszycie jako materiał do powtórki.</p>
+<div class="container">
+    <h1>Interaktywna Checklista - Rozdział 6</h1>
+    <p id="intro">Przejdź przez kolejne zadania, zaznaczając słowa i zasady gramatyczne, które już znasz. Na końcu zobaczysz podsumowanie tego, co warto powtórzyć.</p>
 
-<div class="section">
-    <h2>LISTENING</h2>
-    <div class="task-section">
+    <!-- Task Sections - Add all task sections here -->
+    <!-- Example Task Structure (Repeat for all tasks from previous HTML) -->
+
+    <div class="task" data-task-id="1" data-task-name="LISTENING: Zadanie 1 - Przepis">
+        <h2>LISTENING</h2>
         <h3>Zadanie 1: Uzupełnianie przepisu (Track 6 - Tosty francuskie)</h3>
         <p class="sub-heading">Słownictwo (rozumienie ze słuchu):</p>
-        <label><input type="checkbox"> jajka</label>
-        <label><input type="checkbox"> filiżanki / szklanki</label>
-        <label><input type="checkbox"> mleko</label>
-        <label><input type="checkbox"> sól</label>
-        <label><input type="checkbox"> cukier</label>
-        <label><input type="checkbox"> masło</label>
-        <label><input type="checkbox"> chleb</label>
-        <label><input type="checkbox"> ubijać</label>
-        <label><input type="checkbox"> miska</label>
-        <label><input type="checkbox"> dodawać</label>
-        <label><input type="checkbox"> kroić w plastry</label>
-        <label><input type="checkbox"> kawałki / kromki</label>
-        <label><input type="checkbox"> przepis</label>
-        <label><input type="checkbox"> kłaść / wkładać</label>
-        <label><input type="checkbox"> patelnia</label>
-        <label><input type="checkbox"> smażyć</label>
-        <label><input type="checkbox"> minuty</label>
-        <label><input type="checkbox"> strona (np. patelni)</label>
-        <label><input type="checkbox"> sekundy</label>
-        <label><input type="checkbox"> podawać (jedzenie)</label>
-        <label><input type="checkbox"> dżem</label>
-        <label><input type="checkbox"> miód</label>
-        <label><input type="checkbox"> owoce</label>
-        <label><input type="checkbox"> liczebniki (three, one and a half / 1/2, eight, two, fifteen / 15)</label>
-        <label><input type="checkbox"> określenia (a little, some)</label>
+        <label class="level-basic"><input type="checkbox"> jajka <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> filiżanki / szklanki <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> mleko <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> sól <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> cukier <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> masło <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> chleb <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> ubijać <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> miska <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> dodawać <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> kroić w plastry <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> kawałki / kromki <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-advanced"><input type="checkbox"> przepis <span class="level-tag tag-advanced">Rozszerzenie</span></label>
+        <label class="level-basic"><input type="checkbox"> kłaść / wkładać <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> patelnia <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> smażyć <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> minuty <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> strona (np. patelni) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> sekundy <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> podawać (jedzenie) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> dżem <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> miód <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> owoce <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> liczebniki (three, one and a half / 1/2, eight, two, fifteen / 15) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> określenia (a little, some) <span class="level-tag tag-basic">Podstawa</span></label>
         <p class="sub-heading">Gramatyka (rozumienie ze słuchu):</p>
-        <label><input type="checkbox"> Rozumienie trybu rozkazującego (poleceń w przepisie)</label>
-        <label><input type="checkbox"> Rozumienie określeń ilości i liczb</label>
-        <label><input type="checkbox"> Rozumienie sekwencji czynności (First, Then)</label>
+        <label class="level-basic"><input type="checkbox"> Rozumienie trybu rozkazującego (poleceń w przepisie) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> Rozumienie określeń ilości i liczb <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-advanced"><input type="checkbox"> Rozumienie sekwencji czynności (First, Then) <span class="level-tag tag-advanced">Rozszerzenie</span></label>
     </div>
-</div>
 
-<div class="section">
-    <h2>VOCABULARY</h2>
-    <div class="task-section">
+    <div class="task" data-task-id="2" data-task-name="VOCABULARY: Zadanie 2 - Przepis na ciasteczka">
+        <h2>VOCABULARY</h2>
         <h3>Zadanie 2: Wybór słów w przepisie (Ciasteczka maślane)</h3>
-        <p class="sub-heading">Słownictwo:</p>
-        <label><input type="checkbox"> gotować (w wodzie)</label>
-        <label><input type="checkbox"> ubijać</label>
-        <label><input type="checkbox"> masło</label>
-        <label><input type="checkbox"> cukier</label>
-        <label><input type="checkbox"> razem</label>
-        <label><input type="checkbox"> duży</label>
-        <label><input type="checkbox"> piekarnik</label>
-        <label><input type="checkbox"> miska</label>
-        <label><input type="checkbox"> dodawać</label>
-        <label><input type="checkbox"> kroić w plastry</label>
-        <label><input type="checkbox"> mąka</label>
-        <label><input type="checkbox"> mieszać</label>
-        <label><input type="checkbox"> smażyć</label>
-        <label><input type="checkbox"> dobrze (np. wymieszać)</label>
-        <label><input type="checkbox"> robić (np. ciasteczka)</label>
-        <label><input type="checkbox"> mały</label>
-        <label><input type="checkbox"> okrągły</label>
-        <label><input type="checkbox"> ciasteczka / herbatniki</label>
-        <label><input type="checkbox"> piec (mięso, warzywa)</label>
-        <label><input type="checkbox"> piec (ciasto, chleb)</label>
-        <label><input type="checkbox"> garnek</label>
-        <label><input type="checkbox"> minuty</label>
-        <label><input type="checkbox"> gotowe</label>
-        <label><input type="checkbox"> brązowe</label>
+         <p class="sub-heading">Słownictwo:</p>
+        <label class="level-advanced"><input type="checkbox"> gotować (w wodzie) <span class="level-tag tag-advanced">Rozszerzenie</span></label>
+        <label class="level-basic"><input type="checkbox"> ubijać <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> masło <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> cukier <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> razem <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> duży <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> piekarnik <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> miska <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> dodawać <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> kroić w plastry <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> mąka <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> mieszać <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> smażyć <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> dobrze (np. wymieszać) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> robić (np. ciasteczka) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> mały <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> okrągły <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> ciasteczka / herbatniki <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-advanced"><input type="checkbox"> piec (mięso, warzywa) <span class="level-tag tag-advanced">Rozszerzenie</span></label>
+        <label class="level-basic"><input type="checkbox"> piec (ciasto, chleb) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> garnek <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> minuty <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> gotowe <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> brązowe <span class="level-tag tag-basic">Podstawa</span></label>
         <p class="sub-heading">Gramatyka:</p>
-        <label><input type="checkbox"> Rozumienie czasowników w trybie rozkazującym (instrukcje)</label>
+        <label class="level-basic"><input type="checkbox"> Rozumienie czasowników w trybie rozkazującym (instrukcje) <span class="level-tag tag-basic">Podstawa</span></label>
     </div>
 
-    <div class="task-section">
+    <div class="task" data-task-id="3" data-task-name="VOCABULARY: Zadanie 3 - Przedmioty kuchenne">
+        <h2>VOCABULARY</h2>
         <h3>Zadanie 3: Uzupełnianie zdań nazwami przedmiotów kuchennych</h3>
         <p class="sub-heading">Słownictwo:</p>
-        <label><input type="checkbox"> widelec</label>
-        <label><input type="checkbox"> szklanka</label>
-        <label><input type="checkbox"> kubek</label>
-        <label><input type="checkbox"> patelnia</label>
-        <label><input type="checkbox"> łyżka</label>
-        <label><input type="checkbox"> forma do pieczenia (np. ciasta)</label>
-        <label><input type="checkbox"> filiżanka</label>
-        <label><input type="checkbox"> nóż</label>
-        <label><input type="checkbox"> garnek</label>
-        <label><input type="checkbox"> woda</label>
-        <label><input type="checkbox"> piec (ciasto)</label>
-        <label><input type="checkbox"> gotować (jajka)</label>
-        <label><input type="checkbox"> pić</label>
-        <label><input type="checkbox"> gorąca czekolada</label>
-        <label><input type="checkbox"> ulubiony</label>
-        <label><input type="checkbox"> jeść</label>
-        <label><input type="checkbox"> zupa</label>
-        <label><input type="checkbox"> kawa</label>
-        <label><input type="checkbox"> robić (zupę)</label>
-        <label><input type="checkbox"> ostry (nóż)</label>
-        <label><input type="checkbox"> kroić</label>
-        <label><input type="checkbox"> mięso</label>
-        <label><input type="checkbox"> lody</label>
-        <label><input type="checkbox"> sok pomarańczowy</label>
-        <label><input type="checkbox"> śniadanie</label>
+        <label class="level-basic"><input type="checkbox"> widelec <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> szklanka <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> kubek <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> patelnia <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> łyżka <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> forma do pieczenia (np. ciasta) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> filiżanka <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> nóż <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> garnek <span class="level-tag tag-basic">Podstawa</span></label>
         <p class="sub-heading">Gramatyka:</p>
-        <label><input type="checkbox"> Rozpoznawanie rzeczowników i ich użycia w kontekście</label>
+        <label class="level-basic"><input type="checkbox"> Rozpoznawanie rzeczowników i ich użycia w kontekście <span class="level-tag tag-basic">Podstawa</span></label>
     </div>
 
-    <div class="task-section">
+     <div class="task" data-task-id="4" data-task-name="VOCABULARY: Zadanie 4 - Przymiotniki opisujące jedzenie">
+        <h2>VOCABULARY</h2>
         <h3>Zadanie 4: Uzupełnianie przymiotników opisujących jedzenie</h3>
         <p class="sub-heading">Słownictwo:</p>
-        <label><input type="checkbox"> świetny kucharz</label>
-        <label><input type="checkbox"> posiłki</label>
-        <label><input type="checkbox"> pyszny</label>
-        <label><input type="checkbox"> cytryny</label>
-        <label><input type="checkbox"> kwaśny</label>
-        <label><input type="checkbox"> owoc</label>
-        <label><input type="checkbox"> dużo cukru</label>
-        <label><input type="checkbox"> ciasteczka / herbatniki</label>
-        <label><input type="checkbox"> słodki</label>
-        <label><input type="checkbox"> restauracja</label>
-        <label><input type="checkbox"> brudna kuchnia</label>
-        <label><input type="checkbox"> jedzenie</label>
-        <label><input type="checkbox"> obrzydliwy / wstrętny</label>
-        <label><input type="checkbox"> makaron</label>
-        <label><input type="checkbox"> sos pomidorowy</label>
-        <label><input type="checkbox"> papryczki chilli</label>
-        <label><input type="checkbox"> pikantny / ostry</label>
-        <label><input type="checkbox"> popcorn</label>
-        <label><input type="checkbox"> sól</label>
-        <label><input type="checkbox"> słony</label>
-        <label><input type="checkbox"> wystarczająco</label>
-        <label><input type="checkbox"> ryba</label>
-        <label><input type="checkbox"> pachnieć / śmierdzieć</label>
-        <label><input type="checkbox"> źle / brzydko</label>
-        <label><input type="checkbox"> zielone jabłka</label>
+        <label class="level-basic"><input type="checkbox"> pyszny <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> kwaśny <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> słodki <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-advanced"><input type="checkbox"> obrzydliwy / wstrętny <span class="level-tag tag-advanced">Rozszerzenie</span></label>
+        <label class="level-basic"><input type="checkbox"> pikantny / ostry <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> słony <span class="level-tag tag-basic">Podstawa</span></label>
         <p class="sub-heading">Gramatyka:</p>
-        <label><input type="checkbox"> Rozumienie znaczenia przymiotników opisujących smak i jakość jedzenia</label>
+        <label class="level-basic"><input type="checkbox"> Rozumienie znaczenia przymiotników opisujących smak i jakość jedzenia <span class="level-tag tag-basic">Podstawa</span></label>
     </div>
-</div>
 
-<div class="section">
-    <h2>GRAMMAR</h2>
-    <div class="task-section">
+    <div class="task" data-task-id="5" data-task-name="GRAMMAR: Zadanie 5 - Present Perfect w notatce">
+        <h2>GRAMMAR</h2>
         <h3>Zadanie 5: Uzupełnianie notatki czasem Present Perfect</h3>
-        <p class="sub-heading">Słownictwo (czasowniki do użycia w Present Perfect):</p>
-        <label><input type="checkbox"> mieć (np. śniadanie)</label>
-        <label><input type="checkbox"> sprzątać</label>
-        <label><input type="checkbox"> kłaść / wkładać</label>
-        <label><input type="checkbox"> ładować (zmywarkę)</label>
-        <label><input type="checkbox"> robić (łóżko, ciasto)</label>
-        <label><input type="checkbox"> zostawiać</label>
         <p class="sub-heading">Gramatyka:</p>
-        <label><input type="checkbox"> Tworzenie zdań twierdzących w Present Perfect (have/has + Past Participle)</label>
-        <label><input type="checkbox"> Tworzenie zdań przeczących w Present Perfect (haven't/hasn't + Past Participle)</label>
-        <label><input type="checkbox"> Znajomość form Past Participle: had, cleaned, put, loaded, made, left</label>
-        <label><input type="checkbox"> Dopasowanie 'have'/'has' do podmiotu</label>
+        <label class="level-basic"><input type="checkbox"> Tworzenie zdań twierdzących w Present Perfect (have/has + Past Participle) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> Tworzenie zdań przeczących w Present Perfect (haven't/hasn't + Past Participle) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> Znajomość form Past Participle: had, cleaned, put, loaded, made, left <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> Dopasowanie 'have'/'has' do podmiotu <span class="level-tag tag-basic">Podstawa</span></label>
     </div>
 
-    <div class="task-section">
-        <h3>Zadanie 6: Pisanie pytań i odpowiedzi w Present Perfect</h3>
-        <p class="sub-heading">Słownictwo (czasowniki i kontekst):</p>
-        <label><input type="checkbox"> myć</label>
-        <label><input type="checkbox"> brudna podłoga</label>
-        <label><input type="checkbox"> być</label>
-        <label><input type="checkbox"> w telewizji</label>
-        <label><input type="checkbox"> kupować</label>
-        <label><input type="checkbox"> warzywa</label>
-        <label><input type="checkbox"> jeść</label>
-        <label><input type="checkbox"> meksykańskie jedzenie</label>
-        <label><input type="checkbox"> makaron z pesto</label>
-        <label><input type="checkbox"> owoc</label>
+    <div class="task" data-task-id="6" data-task-name="GRAMMAR: Zadanie 6 - Pytania i odpowiedzi Present Perfect">
+        <h2>GRAMMAR</h2>
+        <h3>Zadanie 6: Pisanie pytań i odpowiedzi w czasie Present Perfect</h3>
         <p class="sub-heading">Gramatyka:</p>
-        <label><input type="checkbox"> Tworzenie pytań w Present Perfect (Have/Has + podmiot + [ever] + Past Participle...?)</label>
-        <label><input type="checkbox"> Tworzenie krótkich odpowiedzi twierdzących (Yes, ... has/have.)</label>
-        <label><input type="checkbox"> Tworzenie krótkich odpowiedzi przeczących (No, ... hasn't/haven't.)</label>
-        <label><input type="checkbox"> Użycie 'ever' w pytaniach o doświadczenia</label>
-        <label><input type="checkbox"> Znajomość form Past Participle: washed, been, bought, eaten</label>
+        <label class="level-basic"><input type="checkbox"> Tworzenie pytań w Present Perfect (Have/Has + podmiot + [ever] + Past Participle...?) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> Tworzenie krótkich odpowiedzi twierdzących (Yes, ... has/have.) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> Tworzenie krótkich odpowiedzi przeczących (No, ... hasn't/haven't.) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-advanced"><input type="checkbox"> Użycie 'ever' w pytaniach o doświadczenia <span class="level-tag tag-advanced">Rozszerzenie</span></label>
+        <label class="level-basic"><input type="checkbox"> Znajomość form Past Participle: washed, been, bought, eaten <span class="level-tag tag-basic">Podstawa</span></label>
     </div>
-</div>
 
-<div class="section">
-    <h2>SPEAKING</h2>
-    <div class="task-section">
+    <div class="task" data-task-id="7" data-task-name="SPEAKING: Zadanie 7 - Wybór odpowiedzi w dialogach">
+        <h2>SPEAKING</h2>
         <h3>Zadanie 7: Wybór poprawnych odpowiedzi w dialogach</h3>
-        <p class="sub-heading">Słownictwo i Frazesy:</p>
-        <label><input type="checkbox"> iść do kina</label>
-        <label><input type="checkbox"> oglądać DVD</label>
-        <label><input type="checkbox"> grzyby</label>
-        <label><input type="checkbox"> szynka</label>
-        <label><input type="checkbox"> iść do domu</label>
-        <label><input type="checkbox"> teraz</label>
-        <label><input type="checkbox"> ja też</label>
-        <label><input type="checkbox"> sałatka</label>
-        <label><input type="checkbox"> owoc</label>
-        <label><input type="checkbox"> ryba</label>
-        <label><input type="checkbox"> mięso</label>
-        <label><input type="checkbox"> jajka</label>
-        <label><input type="checkbox"> pomidory</label>
-        <label><input type="checkbox"> jeść lunch</label>
         <p class="sub-heading">Gramatyka i Funkcje Językowe:</p>
-        <label><input type="checkbox"> Proponowanie: Would you like to...?</label>
-        <label><input type="checkbox"> Proponowanie: Would you like + rzeczownik?</label>
-        <label><input type="checkbox"> Wyrażanie braku preferencji: You choose.</label>
-        <label><input type="checkbox"> Wyrażanie braku preferencji: I don't mind.</label>
-        <label><input type="checkbox"> Wyrażanie chęci: I'd like to...</label>
-        <label><input type="checkbox"> Wyrażanie preferencji: I'd prefer...</label>
+        <label class="level-basic"><input type="checkbox"> Proponowanie: Would you like to...? <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> Proponowanie: Would you like + rzeczownik? <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> Wyrażanie braku preferencji: You choose. <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-advanced"><input type="checkbox"> Wyrażanie braku preferencji: I don't mind. <span class="level-tag tag-advanced">Rozszerzenie</span></label>
+        <label class="level-basic"><input type="checkbox"> Wyrażanie chęci: I'd like to... <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> Wyrażanie preferencji: I'd prefer... <span class="level-tag tag-basic">Podstawa</span></label>
     </div>
-</div>
 
-<div class="section">
-    <h2>READING</h2>
-    <div class="task-section">
+    <div class="task" data-task-id="8" data-task-name="READING: Zadanie 8 - Czytanie opisów kawiarni">
+        <h2>READING</h2>
         <h3>Zadanie 8: Czytanie opisów kawiarni i odpowiadanie na pytania</h3>
-        <p class="sub-heading">Słownictwo:</p>
-        <label><input type="checkbox"> kawiarnia</label>
-        <label><input type="checkbox"> najlepszy dla</label>
-        <label><input type="checkbox"> ktoś kto</label>
-        <label><input type="checkbox"> potrzebować</label>
-        <label><input type="checkbox"> używać internetu</label>
-        <label><input type="checkbox"> chcieć</label>
-        <label><input type="checkbox"> siedzieć</label>
-        <label><input type="checkbox"> czytać</label>
-        <label><input type="checkbox"> szukać rzeczy online</label>
-        <label><input type="checkbox"> grupa młodych ludzi</label>
-        <label><input type="checkbox"> spędzać popołudnie razem</label>
-        <label><input type="checkbox"> szukać (czegoś)</label>
-        <label><input type="checkbox"> tania przekąska</label>
-        <label><input type="checkbox"> lubić / czerpać przyjemność</label>
-        <label><input type="checkbox"> słodycze</label>
-        <label><input type="checkbox"> para (osób)</label>
-        <label><input type="checkbox"> ciche miejsce</label>
-        <label><input type="checkbox"> zjeść lunch</label>
-        <label><input type="checkbox"> zawsze zajęty</label>
-        <label><input type="checkbox"> świetna atmosfera</label>
-        <label><input type="checkbox"> robić się trochę głośno</label>
-        <label><input type="checkbox"> przyjaciele</label>
-        <label><input type="checkbox"> spędzać czas / spotykać się</label>
-        <label><input type="checkbox"> w weekend</label>
-        <label><input type="checkbox"> kawa</label>
-        <label><input type="checkbox"> sprzedawać</label>
-        <label><input type="checkbox"> smaczne kanapki</label>
-        <label><input type="checkbox"> sałatki owocowe</label>
-        <label><input type="checkbox"> niesamowite zupy warzywne</label>
-        <label><input type="checkbox"> drogie</label>
-        <label><input type="checkbox"> kanapka z grillowanym kurczakiem</label>
-        <label><input type="checkbox"> najlepsza jaką kiedykolwiek jadłem</label>
-        <label><input type="checkbox"> sofy</label>
-        <label><input type="checkbox"> wygodne</label>
-        <label><input type="checkbox"> jednak / chociaż</label>
-        <label><input type="checkbox"> chłopak (sympatia)</label>
-        <label><input type="checkbox"> znaleźć</label>
-        <label><input type="checkbox"> małe miejsce</label>
-        <label><input type="checkbox"> przez przypadek</label>
-        <label><input type="checkbox"> lasagne</label>
-        <label><input type="checkbox"> po prostu spróbuj</label>
-        <label><input type="checkbox"> zobaczysz</label>
-        <label><input type="checkbox"> nigdy nie jadłeś niczego tak smacznego</label>
-        <label><input type="checkbox"> mały pokój</label>
-        <label><input type="checkbox"> stoły</label>
-        <label><input type="checkbox"> naprawdę miły</label>
-        <label><input type="checkbox"> zmęczony hałasem</label>
-        <label><input type="checkbox"> zazwyczaj</label>
-        <label><input type="checkbox"> wielu ludzi</label>
-        <label><input type="checkbox"> gazety</label>
-        <label><input type="checkbox"> czasopisma</label>
-        <label><input type="checkbox"> zainstalować</label>
-        <label><input type="checkbox"> szybkie Wi-Fi</label>
-        <label><input type="checkbox"> w porządku / OK</label>
-        <label><input type="checkbox"> głośna muzyka</label>
-        <label><input type="checkbox"> problem</label>
-        <label><input type="checkbox"> obok</label>
-        <label><input type="checkbox"> centrum sportowe</label>
-        <label><input type="checkbox"> napić się</label>
-        <label><input type="checkbox"> czasami</label>
-        <label><input type="checkbox"> miska frytek</label>
-        <label><input type="checkbox"> spędzać dużo czasu</label>
-        <label><input type="checkbox"> szybka wizyta</label>
-        <label><input type="checkbox"> ceny</label>
-        <label><input type="checkbox"> niskie</label>
-        <label><input type="checkbox"> podawać (jedzenie)</label>
-        <label><input type="checkbox"> ciasta</label>
-        <label><input type="checkbox"> nowy</label>
-        <label><input type="checkbox"> maszyna do lodów</label>
-        <p class="sub-heading">Gramatyka:</p>
-        <label><input type="checkbox"> Rozumienie opisów w czasie Present Simple</label>
-        <label><input type="checkbox"> Rozumienie zdań w Present Perfect opisujących doświadczenia</label>
-        <label><input type="checkbox"> Rozumienie przymiotników i ich stopniowania (best, cheap)</label>
-        <label><input type="checkbox"> Rozumienie podstawowych konstrukcji warunkowych (if...)</label>
-        <label><input type="checkbox"> Rozumienie czasownika modalnego 'can'/'can't'</label>
+        <p class="sub-heading">Słownictwo (rozumienie kluczowych słów i fraz):</p>
+        <label class="level-basic"><input type="checkbox"> Podstawowe słownictwo opisujące miejsca (kawiarnia, atmosfera, głośno, cicho, wygodne, stoły) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> Słownictwo związane z jedzeniem i piciem (kawa, kanapki, sałatki, zupy, ciasta, lody, przekąska) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> Przymiotniki opisujące jedzenie (smaczne, świetne, niesamowite, drogie, tanie) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> Słownictwo związane z czasem wolnym (spędzać czas, weekend, czytać, szukać online) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-advanced"><input type="checkbox"> Słownictwo związane z udogodnieniami (internet, Wi-Fi, gazety, czasopisma) <span class="level-tag tag-advanced">Rozszerzenie</span></label>
+        <label class="level-advanced"><input type="checkbox"> Bardziej zaawansowane frazy (np. "by accident", "tired of noise", "hang out", "quick visit") <span class="level-tag tag-advanced">Rozszerzenie</span></label>
+        <p class="sub-heading">Gramatyka (rozumienie tekstu):</p>
+        <label class="level-basic"><input type="checkbox"> Rozumienie opisów w czasie Present Simple <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-advanced"><input type="checkbox"> Rozumienie zdań w Present Perfect (np. "best I've ever eaten", "you've never eaten", "have installed") <span class="level-tag tag-advanced">Rozszerzenie</span></label>
+        <label class="level-basic"><input type="checkbox"> Rozumienie przymiotników i ich stopniowania <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> Rozumienie czasownika modalnego 'can'/'can't' <span class="level-tag tag-basic">Podstawa</span></label>
     </div>
-</div>
 
-<div class="section">
-    <h2>WRITING</h2>
-    <div class="task-section">
+     <div class="task" data-task-id="9" data-task-name="WRITING: Zadanie 9 - Pisanie przepisu">
+        <h2>WRITING</h2>
         <h3>Zadanie 9: Pisanie przepisu na ciasto jabłkowe na podstawie obrazków</h3>
         <p class="sub-heading">Słownictwo:</p>
-        <label><input type="checkbox"> przepis</label>
-        <label><input type="checkbox"> ciasto jabłkowe / jabłecznik</label>
-        <label><input type="checkbox"> składniki</label>
-        <label><input type="checkbox"> potrzebować</label>
-        <label><input type="checkbox"> lista</label>
-        <label><input type="checkbox"> inne rzeczy</label>
-        <label><input type="checkbox"> nóż</label>
-        <label><input type="checkbox"> miska</label>
-        <label><input type="checkbox"> jak to zrobić?</label>
-        <label><input type="checkbox"> instrukcje</label>
-        <label><input type="checkbox"> gramy</label>
-        <label><input type="checkbox"> filiżanka / szklanka</label>
-        <label><input type="checkbox"> stopnie Celsjusza</label>
-        <label><input type="checkbox"> minuty</label>
-        <label><input type="checkbox"> Umiejętność nazwania podstawowych składników ciasta (jabłka, mąka, cukier, masło/olej, jajka, mleko/woda - na podstawie obrazków)</label>
-        <label><input type="checkbox"> Czasowniki związane z pieczeniem: mieszać, ubijać, dodawać, obierać, kroić, kłaść/wkładać, wylewać, piec</label>
+        <label class="level-basic"><input type="checkbox"> Umiejętność nazwania podstawowych składników (jabłka, mąka, cukier, masło/olej, jajka, mleko/woda) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> Umiejętność nazwania przyborów (nóż, miska, forma do pieczenia) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> Podstawowe czasowniki związane z pieczeniem (mieszać, dodawać, kroić, kłaść/wkładać, piec) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-advanced"><input type="checkbox"> Bardziej zaawansowane czasowniki (ubijać, obierać, wylewać) <span class="level-tag tag-advanced">Rozszerzenie</span></label>
         <p class="sub-heading">Gramatyka:</p>
-        <label><input type="checkbox"> Umiejętność pisania listy składników</label>
-        <label><input type="checkbox"> Umiejętność używania trybu rozkazującego do pisania instrukcji</label>
-        <label><input type="checkbox"> Umiejętność tworzenia prostych zdań opisujących kroki</label>
-        <label><input type="checkbox"> Używanie słów sekwencyjnych (First, Then, Next, Finally - opcjonalnie, ale pomocne)</label>
+        <label class="level-basic"><input type="checkbox"> Umiejętność pisania listy składników (z ilościami) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> Umiejętność używania trybu rozkazującego do pisania instrukcji <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox"> Umiejętność tworzenia prostych, zrozumiałych zdań opisujących kroki <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-advanced"><input type="checkbox"> Używanie słów sekwencyjnych (First, Then, Next, Finally) <span class="level-tag tag-advanced">Rozszerzenie</span></label>
     </div>
+
+    <!-- Navigation Buttons -->
+    <div class="navigation">
+        <button id="prevBtn" onclick="navigateTask(-1)" disabled>Poprzednie zadanie</button>
+        <button id="nextBtn" onclick="navigateTask(1)">Następne zadanie</button>
+    </div>
+
+    <!-- Summary Section -->
+    <div id="summary">
+        <h2>Podsumowanie - Do powtórki:</h2>
+        <div id="summary-content">
+            <p>Wygląda na to, że wszystko umiesz! Świetna robota!</p>
+            <p>Jeśli jednak coś odznaczyłeś przez pomyłkę, wróć do poprzednich kroków.</p>
+        </div>
+         <div class="navigation">
+             <button onclick="restartChecklist()">Zacznij od nowa</button>
+         </div>
+    </div>
+
 </div>
 
-<p class="instruction">Zapisz w zeszycie wszystkie nieodznaczone pozycje - to Twój materiał do powtórki przed testem!</p>
+<script>
+    let currentTaskIndex = 0;
+    const tasks = document.querySelectorAll('.task');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const summaryDiv = document.getElementById('summary');
+    const summaryContent = document.getElementById('summary-content');
+    const introP = document.getElementById('intro');
+    const container = document.querySelector('.container'); // Get container for scrolling
+
+    function showTask(index) {
+        tasks.forEach((task, i) => {
+            task.classList.toggle('active', i === index);
+        });
+        updateNavigationButtons();
+        // Scroll to the top of the container when a new task is shown
+        container.scrollTop = 0; // For elements with scrollbars
+        window.scrollTo({ top: container.offsetTop - 20, behavior: 'smooth' }); // Scroll window smoothly
+    }
+
+    function updateNavigationButtons() {
+        prevBtn.disabled = currentTaskIndex === 0;
+        if (currentTaskIndex === tasks.length - 1) {
+            nextBtn.textContent = 'Zobacz podsumowanie';
+        } else {
+            nextBtn.textContent = 'Następne zadanie';
+        }
+    }
+
+    function navigateTask(direction) {
+        const nextIndex = currentTaskIndex + direction;
+
+        if (nextIndex >= 0 && nextIndex < tasks.length) {
+            currentTaskIndex = nextIndex;
+            showTask(currentTaskIndex);
+        } else if (nextIndex === tasks.length) {
+            // Reached the end, show summary
+            showSummary();
+        }
+    }
+
+    function showSummary() {
+        // Hide current task and navigation
+        tasks[currentTaskIndex].classList.remove('active');
+        document.querySelector('.navigation').style.display = 'none';
+        introP.style.display = 'none';
+
+        // Generate summary
+        let summaryHTML = '';
+        let itemsToReview = false;
+
+        tasks.forEach(task => {
+            const taskName = task.dataset.taskName;
+            const uncheckedItems = task.querySelectorAll('input[type="checkbox"]:not(:checked)');
+
+            if (uncheckedItems.length > 0) {
+                itemsToReview = true;
+                summaryHTML += `<h4>${taskName}:</h4><ul>`;
+                uncheckedItems.forEach(item => {
+                    const label = item.closest('label');
+                    const levelSpan = label.querySelector('.level-tag');
+                    const levelText = levelSpan ? levelSpan.outerHTML : ''; // Get the tag HTML
+                    // Get only the text content of the label, excluding the tag span
+                    const itemText = Array.from(label.childNodes)
+                                        .filter(node => node.nodeType === Node.TEXT_NODE)
+                                        .map(node => node.textContent.trim())
+                                        .join(' ');
+                    summaryHTML += `<li class="summary-item">${itemText} ${levelText}</li>`;
+                });
+                summaryHTML += `</ul>`;
+            }
+        });
+
+        if (itemsToReview) {
+            summaryContent.innerHTML = `<p>Poniżej znajdują się elementy, które warto powtórzyć przed testem. Zapisz je w zeszycie:</p>${summaryHTML}`;
+        } else {
+             summaryContent.innerHTML = `<p>Wygląda na to, że wszystko umiesz! Świetna robota!</p><p>Jeśli jednak coś odznaczyłeś przez pomyłkę, możesz zacząć od nowa.</p>`;
+        }
+
+        summaryDiv.style.display = 'block';
+        // Scroll to the summary
+         window.scrollTo({ top: summaryDiv.offsetTop - 20, behavior: 'smooth' });
+    }
+
+     function restartChecklist() {
+         // Uncheck all checkboxes
+         document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+         // Hide summary, show intro and navigation
+         summaryDiv.style.display = 'none';
+         document.querySelector('.navigation').style.display = 'block'; // Show buttons again
+         introP.style.display = 'block';
+         // Reset to the first task
+         currentTaskIndex = 0;
+         showTask(currentTaskIndex);
+     }
+
+    // Initial setup
+    showTask(currentTaskIndex);
+
+</script>
 
 </body>
 </html>
