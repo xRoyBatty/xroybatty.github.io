@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interaktywna Checklista z Quizem - Rozdział 6</title>
+    <title>Ostateczna Checklista z Quizem - Rozdział 6</title>
     <style>
         /* CSS Styles (pozostają takie same jak w poprzedniej wersji) */
         body {
@@ -45,21 +45,21 @@
         label:hover {
             background-color: #f0f8ff;
         }
-        input[type="checkbox"], input[type="radio"] { /* Dodano radio dla quizu */
+        input[type="checkbox"], input[type="radio"] {
             margin-right: 12px;
             vertical-align: middle;
             transform: scale(1.1);
         }
-        .task, #finalQuiz, #testBContent { /* Dodano quiz i testB */
-            display: none; /* Initially hide all */
+        .task, #finalQuiz, #testBContent {
+            display: none;
             margin-bottom: 25px;
             padding: 20px;
             border: 1px solid #ddd;
             border-radius: 5px;
             background-color: #fdfdfd;
         }
-        .task.active, #finalQuiz.active, #testBContent.active { /* Dodano quiz i testB */
-            display: block; /* Show the current */
+        .task.active, #finalQuiz.active, #testBContent.active {
+            display: block;
         }
         .sub-heading {
             font-weight: bold;
@@ -178,165 +178,367 @@
          #testBContent h2 { color: #28a745; border-color: #28a745; }
          .test-section {
              margin-top: 15px;
-             padding: 10px;
-             border: 1px dashed #ccc;
+             padding: 15px; /* Increased padding */
+             border: 1px solid #ccc; /* Solid border */
              background-color: #f9f9f9;
+             border-radius: 5px; /* Rounded corners */
          }
-         .test-section h4 { color: #555; margin-top: 0; }
+         .test-section h4 {
+             color: #333; /* Darker heading */
+             margin-top: 0;
+             margin-bottom: 10px;
+             padding-bottom: 5px;
+             border-bottom: 1px solid #ddd;
+         }
+         .test-instruction {
+             font-style: italic;
+             color: #555;
+             margin-bottom: 10px;
+         }
+         .test-question-text {
+             margin-bottom: 8px;
+             line-height: 1.5;
+         }
+         /* Style for gaps */
+         .gap {
+             display: inline-block;
+             width: 80px; /* Adjust width as needed */
+             border-bottom: 1px solid #888;
+             margin: 0 5px;
+         }
+         /* Style for choices */
+         .choices span {
+             margin: 0 5px;
+             padding: 2px 4px;
+             background-color: #e9ecef;
+             border-radius: 3px;
+         }
+         .correct-choice {
+             text-decoration: underline; /* Example: Underline correct choice */
+         }
+
 
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Interaktywna Checklista z Quizem - Rozdział 6</h1>
-    <p id="intro">Przejdź przez kolejne zadania, zaznaczając słowa i zasady gramatyczne, które już znasz. Po każdym zadaniu kliknij "Sprawdź", aby zobaczyć, co warto powtórzyć, a następnie "Następne zadanie".</p>
+    <h1>Ostateczna Checklista z Quizem - Rozdział 6</h1>
+    <p id="intro">Przejdź przez kolejne zadania, zaznaczając słowa i zasady gramatyczne, które już znasz. Po każdym zadaniu kliknij "Sprawdź", aby zobaczyć, co warto powtórzyć, a następnie "Następne zadanie". Elementy już zaznaczone to te najłatwiejsze - skup się na pozostałych!</p>
 
     <!-- ====================================================== -->
-    <!-- TASK SECTIONS (1-9) - Treść taka sama jak poprzednio   -->
-    <!-- Wklej tutaj wszystkie 9 sekcji .task z poprzedniej odpowiedzi -->
-    <!-- Poniżej przykład tylko dla Task 1, resztę dodaj analogicznie -->
+    <!-- TASK 1: LISTENING - Przepis -->
     <!-- ====================================================== -->
-
     <div class="task" data-task-id="1" data-task-name="LISTENING: Zadanie 1 - Przepis">
         <h2>LISTENING</h2>
         <h3>Zadanie 1: Uzupełnianie przepisu (Track 6 - Tosty francuskie)</h3>
         <p class="sub-heading">Słownictwo (rozumienie ze słuchu):</p>
-        <label class="level-basic"><input type="checkbox" data-translation="eggs"> jajka <span class="level-tag tag-basic">Podstawa</span></label>
-        <label class="level-basic"><input type="checkbox" data-translation="cups"> filiżanki / szklanki <span class="level-tag tag-basic">Podstawa</span></label>
-        <label class="level-basic"><input type="checkbox" data-translation="milk"> mleko <span class="level-tag tag-basic">Podstawa</span></label>
-        <label class="level-basic"><input type="checkbox" data-translation="salt"> sól <span class="level-tag tag-basic">Podstawa</span></label>
-        <label class="level-basic"><input type="checkbox" data-translation="sugar"> cukier <span class="level-tag tag-basic">Podstawa</span></label>
-        <label class="level-basic"><input type="checkbox" data-translation="butter"> masło <span class="level-tag tag-basic">Podstawa</span></label>
-        <label class="level-basic"><input type="checkbox" data-translation="bread"> chleb <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="eggs" checked> jajka <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="cups" checked> filiżanki / szklanki <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="milk" checked> mleko <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="salt" checked> sól <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="sugar" checked> cukier <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="butter" checked> masło <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="bread" checked> chleb <span class="level-tag tag-basic">Podstawa</span></label>
         <label class="level-basic"><input type="checkbox" data-translation="beat"> ubijać <span class="level-tag tag-basic">Podstawa</span></label>
-        <label class="level-basic"><input type="checkbox" data-translation="bowl"> miska <span class="level-tag tag-basic">Podstawa</span></label>
-        <label class="level-basic"><input type="checkbox" data-translation="add"> dodawać <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="bowl" checked> miska <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="add" checked> dodawać <span class="level-tag tag-basic">Podstawa</span></label>
         <label class="level-basic"><input type="checkbox" data-translation="slice"> kroić w plastry <span class="level-tag tag-basic">Podstawa</span></label>
         <label class="level-basic"><input type="checkbox" data-translation="pieces"> kawałki / kromki <span class="level-tag tag-basic">Podstawa</span></label>
         <label class="level-advanced"><input type="checkbox" data-translation="recipe"> przepis <span class="level-tag tag-advanced">Rozszerzenie</span></label>
-        <label class="level-basic"><input type="checkbox" data-translation="put"> kłaść / wkładać <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="put" checked> kłaść / wkładać <span class="level-tag tag-basic">Podstawa</span></label>
         <label class="level-basic"><input type="checkbox" data-translation="frying pan"> patelnia <span class="level-tag tag-basic">Podstawa</span></label>
         <label class="level-basic"><input type="checkbox" data-translation="fry"> smażyć <span class="level-tag tag-basic">Podstawa</span></label>
-        <label class="level-basic"><input type="checkbox" data-translation="minutes"> minuty <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="minutes" checked> minuty <span class="level-tag tag-basic">Podstawa</span></label>
         <label class="level-basic"><input type="checkbox" data-translation="side"> strona (np. patelni) <span class="level-tag tag-basic">Podstawa</span></label>
         <label class="level-basic"><input type="checkbox" data-translation="seconds"> sekundy <span class="level-tag tag-basic">Podstawa</span></label>
         <label class="level-basic"><input type="checkbox" data-translation="serve"> podawać (jedzenie) <span class="level-tag tag-basic">Podstawa</span></label>
-        <label class="level-basic"><input type="checkbox" data-translation="jam"> dżem <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="jam" checked> dżem <span class="level-tag tag-basic">Podstawa</span></label>
         <label class="level-basic"><input type="checkbox" data-translation="honey"> miód <span class="level-tag tag-basic">Podstawa</span></label>
-        <label class="level-basic"><input type="checkbox" data-translation="fruit"> owoce <span class="level-tag tag-basic">Podstawa</span></label>
-        <label class="level-basic"><input type="checkbox" data-translation="three, one and a half, eight, two, fifteen"> liczebniki (three, one and a half / 1/2, eight, two, fifteen / 15) <span class="level-tag tag-basic">Podstawa</span></label>
-        <label class="level-basic"><input type="checkbox" data-translation="a little, some"> określenia (a little, some) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="fruit" checked> owoce <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="three, one and a half, eight, two, fifteen" checked> liczebniki (trzy, jeden i pół / 1 i 1/2, osiem, dwa, piętnaście / 15) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="a little, some" checked> określenia (mało/niewiele, trochę) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="First" checked> Najpierw <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="Then"> Potem / Następnie <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-advanced"><input type="checkbox" data-translation="Next"> Następnie / Kolejno <span class="level-tag tag-advanced">Rozszerzenie</span></label>
+        <label class="level-advanced"><input type="checkbox" data-translation="Finally"> Na koniec / W końcu <span class="level-tag tag-advanced">Rozszerzenie</span></label>
         <p class="sub-heading">Gramatyka (rozumienie ze słuchu):</p>
-        <label class="level-basic"><input type="checkbox" data-explanation="Tryb rozkazujący to po prostu czasownik w podstawowej formie (np. 'Add salt!'). Używamy go do wydawania poleceń, instrukcji (jak w przepisie) lub próśb."> Rozumienie trybu rozkazującego (poleceń w przepisie) <span class="level-tag tag-basic">Podstawa</span></label>
-        <label class="level-basic"><input type="checkbox" data-explanation="Musisz rozumieć liczby (np. 'two minutes') i słowa takie jak 'some' (trochę), 'a little' (mało), 'a cup of' (filiżanka czegoś), aby wiedzieć, ile czego dodać."> Rozumienie określeń ilości i liczb <span class="level-tag tag-basic">Podstawa</span></label>
-        <label class="level-advanced"><input type="checkbox" data-explanation="Słowa takie jak 'First' (najpierw), 'Then' (potem), 'Next' (następnie), 'Finally' (na koniec) pokazują, w jakiej kolejności trzeba wykonywać czynności w przepisie."> Rozumienie sekwencji czynności (First, Then) <span class="level-tag tag-advanced">Rozszerzenie</span></label>
+        <label class="level-basic"><input type="checkbox" data-explanation="Tryb rozkazujący to po prostu czasownik w podstawowej formie (np. 'Add salt!'). Używamy go do wydawania poleceń, instrukcji (jak w przepisie) lub próśb. To jak mówisz komuś, co ma zrobić." checked> Rozumienie trybu rozkazującego (poleceń w przepisie) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-explanation="Musisz rozumieć liczby (np. 'two minutes') i słowa takie jak 'some' (trochę), 'a little' (mało), 'a cup of' (filiżanka czegoś), żeby wiedzieć, ile czego dodać lub jak długo coś robić." checked> Rozumienie określeń ilości i liczb <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-advanced"><input type="checkbox" data-explanation="Słowa takie jak 'First' (najpierw), 'Then' (potem), 'Next' (następnie), 'Finally' (na koniec) pokazują, w jakiej kolejności trzeba wykonywać czynności w przepisie. Pomagają zrozumieć, co jest po czym."> Rozumienie sekwencji czynności (Najpierw, Potem) <span class="level-tag tag-advanced">Rozszerzenie</span></label>
         <!-- Feedback Area for this task -->
         <div class="task-feedback" id="feedback-1"></div>
     </div>
-    <!-- TUTAJ WKLEJ SEKCJE .task DLA ZADAŃ 2-9 Z POPRZEDNIEJ ODPOWIEDZI -->
-    <!-- Pamiętaj, aby każda sekcja miała unikalne id dla feedbacku, np. id="feedback-2", id="feedback-3" itd. -->
 
+    <!-- ====================================================== -->
+    <!-- TASK 2: VOCABULARY - Przepis na ciasteczka -->
+    <!-- ====================================================== -->
+    <div class="task" data-task-id="2" data-task-name="VOCABULARY: Zadanie 2 - Przepis na ciasteczka">
+        <h2>VOCABULARY</h2>
+        <h3>Zadanie 2: Wybór słów w przepisie (Ciasteczka maślane)</h3>
+         <p class="sub-heading">Słownictwo:</p>
+        <label class="level-advanced"><input type="checkbox" data-translation="boil"> gotować (w wodzie) <span class="level-tag tag-advanced">Rozszerzenie</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="beat"> ubijać <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="butter" checked> masło <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="sugar" checked> cukier <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="together" checked> razem <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="big" checked> duży <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="oven"> piekarnik <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="bowl" checked> miska <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="add" checked> dodawać <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="slice"> kroić w plastry <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="flour"> mąka <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="mix" checked> mieszać <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="fry"> smażyć <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="well" checked> dobrze (np. wymieszać) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="make" checked> robić (np. ciasteczka) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="small" checked> mały <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="round"> okrągły <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="biscuits" checked> ciasteczka / herbatniki <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-advanced"><input type="checkbox" data-translation="roast"> piec (mięso, warzywa) <span class="level-tag tag-advanced">Rozszerzenie</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="bake"> piec (ciasto, chleb) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="pot"> garnek <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="minutes" checked> minuty <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="ready"> gotowe <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="brown"> brązowe <span class="level-tag tag-basic">Podstawa</span></label>
+        <p class="sub-heading">Gramatyka:</p>
+        <label class="level-basic"><input type="checkbox" data-explanation="W przepisach mówimy, co robić, używając podstawowej formy czasownika (np. 'Beat butter...', 'Add flour...'). Musisz wybrać ten czasownik, który pasuje do czynności (np. masło się ubija, a nie gotuje w wodzie)." checked> Rozumienie czasowników w trybie rozkazującym (instrukcje) <span class="level-tag tag-basic">Podstawa</span></label>
+        <!-- Feedback Area for this task -->
+        <div class="task-feedback" id="feedback-2"></div>
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- TASK 3: VOCABULARY - Przedmioty kuchenne -->
+    <!-- ====================================================== -->
+    <div class="task" data-task-id="3" data-task-name="VOCABULARY: Zadanie 3 - Przedmioty kuchenne">
+        <h2>VOCABULARY</h2>
+        <h3>Zadanie 3: Uzupełnianie zdań nazwami przedmiotów kuchennych</h3>
+        <p class="sub-heading">Słownictwo:</p>
+        <label class="level-basic"><input type="checkbox" data-translation="fork" checked> widelec <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="glass" checked> szklanka <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="mug" checked> kubek <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="pan / frying pan"> patelnia <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="spoon" checked> łyżka <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="tin / cake tin"> forma do pieczenia (np. ciasta) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="cup" checked> filiżanka <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="knife" checked> nóż <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="pot"> garnek <span class="level-tag tag-basic">Podstawa</span></label>
+        <p class="sub-heading">Gramatyka:</p>
+        <label class="level-basic"><input type="checkbox" data-explanation="Musisz znać nazwy tych rzeczy z kuchni i wiedzieć, do czego służą, żeby wstawić odpowiednie słowo w lukę (np. zupę jemy łyżką - spoon, jajka smażymy na patelni - pan, a ciasto pieczemy w formie - tin)." checked> Rozpoznawanie rzeczowników i ich użycia w kontekście <span class="level-tag tag-basic">Podstawa</span></label>
+        <!-- Feedback Area for this task -->
+        <div class="task-feedback" id="feedback-3"></div>
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- TASK 4: VOCABULARY - Przymiotniki opisujące jedzenie -->
+    <!-- ====================================================== -->
+     <div class="task" data-task-id="4" data-task-name="VOCABULARY: Zadanie 4 - Przymiotniki opisujące jedzenie">
+        <h2>VOCABULARY</h2>
+        <h3>Zadanie 4: Uzupełnianie przymiotników opisujących jedzenie</h3>
+        <p class="sub-heading">Słownictwo:</p>
+        <label class="level-basic"><input type="checkbox" data-translation="delicious" checked> pyszny <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="sour"> kwaśny <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="sweet" checked> słodki <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-advanced"><input type="checkbox" data-translation="disgusting"> obrzydliwy / wstrętny <span class="level-tag tag-advanced">Rozszerzenie</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="spicy / hot"> pikantny / ostry <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="salty"> słony <span class="level-tag tag-basic">Podstawa</span></label>
+        <p class="sub-heading">Gramatyka:</p>
+        <label class="level-basic"><input type="checkbox" data-explanation="Musisz znać słowa opisujące smak (słodki, kwaśny, słony, pikantny) lub ogólną opinię (pyszny, obrzydliwy) i umieć wpisać brakujące litery, żeby pasowały do opisu (np. cytryny są kwaśne - sour, a ciastka słodkie - sweet)." checked> Rozumienie znaczenia przymiotników opisujących smak i jakość jedzenia <span class="level-tag tag-basic">Podstawa</span></label>
+        <!-- Feedback Area for this task -->
+        <div class="task-feedback" id="feedback-4"></div>
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- TASK 5: GRAMMAR - Present Perfect w notatce -->
+    <!-- ====================================================== -->
+    <div class="task" data-task-id="5" data-task-name="GRAMMAR: Zadanie 5 - Present Perfect w notatce">
+        <h2>GRAMMAR</h2>
+        <h3>Zadanie 5: Uzupełnianie notatki czasem Present Perfect</h3>
+        <p class="sub-heading">Gramatyka:</p>
+        <label class="level-basic"><input type="checkbox" data-explanation="Zdanie twierdzące w Present Perfect (mówimy, że coś się stało i ma to związek z teraźniejszością): OSOBA + have/has + III forma czasownika (Past Participle). Np. 'I have put...' (Położyłem...), 'She has left...' (Zostawiła...)."> Tworzenie zdań twierdzących w Present Perfect (have/has + Past Participle) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-explanation="Zdanie przeczące w Present Perfect (mówimy, że coś się NIE stało): OSOBA + haven't/hasn't + III forma czasownika (Past Participle). Np. 'We haven't cleaned...' (Nie posprzątaliśmy...), 'He hasn't loaded...' (Nie załadował...)."> Tworzenie zdań przeczących w Present Perfect (haven't/hasn't + Past Participle) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-explanation="Musisz znać III formę (Past Participle) tych czasowników: have -> had, clean -> cleaned, put -> put, load -> loaded, make -> made, leave -> left. Niektóre są regularne (-ed), inne nieregularne!"> Znajomość form Past Participle: had, cleaned, put, loaded, made, left <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-explanation="Pamiętaj: 'have/haven't' używamy z I, you, we, they (np. 'We haven't cleaned'). 'Has/hasn't' używamy z he, she, it (np. 'Andy hasn't loaded', 'Gran has left')." checked> Dopasowanie 'have'/'has' do podmiotu <span class="level-tag tag-basic">Podstawa</span></label>
+        <!-- Feedback Area for this task -->
+        <div class="task-feedback" id="feedback-5"></div>
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- TASK 6: GRAMMAR - Pytania i odpowiedzi Present Perfect -->
+    <!-- ====================================================== -->
+    <div class="task" data-task-id="6" data-task-name="GRAMMAR: Zadanie 6 - Pytania i odpowiedzi Present Perfect">
+        <h2>GRAMMAR</h2>
+        <h3>Zadanie 6: Pisanie pytań i odpowiedzi w czasie Present Perfect</h3>
+        <p class="sub-heading">Gramatyka:</p>
+        <label class="level-basic"><input type="checkbox" data-explanation="Pytanie w Present Perfect (pytamy, czy coś się stało): Have/Has + OSOBA + [ever] + III forma czasownika (Past Participle)? Np. 'Has he washed...?' (Czy on umył...?), 'Have you ever been...?' (Czy kiedykolwiek byłeś...?)."> Tworzenie pytań w Present Perfect (Have/Has + podmiot + [ever] + Past Participle...?) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-explanation="Krótka odpowiedź na 'tak': Yes, + zaimek osobowy (I, you, he, she, it, we, they) + have/has. Np. 'Yes, he has.', 'Yes, they have.'"> Tworzenie krótkich odpowiedzi twierdzących (Tak, ... has/have.) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-explanation="Krótka odpowiedź na 'nie': No, + zaimek osobowy (I, you, he, she, it, we, they) + haven't/hasn't. Np. 'No, I haven't.', 'No, they haven't.'"> Tworzenie krótkich odpowiedzi przeczących (Nie, ... hasn't/haven't.) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-advanced"><input type="checkbox" data-explanation="Słówko 'ever' (kiedykolwiek) często wstawiamy w pytaniach o doświadczenia życiowe (Czy kiedykolwiek coś robiłeś?), między osobę a III formę czasownika, np. 'Have you ever eaten...?'."> Użycie 'ever' w pytaniach o doświadczenia <span class="level-tag tag-advanced">Rozszerzenie</span></label>
+        <label class="level-basic"><input type="checkbox" data-explanation="Musisz znać III formę (Past Participle) tych czasowników: wash -> washed, be -> been, buy -> bought, eat -> eaten."> Znajomość form Past Participle: washed, been, bought, eaten <span class="level-tag tag-basic">Podstawa</span></label>
+        <!-- Feedback Area for this task -->
+        <div class="task-feedback" id="feedback-6"></div>
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- TASK 7: SPEAKING - Wybór odpowiedzi w dialogach -->
+    <!-- ====================================================== -->
+    <div class="task" data-task-id="7" data-task-name="SPEAKING: Zadanie 7 - Wybór odpowiedzi w dialogach">
+        <h2>SPEAKING</h2>
+        <h3>Zadanie 7: Wybór poprawnych odpowiedzi w dialogach</h3>
+        <p class="sub-heading">Gramatyka i Funkcje Językowe:</p>
+        <label class="level-basic"><input type="checkbox" data-explanation="Gdy chcesz coś zaproponować (np. pójście do kina), pytasz: 'Would you like to + czasownik?', np. 'Would you like to go...?'. To uprzejma forma pytania 'Czy chciałbyś...?'."> Proponowanie: Czy chciałbyś...? (czynność) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-explanation="Gdy chcesz coś zaproponować (np. sałatkę), pytasz: 'Would you like + rzeczownik?', np. 'Would you like a salad...?'. To jak pytanie 'Chcesz sałatkę? / Masz ochotę na sałatkę?'."> Proponowanie: Czy chciałbyś...? (rzecz) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-explanation="Gdy nie masz zdania i chcesz, żeby druga osoba wybrała, mówisz po prostu: 'You choose.' (Ty wybierz)."> Wyrażanie braku preferencji: Ty wybierz. <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-advanced"><input type="checkbox" data-explanation="Inny sposób, by powiedzieć, że jest ci wszystko jedno i zgadzasz się na każdą opcję: 'I don't mind.' (Nie mam nic przeciwko / Nie przeszkadza mi to / Jest mi to obojętne)."> Wyrażanie braku preferencji: Nie mam nic przeciwko / Jest mi to obojętne. <span class="level-tag tag-advanced">Rozszerzenie</span></label>
+        <label class="level-basic"><input type="checkbox" data-explanation="Gdy chcesz powiedzieć, co chciałbyś TERAZ zrobić, mówisz: 'I'd like to + czasownik', np. 'I'd like to go home.' ('d to skrót od would)."> Wyrażanie chęci: Chciałbym... (zrobić coś) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-explanation="Gdy masz do wyboru dwie rzeczy i chcesz powiedzieć, którą wolisz, mówisz: 'I'd prefer + rzeczownik', np. 'I'd prefer fruit.' (Wolałbym owoce). ('d to skrót od would)."> Wyrażanie preferencji: Wolałbym... (coś) <span class="level-tag tag-basic">Podstawa</span></label>
+        <!-- Feedback Area for this task -->
+        <div class="task-feedback" id="feedback-7"></div>
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- TASK 8: READING - Czytanie opisów kawiarni -->
+    <!-- ====================================================== -->
+    <div class="task" data-task-id="8" data-task-name="READING: Zadanie 8 - Czytanie opisów kawiarni">
+        <h2>READING</h2>
+        <h3>Zadanie 8: Czytanie opisów kawiarni i odpowiadanie na pytania</h3>
+        <p class="sub-heading">Słownictwo (rozumienie kluczowych słów i fraz):</p>
+        <label class="level-basic"><input type="checkbox" data-translation="café, atmosphere, loud, quiet, comfortable, tables" checked> Podstawowe słownictwo opisujące miejsca (kawiarnia, atmosfera, głośno, cicho, wygodne, stoły) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="coffee, sandwiches, salads, soups, cakes, ice cream, snack" checked> Słownictwo związane z jedzeniem i piciem (kawa, kanapki, sałatki, zupy, ciasta, lody, przekąska) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="tasty, great, amazing, expensive, cheap" checked> Przymiotniki opisujące jedzenie (smaczne, świetne, niesamowite, drogie, tanie) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="spend time, weekend, read, look for things online"> Słownictwo związane z czasem wolnym (spędzać czas, weekend, czytać, szukać online) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-advanced"><input type="checkbox" data-translation="Internet, Wi-Fi, newspapers, magazines"> Słownictwo związane z udogodnieniami (internet, Wi-Fi, gazety, czasopisma) <span class="level-tag tag-advanced">Rozszerzenie</span></label>
+        <label class="level-advanced"><input type="checkbox" data-translation="by accident, tired of noise, hang out, quick visit"> Bardziej zaawansowane frazy (np. przez przypadek, zmęczony hałasem, spędzać czas/spotykać się, szybka wizyta) <span class="level-tag tag-advanced">Rozszerzenie</span></label>
+        <p class="sub-heading">Gramatyka (rozumienie tekstu):</p>
+        <label class="level-basic"><input type="checkbox" data-explanation="Większość opisów używa czasu Present Simple do mówienia o faktach i zwyczajach (np. 'It's always busy' - Zawsze jest tłoczno, 'They sell tasty sandwiches' - Sprzedają smaczne kanapki). Musisz rozumieć te proste zdania." checked> Rozumienie opisów w czasie Present Simple <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-advanced"><input type="checkbox" data-explanation="W tekstach pojawiają się zdania w Present Perfect, które mówią o doświadczeniach lub o czymś, co się stało i ma wpływ na teraz (np. 'the best I've ever eaten' - najlepsza jaką kiedykolwiek jadłem, 'you've never eaten' - nigdy nie jadłeś, 'they have installed Wi-Fi' - zainstalowali Wi-Fi [i ono teraz jest]). Ważne, by rozumieć, co te zdania znaczą."> Rozumienie zdań w Present Perfect <span class="level-tag tag-advanced">Rozszerzenie</span></label>
+        <label class="level-basic"><input type="checkbox" data-explanation="Musisz rozumieć proste przymiotniki (np. 'tasty' - smaczny, 'expensive' - drogi) i wiedzieć, co znaczą formy typu 'best' (najlepszy) czy 'cheap' (tani)." checked> Rozumienie przymiotników i ich stopniowania <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-explanation="Musisz rozumieć, co oznacza 'can' (móc, potrafić, np. 'it can get loud' - może robić się głośno) i 'can't' (nie móc, nie można, np. 'You can't use the Internet' - Nie można używać internetu)." checked> Rozumienie czasownika modalnego 'can'/'can't' <span class="level-tag tag-basic">Podstawa</span></label>
+        <!-- Feedback Area for this task -->
+        <div class="task-feedback" id="feedback-8"></div>
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- TASK 9: WRITING - Pisanie przepisu -->
+    <!-- ====================================================== -->
+     <div class="task" data-task-id="9" data-task-name="WRITING: Zadanie 9 - Pisanie przepisu">
+        <h2>WRITING</h2>
+        <h3>Zadanie 9: Pisanie przepisu na ciasto jabłkowe na podstawie obrazków</h3>
+        <p class="sub-heading">Słownictwo:</p>
+        <label class="level-basic"><input type="checkbox" data-translation="apples, flour, sugar, butter/oil, eggs, milk/water" checked> Umiejętność nazwania podstawowych składników (jabłka, mąka, cukier, masło/olej, jajka, mleko/woda) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="knife, bowl, cake tin/baking dish" checked> Umiejętność nazwania przyborów (nóż, miska, forma do pieczenia) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="mix, add, cut, put, bake" checked> Podstawowe czasowniki związane z pieczeniem (mieszać, dodawać, kroić, kłaść/wkładać, piec) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-advanced"><input type="checkbox" data-translation="beat, peel, pour"> Bardziej zaawansowane czasowniki (ubijać, obierać, wylewać) <span class="level-tag tag-advanced">Rozszerzenie</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="First" checked> Najpierw <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-translation="Then"> Potem / Następnie <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-advanced"><input type="checkbox" data-translation="Next"> Następnie / Kolejno <span class="level-tag tag-advanced">Rozszerzenie</span></label>
+        <label class="level-advanced"><input type="checkbox" data-translation="Finally"> Na koniec / W końcu <span class="level-tag tag-advanced">Rozszerzenie</span></label>
+        <p class="sub-heading">Gramatyka:</p>
+        <label class="level-basic"><input type="checkbox" data-explanation="Musisz umieć napisać listę składników, podając ich ilość na podstawie obrazków (np. '200 grams of flour', '1/2 cup of milk', '2 eggs'). Zwróć uwagę na jednostki (grams, cup)."> Umiejętność pisania listy składników (z ilościami) <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-explanation="Instrukcje w przepisie piszemy używając trybu rozkazującego - czyli po prostu mówimy co robić, używając podstawowej formy czasownika (np. 'Mix the ingredients.' - Wymieszaj składniki. 'Cut the apples.' - Pokrój jabłka. 'Bake for 50 minutes.' - Piecz przez 50 minut)." checked> Umiejętność używania trybu rozkazującego do pisania instrukcji <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-basic"><input type="checkbox" data-explanation="Twoje zdania w instrukcji powinny być proste i jasno opisywać, co trzeba zrobić krok po kroku, patrząc na obrazki."> Umiejętność tworzenia prostych, zrozumiałych zdań opisujących kroki <span class="level-tag tag-basic">Podstawa</span></label>
+        <label class="level-advanced"><input type="checkbox" data-explanation="Aby przepis był bardziej czytelny i uporządkowany, możesz użyć słów pokazujących kolejność: 'First,' (Najpierw), 'Then,' (Potem), 'Next,' (Następnie), 'Finally,' (Na koniec). Stawiamy je na początku zdania, zwykle z przecinkiem po nich."> Używanie słów sekwencyjnych (Najpierw, Potem, Następnie, Na koniec) <span class="level-tag tag-advanced">Rozszerzenie</span></label>
+        <!-- Feedback Area for this task -->
+        <div class="task-feedback" id="feedback-9"></div>
+    </div>
 
     <!-- ====================================================== -->
     <!-- FINAL QUIZ SECTION -->
     <!-- ====================================================== -->
     <div id="finalQuiz">
         <h2>Quiz Sprawdzający (Podstawy)</h2>
-        <p>Sprawdźmy najważniejsze rzeczy! Odpowiedz na pytania.</p>
+        <p>Sprawdźmy najważniejsze rzeczy! Odpowiedz na pytania. Potrzebujesz 18/20 punktów, aby zobaczyć dodatkowy test.</p>
         <form id="quizForm">
-            <!-- Pytanie 1 (Vocab) -->
+            <!-- Pytanie 1 (Vocab - 2 pkt) -->
             <div class="quiz-question">
                 <p>1. Co oznacza słowo 'delicious'?</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="q1" value="0"> a) kwaśny</label>
-                    <label><input type="radio" name="q1" value="1"> b) pyszny</label> <!-- Poprawna -->
+                    <label><input type="radio" name="q1" value="2"> b) pyszny</label> <!-- Poprawna -->
                     <label><input type="radio" name="q1" value="0"> c) słony</label>
                 </div>
             </div>
-            <!-- Pytanie 2 (Vocab) -->
+            <!-- Pytanie 2 (Vocab - 2 pkt) -->
             <div class="quiz-question">
                 <p>2. Wybierz polskie tłumaczenie słowa 'bake' (używanego przy ciastach):</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="q2" value="0"> a) smażyć</label>
                     <label><input type="radio" name="q2" value="0"> b) gotować</label>
-                    <label><input type="radio" name="q2" value="1"> c) piec</label> <!-- Poprawna -->
+                    <label><input type="radio" name="q2" value="2"> c) piec</label> <!-- Poprawna -->
                 </div>
             </div>
-             <!-- Pytanie 3 (Vocab) -->
+             <!-- Pytanie 3 (Vocab - 2 pkt) -->
             <div class="quiz-question">
                 <p>3. Czego użyjesz do jedzenia zupy?</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="q3" value="0"> a) fork</label>
                     <label><input type="radio" name="q3" value="0"> b) knife</label>
-                    <label><input type="radio" name="q3" value="1"> c) spoon</label> <!-- Poprawna -->
+                    <label><input type="radio" name="q3" value="2"> c) spoon</label> <!-- Poprawna -->
                 </div>
             </div>
-             <!-- Pytanie 4 (Vocab) -->
+             <!-- Pytanie 4 (Vocab - 2 pkt) -->
             <div class="quiz-question">
                 <p>4. Które słowo oznacza 'kroić w plastry'?</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="q4" value="0"> a) chop</label>
-                    <label><input type="radio" name="q4" value="1"> b) slice</label> <!-- Poprawna -->
+                    <label><input type="radio" name="q4" value="2"> b) slice</label> <!-- Poprawna -->
                     <label><input type="radio" name="q4" value="0"> c) mix</label>
                 </div>
             </div>
-             <!-- Pytanie 5 (Vocab) -->
+             <!-- Pytanie 5 (Vocab - 2 pkt) -->
             <div class="quiz-question">
                 <p>5. Jak powiesz 'forma do pieczenia ciasta'?</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="q5" value="0"> a) frying pan</label>
-                    <label><input type="radio" name="q5" value="1"> b) cake tin</label> <!-- Poprawna -->
+                    <label><input type="radio" name="q5" value="2"> b) cake tin</label> <!-- Poprawna -->
                     <label><input type="radio" name="q5" value="0"> c) pot</label>
                 </div>
             </div>
-             <!-- Pytanie 6 (Grammar - PP Affirmative) -->
+             <!-- Pytanie 6 (Grammar - PP Affirmative - 2 pkt) -->
             <div class="quiz-question">
                 <p>6. Wybierz poprawną formę: She ___ (make) a cake.</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="q6" value="0"> a) have made</label>
                     <label><input type="radio" name="q6" value="0"> b) has make</label>
-                    <label><input type="radio" name="q6" value="1"> c) has made</label> <!-- Poprawna -->
+                    <label><input type="radio" name="q6" value="2"> c) has made</label> <!-- Poprawna -->
                 </div>
             </div>
-             <!-- Pytanie 7 (Grammar - PP Negative) -->
+             <!-- Pytanie 7 (Grammar - PP Negative - 2 pkt) -->
             <div class="quiz-question">
                 <p>7. Wybierz poprawną formę: We ___ (not clean) the room.</p>
                 <div class="quiz-options">
-                    <label><input type="radio" name="q7" value="1"> a) haven't cleaned</label> <!-- Poprawna -->
+                    <label><input type="radio" name="q7" value="2"> a) haven't cleaned</label> <!-- Poprawna -->
                     <label><input type="radio" name="q7" value="0"> b) hasn't cleaned</label>
                     <label><input type="radio" name="q7" value="0"> c) haven't clean</label>
                 </div>
             </div>
-             <!-- Pytanie 8 (Grammar - PP Question) -->
+             <!-- Pytanie 8 (Grammar - PP Question - 2 pkt) -->
             <div class="quiz-question">
                 <p>8. Wybierz poprawne pytanie: ___ (you / wash) the dishes?</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="q8" value="0"> a) Has you washed</label>
-                    <label><input type="radio" name="q8" value="1"> b) Have you washed</label> <!-- Poprawna -->
+                    <label><input type="radio" name="q8" value="2"> b) Have you washed</label> <!-- Poprawna -->
                     <label><input type="radio" name="q8" value="0"> c) Have you wash</label>
                 </div>
             </div>
-             <!-- Pytanie 9 (Grammar - Past Participle) -->
+             <!-- Pytanie 9 (Grammar - Past Participle - 2 pkt) -->
             <div class="quiz-question">
                 <p>9. Jaka jest III forma (Past Participle) czasownika 'eat'?</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="q9" value="0"> a) eated</label>
                     <label><input type="radio" name="q9" value="0"> b) ate</label>
-                    <label><input type="radio" name="q9" value="1"> c) eaten</label> <!-- Poprawna -->
+                    <label><input type="radio" name="q9" value="2"> c) eaten</label> <!-- Poprawna -->
                 </div>
             </div>
-             <!-- Pytanie 10 (Grammar - Imperative) -->
+             <!-- Pytanie 10 (Grammar - Imperative - 2 pkt) -->
             <div class="quiz-question">
                 <p>10. Którego słowa użyjesz w poleceniu '___ sól!' (Dodaj sól!)?</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="q10" value="0"> a) Adding</label>
                     <label><input type="radio" name="q10" value="0"> b) Adds</label>
-                    <label><input type="radio" name="q10" value="1"> c) Add</label> <!-- Poprawna -->
+                    <label><input type="radio" name="q10" value="2"> c) Add</label> <!-- Poprawna -->
                 </div>
             </div>
-            <!-- Dodaj więcej pytań, aby dobić do ok. 20 punktów, np. 10 pytań po 2 pkt -->
-            <!-- ... (kolejne 10 pytań) ... -->
 
             <div class="navigation">
                 <button type="button" onclick="submitQuiz()">Zakończ Quiz</button>
@@ -350,40 +552,139 @@
     <!-- ====================================================== -->
     <div id="testBContent">
         <h2>Gratulacje! Wynik quizu pozwala Ci zobaczyć Test B!</h2>
-        <p>Oto przykładowa struktura zadań z Testu B. Przećwicz je, aby jeszcze lepiej przygotować się do sprawdzianu.</p>
+        <p>Oto zadania z Testu B. Przećwicz je, aby jeszcze lepiej przygotować się do sprawdzianu.</p>
+
         <div class="test-section">
-            <h4>LISTENING (Zadanie 1 - Przepis)</h4>
-            <p><strong>Instrukcja:</strong> Posłuchaj nagrania (tego samego co wcześniej) i uzupełnij luki w przepisie na tosty francuskie (wersja B może mieć inne luki niż wersja A).</p>
-            <p><em>Miejsce na treść zadania 1 z Testu B...</em></p>
+            <h4>LISTENING (Zadanie 1)</h4>
+            <p class="test-instruction">[Track 6] Posłuchaj nagrania i uzupełnij przepis, wpisując jedno słowo lub liczbę w każdą lukę.</p>
+            <p class="test-question-text">
+                FRENCH TOAST <br>
+                three eggs <br>
+                1/2 cups of 1<span class="gap">milk</span> <br> <!-- Odpowiedź dla weryfikacji -->
+                salt, sugar, butter, 2<span class="gap">bread</span> <br> <!-- Odpowiedź dla weryfikacji -->
+                • First beat the eggs and milk in a bowl. Add a little salt. <br>
+                • Then 3<span class="gap">slice</span> the bread. You need eight pieces of bread for this recipe. Put the bread in the bowl with the eggs and milk. <br> <!-- Odpowiedź dla weryfikacji -->
+                • Put some butter in a frying pan. Then fry the bread for 4<span class="gap">two</span> minutes on each side. <br> <!-- Odpowiedź dla weryfikacji -->
+                • Put some suger on the bread. Fry each side again for 5<span class="gap">15/fifteen</span> seconds. <br> <!-- Odpowiedź dla weryfikacji -->
+                • Serve with jam, honey or fruit.
+            </p>
         </div>
+
         <div class="test-section">
-            <h4>VOCABULARY (Zadanie 2, 3, 4)</h4>
-            <p><strong>Instrukcja (Zad. 2):</strong> Wybierz poprawne słowa w przepisie na ciasteczka (inne opcje niż w Teście A).</p>
-            <p><strong>Instrukcja (Zad. 3):</strong> Uzupełnij zdania nazwami przedmiotów kuchennych (inne zdania/przedmioty niż w Teście A).</p>
-            <p><strong>Instrukcja (Zad. 4):</strong> Uzupełnij wyrazy opisujące jedzenie (inne przymiotniki/luki niż w Teście A).</p>
-            <p><em>Miejsce na treść zadań 2, 3, 4 z Testu B...</em></p>
+            <h4>VOCABULARY (Zadanie 2)</h4>
+            <p class="test-instruction">Wybierz poprawne odpowiedzi.</p>
+             <p class="test-question-text">
+                Butter biscuits <br>
+                100g sugar <br>
+                200g butter <br>
+                300g flour <br>
+                0 Boil / <span class="correct-choice">Beat</span> the butter and sugar together in a big 1 oven / <span class="correct-choice">bowl</span>. <br>
+                2 Slice / <span class="correct-choice">Add</span> the flour and 3 roast / <span class="correct-choice">mix</span> well. <br>
+                Make 12 small round biscuits. 4 Fry / <span class="correct-choice">Bake</span> them in the 5 pot / <span class="correct-choice">oven</span> (160°C) for 15–20 minutes. <br>
+                The biscuits are ready when they are brown.
+            </p>
         </div>
+
         <div class="test-section">
-            <h4>GRAMMAR (Zadanie 5, 6)</h4>
-            <p><strong>Instrukcja (Zad. 5):</strong> Uzupełnij notatkę czasownikami w czasie Present Perfect (inna notatka/czasowniki niż w Teście A).</p>
-            <p><strong>Instrukcja (Zad. 6):</strong> Napisz pytania i odpowiedzi w czasie Present Perfect (inne przykłady niż w Teście A).</p>
-            <p><em>Miejsce na treść zadań 5, 6 z Testu B...</em></p>
+            <h4>VOCABULARY (Zadanie 3)</h4>
+             <p class="test-instruction">Uzupełnij zdania wyrazami z ramki: cup, glass, knife, pot, spoon, tin</p>
+             <p class="test-question-text">
+                0 He always drinks coffee in this <span class="correct-choice">cup</span>. <br>
+                1 Make some chicken soup in a big <span class="gap">pot</span>. <br> <!-- Odpowiedź dla weryfikacji -->
+                2 You need a sharp <span class="gap">knife</span> to cut meat. <br> <!-- Odpowiedź dla weryfikacji -->
+                3 You eat ice cream with a <span class="gap">spoon</span>. <br> <!-- Odpowiedź dla weryfikacji -->
+                4 You need a cake <span class="gap">tin</span> to bake a cake. <br> <!-- Odpowiedź dla weryfikacji -->
+                5 I always have a <span class="gap">glass</span> of orange juice for breakfast. <!-- Odpowiedź dla weryfikacji -->
+            </p>
         </div>
+
+        <div class="test-section">
+            <h4>VOCABULARY (Zadanie 4)</h4>
+            <p class="test-instruction">Uzupełnij wyrazy.</p>
+            <p class="test-question-text">
+                0 Mum is a great cook. All her meals are d e l i c i o u s. <br>
+                1 Put some salt on this popcorn. It isn’t s <span class="gap">a l t y</span> enough. <br> <!-- Odpowiedź dla weryfikacji -->
+                2 The pizza has chillies on it. It’s too s <span class="gap">p i c y</span> for me. <br> <!-- Odpowiedź dla weryfikacji -->
+                3 The fish smells really bad. It’s d <span class="gap">i s g u s t i n g</span>. <br> <!-- Odpowiedź dla weryfikacji -->
+                4 Green apples, and lemons are s <span class="gap">o u r</span>. <!-- Odpowiedź dla weryfikacji -->
+            </p>
+        </div>
+
+        <div class="test-section">
+            <h4>GRAMMAR (Zadanie 5)</h4>
+            <p class="test-instruction">Uzupełnij notatkę, używając czasowników z nawiasów w czasie Present Perfect.</p>
+             <p class="test-question-text">
+                Hi Mum! <br>
+                Cindy and I 0 <span class="correct-choice">have had</span> (have) our breakfast. Cindy 1<span class="gap">has made</span> (make) a pie for you and Dad. She 2<span class="gap">hasn't put</span> (not put) in the fridge, she 3<span class="gap">has left</span> (leave) it in the oven. We 4<span class="gap">haven't clean</span> (not clean) the kitchen but I 5<span class="gap">have loaded</span> (load) the dishwasher. <br> <!-- Odpowiedzi dla weryfikacji -->
+                See you later! <br>
+                Love you! <br>
+                Jack
+            </p>
+        </div>
+
+        <div class="test-section">
+            <h4>GRAMMAR (Zadanie 6)</h4>
+             <p class="test-instruction">Napisz pytania i odpowiedzi w czasie Present Perfect.</p>
+             <p class="test-question-text">
+                0 he / wash / the dirty floor? (✓) <br>
+                A: Has he washed the dirty floor? <br>
+                B: Yes, he has. <br>
+                1 you / ever / be / on TV? () <br>
+                A: <span class="gap">Have you ever been on TV?</span> <br> <!-- Odpowiedź dla weryfikacji -->
+                B: <span class="gap">No, I haven't.</span> <br> <!-- Odpowiedź dla weryfikacji -->
+                2 they / ever / eat / pasta with pesto? () <br>
+                A: <span class="gap">Have they ever eaten pasta with pesto?</span> <br> <!-- Odpowiedź dla weryfikacji -->
+                B: <span class="gap">No, they haven't.</span> <br> <!-- Odpowiedź dla weryfikacji -->
+                3 she / buy / the fruit? (✓) <br>
+                A: <span class="gap">Has she bought the fruit?</span> <br> <!-- Odpowiedź dla weryfikacji -->
+                B: <span class="gap">Yes, she has.</span> <!-- Odpowiedź dla weryfikacji -->
+            </p>
+        </div>
+
         <div class="test-section">
             <h4>SPEAKING (Zadanie 7)</h4>
-            <p><strong>Instrukcja:</strong> Wybierz poprawne odpowiedzi w dialogach (inne dialogi/opcje niż w Teście A).</p>
-            <p><em>Miejsce na treść zadania 7 z Testu B...</em></p>
+            <p class="test-instruction">Wybierz poprawne odpowiedzi.</p>
+            <p class="test-question-text">
+                A: Would you 0 <span class="correct-choice">like to</span> / like go to the cinema or watch a DVD? <br>
+                B: I 1 <span class="correct-choice">don’t mind</span> / choose. <br>
+                A: Would you 2 <span class="correct-choice">like</span> / like to fish or meat? <br>
+                B: 3 I’m / <span class="correct-choice">I’d prefer</span> fish, please. <br>
+                A: Eggs with ham or tomatoes? <br>
+                B: You 4 <span class="correct-choice">choose</span> / like. <br>
+                A: 5 I prefer / <span class="correct-choice">I’d like to</span> have lunch now. <br>
+                B: Me too.
+            </p>
         </div>
+
         <div class="test-section">
             <h4>READING (Zadanie 8)</h4>
-            <p><strong>Instrukcja:</strong> Przeczytaj opisy kawiarni (te same teksty, ale inne pytania lub inna kolejność niż w Teście A) i odpowiedz na pytania.</p>
-            <p><em>Miejsce na treść zadania 8 z Testu B...</em></p>
+            <p class="test-instruction">Przeczytaj opisy kawiarni i odpowiedz na pytania.</p>
+             <p class="test-question-text">
+                Which café is best for <br>
+                0 someone who needs to use the Internet? B <br>
+                1 someone who’s looking for a cheap snack? <span class="gap">C</span> <br> <!-- Odpowiedź dla weryfikacji -->
+                2 someone who wants to sit and read or look for things online? <span class="gap">B</span> <br> <!-- Odpowiedź dla weryfikacji -->
+                3 a couple who are looking for a quiet place to have lunch? <span class="gap">B</span> <br> <!-- Odpowiedź dla weryfikacji -->
+                4 a group of young people who want to spend an afternoon together? <span class="gap">A</span> <br> <!-- Odpowiedź dla weryfikacji -->
+                5 someone who enjoys sweets? <span class="gap">C</span> <!-- Odpowiedź dla weryfikacji -->
+            </p>
+            <p><em>(Teksty opisów kawiarni A, B, C są takie same jak w Teście A - można je tu wkleić dla pełności)</em></p>
         </div>
+
         <div class="test-section">
             <h4>WRITING (Zadanie 9)</h4>
-            <p><strong>Instrukcja:</strong> Napisz przepis na ciasto jabłkowe na podstawie obrazków (te same obrazki, ale uczeń pisze samodzielnie).</p>
-            <p><em>Miejsce na treść zadania 9 z Testu B...</em></p>
+            <p class="test-instruction">Przeczytaj zadanie i napisz tekst. Look at the pictures and write a recipe for an apple cake. Use questions 1–3 to help you.</p>
+             <p class="test-question-text">
+                1 What ingredients do you need? Write a list. <br>
+                2 What other things, e.g. a knife, a bowl do you need? <br>
+                3 How do you make it? Write the instructions. <br>
+                <em>(Miejsce na odpowiedź ucznia - napisanie przepisu)</em>
+            </p>
         </div>
+
+         <div class="navigation">
+             <button onclick="restartChecklist()" style="background-color: #6c757d;">Zacznij od nowa</button>
+         </div>
     </div>
 
 
@@ -410,33 +711,32 @@
     const quizForm = document.getElementById('quizForm');
     const quizResultDiv = document.getElementById('quizResult');
     const testBContentDiv = document.getElementById('testBContent');
-    const TOTAL_QUIZ_POINTS = 10; // Zakładamy 10 pytań po 2 pkt = 20 pkt max. Ustaw na 10 dla 10 pytań po 1 pkt.
-    const PASSING_SCORE = 9; // Próg 18/20 to 9/10 przy pytaniach za 1 pkt.
+    const TOTAL_QUIZ_QUESTIONS = 10; // Liczba pytań w quizie
+    const POINTS_PER_QUESTION = 2; // Punkty za pytanie = 20 pkt max
+    const MAX_SCORE = TOTAL_QUIZ_QUESTIONS * POINTS_PER_QUESTION;
+    const PASSING_SCORE = 18; // Próg zaliczenia 18/20
 
     function showTask(index) {
-        // Hide all feedback areas first
         document.querySelectorAll('.task-feedback').forEach(fb => fb.style.display = 'none');
-        // Hide quiz and test B
         finalQuizDiv.classList.remove('active');
         testBContentDiv.classList.remove('active');
-        quizResultDiv.style.display = 'none'; // Hide previous quiz result
+        quizResultDiv.style.display = 'none';
 
         tasks.forEach((task, i) => {
             task.classList.toggle('active', i === index);
         });
         updateNavigationButtons();
-        container.scrollTop = 0;
+        try { container.scrollTop = 0; } catch(e) {}
         window.scrollTo({ top: container.offsetTop - 20, behavior: 'smooth' });
     }
 
     function updateNavigationButtons() {
         prevBtn.disabled = currentTaskIndex === 0;
-        nextBtn.disabled = true; // Disable "Next" until "Check" is clicked
-        checkBtn.disabled = false; // Enable "Check"
-        checkBtn.textContent = 'Sprawdź'; // Reset button text
+        nextBtn.disabled = true;
+        checkBtn.disabled = false;
+        checkBtn.textContent = 'Sprawdź';
         restartBtn.style.display = 'inline-block';
 
-        // Hide navigation if quiz or test B is active
          if (finalQuizDiv.classList.contains('active') || testBContentDiv.classList.contains('active')) {
              prevBtn.style.display = 'none';
              checkBtn.style.display = 'none';
@@ -450,7 +750,10 @@
 
     function generateTaskFeedback(taskIndex) {
         const currentTask = tasks[taskIndex];
+        if (!currentTask) return;
         const feedbackDiv = currentTask.querySelector('.task-feedback');
+        if (!feedbackDiv) return;
+
         const uncheckedItems = currentTask.querySelectorAll('input[type="checkbox"]:not(:checked)');
         let feedbackHTML = '';
 
@@ -458,6 +761,8 @@
             feedbackHTML += `<h4>Do powtórki z tego zadania:</h4><ul>`;
             uncheckedItems.forEach(item => {
                 const label = item.closest('label');
+                if (!label) return;
+
                 const levelSpan = label.querySelector('.level-tag');
                 const levelText = levelSpan ? levelSpan.outerHTML : '';
                 const translation = item.dataset.translation || '';
@@ -484,39 +789,40 @@
 
         feedbackDiv.innerHTML = feedbackHTML;
         feedbackDiv.style.display = 'block';
-        feedbackDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        if (feedbackHTML.includes('<li>') || feedbackHTML.includes('Gratulacje')) {
+             feedbackDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
     }
 
     function checkCurrentTask() {
+        if (finalQuizDiv.classList.contains('active') || testBContentDiv.classList.contains('active')) return;
         generateTaskFeedback(currentTaskIndex);
-        nextBtn.disabled = false; // Enable "Next" button after checking
-        checkBtn.disabled = true; // Disable "Check" button after clicking
-        checkBtn.textContent = 'Sprawdzone!'; // Change button text
+        nextBtn.disabled = false;
+        checkBtn.disabled = true;
+        checkBtn.textContent = 'Sprawdzone!';
     }
 
     function navigateTask(direction) {
+        if (finalQuizDiv.classList.contains('active') || testBContentDiv.classList.contains('active')) return;
         const nextIndex = currentTaskIndex + direction;
 
-        if (direction > 0) { // Moving forward
-             // Hide feedback of the task we are leaving
-             const currentFeedbackDiv = tasks[currentTaskIndex].querySelector('.task-feedback');
-             if(currentFeedbackDiv) currentFeedbackDiv.style.display = 'none';
+        const currentTaskElement = tasks[currentTaskIndex];
+        if (currentTaskElement) {
+            const currentFeedbackDiv = currentTaskElement.querySelector('.task-feedback');
+            if(currentFeedbackDiv) currentFeedbackDiv.style.display = 'none';
+        }
 
+        if (direction > 0) { // Moving forward
             if (nextIndex < tasks.length) {
                 currentTaskIndex = nextIndex;
                 showTask(currentTaskIndex);
             } else {
-                // Reached the end of tasks, show quiz
-                tasks[currentTaskIndex].classList.remove('active'); // Hide last task
+                if(currentTaskElement) currentTaskElement.classList.remove('active');
                 finalQuizDiv.classList.add('active');
-                updateNavigationButtons(); // Hide nav buttons
+                updateNavigationButtons();
                 window.scrollTo({ top: container.offsetTop - 20, behavior: 'smooth' });
             }
         } else { // Moving backward
-             // Hide feedback of the task we are leaving
-             const currentFeedbackDiv = tasks[currentTaskIndex].querySelector('.task-feedback');
-             if(currentFeedbackDiv) currentFeedbackDiv.style.display = 'none';
-
             if (nextIndex >= 0) {
                 currentTaskIndex = nextIndex;
                 showTask(currentTaskIndex);
@@ -526,68 +832,75 @@
 
     function submitQuiz() {
         let score = 0;
-        const totalQuestions = quizForm.querySelectorAll('.quiz-question').length; // Get actual number of questions
-        // Assuming 1 point per question for simplicity now
-        const pointsPerQuestion = 1; // Change if needed (e.g., to 2 for 20 points total)
-        const maxScore = totalQuestions * pointsPerQuestion;
-        // Adjust passing score based on actual total points if needed
-        const adjustedPassingScore = Math.ceil(0.9 * totalQuestions); // 90% threshold (18/20 or 9/10)
+        const questionsInForm = quizForm.querySelectorAll('.quiz-question');
+        const actualTotalQuestions = questionsInForm.length; // Should be 10
 
-
-        for (let i = 1; i <= totalQuestions; i++) {
+        for (let i = 1; i <= actualTotalQuestions; i++) {
             const selectedAnswer = quizForm.querySelector(`input[name="q${i}"]:checked`);
-            if (selectedAnswer && parseInt(selectedAnswer.value) === 1) {
-                score += pointsPerQuestion;
+            // Value is now the points (0 or 2)
+            if (selectedAnswer) {
+                score += parseInt(selectedAnswer.value);
             }
         }
 
         quizResultDiv.style.display = 'block';
-        quizResultDiv.textContent = `Twój wynik: ${score} / ${maxScore} punktów.`;
+        quizResultDiv.textContent = `Twój wynik: ${score} / ${MAX_SCORE} punktów.`; // MAX_SCORE is 20
 
-        if (score >= adjustedPassingScore) {
-            quizResultDiv.className = 'result-pass'; // Green background
-            quizResultDiv.textContent += ' Gratulacje! Osiągnąłeś wymagany próg.';
-            testBContentDiv.classList.add('active'); // Show Test B
+        if (score >= PASSING_SCORE) { // PASSING_SCORE is 18
+            quizResultDiv.className = 'result-pass';
+            quizResultDiv.textContent += ` Gratulacje! Osiągnąłeś wymagany próg (${PASSING_SCORE} pkt). Możesz teraz zobaczyć Test B.`;
+            testBContentDiv.classList.add('active');
             testBContentDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else {
-            quizResultDiv.className = 'result-fail'; // Red background
-            quizResultDiv.textContent += ' Niestety, wynik jest poniżej progu 18/20. Wróć do checklisty i powtórz materiał.';
-            testBContentDiv.classList.remove('active'); // Hide Test B
+            quizResultDiv.className = 'result-fail';
+            quizResultDiv.textContent += ` Niestety, wynik jest poniżej progu ${PASSING_SCORE} pkt. Wróć do checklisty (użyj przycisku 'Zacznij od nowa') i powtórz materiał.`;
+            testBContentDiv.classList.remove('active');
         }
-         // Hide the quiz form itself after submission
          quizForm.style.display = 'none';
+         const quizSubmitButton = quizForm.querySelector('.navigation button');
+         if (quizSubmitButton) quizSubmitButton.style.display = 'none';
+         restartBtn.style.display = 'inline-block';
+         updateNavigationButtons();
     }
 
 
      function restartChecklist() {
-         // Uncheck all checkboxes and radio buttons
          document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(inp => inp.checked = false);
-         // Hide all feedback areas
+         // Re-check the pre-checked items
+         document.querySelectorAll('input[data-prechecked="true"]').forEach(inp => inp.checked = true);
+
          document.querySelectorAll('.task-feedback').forEach(fb => {
              fb.innerHTML = '';
              fb.style.display = 'none';
          });
-         // Hide quiz, result and test B
          finalQuizDiv.classList.remove('active');
          quizResultDiv.style.display = 'none';
          testBContentDiv.classList.remove('active');
-         quizForm.style.display = 'block'; // Show quiz form again if restarting
+         quizForm.style.display = 'block';
+         const quizSubmitButton = quizForm.querySelector('.navigation button');
+         if (quizSubmitButton) quizSubmitButton.style.display = 'inline-block';
 
-         // Reset to the first task
          currentTaskIndex = 0;
          showTask(currentTaskIndex);
-         // Ensure buttons are in correct initial state
          checkBtn.disabled = false;
          checkBtn.textContent = 'Sprawdź';
          nextBtn.disabled = true;
          prevBtn.disabled = true;
          restartBtn.style.display = 'none';
-         setTimeout(() => { restartBtn.style.display = 'inline-block'; }, 10);
+         setTimeout(() => { restartBtn.style.display = 'inline-block'; }, 50);
+         updateNavigationButtons(); // Ensure correct buttons are shown/hidden for the first task
      }
 
-    // Initial setup
-    showTask(currentTaskIndex);
-    setTimeout(() => { restartBtn.style.display = 'inline-block'; }, 10);
+    // Add data-prechecked attribute to elements that should be checked on restart
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('input[type="checkbox"][checked]').forEach(cb => {
+            cb.setAttribute('data-prechecked', 'true');
+        });
+        // Initial setup
+        showTask(currentTaskIndex);
+        setTimeout(() => { restartBtn.style.display = 'inline-block'; }, 50);
+    });
+
 
 </script>
 
