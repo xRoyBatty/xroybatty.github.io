@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Losowy - Czynności codzienne i Czas Present Simple</title>
+    <title>Quiz Losowy - Jedno Pytanie Naraz</title>
     <style>
         body {
             font-family: sans-serif;
@@ -13,14 +13,23 @@
         }
         h1, h2 {
             color: #333;
+            text-align: center;
         }
         .quiz-container {
             background-color: #fff;
             padding: 25px;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            max-width: 800px; /* Ograniczenie szerokości dla lepszej czytelności */
+            max-width: 700px; /* Nieco węższy dla jednego pytania */
             margin: 20px auto;
+            position: relative; /* Dla pozycjonowania licznika */
+        }
+        #question-counter {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 0.9em;
+            color: #666;
         }
         .question-block {
             margin-bottom: 25px;
@@ -28,102 +37,147 @@
             border: 1px solid #eee;
             border-radius: 5px;
             background-color: #fafafa;
+            display: none; /* Domyślnie ukryte */
+            min-height: 100px; /* Aby uniknąć skakania wysokości */
+            animation: fadeIn 0.5s ease-in-out; /* Animacja pojawiania się */
         }
-        .question-block p { /* Zmieniono z p na .question-text dla lepszego targetowania */
+        .question-block.active {
+            display: block; /* Pokazuj aktywne pytanie */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-block p.question-text {
              font-weight: bold;
-             margin-bottom: 10px;
+             margin-bottom: 15px; /* Więcej miejsca pod pytaniem */
+             font-size: 1.1em;
+             color: #333;
         }
-        label { /* Styl dla opcji wielokrotnego wyboru */
+        label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px; /* Zwiększony odstęp */
             cursor: pointer;
-            padding: 5px 5px 5px 10px;
+            padding: 10px 15px; /* Większy padding */
             border-radius: 4px;
-            transition: background-color 0.2s ease-in-out;
-            border: 1px solid transparent;
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+            border: 1px solid #ddd; /* Lekka ramka */
+            background-color: #fff;
         }
         label:hover {
-            background-color: #e9e9e9;
+            background-color: #f0f0f0;
+            border-color: #ccc;
         }
         input[type="radio"] {
-            margin-right: 10px;
+            margin-right: 12px;
             vertical-align: middle;
         }
-        input[type="text"] { /* Styl dla pól tekstowych */
+        input[type="text"] {
             display: block;
-            width: calc(100% - 22px); /* Dopasowanie szerokości */
-            padding: 10px;
-            margin-top: 5px;
+            width: calc(100% - 22px);
+            padding: 12px; /* Większy padding */
+            margin-top: 8px;
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 1em;
         }
-        button {
-            display: block;
-            margin-top: 20px;
-            padding: 12px 25px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.2s ease-in-out;
+        #navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #eee; /* Linia oddzielająca */
         }
-        button:hover {
-            background-color: #0056b3;
+        #navigation-buttons button, #submitButton {
+             padding: 10px 25px; /* Zwiększony padding */
+             color: white;
+             border: none;
+             border-radius: 5px;
+             font-size: 16px;
+             cursor: pointer;
+             transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out;
         }
+        #prevButton { background-color: #6c757d; }
+        #nextButton { background-color: #007bff; }
+        #submitButton { background-color: #28a745; display: none; margin: 20px auto 0; } /* Ukryty domyślnie */
+
+        #navigation-buttons button:hover, #submitButton:hover {
+            opacity: 0.9;
+        }
+        #navigation-buttons button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
         #wynik {
-            margin-top: 20px;
-            font-size: 18px;
+            margin-top: 30px; /* Większy odstęp */
+            font-size: 1.2em; /* Większy font */
             font-weight: bold;
-            padding: 15px;
+            padding: 20px; /* Większy padding */
             border-radius: 5px;
             text-align: center;
+            display: none; /* Ukryty na początku */
         }
-        .feedback { /* Klasa do oznaczania poprawności */
-             margin-top: 5px;
-             font-size: 0.9em;
+        .feedback {
+             margin-top: 10px; /* Zwiększony odstęp */
+             font-size: 0.95em;
              font-weight: normal;
+             padding: 8px;
+             border-radius: 4px;
         }
-        .correct-answer { color: green; }
-        .incorrect-answer { color: red; }
-        .correct-input { border: 1px solid green !important; }
-        .incorrect-input { border: 1px solid red !important; }
-        .correct-label { border: 1px solid green; background-color: #e9f7e9; }
-        .incorrect-label { border: 1px solid red; background-color: #fdeaea; }
+        .correct-answer { color: #155724; background-color: #d4edda; border: 1px solid #c3e6cb; display: inline-block; padding: 2px 6px; border-radius: 3px;}
+        .incorrect-answer { color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; display: inline-block; padding: 2px 6px; border-radius: 3px;}
+        .correct-input { border: 2px solid #28a745 !important; background-color: #e9f7e9; }
+        .incorrect-input { border: 2px solid #dc3545 !important; background-color: #fdeaea; }
+        .correct-label { border: 2px solid #28a745; background-color: #e9f7e9; }
+        .incorrect-label { border: 2px solid #dc3545; background-color: #fdeaea; }
+
+        /* Styl dla pokazania wszystkich odpowiedzi po sprawdzeniu */
+        .quiz-container.results-mode .question-block {
+            display: block; /* Pokaż wszystkie bloki */
+            margin-bottom: 15px; /* Mniejszy margines w trybie wyników */
+            animation: none; /* Wyłącz animację przy pokazywaniu wyników */
+        }
+        .quiz-container.results-mode #navigation-buttons,
+        .quiz-container.results-mode #question-counter,
+        .quiz-container.results-mode #submitButton {
+            display: none; /* Ukryj nawigację i licznik w trybie wyników */
+        }
 
         .info {
             background-color: #fff3cd;
             color: #856404;
             border: 1px solid #ffeeba;
-            padding: 10px;
-            margin-bottom: 20px;
+            padding: 15px; /* Zwiększony padding */
+            margin-bottom: 25px;
             border-radius: 5px;
         }
+        .info ul { padding-left: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="quiz-container">
-        <h1>Quiz Losowy: Czynności codzienne, Present Simple i Przysłówki Częstotliwości</h1>
+    <div class="quiz-container" id="quizContainer">
+        <h1>Quiz Losowy: Czynności codzienne i Present Simple</h1>
+        <div id="question-counter"></div>
 
         <div class="info">
             <h2>Zasady do zapamiętania:</h2>
             <ul>
                 <li><strong>Czasowniki po I/you/we/they:</strong> Nie dodajemy końcówki (np. <em>I go</em>, <em>we play</em>).</li>
                 <li><strong>Czasowniki po he/she/it:</strong> Dodajemy końcówkę <strong>-s</strong> lub <strong>-es</strong> (np. <em>he goes</em>, <em>she plays</em>).</li>
-                <li><strong>Przysłówki częstotliwości (np. always, often, sometimes, never):</strong> Zazwyczaj umieszczamy je <strong>przed</strong> głównym czasownikiem (np. <em>I <strong>often</strong> play games</em>), ale <strong>po</strong> czasowniku 'to be' (np. <em>He <strong>is always</strong> late</em>).</li>
-                <li><strong>Wyrażenia czasowe (np. every day, in the morning, on Sundays):</strong> Zazwyczaj umieszczamy je na końcu zdania.</li>
+                <li><strong>Przysłówki częstotliwości:</strong> Zazwyczaj <strong>przed</strong> głównym czasownikiem (np. <em>I <strong>often</strong> play</em>), ale <strong>po</strong> 'to be' (np. <em>He <strong>is always</strong> late</em>).</li>
+                <li><strong>Wyrażenia czasowe:</strong> Zazwyczaj na końcu zdania.</li>
             </ul>
-            <p><strong>Instrukcja:</strong> Wpisz angielskie tłumaczenie lub wybierz poprawną odpowiedź. Wielkość liter i znaki interpunkcyjne (.,!?) w odpowiedziach wpisywanych są ignorowane.</p>
+            <p><strong>Instrukcja:</strong> Wpisz angielskie tłumaczenie lub wybierz poprawną odpowiedź. Wielkość liter i znaki interpunkcyjne (.,!?) w odpowiedziach wpisywanych są ignorowane. Użyj przycisków "Poprzednie" / "Następne", aby poruszać się między pytaniami.</p>
         </div>
 
-        <form id="quizForm">
+        <form id="quizForm" novalidate> <!-- novalidate zapobiega domyślnej walidacji HTML5 -->
             <div id="questions-wrapper">
                 <!-- Pytania zostaną tutaj wstawione przez JavaScript -->
-
-                <!-- Wzory pytań (pozostają w HTML, ale ukryte i używane przez JS do wstawienia) -->
                 <template id="question-template-text">
                     <div class="question-block" data-question-type="text">
                         <p class="question-text"></p>
@@ -131,103 +185,115 @@
                         <div class="feedback"></div>
                     </div>
                 </template>
-
                 <template id="question-template-mcq">
                      <div class="question-block" data-question-type="mcq">
                         <p class="question-text"></p>
-                        <div class="options">
-                            <!-- Opcje zostaną dodane przez JS -->
-                        </div>
+                        <div class="options"></div>
                         <div class="feedback"></div>
                     </div>
                 </template>
             </div><!-- koniec questions-wrapper -->
 
-            <button type="submit">Sprawdź odpowiedzi</button>
+            <div id="navigation-buttons">
+                 <button type="button" id="prevButton">Poprzednie</button>
+                 <button type="button" id="nextButton">Następne</button>
+            </div>
+
+            <button type="submit" id="submitButton">Sprawdź odpowiedzi</button>
         </form>
 
         <div id="wynik"></div>
     </div>
 
     <script>
-        // Definicja pytań i odpowiedzi
+        // Definicja pytań i odpowiedzi (BEZ NUMERÓW)
         const quizData = [
-            // Pytania tekstowe (tłumaczenia)
-            { id: 'q1', type: 'text', question: '1. Jak przetłumaczysz na angielski: "Wstaję wcześnie."?', answers: ['i get up early'] },
-            { id: 'q2', type: 'text', question: '2. Jak przetłumaczysz na angielski: "Jem śniadanie w domu."?', answers: ['i eat breakfast at home'] },
-            { id: 'q3', type: 'text', question: '3. Jak przetłumaczysz na angielski: "Jeżdżę do szkoły autobusem."?', answers: ['i go to school by bus', 'i take the bus to school'] },
-            { id: 'q4', type: 'text', question: '4. Jak przetłumaczysz na angielski: "Oglądam telewizję po kolacji."?', answers: ['i watch tv after dinner', 'i watch television after dinner'] },
-            { id: 'q5', type: 'text', question: '5. Jak przetłumaczysz na angielski: "Gram w gry komputerowe po kolacji."?', answers: ['i play computer games after dinner', 'i play video games after dinner'] },
-            { id: 'q6', type: 'text', question: '6. Jak przetłumaczysz na angielski: "w każdą niedzielę"?', answers: ['every sunday', 'on sundays'] },
-            { id: 'q7', type: 'text', question: '7. Jak przetłumaczysz na angielski: "po południu"?', answers: ['in the afternoon'] },
-            { id: 'q8', type: 'text', question: '8. Jak przetłumaczysz na angielski: "żeglować"?', answers: ['to sail', 'sail'] }, // 'to sail' lub samo 'sail'
-            { id: 'q9', type: 'text', question: '9. Jak powiesz po angielsku "często"?', answers: ['often'] },
-            { id: 'q10', type: 'text', question: '10. Jak powiesz po angielsku "zawsze"?', answers: ['always'] },
-            { id: 'q11', type: 'text', question: '11. Jak powiesz po angielsku "codziennie"?', answers: ['every day', 'daily'] },
-            { id: 'q12', type: 'text', question: '12. Jak powiesz po angielsku "rzadko"?', answers: ['rarely', 'seldom'] },
-            { id: 'q13', type: 'text', question: '13. Jak powiesz po angielsku "czasami"?', answers: ['sometimes'] },
-            { id: 'q14', type: 'text', question: '14. Jak powiesz po angielsku "zazwyczaj"?', answers: ['usually', 'generally'] },
-            { id: 'q15', type: 'text', question: '15. Jak powiesz po angielsku "nigdy"?', answers: ['never'] },
-            { id: 'q16', type: 'text', question: '16. Jak powiesz po angielsku "późno"?', answers: ['late'] },
-            { id: 'q17', type: 'text', question: '17. Jak powiesz po angielsku "wcześnie"?', answers: ['early'] },
-            { id: 'q18', type: 'text', question: '18. Jak powiesz po angielsku "w wakacje"?', answers: ['on holidays', 'on holiday', 'on vacation', 'during holidays', 'during the holidays'] }, // Dodano więcej opcji
-            { id: 'q19', type: 'text', question: '19. Jak powiesz po angielsku "rano" / "o poranku"?', answers: ['in the morning'] },
-            { id: 'q20', type: 'text', question: '20. Jak powiesz po angielsku "każdego ranka"?', answers: ['every morning'] },
-            { id: 'q21', type: 'text', question: '21. Jak powiesz po angielsku "wieczorem"?', answers: ['in the evening'] },
-            { id: 'q22', type: 'text', question: '22. Jak powiesz po angielsku "w każdy weekend"?', answers: ['every weekend', 'at weekends', 'on weekends'] }, // Dodano opcje BrE/AmE
+             // Pytania tekstowe (tłumaczenia)
+            { id: 'q1', type: 'text', question: 'Jak przetłumaczysz na angielski: "Wstaję wcześnie."?', answers: ['i get up early'] },
+            { id: 'q2', type: 'text', question: 'Jak przetłumaczysz na angielski: "Jem śniadanie w domu."?', answers: ['i eat breakfast at home'] },
+            { id: 'q3', type: 'text', question: 'Jak przetłumaczysz na angielski: "Jeżdżę do szkoły autobusem."?', answers: ['i go to school by bus', 'i take the bus to school'] },
+            { id: 'q4', type: 'text', question: 'Jak przetłumaczysz na angielski: "Oglądam telewizję po kolacji."?', answers: ['i watch tv after dinner', 'i watch television after dinner'] },
+            { id: 'q5', type: 'text', question: 'Jak przetłumaczysz na angielski: "Gram w gry komputerowe po kolacji."?', answers: ['i play computer games after dinner', 'i play video games after dinner'] },
+            { id: 'q6', type: 'text', question: 'Jak przetłumaczysz na angielski: "w każdą niedzielę"?', answers: ['every sunday', 'on sundays'] },
+            { id: 'q7', type: 'text', question: 'Jak przetłumaczysz na angielski: "po południu"?', answers: ['in the afternoon'] },
+            { id: 'q8', type: 'text', question: 'Jak przetłumaczysz na angielski: "żeglować"?', answers: ['to sail', 'sail'] },
+            { id: 'q9', type: 'text', question: 'Jak powiesz po angielsku "często"?', answers: ['often'] },
+            { id: 'q10', type: 'text', question: 'Jak powiesz po angielsku "zawsze"?', answers: ['always'] },
+            { id: 'q11', type: 'text', question: 'Jak powiesz po angielsku "codziennie"?', answers: ['every day', 'daily'] },
+            { id: 'q12', type: 'text', question: 'Jak powiesz po angielsku "rzadko"?', answers: ['rarely', 'seldom'] },
+            { id: 'q13', type: 'text', question: 'Jak powiesz po angielsku "czasami"?', answers: ['sometimes'] },
+            { id: 'q14', type: 'text', question: 'Jak powiesz po angielsku "zazwyczaj"?', answers: ['usually', 'generally'] },
+            { id: 'q15', type: 'text', question: 'Jak powiesz po angielsku "nigdy"?', answers: ['never'] },
+            { id: 'q16', type: 'text', question: 'Jak powiesz po angielsku "późno"?', answers: ['late'] },
+            { id: 'q17', type: 'text', question: 'Jak powiesz po angielsku "wcześnie"?', answers: ['early'] },
+            { id: 'q18', type: 'text', question: 'Jak powiesz po angielsku "w wakacje"?', answers: ['on holidays', 'on holiday', 'on vacation', 'during holidays', 'during the holidays'] },
+            { id: 'q19', type: 'text', question: 'Jak powiesz po angielsku "rano" / "o poranku"?', answers: ['in the morning'] },
+            { id: 'q20', type: 'text', question: 'Jak powiesz po angielsku "każdego ranka"?', answers: ['every morning'] },
+            { id: 'q21', type: 'text', question: 'Jak powiesz po angielsku "wieczorem"?', answers: ['in the evening'] },
+            { id: 'q22', type: 'text', question: 'Jak powiesz po angielsku "w każdy weekend"?', answers: ['every weekend', 'at weekends', 'on weekends'] },
 
             // Pytania wielokrotnego wyboru (zasady/zastosowanie)
-            { id: 'q23', type: 'mcq', question: '23. ZASADA: Jaką końcówkę dodajemy do czasownika w czasie Present Simple po zaimkach \'he\', \'she\', \'it\'?', options: { a: '-ing', b: '-ed', c: '-s lub -es', d: 'żadnej' }, correctAnswer: 'c' },
-            { id: 'q24', type: 'mcq', question: '24. ZASADA: Czy dodajemy końcówkę do czasownika w czasie Present Simple po zaimkach \'I\', \'you\', \'we\', \'they\'?', options: { a: 'Tak, -s', b: 'Tak, -es', c: 'Nie, nie dodajemy końcówki', d: 'Tak, -ing' }, correctAnswer: 'c' },
-            { id: 'q25', type: 'mcq', question: '25. ZASADA: Gdzie zazwyczaj umieszczamy przysłówki częstotliwości (np. \'always\', \'often\', \'never\')?', options: { a: 'Na końcu zdania', b: 'Przed głównym czasownikiem', c: 'Po głównym czasowniku', d: 'Na początku zdania' }, correctAnswer: 'b' },
-            { id: 'q26', type: 'mcq', question: '26. Które zdanie jest poprawne gramatycznie?', options: { a: 'He often play football.', b: 'She watch TV sometimes.', c: 'We usually go to the park on Sundays.', d: 'They goes to school every day.' }, correctAnswer: 'c' },
-            { id: 'q27', type: 'mcq', question: '27. Które zdanie jest poprawne gramatycznie?', options: { a: 'I get up always early.', b: 'He never eats breakfast.', c: 'She go to bed late usually.', d: 'They walks to school often.' }, correctAnswer: 'b' }
+            { id: 'q23', type: 'mcq', question: 'ZASADA: Jaką końcówkę dodajemy do czasownika w czasie Present Simple po zaimkach \'he\', \'she\', \'it\'?', options: { a: '-ing', b: '-ed', c: '-s lub -es', d: 'żadnej' }, correctAnswer: 'c' },
+            { id: 'q24', type: 'mcq', question: 'ZASADA: Czy dodajemy końcówkę do czasownika w czasie Present Simple po zaimkach \'I\', \'you\', \'we\', \'they\'?', options: { a: 'Tak, -s', b: 'Tak, -es', c: 'Nie, nie dodajemy końcówki', d: 'Tak, -ing' }, correctAnswer: 'c' },
+            { id: 'q25', type: 'mcq', question: 'ZASADA: Gdzie zazwyczaj umieszczamy przysłówki częstotliwości (np. \'always\', \'often\', \'never\')?', options: { a: 'Na końcu zdania', b: 'Przed głównym czasownikiem', c: 'Po głównym czasowniku', d: 'Na początku zdania' }, correctAnswer: 'b' },
+            { id: 'q26', type: 'mcq', question: 'Które zdanie jest poprawne gramatycznie?', options: { a: 'He often play football.', b: 'She watch TV sometimes.', c: 'We usually go to the park on Sundays.', d: 'They goes to school every day.' }, correctAnswer: 'c' },
+            { id: 'q27', type: 'mcq', question: 'Które zdanie jest poprawne gramatycznie?', options: { a: 'I get up always early.', b: 'He never eats breakfast.', c: 'She go to bed late usually.', d: 'They walks to school often.' }, correctAnswer: 'b' }
         ];
 
+        const quizContainer = document.getElementById('quizContainer');
         const quizForm = document.getElementById('quizForm');
         const questionsWrapper = document.getElementById('questions-wrapper');
         const wynikDiv = document.getElementById('wynik');
         const textTemplate = document.getElementById('question-template-text');
         const mcqTemplate = document.getElementById('question-template-mcq');
+        const questionCounterElement = document.getElementById('question-counter');
+        const prevButton = document.getElementById('prevButton');
+        const nextButton = document.getElementById('nextButton');
+        const submitButton = document.getElementById('submitButton');
+
+        let currentQuestionIndex = 0;
+        let generatedQuestions = []; // Przechowuje elementy DOM pytań w losowej kolejności
         const totalQuestions = quizData.length;
 
-        // Funkcja do normalizacji tekstu (małe litery, usunięcie interpunkcji i zbędnych spacji)
+        // Funkcja do normalizacji tekstu
         function normalizeText(text) {
             if (typeof text !== 'string') return '';
-            return text.toLowerCase().replace(/[.,!?;:]/g, '').trim();
+            return text.toLowerCase().replace(/[.,!?;:]/g, '').trim().replace(/\s+/g, ' '); // Dodatkowo zamienia wielokrotne spacje na pojedyncze
         }
 
-        // Funkcja do mieszania tablicy (Fisher-Yates shuffle)
+        // Funkcja do mieszania tablicy
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]]; // Zamiana elementów
+                [array[i], array[j]] = [array[j], array[i]];
             }
         }
 
-        // Funkcja do tworzenia i wstawiania pytań do DOM
-        function renderQuestions() {
-            shuffleArray(quizData); // Mieszamy pytania
-            questionsWrapper.innerHTML = ''; // Czyścimy kontener
+        // Funkcja do tworzenia pytań
+        function generateQuestions() {
+            shuffleArray(quizData);
+            questionsWrapper.innerHTML = '';
+            generatedQuestions = [];
 
-            quizData.forEach((qData, index) => {
+            quizData.forEach((qData) => {
                 let questionElement;
+                const questionId = qData.id;
+
                 if (qData.type === 'text') {
                     questionElement = textTemplate.content.cloneNode(true).querySelector('.question-block');
                     const input = questionElement.querySelector('input[type="text"]');
-                    input.name = qData.id; // Ustawiamy name dla FormData
-                    input.setAttribute('aria-label', `Odpowiedź do pytania ${index + 1}`);
+                    input.name = questionId;
+                    input.setAttribute('aria-label', `Odpowiedź na pytanie: ${qData.question}`);
                 } else if (qData.type === 'mcq') {
                     questionElement = mcqTemplate.content.cloneNode(true).querySelector('.question-block');
                     const optionsContainer = questionElement.querySelector('.options');
-                    // Tworzymy opcje ABCD
                     for (const [key, value] of Object.entries(qData.options)) {
                         const label = document.createElement('label');
                         const radio = document.createElement('input');
                         radio.type = 'radio';
-                        radio.name = qData.id; // Wspólne name dla grupy radio
+                        radio.name = questionId;
                         radio.value = key;
-                        radio.id = `${qData.id}-${key}`; // Unikalne ID dla label
+                        radio.id = `${questionId}-${key}`;
                         label.htmlFor = radio.id;
                         label.appendChild(radio);
                         label.appendChild(document.createTextNode(` ${key}) ${value}`));
@@ -236,13 +302,36 @@
                 }
 
                 if (questionElement) {
-                    // Ustawiamy tekst pytania - używamy innerText, aby uniknąć problemów z HTML w tekście pytania
                     const questionTextElement = questionElement.querySelector('.question-text');
-                    questionTextElement.innerText = qData.question; // Zmieniono z innerHTML na innerText
-                    questionElement.dataset.questionId = qData.id; // Przechowujemy ID pytania
+                    questionTextElement.innerText = qData.question;
+                    questionElement.dataset.questionId = questionId;
                     questionsWrapper.appendChild(questionElement);
+                    generatedQuestions.push(questionElement);
                 }
             });
+        }
+
+        // Funkcja do pokazywania konkretnego pytania
+        function showQuestion(index) {
+            generatedQuestions.forEach((q, i) => {
+                q.classList.toggle('active', i === index);
+            });
+
+            currentQuestionIndex = index;
+            questionCounterElement.textContent = `Pytanie ${index + 1} / ${totalQuestions}`;
+
+            // Zarządzanie widocznością i stanem przycisków
+            prevButton.disabled = index === 0;
+            nextButton.disabled = index === totalQuestions - 1;
+            nextButton.style.display = index === totalQuestions - 1 ? 'none' : 'inline-block'; // Ukryj "Następne" na ostatnim
+            submitButton.style.display = index === totalQuestions - 1 ? 'inline-block' : 'none'; // Pokaż "Sprawdź" na ostatnim
+
+            // Focus na polu input/pierwszym radio
+            const activeQuestion = generatedQuestions[index];
+            const input = activeQuestion.querySelector('input[type="text"], input[type="radio"]');
+            if (input) {
+                 setTimeout(() => input.focus(), 50);
+            }
         }
 
         // Funkcja sprawdzająca odpowiedzi
@@ -250,23 +339,28 @@
             let score = 0;
             const formData = new FormData(quizForm);
 
-            // Resetowanie poprzedniego feedbacku
-            document.querySelectorAll('.question-block').forEach(block => {
-                const feedbackDiv = block.querySelector('.feedback');
-                if (feedbackDiv) feedbackDiv.innerHTML = '';
-                block.querySelector('input[type="text"]')?.classList.remove('correct-input', 'incorrect-input');
-                block.querySelectorAll('label').forEach(label => label.classList.remove('correct-label', 'incorrect-label'));
-            });
+            // Resetowanie feedbacku przed ponownym sprawdzeniem (jeśli byłoby możliwe)
+             generatedQuestions.forEach(block => {
+                 const feedbackDiv = block.querySelector('.feedback');
+                 if (feedbackDiv) feedbackDiv.innerHTML = '';
+                 block.querySelector('input[type="text"]')?.classList.remove('correct-input', 'incorrect-input');
+                 block.querySelectorAll('label').forEach(label => label.classList.remove('correct-label', 'incorrect-label'));
+                 // Odblokuj pola na wypadek ponownego podejścia (jeśli by było)
+                 block.querySelectorAll('input').forEach(input => input.disabled = false);
+             });
 
-            quizData.forEach(qData => {
-                const questionBlock = questionsWrapper.querySelector(`.question-block[data-question-id="${qData.id}"]`);
+
+            generatedQuestions.forEach(questionBlock => {
+                const questionId = questionBlock.dataset.questionId;
+                const qData = quizData.find(q => q.id === questionId);
+                if (!qData) return;
+
                 const feedbackDiv = questionBlock.querySelector('.feedback');
-                const userAnswerRaw = formData.get(qData.id); // Odpowiedź użytkownika
+                const userAnswerRaw = formData.get(questionId);
 
                 if (qData.type === 'text') {
-                    const inputElement = questionBlock.querySelector('input[type="text"]');
+                    const inputElement = questionBlock.querySelector(`input[name="${questionId}"]`);
                     const normalizedUserAnswer = normalizeText(userAnswerRaw);
-                    // Normalizujemy poprawne odpowiedzi (robimy to tutaj dla pewności)
                     const normalizedCorrectAnswers = qData.answers.map(ans => normalizeText(ans));
 
                     if (userAnswerRaw && normalizedCorrectAnswers.includes(normalizedUserAnswer)) {
@@ -275,49 +369,83 @@
                         feedbackDiv.innerHTML = '<span class="correct-answer">Dobrze!</span>';
                     } else {
                         inputElement.classList.add('incorrect-input');
-                        // Wyświetlamy poprawną odpowiedź (pierwszą z listy)
-                        feedbackDiv.innerHTML = `<span class="incorrect-answer">Źle. Poprawna odpowiedź: ${qData.answers[0]}</span>`;
-                         // Jeśli jest więcej niż jedna poprawna, można je wyświetlić:
-                         // feedbackDiv.innerHTML = `<span class="incorrect-answer">Źle. Poprawne odpowiedzi: ${qData.answers.join(' / ')}</span>`;
+                        let correctAnswerText = qData.answers[0];
+                        if (qData.answers.length > 1) {
+                             correctAnswerText += ` (lub: ${qData.answers.slice(1).join(' / ')})`;
+                        }
+                        feedbackDiv.innerHTML = `<span class="incorrect-answer">Źle. Poprawna odpowiedź: ${correctAnswerText}</span>`;
                     }
+                    inputElement.disabled = true; // Zablokuj po sprawdzeniu
                 } else if (qData.type === 'mcq') {
-                    const selectedOption = userAnswerRaw; // np. 'a', 'b', 'c', 'd'
+                    const selectedOption = userAnswerRaw;
                     const correctOptionKey = qData.correctAnswer;
+                    const radioButtons = questionBlock.querySelectorAll(`input[name="${questionId}"]`);
 
                     if (selectedOption) {
-                         const selectedLabel = questionBlock.querySelector(`label[for="${qData.id}-${selectedOption}"]`);
-                         if (selectedOption === correctOptionKey) {
-                             score++;
-                             selectedLabel?.classList.add('correct-label');
-                             feedbackDiv.innerHTML = '<span class="correct-answer">Dobrze!</span>';
-                         } else {
-                             selectedLabel?.classList.add('incorrect-label');
-                             const correctLabel = questionBlock.querySelector(`label[for="${qData.id}-${correctOptionKey}"]`);
-                             correctLabel?.classList.add('correct-label'); // Podświetl poprawną
-                             feedbackDiv.innerHTML = `<span class="incorrect-answer">Źle. Poprawna odpowiedź to ${correctOptionKey.toUpperCase()}.</span>`;
-                         }
+                        const selectedLabel = questionBlock.querySelector(`label[for="${questionId}-${selectedOption}"]`);
+                        if (selectedOption === correctOptionKey) {
+                            score++;
+                            selectedLabel?.classList.add('correct-label');
+                            feedbackDiv.innerHTML = '<span class="correct-answer">Dobrze!</span>';
+                        } else {
+                            selectedLabel?.classList.add('incorrect-label');
+                            const correctLabel = questionBlock.querySelector(`label[for="${questionId}-${correctOptionKey}"]`);
+                            correctLabel?.classList.add('correct-label');
+                            feedbackDiv.innerHTML = `<span class="incorrect-answer">Źle. Poprawna odpowiedź to ${correctOptionKey.toUpperCase()}.</span>`;
+                        }
                     } else {
-                        // Nie zaznaczono odpowiedzi
-                         feedbackDiv.innerHTML = '<span class="incorrect-answer">Nie udzielono odpowiedzi.</span>';
-                         const correctLabel = questionBlock.querySelector(`label[for="${qData.id}-${correctOptionKey}"]`);
-                         correctLabel?.classList.add('correct-label'); // Pokaż poprawną
+                        feedbackDiv.innerHTML = '<span class="incorrect-answer">Nie udzielono odpowiedzi.</span>';
+                        const correctLabel = questionBlock.querySelector(`label[for="${questionId}-${correctOptionKey}"]`);
+                        correctLabel?.classList.add('correct-label');
                     }
+                    radioButtons.forEach(radio => radio.disabled = true); // Zablokuj po sprawdzeniu
                 }
             });
 
             // Wyświetlanie wyniku końcowego
             wynikDiv.innerHTML = `Twój wynik: ${score} na ${totalQuestions} punktów.`;
-            wynikDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            wynikDiv.style.display = 'block';
+
+            // Przełącz na tryb wyników - pokaż wszystkie pytania z feedbackiem
+            quizContainer.classList.add('results-mode');
+
+            // Przewiń do góry, aby zobaczyć początek wyników
+            quizContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+
+        // Event Listenery dla przycisków nawigacji
+        nextButton.addEventListener('click', () => {
+            if (currentQuestionIndex < totalQuestions - 1) {
+                showQuestion(currentQuestionIndex + 1);
+            }
+        });
+
+        prevButton.addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                showQuestion(currentQuestionIndex - 1);
+            }
+        });
 
         // Event Listener dla formularza
         quizForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // Zapobiegaj przeładowaniu strony
+            event.preventDefault();
             checkAnswers();
         });
 
-        // Wywołanie funkcji renderującej pytania po załadowaniu DOM
-        document.addEventListener('DOMContentLoaded', renderQuestions);
+        // Inicjalizacja quizu
+        document.addEventListener('DOMContentLoaded', () => {
+            generateQuestions();
+            if (totalQuestions > 0) {
+                 showQuestion(0);
+            } else {
+                 // Obsługa przypadku braku pytań
+                 questionsWrapper.innerHTML = "<p>Brak pytań do wyświetlenia.</p>";
+                 document.getElementById('navigation-buttons').style.display = 'none';
+                 document.getElementById('submitButton').style.display = 'none';
+                 document.getElementById('question-counter').style.display = 'none';
+            }
+            wynikDiv.style.display = 'none';
+        });
 
     </script>
 
