@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Językowy - Egzamin Ósmoklasisty</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .quiz-container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #0056b3;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .question-area, .report-area, .final-score {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .situation {
+            font-style: italic;
+            color: #555;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #ccc;
+        }
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        .dialogue {
+            white-space: pre-line; /* Preserve line breaks in dialogues */
+            margin-bottom: 15px;
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .answer-options button, #next-button, #continue-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+        .answer-options button:hover, #next-button:hover, #continue-button:hover {
+            background-color: #0056b3;
+        }
+        .answer-options button.selected {
+            background-color: #28a745;
+            border: 2px solid #1e7e34;
+        }
+         .answer-options button:disabled {
+             background-color: #cccccc;
+             cursor: not-allowed;
+         }
+        #fill-answer {
+            width: calc(100% - 22px); /* Adjust for padding/border */
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        #next-button, #continue-button {
+            background-color: #28a745;
+            margin-top: 20px;
+        }
+         #next-button:hover, #continue-button:hover {
+             background-color: #1e7e34;
+         }
+        .report-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+        .report-item.correct {
+            background-color: #d4edda;
+            border-left: 5px solid #28a745;
+        }
+        .report-item.incorrect {
+            background-color: #f8d7da;
+            border-left: 5px solid #dc3545;
+        }
+        .report-explanation {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-top: 8px;
+            padding-left: 15px;
+            border-left: 2px solid #adb5bd;
+        }
+        .report-explanation ul {
+            margin: 5px 0 0 0;
+            padding-left: 20px;
+        }
+        .hidden {
+            display: none;
+        }
+        .progress-bar-container {
+             width: 100%;
+             background-color: #e0e0e0;
+             border-radius: 5px;
+             margin-bottom: 20px;
+             height: 10px;
+         }
+
+        .progress-bar {
+            width: 0%;
+            height: 10px;
+            background-color: #007bff;
+            border-radius: 5px;
+            transition: width 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <h1>Test Językowy</h1>
+
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
+        <div id="question-area" class="question-area">
+            <!-- Question content loads here -->
+        </div>
+
+        <div id="answer-area">
+            <!-- Answer options or input field loads here -->
+        </div>
+
+        <div id="report-area" class="report-area hidden">
+             <h2>Raport Postępów</h2>
+            <!-- Report content loads here -->
+        </div>
+
+         <div id="final-score" class="final-score hidden">
+             <h2>Koniec Quizu!</h2>
+             <p>Twój ostateczny wynik: <span id="final-score-value"></span></p>
+         </div>
+
+
+        <button id="next-button">Następne Pytanie</button>
+        <button id="continue-button" class="hidden">Kontynuuj Quiz</button>
+
+    </div>
+
+    <script>
+        const questions = [
+            // --- OJAP-100-1906 ---
+            {
+                id: 'ojap1906_5_1', type: 'mcq',
+                situation: 'W kawiarni chcesz zamówić kawałek szarlotki.',
+                questionText: 'Co powiesz kelnerowi?',
+                options: [
+                    'Could I have a piece of apple pie, please.',
+                    'Will you order some apple pie?',
+                    'I’m not fond of apple pie.'
+                ],
+                correctAnswerIndex: 0,
+                explanation: {
+                    1: 'Pytasz kelnera, czy ON zamówi, zamiast zamawiać dla siebie.',
+                    2: 'Wyrażasz niechęć do szarlotki, a chcesz ją zamówić.'
+                }
+            },
+            {
+                id: 'ojap1906_5_2', type: 'mcq',
+                situation: 'Babcia prosi Cię o pójście do apteki.',
+                questionText: 'Jak wyrazisz zgodę?',
+                options: [
+                    'Do you need any help?',
+                    'Well, can you ask my brother?',
+                    'Alright, what would you like me to get?'
+                ],
+                correctAnswerIndex: 2,
+                explanation: {
+                    0: 'Oferujesz pomoc ogólnie, a nie zgadzasz się na konkretną prośbę.',
+                    1: 'Sugerujesz, żeby poprosiła kogoś innego, co jest odmową/unikaniem.'
+                }
+            },
+            {
+                id: 'ojap1906_5_3', type: 'mcq',
+                situation: 'Chcesz namówić kolegów do wspólnego wyjścia na basen.',
+                questionText: 'Jak im to zaproponujesz?',
+                options: [
+                    'Can you swim well?',
+                    'Do you like swimming?',
+                    'How about going swimming?'
+                ],
+                correctAnswerIndex: 2,
+                explanation: {
+                    0: 'Pytasz o umiejętność pływania, a nie proponujesz wyjścia.',
+                    1: 'Pytasz o preferencje, a nie składasz konkretnej propozycji.'
+                }
+            },
+             {
+                id: 'ojap1906_6_1', type: 'fill',
+                questionText: `Uzupełnij dialog:
+                X: It’s been a wonderful party, but I really have to go now. It’s getting late.
+                Y: Oh dear. 6.1. __________ that you can’t stay any longer! I’ve made your favourite pizza.`,
+                correctAnswerText: ["it's a pity", "what a pity", "i'm sorry", "too bad"] // Allow variations
+            },
+             {
+                id: 'ojap1906_6_2', type: 'fill',
+                questionText: `Uzupełnij dialog:
+                X: Excuse me, how 6.2. __________ to the nearest post office?
+                Y: You need to turn left and then go straight on. It’s next to the bank.`,
+                correctAnswerText: ["do i get", "can i get", "is the way"]
+            },
+             {
+                id: 'ojap1906_6_3', type: 'fill',
+                questionText: `Uzupełnij dialog:
+                X: Oh, my mum’s texted me. She’s already in front of the school. I’ll see you on Monday. 6.3. __________ weekend!
+                Y: Thanks. You too!`,
+                correctAnswerText: ["have a nice", "have a good", "enjoy your"]
+            },
+            // --- OJAP-100-1904 ---
+            {
+                id: 'ojap1904_5_1', type: 'mcq',
+                situation: 'Nie wiesz, gdzie zostawiłeś/zostawiłaś kluczyk do szafki.',
+                questionText: 'Jak o tym poinformujesz swojego kolegę?',
+                options: [
+                    'I’m afraid I can’t find my key.',
+                    'I don’t know whose key it can be.',
+                    'I should remember to leave the key.'
+                ],
+                correctAnswerIndex: 0,
+                explanation: {
+                    1: 'Spekulujesz, czyj to może być klucz, a nie mówisz, że zgubiłeś swój.',
+                    2: 'Mówisz o tym, co powinieneś był zrobić, a nie o obecnej sytuacji.'
+                }
+            },
+            {
+                id: 'ojap1904_5_2', type: 'mcq',
+                situation: 'Koleżanka chce pogłaskać obcego psa na ulicy. Uważasz, że nie powinna tego robić.',
+                questionText: 'Co jej powiesz?',
+                options: [
+                    'Don’t let the dog out!',
+                    'Look after the dog!',
+                    'Don’t touch the dog!'
+                ],
+                correctAnswerIndex: 2,
+                explanation: {
+                    0: 'Oznacza "nie wypuszczaj psa", nie pasuje do kontekstu.',
+                    1: 'Oznacza "opiekuj się psem", nie jest ostrzeżeniem.'
+                }
+            },
+            {
+                id: 'ojap1904_5_3', type: 'mcq',
+                situation: 'Kolega nie wie, czym poczęstować odwiedzającą go jutro kuzynkę.',
+                questionText: 'Jakiej rady mu udzielisz?',
+                options: [
+                    'What will she get for dessert?',
+                    'Why don’t you get her some fruit salad?',
+                    'Where did you get this cake for her?'
+                ],
+                correctAnswerIndex: 1,
+                explanation: {
+                    0: 'Pytasz, co ona dostanie, zamiast udzielać rady.',
+                    2: 'Pytasz o pochodzenie ciasta, co nie jest radą na przyszłość.'
+                }
+            },
+            {
+                id: 'ojap1904_6_1', type: 'fill',
+                questionText: `Uzupełnij dialog:
+                Teacher: Today we are going to read a story, so 6.1. __________ on page 24. Before we start, tell me who you can see in the picture.
+                Student: What are we going to do today?`,
+                correctAnswerText: ["open your books", "let's look", "turn to"]
+            },
+             {
+                id: 'ojap1904_6_2', type: 'fill',
+                questionText: `Uzupełnij dialog:
+                Person 1: It’s a great film, isn’t it?
+                Person 2: Yes, I 6.2. __________ too. The special effects are fantastic!`,
+                correctAnswerText: ["think so", "agree", "liked it"]
+            },
+             {
+                id: 'ojap1904_6_3', type: 'fill',
+                questionText: `Uzupełnij dialog:
+                Person 1: 6.3. __________ for walking me to the park.
+                Person 2: You’re welcome. It’s not a problem at all.`,
+                correctAnswerText: ["thank you", "thanks"]
+            },
+             // --- OJAP-100-2004 ---
+            {
+                id: 'ojap2004_5_1', type: 'mcq',
+                situation: 'Koleżanka informuje Cię, że znany pisarz będzie podpisywał swoje książki w lokalnej bibliotece. Bardzo Cię to zaskoczyło.',
+                questionText: 'Co jej powiesz?',
+                options: [
+                    'Really? I can’t believe it!',
+                    'That doesn’t surprise me at all!',
+                    'You’ll never guess what happened!'
+                ],
+                correctAnswerIndex: 0,
+                explanation: {
+                    1: 'Wyrażasz brak zaskoczenia, a sytuacja Cię zaskoczyła.',
+                    2: 'Mówisz ogólnie o jakimś wydarzeniu, a nie reagujesz na konkretną informację.'
+                }
+            },
+            {
+                id: 'ojap2004_5_2', type: 'mcq',
+                situation: 'Chcesz utrzymywać kontakt z kolegą, który przeprowadza się do innego miasta.',
+                questionText: 'Co mu powiesz?',
+                options: [
+                    'I prefer to stay here.',
+                    'I forgot to phone you.',
+                    'I hope we’ll keep in touch.'
+                ],
+                correctAnswerIndex: 2,
+                explanation: {
+                    0: 'Mówisz o swoich preferencjach co do miejsca, nie o kontakcie.',
+                    1: 'Mówisz o przeszłym zaniedbaniu, a nie o przyszłym kontakcie.'
+                }
+            },
+             {
+                id: 'ojap2004_5_3', type: 'mcq',
+                situation: 'Pokłóciłeś/Pokłóciłaś się z koleżanką.',
+                questionText: 'Jak ją przeprosisz?',
+                options: [
+                    'Sorry, you must try again later.',
+                    'Sorry, I didn’t mean to upset you.',
+                    'There’s nothing to be sorry about.'
+                ],
+                correctAnswerIndex: 1,
+                explanation: {
+                    0: 'Nie przepraszasz, tylko mówisz coś niezwiązanego z sytuacją.',
+                    2: 'Stwierdzasz, że nie ma za co przepraszać, co nie jest przeprosinami.'
+                }
+            },
+             {
+                id: 'ojap2004_6_1', type: 'fill',
+                questionText: `Uzupełnij dialog (rozmowa telefoniczna):
+                Grandma: Hello Ben.
+                Ben: Good morning Grandma. 6.1. (ask) __________ you to do something for me?
+                Grandma: Sure. What is it?`,
+                correctAnswerText: ["can i ask", "could i ask", "may i ask"]
+            },
+             {
+                id: 'ojap2004_6_2', type: 'fill',
+                questionText: `Uzupełnij dialog:
+                Ben: I want to make a chocolate cake but I 6.2. (no) __________ how to do it.
+                Grandma: No problem, I’ll make it for you.`,
+                correctAnswerText: ["don't know", "do not know", "have no idea"]
+            },
+            {
+                id: 'ojap2004_6_3', type: 'fill',
+                questionText: `Uzupełnij dialog:
+                Ben: Oh, I 6.3. (like) __________ it myself. I just need you to show me how.
+                Grandma: OK, come over at 5 o’clock, then.`,
+                correctAnswerText: ["would like to make", "'d like to make", "want to make"]
+            },
+
+            // ... Add ALL other Task 5 and Task 6 questions from the remaining papers in the same format ...
+            // Remember to create explanations for all incorrect MCQ options.
+            // For fill-in tasks, decide on the most likely correct answer(s).
+
+            // Example structure for remaining papers (fill these in completely):
+
+             // --- OJAP-100-2006 ---
+             { id: 'ojap2006_5_1', type: 'mcq', /* ... */ },
+             { id: 'ojap2006_5_2', type: 'mcq', /* ... */ },
+             { id: 'ojap2006_5_3', type: 'mcq', /* ... */ },
+             { id: 'ojap2006_5_4', type: 'mcq', /* ... */ },
+             { id: 'ojap2006_6_1', type: 'fill', correctAnswerText: ["would you like", "do you want"], /* ... */ },
+             { id: 'ojap2006_6_2', type: 'fill', correctAnswerText: ["can i borrow", "could i borrow", "may i borrow"], /* ... */ },
+             { id: 'ojap2006_6_3', type: 'fill', correctAnswerText: ["how far is", "is it far"], /* ... */ },
+
+             // --- OJAP-100-2106 ---
+             { id: 'ojap2106_5_1', type: 'mcq', /* ... */ },
+             { id: 'ojap2106_5_2', type: 'mcq', /* ... */ },
+             { id: 'ojap2106_5_3', type: 'mcq', /* ... */ },
+             { id: 'ojap2106_5_4', type: 'mcq', /* ... */ },
+             { id: 'ojap2106_6_1', type: 'fill', correctAnswerText: ["what do you think", "what are you thinking"], /* ... */ },
+             { id: 'ojap2106_6_2', type: 'fill', correctAnswerText: ["can take the", "can catch the", "can get the"], /* ... */ },
+
+             // --- OJAP-100-2105 ---
+             { id: 'ojap2105_5_1', type: 'mcq', /* ... */ },
+             { id: 'ojap2105_5_2', type: 'mcq', /* ... */ },
+             { id: 'ojap2105_5_3', type: 'mcq', /* ... */ },
+             { id: 'ojap2105_5_4', type: 'mcq', /* ... */ },
+             { id: 'ojap2105_6_1', type: 'fill', correctAnswerText: ["are you doing", "will you be doing"], /* ... */ },
+             { id: 'ojap2105_6_2', type: 'fill', correctAnswerText: ["can you help", "could you help", "will you help"], /* ... */ },
+
+             // --- OPERON/BC 2021/2022 ---
+             { id: 'operon2122_5_1', type: 'mcq', /* ... */ },
+             { id: 'operon2122_5_2', type: 'mcq', /* ... */ },
+             { id: 'operon2122_5_3', type: 'mcq', /* ... */ },
+             { id: 'operon2122_5_4', type: 'mcq', /* ... */ },
+             { id: 'operon2122_6_1', type: 'fill', correctAnswerText: ["do you have", "have you got"], /* ... */ },
+             { id: 'operon2122_6_2', type: 'fill', correctAnswerText: ["what time", "when"], /* ... */ },
+
+             // --- OJAP-100-2206 ---
+             { id: 'ojap2206_5_1', type: 'mcq', /* ... */ },
+             { id: 'ojap2206_5_2', type: 'mcq', /* ... */ },
+             { id: 'ojap2206_5_3', type: 'mcq', /* ... */ },
+             { id: 'ojap2206_5_4', type: 'mcq', /* ... */ },
+             { id: 'ojap2206_6_1', type: 'fill', correctAnswerText: ["can i ask", "could i ask", "may i ask"], /* ... */ },
+             { id: 'ojap2206_6_2', type: 'fill', correctAnswerText: ["how about", "what about"], /* ... */ },
+
+             // --- OJAP-100-2205 ---
+             { id: 'ojap2205_5_1', type: 'mcq', /* ... */ },
+             { id: 'ojap2205_5_2', type: 'mcq', /* ... */ },
+             { id: 'ojap2205_5_3', type: 'mcq', /* ... */ },
+             { id: 'ojap2205_5_4', type: 'mcq', /* ... */ },
+             { id: 'ojap2205_6_1', type: 'fill', correctAnswerText: ["don't go", "shouldn't go", "can't go"], /* ... */ },
+             { id: 'ojap2205_6_2', type: 'fill', correctAnswerText: ["what do you think", "what's your opinion"], /* ... */ },
+
+             // --- OJAP-100-2306 ---
+             { id: 'ojap2306_5_1', type: 'mcq', /* ... */ },
+             { id: 'ojap2306_5_2', type: 'mcq', /* ... */ },
+             { id: 'ojap2306_5_3', type: 'mcq', /* ... */ },
+             { id: 'ojap2306_5_4', type: 'mcq', /* ... */ },
+             { id: 'ojap2306_6_1', type: 'fill', correctAnswerText: ["i don't want", "i don't like", "i prefer not"], /* ... */ },
+             { id: 'ojap2306_6_2', type: 'fill', correctAnswerText: ["can you do", "could you do", "will you do"], /* ... */ },
+
+             // --- OJAP-100-2305 ---
+             { id: 'ojap2305_5_1', type: 'mcq', /* ... */ },
+             { id: 'ojap2305_5_2', type: 'mcq', /* ... */ },
+             { id: 'ojap2305_5_3', type: 'mcq', /* ... */ },
+             { id: 'ojap2305_5_4', type: 'mcq', /* ... */ },
+             { id: 'ojap2305_6_1', type: 'fill', correctAnswerText: ["are you waiting", "are we waiting"], /* ... */ },
+             { id: 'ojap2305_6_2', type: 'fill', correctAnswerText: ["how much are", "what price are", "how much do"], /* ... */ },
+        ];
+
+        let currentQuestionIndex = 0;
+        let questionsInBatch = 0;
+        let batchResults = []; // Stores { question, userAnswer, isCorrect, correctAnswer }
+        let selectedAnswerIndex = null; // For MCQ
+        let totalCorrect = 0;
+
+        const questionArea = document.getElementById('question-area');
+        const answerArea = document.getElementById('answer-area');
+        const nextButton = document.getElementById('next-button');
+        const reportArea = document.getElementById('report-area');
+        const continueButton = document.getElementById('continue-button');
+        const finalScoreArea = document.getElementById('final-score');
+        const finalScoreValue = document.getElementById('final-score-value');
+        const progressBar = document.getElementById('progress-bar');
+
+        function updateProgressBar() {
+            const progress = (currentQuestionIndex / questions.length) * 100;
+            progressBar.style.width = progress + '%';
+        }
+
+        function loadQuestion(index) {
+            if (index >= questions.length) {
+                showFinalScore();
+                return;
+            }
+
+            selectedAnswerIndex = null; // Reset selection
+            const q = questions[index];
+            questionArea.innerHTML = ''; // Clear previous
+            answerArea.innerHTML = ''; // Clear previous
+            reportArea.classList.add('hidden');
+            nextButton.classList.remove('hidden');
+            continueButton.classList.add('hidden');
+            nextButton.disabled = (q.type === 'mcq'); // Disable next until MCQ choice is made
+
+            let questionHTML = '';
+            if (q.situation) {
+                questionHTML += `<div class="situation">${q.situation}</div>`;
+            }
+            // Check if questionText contains dialogue structure
+            if (q.questionText.includes('\n')) {
+                 questionHTML += `<div class="dialogue">${q.questionText.replace(/(\d\.\d\.)\s*__________/g, '<span class="gap">$1</span>')}</div>`;
+            } else {
+                 questionHTML += `<div class="question-text">${q.questionText}</div>`;
+            }
+             questionArea.innerHTML = questionHTML;
+
+
+            if (q.type === 'mcq') {
+                const optionsHTML = q.options.map((option, i) =>
+                    `<button class="option-button" data-index="${i}">${String.fromCharCode(65 + i)}. ${option}</button>`
+                ).join('');
+                answerArea.innerHTML = `<div class="answer-options">${optionsHTML}</div>`;
+
+                // Add event listeners to MCQ buttons
+                answerArea.querySelectorAll('.option-button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        // Remove selected class from others
+                        answerArea.querySelectorAll('.option-button').forEach(btn => btn.classList.remove('selected'));
+                        // Add selected class to clicked button
+                        button.classList.add('selected');
+                        selectedAnswerIndex = parseInt(button.dataset.index);
+                        nextButton.disabled = false; // Enable next button
+                    });
+                });
+
+            } else if (q.type === 'fill') {
+                answerArea.innerHTML = `<input type="text" id="fill-answer" placeholder="Wpisz odpowiedź (max 4 słowa)...">`;
+                nextButton.disabled = false; // Enable next for fill-in immediately
+            }
+            updateProgressBar();
+        }
+
+        function normalizeAnswer(answer) {
+            return answer.trim().toLowerCase().replace(/[.,!?;:]/g, ''); // Remove punctuation and lowercase
+        }
+
+        function handleAnswer() {
+            if (currentQuestionIndex >= questions.length) return; // Quiz finished
+
+            const q = questions[currentQuestionIndex];
+            let userAnswer = '';
+            let isCorrect = false;
+            let correctAnswerForReport = '';
+
+            if (q.type === 'mcq') {
+                if (selectedAnswerIndex === null) return; // No answer selected
+                userAnswer = q.options[selectedAnswerIndex];
+                isCorrect = (selectedAnswerIndex === q.correctAnswerIndex);
+                correctAnswerForReport = q.options[q.correctAnswerIndex];
+            } else if (q.type === 'fill') {
+                const inputElement = document.getElementById('fill-answer');
+                userAnswer = inputElement.value;
+                const normalizedUserAnswer = normalizeAnswer(userAnswer);
+                // Check against potentially multiple correct answers
+                 if (Array.isArray(q.correctAnswerText)) {
+                     isCorrect = q.correctAnswerText.some(correct => normalizeAnswer(correct) === normalizedUserAnswer);
+                     correctAnswerForReport = q.correctAnswerText.join(' / '); // Show options
+                 } else {
+                     isCorrect = (normalizeAnswer(q.correctAnswerText) === normalizedUserAnswer);
+                     correctAnswerForReport = q.correctAnswerText;
+                 }
+            }
+
+            if(isCorrect) {
+                totalCorrect++;
+            }
+
+            batchResults.push({
+                question: q,
+                userAnswer: userAnswer,
+                isCorrect: isCorrect,
+                correctAnswer: correctAnswerForReport
+            });
+
+            currentQuestionIndex++;
+            questionsInBatch++;
+
+            if (questionsInBatch === 3 || currentQuestionIndex === questions.length) {
+                showReport();
+            } else {
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function showReport() {
+            reportArea.innerHTML = '<h2>Raport Postępów (ostatnie 3 pytania)</h2>'; // Clear previous report content
+            let reportHTML = '';
+
+            batchResults.forEach(result => {
+                reportHTML += `<div class="report-item ${result.isCorrect ? 'correct' : 'incorrect'}">`;
+                if (result.question.situation) {
+                     reportHTML += `<div class="situation">${result.question.situation}</div>`;
+                }
+                 // Display question text appropriately
+                 if (result.question.questionText.includes('\n')) {
+                      reportHTML += `<div class="dialogue">${result.question.questionText.replace(/(\d\.\d\.)\s*__________/g, '<span class="gap">$1</span>')}</div>`;
+                 } else {
+                      reportHTML += `<div class="question-text">${result.question.questionText}</div>`;
+                 }
+
+                reportHTML += `<p>Twoja odpowiedź: <strong>${result.userAnswer || '(brak)'}</strong></p>`;
+                if (!result.isCorrect) {
+                    reportHTML += `<p>Poprawna odpowiedź: <strong>${result.correctAnswer}</strong></p>`;
+                    // Add explanations for incorrect MCQ
+                    if (result.question.type === 'mcq' && result.question.explanation) {
+                        let explanationText = '<div class="report-explanation">Dlaczego inne opcje były błędne:<ul>';
+                        const selectedOptionLetter = String.fromCharCode(65 + questions[currentQuestionIndex-batchResults.length+batchResults.indexOf(result)].options.indexOf(result.userAnswer));
+                        const correctOptionLetter = String.fromCharCode(65 + result.question.correctAnswerIndex);
+
+                        result.question.options.forEach((opt, index) => {
+                           if (index !== result.question.correctAnswerIndex && result.question.explanation[index] !== undefined) {
+                               explanationText += `<li><strong>Opcja ${String.fromCharCode(65 + index)}:</strong> ${result.question.explanation[index]}</li>`;
+                           }
+                        });
+                        explanationText += '</ul></div>';
+                        reportHTML += explanationText;
+                    }
+                } else {
+                     reportHTML += `<p><strong>Gratulacje!</strong></p>`;
+                }
+                reportHTML += `</div>`;
+            });
+
+            reportArea.innerHTML += reportHTML;
+            reportArea.classList.remove('hidden');
+            nextButton.classList.add('hidden'); // Hide original next button
+
+            if (currentQuestionIndex < questions.length) {
+                 continueButton.classList.remove('hidden'); // Show continue button
+            } else {
+                showFinalScore(); // Show final score if it was the last question
+            }
+
+
+            // Reset for next batch
+            questionsInBatch = 0;
+            batchResults = [];
+        }
+
+         function showFinalScore() {
+             questionArea.classList.add('hidden');
+             answerArea.classList.add('hidden');
+             nextButton.classList.add('hidden');
+             continueButton.classList.add('hidden');
+             reportArea.classList.add('hidden'); // Hide last report if showing final score
+
+             const percentage = ((totalCorrect / questions.length) * 100).toFixed(1);
+             finalScoreValue.textContent = `${totalCorrect} z ${questions.length} (${percentage}%)`;
+             finalScoreArea.classList.remove('hidden');
+             updateProgressBar(); // Ensure bar is full
+         }
+
+
+        // Event Listeners
+        nextButton.addEventListener('click', handleAnswer);
+        continueButton.addEventListener('click', () => {
+            loadQuestion(currentQuestionIndex);
+        });
+
+        // Initial Load
+        loadQuestion(currentQuestionIndex);
+
+    </script>
+
+</body>
+</html>
