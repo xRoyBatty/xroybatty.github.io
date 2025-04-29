@@ -169,7 +169,7 @@
     </div>
 
     <script>
-        const questions = [
+                const questions = [
             // --- OJAP-100-1906 ---
             {
                 id: 'ojap1906_5_1', type: 'mcq',
@@ -216,12 +216,27 @@
                     1: 'Pytasz o preferencje, a nie składasz konkretnej propozycji.'
                 }
             },
+            {
+                 id: 'ojap1906_5_4', type: 'mcq',
+                 situation: 'Twój młodszy brat wygrał konkurs.',
+                 questionText: 'Jak go pochwalisz?',
+                 options: [
+                     'Good luck!',
+                     'Good job!',
+                     'Good idea!'
+                 ],
+                 correctAnswerIndex: 1,
+                 explanation: {
+                     0: 'Życzysz powodzenia, a on już wygrał.',
+                     2: 'Mówisz "dobry pomysł", co nie jest pochwałą za wygraną.'
+                 }
+             },
              {
                 id: 'ojap1906_6_1', type: 'fill',
                 questionText: `Uzupełnij dialog:
                 X: It’s been a wonderful party, but I really have to go now. It’s getting late.
                 Y: Oh dear. 6.1. __________ that you can’t stay any longer! I’ve made your favourite pizza.`,
-                correctAnswerText: ["it's a pity", "what a pity", "i'm sorry", "too bad"] // Allow variations
+                correctAnswerText: ["it's a pity", "what a pity", "i'm sorry", "too bad"]
             },
              {
                 id: 'ojap1906_6_2', type: 'fill',
@@ -283,6 +298,21 @@
                     2: 'Pytasz o pochodzenie ciasta, co nie jest radą na przyszłość.'
                 }
             },
+             {
+                 id: 'ojap1904_5_4', type: 'mcq',
+                 situation: 'Rozmawiasz przez telefon w hałaśliwym miejscu.',
+                 questionText: 'Jak poprosisz swojego rozmówcę, aby mówił głośniej?',
+                 options: [
+                     'Could you talk slowly, please?',
+                     'Could you say it again, please?',
+                     'Could you speak more loudly, please?'
+                 ],
+                 correctAnswerIndex: 2,
+                 explanation: {
+                     0: 'Prosisz o mówienie wolniej, a nie głośniej.',
+                     1: 'Prosisz o powtórzenie, a nie o mówienie głośniej.'
+                 }
+             },
             {
                 id: 'ojap1904_6_1', type: 'fill',
                 questionText: `Uzupełnij dialog:
@@ -295,7 +325,7 @@
                 questionText: `Uzupełnij dialog:
                 Person 1: It’s a great film, isn’t it?
                 Person 2: Yes, I 6.2. __________ too. The special effects are fantastic!`,
-                correctAnswerText: ["think so", "agree", "liked it"]
+                correctAnswerText: ["think so", "agree", "liked it"] // Added "liked it" as possible
             },
              {
                 id: 'ojap1904_6_3', type: 'fill',
@@ -351,6 +381,21 @@
                 }
             },
              {
+                 id: 'ojap2004_5_4', type: 'mcq',
+                 situation: 'Kolega chce popływać w rzece. Uważasz, że nie powinien tego robić.',
+                 questionText: 'Co mu powiesz?',
+                 options: [
+                     'I can’t wait to swim with you.',
+                     'I wouldn’t swim there if I were you.',
+                     'We won’t go swimming if you don’t want to.'
+                 ],
+                 correctAnswerIndex: 1,
+                 explanation: {
+                     0: 'Wyrażasz entuzjazm, a chcesz go odwieść od pomysłu.',
+                     2: 'Uzależniasz pójście od jego chęci, a nie wyrażasz swojej opinii o bezpieczeństwie.'
+                 }
+             },
+             {
                 id: 'ojap2004_6_1', type: 'fill',
                 questionText: `Uzupełnij dialog (rozmowa telefoniczna):
                 Grandma: Hello Ben.
@@ -372,77 +417,620 @@
                 Grandma: OK, come over at 5 o’clock, then.`,
                 correctAnswerText: ["would like to make", "'d like to make", "want to make"]
             },
-
-            // ... Add ALL other Task 5 and Task 6 questions from the remaining papers in the same format ...
-            // Remember to create explanations for all incorrect MCQ options.
-            // For fill-in tasks, decide on the most likely correct answer(s).
-
-            // Example structure for remaining papers (fill these in completely):
-
              // --- OJAP-100-2006 ---
-             { id: 'ojap2006_5_1', type: 'mcq', /* ... */ },
-             { id: 'ojap2006_5_2', type: 'mcq', /* ... */ },
-             { id: 'ojap2006_5_3', type: 'mcq', /* ... */ },
-             { id: 'ojap2006_5_4', type: 'mcq', /* ... */ },
-             { id: 'ojap2006_6_1', type: 'fill', correctAnswerText: ["would you like", "do you want"], /* ... */ },
-             { id: 'ojap2006_6_2', type: 'fill', correctAnswerText: ["can i borrow", "could i borrow", "may i borrow"], /* ... */ },
-             { id: 'ojap2006_6_3', type: 'fill', correctAnswerText: ["how far is", "is it far"], /* ... */ },
+             {
+                 id: 'ojap2006_5_1', type: 'mcq',
+                 situation: 'Obcokrajowiec pyta Cię, gdzie jest informacja turystyczna.',
+                 questionText: 'Jak wskażesz mu drogę?',
+                 options: [
+                     'It’s all right. I’ll look for the way on my own.',
+                     'Go to the end of this street and look to your right.',
+                     'Could you go to the information office right now?'
+                 ],
+                 correctAnswerIndex: 1,
+                 explanation: {
+                     0: 'Mówisz, że sam poszukasz drogi, zamiast wskazywać ją komuś.',
+                     2: 'Pytasz, czy on mógłby pójść, zamiast wskazywać drogę.'
+                 }
+             },
+             {
+                 id: 'ojap2006_5_2', type: 'mcq',
+                 situation: 'Twoja siostra dostała się na wymarzone studia.',
+                 questionText: 'Jak jej pogratulujesz?',
+                 options: [
+                     'You’ll pass, no worries.',
+                     'Get better soon.',
+                     'I’m so proud of you!'
+                 ],
+                 correctAnswerIndex: 2,
+                 explanation: {
+                     0: 'Mówisz o zdaniu egzaminu, a ona już się dostała.',
+                     1: 'Życzysz szybkiego powrotu do zdrowia, co nie pasuje do kontekstu.'
+                 }
+             },
+             {
+                 id: 'ojap2006_5_3', type: 'mcq',
+                 situation: 'Nowy kolega przygląda się, jak gracie w piłkę nożną. Proponujesz mu, żeby zagrał z Wami.',
+                 questionText: 'Co mu powiesz?',
+                 options: [
+                     'Why don’t you join us?',
+                     'What game do you like playing?',
+                     'Do you want to watch the game with us?'
+                 ],
+                 correctAnswerIndex: 0,
+                 explanation: {
+                     1: 'Pytasz o jego ulubioną grę, a nie zapraszasz do gry.',
+                     2: 'Proponujesz oglądanie, a nie granie.'
+                 }
+             },
+             {
+                 id: 'ojap2006_5_4', type: 'mcq',
+                 situation: 'Kolega proponuje Ci wspólne wyjście do kina. Nie możesz pójść.',
+                 questionText: 'Co mu powiesz?',
+                 options: [
+                     'I won’t be able to go.',
+                     'Why don’t we go?',
+                     'I didn’t mean it.'
+                 ],
+                 correctAnswerIndex: 0,
+                 explanation: {
+                     1: 'Proponujesz pójście, a chcesz odmówić.',
+                     2: 'Mówisz "nie to miałem na myśli", co nie jest odpowiedzią na propozycję.'
+                 }
+             },
+             {
+                 id: 'ojap2006_6_1', type: 'fill',
+                 questionText: `Uzupełnij dialog:
+                 X: Hi, Mike. What are you doing during the holidays?
+                 Y: I’m going camping with my parents at Lake Barie. 6.1. (like) __________ to come with us?`,
+                 correctAnswerText: ["would you like", "do you want"]
+             },
+             {
+                 id: 'ojap2006_6_2', type: 'fill',
+                 questionText: `Uzupełnij dialog:
+                 X: I’d love to. But there’s one problem – I don’t have a sleeping bag.
+                 Y: Oh, that’s no problem at all. I have an extra one.
+                 X: 6.2. (borrow) __________ it from you?`,
+                 correctAnswerText: ["can i borrow", "could i borrow", "may i borrow"]
+             },
+             {
+                 id: 'ojap2006_6_3', type: 'fill',
+                 questionText: `Uzupełnij dialog:
+                 X: And 6.3. (far) __________ it to Lake Barie from here?
+                 Y: It’s about one hundred kilometres.`,
+                 correctAnswerText: ["how far is", "is it far"]
+             },
 
              // --- OJAP-100-2106 ---
-             { id: 'ojap2106_5_1', type: 'mcq', /* ... */ },
-             { id: 'ojap2106_5_2', type: 'mcq', /* ... */ },
-             { id: 'ojap2106_5_3', type: 'mcq', /* ... */ },
-             { id: 'ojap2106_5_4', type: 'mcq', /* ... */ },
-             { id: 'ojap2106_6_1', type: 'fill', correctAnswerText: ["what do you think", "what are you thinking"], /* ... */ },
-             { id: 'ojap2106_6_2', type: 'fill', correctAnswerText: ["can take the", "can catch the", "can get the"], /* ... */ },
+             {
+                 id: 'ojap2106_5_1', type: 'mcq',
+                 situation: 'Chcesz wybrać się na wycieczkę rowerową.',
+                 questionText: 'Jak zapytasz rodziców o zgodę?',
+                 options: [
+                     'Will you let me go on a bike trip?',
+                     'Would you like to take my bike for the trip?',
+                     'Are you going to take part in a bike trip?'
+                 ],
+                 correctAnswerIndex: 0,
+                 explanation: {
+                     1: 'Pytasz rodziców, czy oni chcą wziąć twój rower.',
+                     2: 'Pytasz rodziców, czy oni wezmą udział w wycieczce.'
+                 }
+             },
+             {
+                 id: 'ojap2106_5_2', type: 'mcq',
+                 situation: 'Planujesz wziąć udział w biegu.',
+                 questionText: 'Jak poinformujesz o tym swojego kolegę?',
+                 options: [
+                     'I prefer running to walking.',
+                     'I’ve just run a marathon.',
+                     'I’m going to take part in a run.'
+                 ],
+                 correctAnswerIndex: 2,
+                 explanation: {
+                     0: 'Wyrażasz ogólną preferencję, a nie informujesz o konkretnym planie.',
+                     1: 'Mówisz o czymś, co już zrobiłeś (maraton), a nie o przyszłym biegu.'
+                 }
+             },
+             {
+                 id: 'ojap2106_5_3', type: 'mcq',
+                 situation: 'W czasie deszczu Twoja koleżanka chce wyjść z domu.',
+                 questionText: 'Jak jej to odradzisz?',
+                 options: [
+                     'We shouldn’t stay at home.',
+                     'I think it’s better to stay inside now.',
+                     'Let’s go inside, it’s going to rain.'
+                 ],
+                 correctAnswerIndex: 1,
+                 explanation: {
+                     0: 'Mówisz, że nie powinniście zostawać w domu, czyli zachęcasz do wyjścia.',
+                     2: 'Mówisz "chodźmy do środka", co jest reakcją, gdy już jesteście na zewnątrz i zaczyna padać.'
+                 }
+             },
+             {
+                 id: 'ojap2106_5_4', type: 'mcq',
+                 situation: 'Nowy kolega pyta Cię, jak dojść do szkoły.',
+                 questionText: 'Jak wskażesz mu drogę?',
+                 options: [
+                     'You’re right, we go to the same school.',
+                     'Call me when you get to school.',
+                     'Go down this street and you will see the school on your left.'
+                 ],
+                 correctAnswerIndex: 2,
+                 explanation: {
+                     0: 'Potwierdzasz fakt chodzenia do tej samej szkoły, ale nie wskazujesz drogi.',
+                     1: 'Prosisz o telefon po dotarciu, a nie tłumaczysz, jak dotrzeć.'
+                 }
+             },
+             {
+                 id: 'ojap2106_6_1', type: 'fill',
+                 questionText: `Uzupełnij dialog:
+                 X: 6.1. (think) __________ about The Guitar’s new album?
+                 Y: In my opinion it’s their best recording ever.`,
+                 correctAnswerText: ["what do you think", "what are you thinking"]
+             },
+             {
+                 id: 'ojap2106_6_2', type: 'fill',
+                 questionText: `Uzupełnij dialog:
+                 X: Oh no! I’ve missed my train.
+                 Y: Don’t worry! You (can) __________ bus.`,
+                 correctAnswerText: ["can take the", "can catch the", "can get the"]
+             },
 
              // --- OJAP-100-2105 ---
-             { id: 'ojap2105_5_1', type: 'mcq', /* ... */ },
-             { id: 'ojap2105_5_2', type: 'mcq', /* ... */ },
-             { id: 'ojap2105_5_3', type: 'mcq', /* ... */ },
-             { id: 'ojap2105_5_4', type: 'mcq', /* ... */ },
-             { id: 'ojap2105_6_1', type: 'fill', correctAnswerText: ["are you doing", "will you be doing"], /* ... */ },
-             { id: 'ojap2105_6_2', type: 'fill', correctAnswerText: ["can you help", "could you help", "will you help"], /* ... */ },
+             {
+                 id: 'ojap2105_5_1', type: 'mcq',
+                 situation: 'Koleżanka pyta Cię, co powinna wziąć na obóz narciarski.',
+                 questionText: 'Co jej doradzisz?',
+                 options: [
+                     'You must try the food there.',
+                     'You need to have a warm sweater.',
+                     'In my opinion you should practise skiing.'
+                 ],
+                 correctAnswerIndex: 1,
+                 explanation: {
+                     0: 'Doradzasz spróbowanie jedzenia, a nie co zabrać.',
+                     2: 'Wyrażasz opinię o treningu, a nie radzisz co spakować.'
+                 }
+             },
+             {
+                 id: 'ojap2105_5_2', type: 'mcq',
+                 situation: 'Rozmawiasz z kuzynką o swoim przyjacielu.',
+                 questionText: 'Jak opiszesz jego wygląd?',
+                 options: [
+                     'He’s good-looking.',
+                     'He’s looking at my friend.',
+                     'He’s looking for his glasses.'
+                 ],
+                 correctAnswerIndex: 0,
+                 explanation: {
+                     1: 'Opisujesz, na kogo patrzy, a nie jak wygląda.',
+                     2: 'Opisujesz, czego szuka, a nie jak wygląda.'
+                 }
+             },
+             {
+                 id: 'ojap2105_5_3', type: 'mcq',
+                 situation: 'Chcesz pożyczyć aparat fotograficzny od swojej cioci.',
+                 questionText: 'Jak zapytasz ją o pozwolenie?',
+                 options: [
+                     'Why don’t you borrow my camera?',
+                     'Will you take care of this camera?',
+                     'Do you mind if I use your camera?'
+                 ],
+                 correctAnswerIndex: 2,
+                 explanation: {
+                     0: 'Proponujesz cioci pożyczenie TWOJEGO aparatu.',
+                     1: 'Pytasz ciocię, czy ona zaopiekuje się aparatem.'
+                 }
+             },
+             {
+                 id: 'ojap2105_5_4', type: 'mcq',
+                 situation: 'Twoja koleżanka upiekła ciasto jabłkowe.',
+                 questionText: 'Jak wyrazisz swoją pozytywną opinię o nim?',
+                 options: [
+                     'It’s the best apple cake I’ve ever had.',
+                     'Have another piece of the apple cake.',
+                     'Let’s use my favourite recipe for apple cake.'
+                 ],
+                 correctAnswerIndex: 0,
+                 explanation: {
+                     1: 'Proponujesz zjedzenie kolejnego kawałka, co nie jest bezpośrednią opinią.',
+                     2: 'Proponujesz użycie TWOJEGO przepisu, co nie jest opinią o JEJ cieście.'
+                 }
+             },
+             {
+                 id: 'ojap2105_6_1', type: 'fill',
+                 questionText: `Uzupełnij dialog:
+                 Natalie: I’m going swimming, and what about you, John? 6.1. (doing) __________ anything this afternoon?`,
+                 correctAnswerText: ["are you doing", "will you be doing"]
+             },
+             {
+                 id: 'ojap2105_6_2', type: 'fill',
+                 questionText: `Uzupełnij dialog:
+                 John: No, the black hat is too warm. 6.2. (help) __________ me look for the red one?`,
+                 correctAnswerText: ["can you help", "could you help", "will you help"]
+             },
 
              // --- OPERON/BC 2021/2022 ---
-             { id: 'operon2122_5_1', type: 'mcq', /* ... */ },
-             { id: 'operon2122_5_2', type: 'mcq', /* ... */ },
-             { id: 'operon2122_5_3', type: 'mcq', /* ... */ },
-             { id: 'operon2122_5_4', type: 'mcq', /* ... */ },
-             { id: 'operon2122_6_1', type: 'fill', correctAnswerText: ["do you have", "have you got"], /* ... */ },
-             { id: 'operon2122_6_2', type: 'fill', correctAnswerText: ["what time", "when"], /* ... */ },
+             {
+                 id: 'operon2122_5_1', type: 'mcq',
+                 situation: 'Koleżanka proponuje ci wspólne bieganie.',
+                 questionText: 'Jak grzecznie odrzucisz jej propozycję?',
+                 options: [
+                     'You should go running.',
+                     'Really? You must be joking.',
+                     'Sorry, I’m not a fan of running.'
+                 ],
+                 correctAnswerIndex: 2,
+                 explanation: {
+                     0: 'Sugerujesz, że ONA powinna biegać, nie odrzucasz propozycji.',
+                     1: 'Wyrażasz niedowierzanie, co może być niegrzeczne.'
+                 }
+             },
+             {
+                 id: 'operon2122_5_2', type: 'mcq',
+                 situation: 'Dowiedziałeś/Dowiedziałaś się, że twój kolega skręcił nogę w kostce.',
+                 questionText: 'Co mu powiesz?',
+                 options: [
+                     'I’m so sorry, I didn’t mean to hurt you.',
+                     'I’d like to apologize for that.',
+                     'I’m sorry to hear that.'
+                 ],
+                 correctAnswerIndex: 2,
+                 explanation: {
+                     0: 'Przepraszasz, jakbyś to ty go skrzywdził.',
+                     1: 'Przepraszasz za coś, co nie jest twoją winą.'
+                 }
+             },
+             {
+                 id: 'operon2122_5_3', type: 'mcq',
+                 situation: 'Twoja ulubiona drużyna przegrała mecz.',
+                 questionText: 'Jak zareagujesz?',
+                 options: [
+                     'What a shame!',
+                     'Good luck!',
+                     'Well done!'
+                 ],
+                 correctAnswerIndex: 0,
+                 explanation: {
+                     1: 'Życzysz powodzenia, co nie pasuje do przegranego meczu.',
+                     2: 'Gratulujesz, co jest nieodpowiednie po przegranej.'
+                 }
+             },
+             {
+                 id: 'operon2122_5_4', type: 'mcq',
+                 situation: 'Twoja koleżanka szuka swojego telefonu i pyta cię, czy go widziałeś/widziałaś.',
+                 questionText: 'Co powiesz?',
+                 options: [
+                     'No, I didn’t look for it.',
+                     'No, I haven’t seen it.',
+                     'No, I won’t watch it.'
+                 ],
+                 correctAnswerIndex: 1,
+                 explanation: {
+                     0: 'Mówisz, że go nie szukałeś, a nie czy go widziałeś.',
+                     2: 'Mówisz, że go nie będziesz oglądać (?), co nie ma sensu.'
+                 }
+             },
+             {
+                 id: 'operon2122_6_1', type: 'fill',
+                 questionText: `Uzupełnij dialog:
+                 Mark: Well, I’m not sure. 6.1. __________ any ideas?
+                 Jane: What about bowling?`,
+                 correctAnswerText: ["do you have", "have you got"]
+             },
+             {
+                 id: 'operon2122_6_2', type: 'fill',
+                 questionText: `Uzupełnij dialog:
+                 Mark: All right. 6.2. __________ will we meet?
+                 Jane: Let’s meet at the shopping centre in front of the bowling place.`,
+                 correctAnswerText: ["what time", "when"]
+             },
 
              // --- OJAP-100-2206 ---
-             { id: 'ojap2206_5_1', type: 'mcq', /* ... */ },
-             { id: 'ojap2206_5_2', type: 'mcq', /* ... */ },
-             { id: 'ojap2206_5_3', type: 'mcq', /* ... */ },
-             { id: 'ojap2206_5_4', type: 'mcq', /* ... */ },
-             { id: 'ojap2206_6_1', type: 'fill', correctAnswerText: ["can i ask", "could i ask", "may i ask"], /* ... */ },
-             { id: 'ojap2206_6_2', type: 'fill', correctAnswerText: ["how about", "what about"], /* ... */ },
+             {
+                 id: 'ojap2206_5_1', type: 'mcq',
+                 situation: 'Przychodzisz spóźniony(-a) na spotkanie z kolegą.',
+                 questionText: 'Jak go przeprosisz?',
+                 options: [
+                     'Sorry, you’re too late.',
+                     'You should at least say sorry.',
+                     'I’m so sorry for being late.'
+                 ],
+                 correctAnswerIndex: 2,
+                 explanation: {
+                     0: 'Mówisz, że TO ON jest spóźniony.',
+                     1: 'Mówisz, że ON powinien przeprosić.'
+                 }
+             },
+             {
+                 id: 'ojap2206_5_2', type: 'mcq',
+                 situation: 'Twoja kuzynka pokazuje Ci prezent dla Twojej mamy.',
+                 questionText: 'Jak wyrazisz opinię na jego temat?',
+                 options: [
+                     'You’re right. Mum’s opinion is the most important.',
+                     'You’re welcome. I’m glad you like it.',
+                     'It’s lovely. Mum will like it a lot.'
+                 ],
+                 correctAnswerIndex: 2,
+                 explanation: {
+                     0: 'Odwołujesz się do opinii mamy, a nie wyrażasz swojej.',
+                     1: 'Mówisz "proszę bardzo" i cieszysz się, że TOBIE się podoba (?), co nie pasuje.'
+                 }
+             },
+             {
+                 id: 'ojap2206_5_3', type: 'mcq',
+                 situation: 'Koleżanka zaprasza Cię na urodziny.',
+                 questionText: 'Jak przyjmiesz zaproszenie?',
+                 options: [
+                     'Great! I’ll be there.',
+                     'Not this time.',
+                     'I hope you had fun.'
+                 ],
+                 correctAnswerIndex: 0,
+                 explanation: {
+                     1: 'Odrzucasz zaproszenie.',
+                     2: 'Mówisz o przeszłej imprezie, a nie przyjmujesz zaproszenia na przyszłą.'
+                 }
+             },
+             {
+                 id: 'ojap2206_5_4', type: 'mcq',
+                 situation: 'Kolega zdał ważny egzamin.',
+                 questionText: 'Jak mu pogratulujesz?',
+                 options: [
+                     'Well done!',
+                     'Don’t worry!',
+                     'Take care of it!'
+                 ],
+                 correctAnswerIndex: 0,
+                 explanation: {
+                     1: 'Mówisz "nie martw się", co nie jest gratulacją.',
+                     2: 'Mówisz "zaopiekuj się tym", co nie pasuje do sytuacji.'
+                 }
+             },
+             {
+                 id: 'ojap2206_6_1', type: 'fill',
+                 questionText: `Uzupełnij dialog:
+                 Y: Coach, 6.1. (ask) __________ you a question?
+                 X: Sure, what is it?`,
+                 correctAnswerText: ["can i ask", "could i ask", "may i ask"]
+             },
+             {
+                 id: 'ojap2206_6_2', type: 'fill',
+                 questionText: `Uzupełnij dialog:
+                 X: I have a better idea. The captain of our football team is great at maths. 6.2. (about) __________ talking to him? I’m sure he will agree to help, and you can keep coming to practice.`,
+                 correctAnswerText: ["how about", "what about"]
+             },
 
              // --- OJAP-100-2205 ---
-             { id: 'ojap2205_5_1', type: 'mcq', /* ... */ },
-             { id: 'ojap2205_5_2', type: 'mcq', /* ... */ },
-             { id: 'ojap2205_5_3', type: 'mcq', /* ... */ },
-             { id: 'ojap2205_5_4', type: 'mcq', /* ... */ },
-             { id: 'ojap2205_6_1', type: 'fill', correctAnswerText: ["don't go", "shouldn't go", "can't go"], /* ... */ },
-             { id: 'ojap2205_6_2', type: 'fill', correctAnswerText: ["what do you think", "what's your opinion"], /* ... */ },
+             {
+                 id: 'ojap2205_5_1', type: 'mcq',
+                 situation: 'Twojemu koledze zepsuła się drukarka.',
+                 questionText: 'Jak zaoferujesz mu pomoc?',
+                 options: [
+                     'Can I borrow your printer?',
+                     'Would you like to use my printer?',
+                     'Which printer did you break?'
+                 ],
+                 correctAnswerIndex: 1,
+                 explanation: {
+                     0: 'Prosisz o pożyczenie JEGO drukarki.',
+                     2: 'Pytasz, którą drukarkę zepsuł, a nie oferujesz pomocy.'
+                 }
+             },
+             {
+                 id: 'ojap2205_5_2', type: 'mcq',
+                 situation: 'Twoja koleżanka wybiera się na łyżwy.',
+                 questionText: 'Jak zaproponujesz wspólne wyjście?',
+                 options: [
+                     'Why don’t we go skating together?',
+                     'Do you know how to skate?',
+                     'Are these your skates?'
+                 ],
+                 correctAnswerIndex: 0,
+                 explanation: {
+                     1: 'Pytasz o jej umiejętności, a nie proponujesz wyjścia.',
+                     2: 'Pytasz, czy to jej łyżwy, a nie proponujesz wspólnego wyjścia.'
+                 }
+             },
+             {
+                 id: 'ojap2205_5_3', type: 'mcq',
+                 situation: 'Kolega prosi Cię o pomoc w rozwiązaniu zadania.',
+                 questionText: 'Jak mu odmówisz?',
+                 options: [
+                     'I’m afraid that’s not true.',
+                     'Excuse me, but I don’t know him.',
+                     'I’m sorry, I don’t know how to do it.'
+                 ],
+                 correctAnswerIndex: 2,
+                 explanation: {
+                     0: 'Mówisz, że coś jest nieprawdą, co nie jest odmową pomocy.',
+                     1: 'Mówisz, że go nie znasz, co nie pasuje do kontekstu kolegi.'
+                 }
+             },
+             {
+                 id: 'ojap2205_5_4', type: 'mcq',
+                 situation: 'Twoja koleżanka mówi, że czuje się już lepiej.',
+                 questionText: 'Jak wyrazisz swoje zadowolenie?',
+                 options: [
+                     'I hope you’ve enjoyed it.',
+                     'I think I’m very well, thanks.',
+                     'I’m glad to hear it.'
+                 ],
+                 correctAnswerIndex: 2,
+                 explanation: {
+                     0: 'Masz nadzieję, że jej się podobało (?), co nie pasuje do kontekstu zdrowia.',
+                     1: 'Mówisz o SWOIM samopoczuciu.'
+                 }
+             },
+             {
+                 id: 'ojap2205_6_1', type: 'fill',
+                 questionText: `Uzupełnij dialog:
+                 Hey boys! You 6.1. __________ there! It’s dangerous!
+                 OK. Sorry! We’re coming back!`,
+                 correctAnswerText: ["don't go", "shouldn't go", "can't go"]
+             },
+             {
+                 id: 'ojap2205_6_2', type: 'fill',
+                 questionText: `Uzupełnij dialog:
+                 What 6.2. __________ of our new history teacher?
+                 Oh, he seems to be very nice and his lessons are interesting.`,
+                 correctAnswerText: ["do you think", "what's your opinion"]
+             },
 
              // --- OJAP-100-2306 ---
-             { id: 'ojap2306_5_1', type: 'mcq', /* ... */ },
-             { id: 'ojap2306_5_2', type: 'mcq', /* ... */ },
-             { id: 'ojap2306_5_3', type: 'mcq', /* ... */ },
-             { id: 'ojap2306_5_4', type: 'mcq', /* ... */ },
-             { id: 'ojap2306_6_1', type: 'fill', correctAnswerText: ["i don't want", "i don't like", "i prefer not"], /* ... */ },
-             { id: 'ojap2306_6_2', type: 'fill', correctAnswerText: ["can you do", "could you do", "will you do"], /* ... */ },
+             {
+                 id: 'ojap2306_5_1', type: 'mcq',
+                 situation: 'Dzwonisz do kolegi mieszkającego w Londynie. Chcesz dowiedzieć się, jaka jest tam pogoda.',
+                 questionText: 'Jak o to zapytasz?',
+                 options: [
+                     'How do you know about the weather in London?',
+                     'Why is the weather in London like that?',
+                     'What’s the weather like in London?'
+                 ],
+                 correctAnswerIndex: 2,
+                 explanation: {
+                     0: 'Pytasz, skąd on wie o pogodzie.',
+                     1: 'Pytasz o przyczynę takiej pogody.'
+                 }
+             },
+             {
+                 id: 'ojap2306_5_2', type: 'mcq',
+                 situation: 'Chcesz, żeby koleżanka poszła z Tobą na zakupy.',
+                 questionText: 'Co jej powiesz?',
+                 options: [
+                     'Will you do the shopping for me?',
+                     'What about going to the shops together?',
+                     'What would you like to get from the shop?'
+                 ],
+                 correctAnswerIndex: 1,
+                 explanation: {
+                     0: 'Prosisz, żeby zrobiła zakupy ZA CIEBIE.',
+                     2: 'Pytasz, co ona chciałaby kupić.'
+                 }
+             },
+             {
+                 id: 'ojap2306_5_3', type: 'mcq',
+                 situation: 'Co powiesz, podając koleżance z Anglii sałatkę podczas obiadu?',
+                 questionText: 'Jak to zrobisz?',
+                 options: [
+                     'Here you are.',
+                     'The same to you.',
+                     'Not at all.'
+                 ],
+                 correctAnswerIndex: 0,
+                 explanation: {
+                     1: 'Mówi się tak w odpowiedzi na życzenia (np. Smacznego!).',
+                     2: 'Mówi się tak w odpowiedzi na podziękowanie (jako "nie ma za co").'
+                 }
+             },
+             {
+                 id: 'ojap2306_5_4', type: 'mcq',
+                 situation: 'Chcesz dowiedzieć się, czy Twój znajomy ma jakieś plany na weekend.',
+                 questionText: 'Jak o to zapytasz?',
+                 options: [
+                     'Will you do it for me at the weekend?',
+                     'Do you often make plans for the weekend?',
+                     'Are you doing anything during the weekend?'
+                 ],
+                 correctAnswerIndex: 2,
+                 explanation: {
+                     0: 'Pytasz, czy on zrobi coś DLA CIEBIE.',
+                     1: 'Pytasz o częstotliwość planowania, a nie o konkretne plany na ten weekend.'
+                 }
+             },
+             {
+                 id: 'ojap2306_6_1', type: 'fill',
+                 questionText: `Uzupełnij dialog:
+                 X: How about going to Spain this summer?
+                 Y: Well, Spain is great but __________ to go there in spring. Summer in Spain will be too hot for me.`,
+                 correctAnswerText: ["i don't want", "i don't like", "i prefer not"] // Assuming Y prefers not to go in summer
+             },
+             {
+                 id: 'ojap2306_6_2', type: 'fill',
+                 questionText: `Uzupełnij dialog:
+                 X: Diana, __________ something for me, please?
+                 Y: Sure, what is it?
+                 X: Please call the hairdresser and tell her that I won’t be able to come today.`,
+                 correctAnswerText: ["can you do", "could you do", "will you do"]
+             },
 
              // --- OJAP-100-2305 ---
-             { id: 'ojap2305_5_1', type: 'mcq', /* ... */ },
-             { id: 'ojap2305_5_2', type: 'mcq', /* ... */ },
-             { id: 'ojap2305_5_3', type: 'mcq', /* ... */ },
-             { id: 'ojap2305_5_4', type: 'mcq', /* ... */ },
-             { id: 'ojap2305_6_1', type: 'fill', correctAnswerText: ["are you waiting", "are we waiting"], /* ... */ },
-             { id: 'ojap2305_6_2', type: 'fill', correctAnswerText: ["how much are", "what price are", "how much do"], /* ... */ },
+             {
+                 id: 'ojap2305_5_1', type: 'mcq',
+                 situation: 'Koleżanka znalazła telefon na przystanku.',
+                 questionText: 'Co jej doradzisz?',
+                 options: [
+                     'I can help you find the best one.',
+                     'We can look for the phone together.',
+                     'You should wait for its owner to call.'
+                 ],
+                 correctAnswerIndex: 2,
+                 explanation: {
+                     0: 'Oferujesz pomoc w znalezieniu najlepszego (telefonu?), co nie pasuje.',
+                     1: 'Proponujesz wspólne szukanie telefonu, co nie jest najlepszą radą w tej sytuacji.'
+                 }
+             },
+             {
+                 id: 'ojap2305_5_2', type: 'mcq',
+                 situation: 'Chcesz zmienić tapetę na ekranie smartfona, ale nie wiesz, którą wybrać.',
+                 questionText: 'Jak poprosisz kolegę o opinię?',
+                 options: [
+                     'Can you show me your wallpaper?',
+                     'Which wallpaper do you think is the best?',
+                     'Why don’t you change your wallpaper?'
+                 ],
+                 correctAnswerIndex: 1,
+                 explanation: {
+                     0: 'Prosisz o pokazanie JEGO tapety.',
+                     2: 'Pytasz, dlaczego nie zmienisz tapety, co nie jest prośbą o opinię.'
+                 }
+             },
+             {
+                 id: 'ojap2305_5_3', type: 'mcq',
+                 situation: 'Nie usłyszałeś(-aś), co powiedział kolega.',
+                 questionText: 'Jak poprosisz go o powtórzenie?',
+                 options: [
+                     'Could you say that again?',
+                     'Haven’t you heard that?',
+                     'Should I repeat what I said?'
+                 ],
+                 correctAnswerIndex: 0,
+                 explanation: {
+                     1: 'Pytasz, czy on tego nie słyszał.',
+                     2: 'Pytasz, czy TY masz powtórzyć.'
+                 }
+             },
+             {
+                 id: 'ojap2305_5_4', type: 'mcq',
+                 situation: 'Zamierzasz wyjechać z rodziną na wakacje.',
+                 questionText: 'Jak zapytasz recepcjonistę w hotelu o możliwość przyjazdu z psem?',
+                 options: [
+                     'Are you going to the hotel with the dog?',
+                     'Are dogs allowed in the hotel?',
+                     'Has your family arrived with the dog?'
+                 ],
+                 correctAnswerIndex: 1,
+                 explanation: {
+                     0: 'Pytasz recepcjonistę, czy ON jedzie do hotelu z psem.',
+                     2: 'Pytasz, czy TWOJA rodzina przyjechała z psem.'
+                 }
+             },
+             {
+                 id: 'ojap2305_6_1', type: 'fill',
+                 questionText: `Uzupełnij dialog:
+                 X: Why (waiting) __________ here? The meeting is in another room.
+                 Y: Oh, I didn’t know. Thanks.`,
+                 correctAnswerText: ["are you waiting", "are we waiting"]
+             },
+             {
+                 id: 'ojap2305_6_2', type: 'fill',
+                 questionText: `Uzupełnij dialog:
+                 X: I love these shoes. (much) __________ they?
+                 Y: £25.
+                 X: Great. I’ll take them.`,
+                 correctAnswerText: ["how much are", "what price are", "how much do"] // Added "how much do"
+             }
         ];
 
         let currentQuestionIndex = 0;
