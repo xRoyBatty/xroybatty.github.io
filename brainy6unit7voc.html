@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Komputerowy Polsko-Angielski (Zaawansowany)</title>
+    <title>Quiz Komputerowy Polsko-Angielski (Z Poprawioną Logiką)</title>
     <style>
+        /* Style pozostają takie same jak w poprzedniej wersji */
         body {
             font-family: sans-serif;
             line-height: 1.6;
@@ -16,7 +17,7 @@
             border: 1px solid #eee;
             border-radius: 5px;
             background-color: #f9f9f9;
-            transition: background-color 0.3s ease; /* Płynne przejście koloru */
+            transition: background-color 0.3s ease;
         }
         label {
             display: block;
@@ -24,7 +25,7 @@
             font-weight: bold;
         }
         input[type="text"] {
-            width: calc(100% - 22px); /* Dostosowanie szerokości */
+            width: calc(100% - 22px);
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -38,10 +39,14 @@
             cursor: pointer;
             font-size: 16px;
             margin-top: 20px;
-            margin-right: 10px; /* Odstęp między przyciskami */
+            margin-right: 10px;
         }
-        button:hover {
+        button:hover:not(:disabled) { /* Hover tylko dla aktywnych */
             background-color: #0056b3;
+        }
+        button:disabled { /* Styl dla wyłączonych przycisków */
+            background-color: #cccccc;
+            cursor: not-allowed;
         }
         #results {
             margin-top: 20px;
@@ -52,38 +57,37 @@
              transition: background-color 0.3s ease;
         }
         .correct {
-             background-color: #d4edda !important; /* Zielone tło dla poprawnych */
+             background-color: #d4edda !important;
              border-color: #c3e6cb;
         }
         .incorrect {
-             background-color: #f8d7da !important; /* Czerwone tło dla niepoprawnych */
+             background-color: #f8d7da !important;
              border-color: #f5c6cb;
         }
-        /* Nowy styl dla literówek */
         .typo {
-            background-color: #fff3cd !important; /* Pomarańczowo-żółty dla literówek */
+            background-color: #fff3cd !important;
             border-color: #ffeeba;
         }
         .correct-answer-hint {
              font-size: 0.9em;
-             color: #721c24; /* Ciemnoczerwony dla podpowiedzi */
+             color: #721c24;
              margin-top: 5px;
-             display: none; /* Ukryty domyślnie */
+             display: none;
         }
         .incorrect .correct-answer-hint,
-        .typo .correct-answer-hint { /* Pokazuj podpowiedź także przy literówkach */
+        .typo .correct-answer-hint {
              display: block;
         }
 
-        /* Style dla Popupa */
+        /* Style dla Popupa (bez zmian) */
         #overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.6); /* Półprzezroczyste tło */
-            display: none; /* Ukryte domyślnie */
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none;
             justify-content: center;
             align-items: center;
             z-index: 999;
@@ -98,63 +102,36 @@
             z-index: 1000;
             text-align: center;
         }
-        #popup h2 {
-            margin-top: 0;
-            color: #333;
-        }
-         #popup p {
-            margin-bottom: 10px;
-            color: #555;
-        }
-        #correctList {
-            list-style-type: none;
-            padding: 0;
-            margin-bottom: 20px;
-            max-height: 150px; /* Ograniczenie wysokości listy */
-            overflow-y: auto; /* Przewijanie, jeśli lista jest długa */
-            text-align: left;
-            border: 1px solid #eee;
-            padding: 10px;
-        }
-         #correctList li {
-            padding: 5px 0;
-             border-bottom: 1px dashed #eee;
-         }
-         #correctList li:last-child {
-             border-bottom: none;
-         }
-        .popup-buttons button {
-             margin: 0 10px;
-        }
-         #noCorrectMessage {
-             display: none; /* Ukryty domyślnie */
-             color: #777;
-             font-style: italic;
-         }
-
-
+        #popup h2 { margin-top: 0; color: #333; }
+        #popup p { margin-bottom: 10px; color: #555; }
+        #correctList { list-style-type: none; padding: 0; margin-bottom: 20px; max-height: 150px; overflow-y: auto; text-align: left; border: 1px solid #eee; padding: 10px; }
+        #correctList li { padding: 5px 0; border-bottom: 1px dashed #eee; }
+        #correctList li:last-child { border-bottom: none; }
+        .popup-buttons button { margin: 0 10px; }
+        #noCorrectMessage { display: none; color: #777; font-style: italic; }
     </style>
 </head>
 <body>
 
-    <h1>Quiz Komputerowy: Polski na Angielski (Zaawansowany)</h1>
+    <h1>Quiz Komputerowy: Polski na Angielski (Z Poprawioną Logiką)</h1>
     <p>Wpisz angielskie tłumaczenie dla każdego polskiego terminu lub zwrotu. Drobne literówki liczą się za pół punktu.</p>
 
     <form id="quizForm">
         <!-- Pytania zostaną wygenerowane przez JavaScript -->
     </form>
 
+    <!-- Zmieniony przycisk sprawdzania i dodany przycisk następnej rundy -->
     <button type="button" id="checkButton" onclick="checkAnswers()">Sprawdź odpowiedzi</button>
-     <div id="results"></div>
+    <button type="button" id="nextRoundButton" style="display: none;">Następna runda</button> {/* Ukryty na starcie */}
 
-    <!-- Popup i Overlay -->
+    <div id="results"></div>
+
+    <!-- Popup i Overlay (bez zmian w strukturze HTML) -->
     <div id="overlay">
         <div id="popup">
             <h2>Podsumowanie Rundy</h2>
             <p>Poprawnie odpowiedziałeś na następujące terminy:</p>
-            <ul id="correctList">
-                <!-- Lista poprawnych odpowiedzi zostanie tu wstawiona -->
-            </ul>
+            <ul id="correctList"></ul>
             <p id="noCorrectMessage">Nie było żadnych w pełni poprawnych odpowiedzi w tej rundzie.</p>
             <p>Czy chcesz usunąć te opanowane terminy z następnej rundy?</p>
             <div class="popup-buttons">
@@ -166,35 +143,23 @@
 
 
     <script>
-        // --- Funkcja obliczająca odległość Levenshteina ---
-        // (Potrzebna do wykrywania literówek: 1 różnica = literówka)
+        // --- Funkcja Levenshteina (bez zmian) ---
         function levenshtein(a, b) {
             if (a.length === 0) return b.length;
             if (b.length === 0) return a.length;
             const matrix = [];
-
-            for (let i = 0; i <= b.length; i++) {
-                matrix[i] = [i];
-            }
-            for (let j = 0; j <= a.length; j++) {
-                matrix[0][j] = j;
-            }
-
+            for (let i = 0; i <= b.length; i++) { matrix[i] = [i]; }
+            for (let j = 0; j <= a.length; j++) { matrix[0][j] = j; }
             for (let i = 1; i <= b.length; i++) {
                 for (let j = 1; j <= a.length; j++) {
                     const cost = a[j - 1] === b[i - 1] ? 0 : 1;
-                    matrix[i][j] = Math.min(
-                        matrix[i - 1][j] + 1,      // Deletion
-                        matrix[i][j - 1] + 1,      // Insertion
-                        matrix[i - 1][j - 1] + cost // Substitution
-                    );
+                    matrix[i][j] = Math.min(matrix[i - 1][j] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j - 1] + cost);
                 }
             }
             return matrix[b.length][a.length];
         }
-        // ----------------------------------------------------
 
-        const initialQuizData = [ // Oryginalne dane, aby móc zresetować
+        const initialQuizData = [ // Dane quizu (bez zmian)
              { polish: "komputer stacjonarny", english: "desktop computer" },
              { polish: "kontroler do gier", english: "game controller" },
              { polish: "wkład drukujący", english: "ink cartridge" },
@@ -226,8 +191,8 @@
              { polish: "przesyłać filmy", english: "upload videos" }
         ];
 
-        let currentQuizData = [...initialQuizData]; // Kopia robocza danych
-        let lastCheckCorrectItems = []; // Przechowuje DOKŁADNIE poprawne odpowiedzi z ostatniego sprawdzenia
+        let currentQuizData = [...initialQuizData];
+        let lastCheckCorrectItems = [];
 
         const quizForm = document.getElementById('quizForm');
         const resultsContainer = document.getElementById('results');
@@ -238,29 +203,38 @@
         const keepButton = document.getElementById('keepButton');
         const removeButton = document.getElementById('removeButton');
         const checkButton = document.getElementById('checkButton');
+        // Pobierz nowy przycisk
+        const nextRoundButton = document.getElementById('nextRoundButton');
 
 
-        // --- Generowanie formularza quizu ---
+        // --- Generowanie formularza quizu (z resetowaniem stanu przycisków) ---
         function generateQuizForm(data) {
-             // Używamy textContent zamiast innerHTML do czyszczenia dla bezpieczeństwa, ale innerHTML jest tu praktyczniejsze
-             quizForm.innerHTML = ''; // Wyczyść poprzedni formularz
-             resultsContainer.textContent = ''; // Wyczyść poprzednie wyniki
-             resultsContainer.className = ''; // Usuń klasy tła wyników
+            quizForm.innerHTML = '';
+            resultsContainer.textContent = '';
+            resultsContainer.className = '';
 
-             if (data.length === 0) {
-                 quizForm.textContent = 'Gratulacje! Opanowałeś wszystkie terminy.';
-                 checkButton.style.display = 'none'; // Ukryj przycisk sprawdzania
-                 return;
-             } else {
-                 checkButton.style.display = 'inline-block'; // Pokaż przycisk sprawdzania
-             }
+            // Zresetuj stan przycisków przy generowaniu formularza
+            checkButton.disabled = false;
+            checkButton.style.display = 'inline-block';
+            nextRoundButton.style.display = 'none'; // Ukryj przycisk następnej rundy
+
+
+            if (data.length === 0) {
+                const p = document.createElement('p');
+                p.textContent = 'Gratulacje! Opanowałeś wszystkie terminy.';
+                p.style.fontWeight = 'bold';
+                p.style.color = 'green';
+                quizForm.appendChild(p);
+                checkButton.style.display = 'none'; // Ukryj przycisk sprawdzania, bo nie ma pytań
+                nextRoundButton.style.display = 'none'; // Upewnij się, że ten też jest ukryty
+                return;
+            }
 
             data.forEach((item, index) => {
                 const div = document.createElement('div');
                 div.className = 'question';
-                // Używamy polskiego terminu jako unikalnego identyfikatora (na wypadek usuwania elementów)
                 div.dataset.polishTerm = item.polish;
-                div.id = `question-${index}`; // Utrzymujemy też ID dla łatwiejszego dostępu
+                div.id = `question-${index}`;
 
                 const label = document.createElement('label');
                 label.textContent = `${index + 1}. ${item.polish}`;
@@ -270,12 +244,11 @@
                 input.type = 'text';
                 input.id = `answer-${index}`;
                 input.name = `answer-${index}`;
-                input.setAttribute('autocomplete', 'off'); // Wyłącz podpowiedzi przeglądarki
+                input.setAttribute('autocomplete', 'off');
 
                 const hint = document.createElement('div');
                 hint.className = 'correct-answer-hint';
                 hint.id = `hint-${index}`;
-                // Ustawiamy textContent dla bezpieczeństwa
                 hint.textContent = `Poprawna odpowiedź: ${item.english}`;
 
                 div.appendChild(label);
@@ -285,36 +258,36 @@
             });
         }
 
-        // --- Funkcja sprawdzająca odpowiedzi ---
+        // --- Funkcja sprawdzająca odpowiedzi (bez pokazywania popupu) ---
         function checkAnswers() {
             let score = 0;
             let possibleScore = currentQuizData.length;
-            lastCheckCorrectItems = []; // Resetuj listę poprawnych z ostatniego sprawdzenia
+            lastCheckCorrectItems = [];
 
-             // Resetuj style i ukryj podpowiedzi przed sprawdzeniem
+            // Resetuj style i podpowiedzi
             currentQuizData.forEach((item, index) => {
-                 // Ostrożnie, jeśli formularz był regenerowany, id mogą nie pasować do `currentQuizData` index
-                 // Lepiej szukać po data-atrybucie
                  const questionDiv = quizForm.querySelector(`div[data-polish-term="${item.polish}"]`);
                  if (questionDiv) {
                     questionDiv.classList.remove('correct', 'incorrect', 'typo');
                     const hintElement = questionDiv.querySelector('.correct-answer-hint');
-                     if(hintElement) hintElement.style.display = 'none';
+                    if(hintElement) hintElement.style.display = 'none';
+                     // Zablokuj pole input po sprawdzeniu
+                    const inputElement = questionDiv.querySelector('input');
+                    if(inputElement) inputElement.disabled = true;
                  }
             });
 
-
+            // Ocena odpowiedzi (logika taka sama jak poprzednio)
             currentQuizData.forEach((item, index) => {
                 const questionDiv = quizForm.querySelector(`div[data-polish-term="${item.polish}"]`);
-                const inputElement = questionDiv ? questionDiv.querySelector(`#answer-${index}`) : null; // Znajdź input wewnątrz diva
+                const inputElement = questionDiv ? questionDiv.querySelector(`#answer-${index}`) : null;
                 const hintElement = questionDiv ? questionDiv.querySelector(`#hint-${index}`) : null;
 
-                if (!inputElement || !questionDiv || !hintElement) {
+                 if (!inputElement || !questionDiv || !hintElement) {
                      console.warn("Nie znaleziono elementu dla:", item.polish);
-                     possibleScore -=1; // Zmniejsz możliwy wynik, jeśli brakuje pytania
-                     return; // Przejdź do następnego, jeśli brakuje elementów
+                     possibleScore -=1;
+                     return;
                  }
-
 
                 const userAnswer = inputElement.value.trim().toLowerCase();
                 const correctAnswer = item.english.trim().toLowerCase();
@@ -324,14 +297,12 @@
                 let isCorrect = false;
                 let isTypo = false;
 
-                // 1. Sprawdź dokładne dopasowanie
                 if (userAnswer === correctAnswer) {
                     isCorrect = true;
                     score += 1;
                     questionDiv.classList.add('correct');
-                    lastCheckCorrectItems.push(item); // Dodaj do listy DOKŁADNIE poprawnych
+                    lastCheckCorrectItems.push(item);
                 } else {
-                    // 2. Sprawdź alternatywne poprawne formy (jeśli istnieją)
                      let alternativeCorrect = false;
                      if (item.polish === "panel dotykowy" && userAnswer === "touch pad") alternativeCorrect = true;
                      else if (item.polish === "wyszukiwać" && userAnswer === "search") alternativeCorrect = true;
@@ -343,102 +314,111 @@
                          isCorrect = true;
                          score += 1;
                          questionDiv.classList.add('correct');
-                         lastCheckCorrectItems.push(item); // Dodaj do listy DOKŁADNIE poprawnych
+                         lastCheckCorrectItems.push(item);
                      } else {
-                        // 3. Sprawdź literówki (Levenshtein distance = 1)
                         const distance = levenshtein(userAnswer, correctAnswer);
-                        // 4. Sprawdź błędy spacji (np. "touchscreen" vs "touch screen")
                         const spaceError = (userAnswer.length > 0 && userAnswerNoSpace === correctAnswerNoSpace);
 
                         if (distance === 1 || spaceError) {
                             isTypo = true;
-                            score += 0.5; // Pół punktu za literówkę/błąd spacji
-                            questionDiv.classList.add('typo'); // Pomarańczowy kolor
-                            hintElement.style.display = 'block'; // Pokaż podpowiedź
+                            score += 0.5;
+                            questionDiv.classList.add('typo');
+                            hintElement.style.display = 'block';
                         } else {
-                            // 5. Inaczej - odpowiedź jest niepoprawna
-                            questionDiv.classList.add('incorrect'); // Czerwony kolor
-                            hintElement.style.display = 'block'; // Pokaż podpowiedź
+                            questionDiv.classList.add('incorrect');
+                            hintElement.style.display = 'block';
                         }
                     }
                 }
             });
 
-            // Wyświetlenie wyniku
+            // Wyświetlenie wyniku (logika taka sama)
              resultsContainer.textContent = `Twój wynik: ${score} z ${possibleScore}`;
              if (score === possibleScore && possibleScore > 0) {
                 resultsContainer.className = 'correct';
             } else if (score > 0) {
-                 resultsContainer.className = 'typo'; // Użyjmy pomarańczowego dla wyników częściowych
+                 resultsContainer.className = 'typo';
             }
              else if(possibleScore > 0){
                  resultsContainer.className = 'incorrect';
             } else {
-                 resultsContainer.className = ''; // Brak pytań, brak wyniku
+                 resultsContainer.className = '';
              }
 
-
-            // Pokaż popup po sprawdzeniu
-            showPopup();
+            // Zmiana stanu przycisków po sprawdzeniu
+            checkButton.disabled = true; // Wyłącz przycisk sprawdzania
+            if(currentQuizData.length > 0) { // Pokaż "Następna runda" tylko jeśli są jeszcze pytania
+                 nextRoundButton.style.display = 'inline-block'; // Pokaż przycisk następnej rundy
+            } else {
+                 nextRoundButton.style.display = 'none'; // Ukryj, jeśli nie ma pytań
+            }
         }
 
-         // --- Funkcje do obsługi Popupa ---
+         // --- Funkcje do obsługi Popupa (bez zmian w logice wewnętrznej) ---
          function showPopup() {
-            correctList.innerHTML = ''; // Wyczyść poprzednią listę
-
+            correctList.innerHTML = '';
             if (lastCheckCorrectItems.length > 0) {
                 lastCheckCorrectItems.forEach(item => {
                     const li = document.createElement('li');
-                     // Bezpieczne dodanie tekstu
                     li.textContent = `${item.polish} - ${item.english}`;
                     correctList.appendChild(li);
                 });
                 correctList.style.display = 'block';
                 noCorrectMessage.style.display = 'none';
-                removeButton.disabled = false; // Włącz przycisk usuwania
+                removeButton.disabled = false;
             } else {
                  correctList.style.display = 'none';
                  noCorrectMessage.style.display = 'block';
-                 removeButton.disabled = true; // Wyłącz przycisk usuwania, jeśli nie ma co usuwać
+                 removeButton.disabled = true;
             }
-            overlay.style.display = 'flex'; // Pokaż overlay i popup
+            overlay.style.display = 'flex';
          }
 
         function hidePopup() {
-            overlay.style.display = 'none'; // Ukryj overlay i popup
+            overlay.style.display = 'none';
+        }
+
+        function resetQuizStateForNextRound() {
+            // Ta funkcja może zawierać dodatkowe operacje resetowania,
+            // ale na razie głównie regeneruje formularz, co resetuje przyciski
+             generateQuizForm(currentQuizData);
         }
 
         function handleKeep() {
             hidePopup();
-            // Nic więcej nie rób, quiz zostaje jak jest
+            // Użytkownik chce zachować wszystkie pytania,
+            // więc po prostu resetujemy stan do nowej rundy (odblokowujemy inputy, przyciski)
+             resetQuizStateForNextRound();
+
         }
 
         function handleRemove() {
              if(lastCheckCorrectItems.length > 0) {
-                // Stwórz mapę poprawnie odpowiedzianych polskich terminów dla szybkiego sprawdzania
                 const correctPolishTerms = new Set(lastCheckCorrectItems.map(item => item.polish));
-
-                // Przefiltruj `currentQuizData`, zostawiając tylko te, których NIE ma na liście poprawnych
                 currentQuizData = currentQuizData.filter(item => !correctPolishTerms.has(item.polish));
-
-                // Odśwież formularz z nową, zmniejszoną listą pytań
-                generateQuizForm(currentQuizData);
              }
-            hidePopup();
+             hidePopup();
+             // Resetujemy stan do nowej rundy z (potencjalnie) zmniejszoną listą pytań
+             resetQuizStateForNextRound();
         }
 
-        // --- Inicjalizacja ---
-        // Generuj formularz przy pierwszym załadowaniu strony
-        generateQuizForm(currentQuizData);
+        // --- Inicjalizacja i Event Listenery ---
+        generateQuizForm(currentQuizData); // Generuj formularz przy starcie
 
-         // Dodaj event listenery do przycisków popupa
+         // Listener dla przycisku "Następna runda" -> pokazuje popup
+         nextRoundButton.addEventListener('click', showPopup);
+
+         // Listenery dla przycisków popupa
          keepButton.addEventListener('click', handleKeep);
          removeButton.addEventListener('click', handleRemove);
-         // Dodaj event listener do overlay, aby zamknąć popup po kliknięciu tła
+         // Listener dla overlay (zamykanie przez kliknięcie tła)
          overlay.addEventListener('click', (event) => {
-             // Zamknij tylko jeśli kliknięto bezpośrednio na overlay (a nie na popup wewnątrz)
              if (event.target === overlay) {
                  hidePopup();
+                 // Ważne: Jeśli użytkownik zamknie popup przez overlay,
+                 // traktujemy to jakby wybrał "Nie, zostaw wszystkie".
+                 // Musimy zresetować stan quizu, aby mógł próbować dalej.
+                 resetQuizStateForNextRound();
              }
          });
 
