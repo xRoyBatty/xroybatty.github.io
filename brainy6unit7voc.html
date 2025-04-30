@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Komputerowy Polsko-Angielski</title>
+    <title>Quiz Komputerowy Polsko-Angielski (Zaawansowany)</title>
     <style>
         body {
             font-family: sans-serif;
@@ -16,6 +16,7 @@
             border: 1px solid #eee;
             border-radius: 5px;
             background-color: #f9f9f9;
+            transition: background-color 0.3s ease; /* Płynne przejście koloru */
         }
         label {
             display: block;
@@ -37,6 +38,7 @@
             cursor: pointer;
             font-size: 16px;
             margin-top: 20px;
+            margin-right: 10px; /* Odstęp między przyciskami */
         }
         button:hover {
             background-color: #0056b3;
@@ -47,14 +49,20 @@
             font-size: 18px;
             padding: 15px;
             border-radius: 5px;
+             transition: background-color 0.3s ease;
         }
         .correct {
-             background-color: #d4edda; /* Zielone tło dla poprawnych */
+             background-color: #d4edda !important; /* Zielone tło dla poprawnych */
              border-color: #c3e6cb;
         }
         .incorrect {
-             background-color: #f8d7da; /* Czerwone tło dla niepoprawnych */
+             background-color: #f8d7da !important; /* Czerwone tło dla niepoprawnych */
              border-color: #f5c6cb;
+        }
+        /* Nowy styl dla literówek */
+        .typo {
+            background-color: #fff3cd !important; /* Pomarańczowo-żółty dla literówek */
+            border-color: #ffeeba;
         }
         .correct-answer-hint {
              font-size: 0.9em;
@@ -62,143 +70,377 @@
              margin-top: 5px;
              display: none; /* Ukryty domyślnie */
         }
-        .incorrect .correct-answer-hint {
-             display: block; /* Pokazuj tylko przy błędnej odpowiedzi */
+        .incorrect .correct-answer-hint,
+        .typo .correct-answer-hint { /* Pokazuj podpowiedź także przy literówkach */
+             display: block;
         }
+
+        /* Style dla Popupa */
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* Półprzezroczyste tło */
+            display: none; /* Ukryte domyślnie */
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+        #popup {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            width: 80%;
+            max-width: 500px;
+            z-index: 1000;
+            text-align: center;
+        }
+        #popup h2 {
+            margin-top: 0;
+            color: #333;
+        }
+         #popup p {
+            margin-bottom: 10px;
+            color: #555;
+        }
+        #correctList {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 20px;
+            max-height: 150px; /* Ograniczenie wysokości listy */
+            overflow-y: auto; /* Przewijanie, jeśli lista jest długa */
+            text-align: left;
+            border: 1px solid #eee;
+            padding: 10px;
+        }
+         #correctList li {
+            padding: 5px 0;
+             border-bottom: 1px dashed #eee;
+         }
+         #correctList li:last-child {
+             border-bottom: none;
+         }
+        .popup-buttons button {
+             margin: 0 10px;
+        }
+         #noCorrectMessage {
+             display: none; /* Ukryty domyślnie */
+             color: #777;
+             font-style: italic;
+         }
+
 
     </style>
 </head>
 <body>
 
-    <h1>Quiz Komputerowy: Polski na Angielski</h1>
-    <p>Wpisz angielskie tłumaczenie dla każdego polskiego terminu lub zwrotu.</p>
+    <h1>Quiz Komputerowy: Polski na Angielski (Zaawansowany)</h1>
+    <p>Wpisz angielskie tłumaczenie dla każdego polskiego terminu lub zwrotu. Drobne literówki liczą się za pół punktu.</p>
 
     <form id="quizForm">
         <!-- Pytania zostaną wygenerowane przez JavaScript -->
     </form>
 
-    <button type="button" onclick="checkAnswers()">Sprawdź odpowiedzi</button>
+    <button type="button" id="checkButton" onclick="checkAnswers()">Sprawdź odpowiedzi</button>
+     <div id="results"></div>
 
-    <div id="results"></div>
+    <!-- Popup i Overlay -->
+    <div id="overlay">
+        <div id="popup">
+            <h2>Podsumowanie Rundy</h2>
+            <p>Poprawnie odpowiedziałeś na następujące terminy:</p>
+            <ul id="correctList">
+                <!-- Lista poprawnych odpowiedzi zostanie tu wstawiona -->
+            </ul>
+            <p id="noCorrectMessage">Nie było żadnych w pełni poprawnych odpowiedzi w tej rundzie.</p>
+            <p>Czy chcesz usunąć te opanowane terminy z następnej rundy?</p>
+            <div class="popup-buttons">
+                <button type="button" id="removeButton">Tak, usuń opanowane</button>
+                <button type="button" id="keepButton">Nie, zostaw wszystkie</button>
+            </div>
+        </div>
+    </div>
+
 
     <script>
-        // Dane do quizu: polski termin i jego poprawne angielskie tłumaczenie
-        // Używam tych samych danych, ale teraz polski jest pytaniem, a angielski odpowiedzią
-        const quizData = [
-            { polish: "komputer stacjonarny", english: "desktop computer" },
-            { polish: "kontroler do gier", english: "game controller" },
-            { polish: "wkład drukujący", english: "ink cartridge" },
-            { polish: "klawiatura", english: "keyboard" },
-            { polish: "laptop", english: "laptop" },
-            { polish: "monitor", english: "monitor" },
-            { polish: "mysz komputerowa", english: "mouse" }, // Angielskie tłumaczenie to po prostu "mouse"
-            { polish: "drukarka", english: "printer" },
-            { polish: "panel dotykowy", english: "touchpad" }, // Można też akceptować 'touch pad'
-            { polish: "ekran dotykowy", english: "touch screen" },
-            { polish: "kliknąć", english: "click" },
-            { polish: "przycisnąć klawisz", english: "press a key" },
-            { polish: "przeciągnąć ekran", english: "swipe the screen" },
-            { polish: "stuknąć", english: "tap" },
-            { polish: "wpisać swoje imię", english: "type your name" },
-            { polish: "sprawdzać", english: "check" },
-            { polish: "kasować", english: "delete" },
-            { polish: "wyszukiwać", english: "do searches" }, // Można też akceptować 'search'
-            { polish: "pobierać filmy", english: "download videos" },
-            { polish: "wpisać hasło", english: "enter your password" },
-            { polish: "zapomnieć hasło", english: "forget your password" },
-            { polish: "przesłać e-mail dalej", english: "forward an email" },
-            { polish: "instalować aplikacje", english: "install apps" },
-            { polish: "zalogować się", english: "log in" }, // Można też akceptować 'login'
-            { polish: "wylogować się", english: "log out" }, // Można też akceptować 'logout'
-            { polish: "robić kopię zapasową plików", english: "make backups of your files" }, // Można też akceptować 'back up your files'
-            { polish: "zapisać swoją pracę", english: "save your work" },
-            { polish: "wysyłać", english: "send" },
-            { polish: "przesyłać filmy", english: "upload videos" }
+        // --- Funkcja obliczająca odległość Levenshteina ---
+        // (Potrzebna do wykrywania literówek: 1 różnica = literówka)
+        function levenshtein(a, b) {
+            if (a.length === 0) return b.length;
+            if (b.length === 0) return a.length;
+            const matrix = [];
+
+            for (let i = 0; i <= b.length; i++) {
+                matrix[i] = [i];
+            }
+            for (let j = 0; j <= a.length; j++) {
+                matrix[0][j] = j;
+            }
+
+            for (let i = 1; i <= b.length; i++) {
+                for (let j = 1; j <= a.length; j++) {
+                    const cost = a[j - 1] === b[i - 1] ? 0 : 1;
+                    matrix[i][j] = Math.min(
+                        matrix[i - 1][j] + 1,      // Deletion
+                        matrix[i][j - 1] + 1,      // Insertion
+                        matrix[i - 1][j - 1] + cost // Substitution
+                    );
+                }
+            }
+            return matrix[b.length][a.length];
+        }
+        // ----------------------------------------------------
+
+        const initialQuizData = [ // Oryginalne dane, aby móc zresetować
+             { polish: "komputer stacjonarny", english: "desktop computer" },
+             { polish: "kontroler do gier", english: "game controller" },
+             { polish: "wkład drukujący", english: "ink cartridge" },
+             { polish: "klawiatura", english: "keyboard" },
+             { polish: "laptop", english: "laptop" },
+             { polish: "monitor", english: "monitor" },
+             { polish: "mysz komputerowa", english: "mouse" },
+             { polish: "drukarka", english: "printer" },
+             { polish: "panel dotykowy", english: "touchpad" },
+             { polish: "ekran dotykowy", english: "touch screen" },
+             { polish: "kliknąć", english: "click" },
+             { polish: "przycisnąć klawisz", english: "press a key" },
+             { polish: "przeciągnąć ekran", english: "swipe the screen" },
+             { polish: "stuknąć", english: "tap" },
+             { polish: "wpisać swoje imię", english: "type your name" },
+             { polish: "sprawdzać", english: "check" },
+             { polish: "kasować", english: "delete" },
+             { polish: "wyszukiwać", english: "do searches" },
+             { polish: "pobierać filmy", english: "download videos" },
+             { polish: "wpisać hasło", english: "enter your password" },
+             { polish: "zapomnieć hasło", english: "forget your password" },
+             { polish: "przesłać e-mail dalej", english: "forward an email" },
+             { polish: "instalować aplikacje", english: "install apps" },
+             { polish: "zalogować się", english: "log in" },
+             { polish: "wylogować się", english: "log out" },
+             { polish: "robić kopię zapasową plików", english: "make backups of your files" },
+             { polish: "zapisać swoją pracę", english: "save your work" },
+             { polish: "wysyłać", english: "send" },
+             { polish: "przesyłać filmy", english: "upload videos" }
         ];
 
+        let currentQuizData = [...initialQuizData]; // Kopia robocza danych
+        let lastCheckCorrectItems = []; // Przechowuje DOKŁADNIE poprawne odpowiedzi z ostatniego sprawdzenia
 
         const quizForm = document.getElementById('quizForm');
         const resultsContainer = document.getElementById('results');
+        const overlay = document.getElementById('overlay');
+        const popup = document.getElementById('popup');
+        const correctList = document.getElementById('correctList');
+        const noCorrectMessage = document.getElementById('noCorrectMessage');
+        const keepButton = document.getElementById('keepButton');
+        const removeButton = document.getElementById('removeButton');
+        const checkButton = document.getElementById('checkButton');
 
-        // Generowanie pól formularza na podstawie danych
-        quizData.forEach((item, index) => {
-            const div = document.createElement('div');
-            div.className = 'question';
-            div.id = `question-${index}`; // ID dla diva pytania
 
-            const label = document.createElement('label');
-            // Bezpieczne ustawienie tekstu etykiety - teraz polski termin
-            label.textContent = `${index + 1}. ${item.polish}`;
-            label.htmlFor = `answer-${index}`;
+        // --- Generowanie formularza quizu ---
+        function generateQuizForm(data) {
+             // Używamy textContent zamiast innerHTML do czyszczenia dla bezpieczeństwa, ale innerHTML jest tu praktyczniejsze
+             quizForm.innerHTML = ''; // Wyczyść poprzedni formularz
+             resultsContainer.textContent = ''; // Wyczyść poprzednie wyniki
+             resultsContainer.className = ''; // Usuń klasy tła wyników
 
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.id = `answer-${index}`;
-            input.name = `answer-${index}`;
-            input.setAttribute('autocomplete', 'off'); // Wyłącz podpowiedzi przeglądarki
+             if (data.length === 0) {
+                 quizForm.textContent = 'Gratulacje! Opanowałeś wszystkie terminy.';
+                 checkButton.style.display = 'none'; // Ukryj przycisk sprawdzania
+                 return;
+             } else {
+                 checkButton.style.display = 'inline-block'; // Pokaż przycisk sprawdzania
+             }
 
-            // Dodajemy element na podpowiedź z poprawną odpowiedzią (domyślnie ukryty)
-            const hint = document.createElement('div');
-            hint.className = 'correct-answer-hint';
-            hint.id = `hint-${index}`;
-            hint.textContent = `Poprawna odpowiedź: ${item.english}`; // Ustawiamy tekst podpowiedzi
+            data.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'question';
+                // Używamy polskiego terminu jako unikalnego identyfikatora (na wypadek usuwania elementów)
+                div.dataset.polishTerm = item.polish;
+                div.id = `question-${index}`; // Utrzymujemy też ID dla łatwiejszego dostępu
 
-            div.appendChild(label);
-            div.appendChild(input);
-            div.appendChild(hint); // Dodajemy podpowiedź do diva pytania
-            quizForm.appendChild(div);
-        });
+                const label = document.createElement('label');
+                label.textContent = `${index + 1}. ${item.polish}`;
+                label.htmlFor = `answer-${index}`;
 
-        // Funkcja sprawdzająca odpowiedzi
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.id = `answer-${index}`;
+                input.name = `answer-${index}`;
+                input.setAttribute('autocomplete', 'off'); // Wyłącz podpowiedzi przeglądarki
+
+                const hint = document.createElement('div');
+                hint.className = 'correct-answer-hint';
+                hint.id = `hint-${index}`;
+                // Ustawiamy textContent dla bezpieczeństwa
+                hint.textContent = `Poprawna odpowiedź: ${item.english}`;
+
+                div.appendChild(label);
+                div.appendChild(input);
+                div.appendChild(hint);
+                quizForm.appendChild(div);
+            });
+        }
+
+        // --- Funkcja sprawdzająca odpowiedzi ---
         function checkAnswers() {
             let score = 0;
-            // Usuń poprzednie klasy i ukryj podpowiedzi
-            quizData.forEach((item, index) => {
-                 const questionDiv = document.getElementById(`question-${index}`);
-                 questionDiv.classList.remove('correct', 'incorrect');
-                 const hintElement = document.getElementById(`hint-${index}`);
-                 hintElement.style.display = 'none'; // Ukryj podpowiedź
+            let possibleScore = currentQuizData.length;
+            lastCheckCorrectItems = []; // Resetuj listę poprawnych z ostatniego sprawdzenia
+
+             // Resetuj style i ukryj podpowiedzi przed sprawdzeniem
+            currentQuizData.forEach((item, index) => {
+                 // Ostrożnie, jeśli formularz był regenerowany, id mogą nie pasować do `currentQuizData` index
+                 // Lepiej szukać po data-atrybucie
+                 const questionDiv = quizForm.querySelector(`div[data-polish-term="${item.polish}"]`);
+                 if (questionDiv) {
+                    questionDiv.classList.remove('correct', 'incorrect', 'typo');
+                    const hintElement = questionDiv.querySelector('.correct-answer-hint');
+                     if(hintElement) hintElement.style.display = 'none';
+                 }
             });
 
 
-            quizData.forEach((item, index) => {
-                const inputElement = document.getElementById(`answer-${index}`);
-                const userAnswer = inputElement.value.trim().toLowerCase(); // Pobierz, oczyść i zmień na małe litery
-                // Poprawna odpowiedź to teraz angielski termin
-                const correctAnswer = item.english.trim().toLowerCase();
-                const questionDiv = document.getElementById(`question-${index}`);
-                const hintElement = document.getElementById(`hint-${index}`);
+            currentQuizData.forEach((item, index) => {
+                const questionDiv = quizForm.querySelector(`div[data-polish-term="${item.polish}"]`);
+                const inputElement = questionDiv ? questionDiv.querySelector(`#answer-${index}`) : null; // Znajdź input wewnątrz diva
+                const hintElement = questionDiv ? questionDiv.querySelector(`#hint-${index}`) : null;
 
-                // Proste porównanie - można rozbudować o akceptację wariantów
-                let isCorrect = (userAnswer === correctAnswer);
-
-                // Dodatkowe warunki akceptujące pewne warianty (można dodać więcej)
-                 if (!isCorrect) {
-                     if (item.polish === "panel dotykowy" && userAnswer === "touch pad") isCorrect = true;
-                     if (item.polish === "wyszukiwać" && userAnswer === "search") isCorrect = true;
-                     if (item.polish === "zalogować się" && userAnswer === "login") isCorrect = true;
-                     if (item.polish === "wylogować się" && userAnswer === "logout") isCorrect = true;
-                     if (item.polish === "robić kopię zapasową plików" && userAnswer === "back up your files") isCorrect = true;
+                if (!inputElement || !questionDiv || !hintElement) {
+                     console.warn("Nie znaleziono elementu dla:", item.polish);
+                     possibleScore -=1; // Zmniejsz możliwy wynik, jeśli brakuje pytania
+                     return; // Przejdź do następnego, jeśli brakuje elementów
                  }
 
 
-                if (isCorrect) {
-                    score++;
-                    questionDiv.classList.add('correct'); // Oznacz jako poprawne
+                const userAnswer = inputElement.value.trim().toLowerCase();
+                const correctAnswer = item.english.trim().toLowerCase();
+                const userAnswerNoSpace = userAnswer.replace(/\s+/g, '');
+                const correctAnswerNoSpace = correctAnswer.replace(/\s+/g, '');
+
+                let isCorrect = false;
+                let isTypo = false;
+
+                // 1. Sprawdź dokładne dopasowanie
+                if (userAnswer === correctAnswer) {
+                    isCorrect = true;
+                    score += 1;
+                    questionDiv.classList.add('correct');
+                    lastCheckCorrectItems.push(item); // Dodaj do listy DOKŁADNIE poprawnych
                 } else {
-                     questionDiv.classList.add('incorrect'); // Oznacz jako niepoprawne
-                     hintElement.style.display = 'block'; // Pokaż podpowiedź tylko dla błędnych
+                    // 2. Sprawdź alternatywne poprawne formy (jeśli istnieją)
+                     let alternativeCorrect = false;
+                     if (item.polish === "panel dotykowy" && userAnswer === "touch pad") alternativeCorrect = true;
+                     else if (item.polish === "wyszukiwać" && userAnswer === "search") alternativeCorrect = true;
+                     else if (item.polish === "zalogować się" && userAnswer === "login") alternativeCorrect = true;
+                     else if (item.polish === "wylogować się" && userAnswer === "logout") alternativeCorrect = true;
+                     else if (item.polish === "robić kopię zapasową plików" && userAnswer === "back up your files") alternativeCorrect = true;
+
+                     if(alternativeCorrect){
+                         isCorrect = true;
+                         score += 1;
+                         questionDiv.classList.add('correct');
+                         lastCheckCorrectItems.push(item); // Dodaj do listy DOKŁADNIE poprawnych
+                     } else {
+                        // 3. Sprawdź literówki (Levenshtein distance = 1)
+                        const distance = levenshtein(userAnswer, correctAnswer);
+                        // 4. Sprawdź błędy spacji (np. "touchscreen" vs "touch screen")
+                        const spaceError = (userAnswer.length > 0 && userAnswerNoSpace === correctAnswerNoSpace);
+
+                        if (distance === 1 || spaceError) {
+                            isTypo = true;
+                            score += 0.5; // Pół punktu za literówkę/błąd spacji
+                            questionDiv.classList.add('typo'); // Pomarańczowy kolor
+                            hintElement.style.display = 'block'; // Pokaż podpowiedź
+                        } else {
+                            // 5. Inaczej - odpowiedź jest niepoprawna
+                            questionDiv.classList.add('incorrect'); // Czerwony kolor
+                            hintElement.style.display = 'block'; // Pokaż podpowiedź
+                        }
+                    }
                 }
             });
 
-            // Wyświetlenie wyniku - używamy textContent dla bezpieczeństwa
-            resultsContainer.textContent = `Twój wynik: ${score} z ${quizData.length}`;
-             if (score === quizData.length) {
-                resultsContainer.className = 'correct'; // Zielone tło dla perfekcyjnego wyniku
-            } else {
-                 resultsContainer.className = 'incorrect'; // Czerwone tło jeśli są błędy
+            // Wyświetlenie wyniku
+             resultsContainer.textContent = `Twój wynik: ${score} z ${possibleScore}`;
+             if (score === possibleScore && possibleScore > 0) {
+                resultsContainer.className = 'correct';
+            } else if (score > 0) {
+                 resultsContainer.className = 'typo'; // Użyjmy pomarańczowego dla wyników częściowych
             }
+             else if(possibleScore > 0){
+                 resultsContainer.className = 'incorrect';
+            } else {
+                 resultsContainer.className = ''; // Brak pytań, brak wyniku
+             }
+
+
+            // Pokaż popup po sprawdzeniu
+            showPopup();
         }
+
+         // --- Funkcje do obsługi Popupa ---
+         function showPopup() {
+            correctList.innerHTML = ''; // Wyczyść poprzednią listę
+
+            if (lastCheckCorrectItems.length > 0) {
+                lastCheckCorrectItems.forEach(item => {
+                    const li = document.createElement('li');
+                     // Bezpieczne dodanie tekstu
+                    li.textContent = `${item.polish} - ${item.english}`;
+                    correctList.appendChild(li);
+                });
+                correctList.style.display = 'block';
+                noCorrectMessage.style.display = 'none';
+                removeButton.disabled = false; // Włącz przycisk usuwania
+            } else {
+                 correctList.style.display = 'none';
+                 noCorrectMessage.style.display = 'block';
+                 removeButton.disabled = true; // Wyłącz przycisk usuwania, jeśli nie ma co usuwać
+            }
+            overlay.style.display = 'flex'; // Pokaż overlay i popup
+         }
+
+        function hidePopup() {
+            overlay.style.display = 'none'; // Ukryj overlay i popup
+        }
+
+        function handleKeep() {
+            hidePopup();
+            // Nic więcej nie rób, quiz zostaje jak jest
+        }
+
+        function handleRemove() {
+             if(lastCheckCorrectItems.length > 0) {
+                // Stwórz mapę poprawnie odpowiedzianych polskich terminów dla szybkiego sprawdzania
+                const correctPolishTerms = new Set(lastCheckCorrectItems.map(item => item.polish));
+
+                // Przefiltruj `currentQuizData`, zostawiając tylko te, których NIE ma na liście poprawnych
+                currentQuizData = currentQuizData.filter(item => !correctPolishTerms.has(item.polish));
+
+                // Odśwież formularz z nową, zmniejszoną listą pytań
+                generateQuizForm(currentQuizData);
+             }
+            hidePopup();
+        }
+
+        // --- Inicjalizacja ---
+        // Generuj formularz przy pierwszym załadowaniu strony
+        generateQuizForm(currentQuizData);
+
+         // Dodaj event listenery do przycisków popupa
+         keepButton.addEventListener('click', handleKeep);
+         removeButton.addEventListener('click', handleRemove);
+         // Dodaj event listener do overlay, aby zamknąć popup po kliknięciu tła
+         overlay.addEventListener('click', (event) => {
+             // Zamknij tylko jeśli kliknięto bezpośrednio na overlay (a nie na popup wewnątrz)
+             if (event.target === overlay) {
+                 hidePopup();
+             }
+         });
 
     </script>
 
