@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Komputerowy Angielsko-Polski</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        .question {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: calc(100% - 22px); /* Dostosowanie szerokości */
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #results {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .correct {
+             background-color: #d4edda; /* Zielone tło dla poprawnych */
+             border-color: #c3e6cb;
+        }
+        .incorrect {
+             background-color: #f8d7da; /* Czerwone tło dla niepoprawnych */
+             border-color: #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Quiz Komputerowy: Angielski na Polski</h1>
+    <p>Wpisz polskie tłumaczenie dla każdego angielskiego terminu lub zwrotu.</p>
+
+    <form id="quizForm">
+        <!-- Pytania zostaną wygenerowane przez JavaScript -->
+    </form>
+
+    <button type="button" onclick="checkAnswers()">Sprawdź odpowiedzi</button>
+
+    <div id="results"></div>
+
+    <script>
+        // Dane do quizu: angielski termin i jego poprawne polskie tłumaczenie
+        // Używam poprawnej polskiej pisowni
+        const quizData = [
+            { english: "desktop computer", polish: "komputer stacjonarny" },
+            { english: "game controller", polish: "kontroler do gier" },
+            { english: "ink cartridge", polish: "wkład drukujący" }, // Używam standardowego terminu
+            { english: "keyboard", polish: "klawiatura" },
+            { english: "laptop", polish: "laptop" },
+            { english: "monitor", polish: "monitor" },
+            { english: "mouse", polish: "mysz komputerowa" },
+            { english: "printer", polish: "drukarka" },
+            { english: "touchpad", polish: "panel dotykowy" }, // Można też akceptować 'touchpad'
+            { english: "touch screen", polish: "ekran dotykowy" },
+            { english: "click", polish: "kliknąć" },
+            { english: "press a key", polish: "przycisnąć klawisz" },
+            { english: "swipe the screen", polish: "przeciągnąć ekran" },
+            { english: "tap", polish: "stuknąć" },
+            { english: "type your name", polish: "wpisać swoje imię" }, // Poprawiona pisownia 'wpisać'
+            { english: "check", polish: "sprawdzać" },
+            { english: "delete", polish: "kasować" },
+            { english: "do searches", polish: "wyszukiwać" }, // Uproszczone dla łatwiejszego sprawdzania
+            { english: "download videos", polish: "pobierać filmy" },
+            { english: "enter your password", polish: "wpisać hasło" }, // Poprawiona pisownia 'wpisać'
+            { english: "forget your password", polish: "zapomnieć hasło" },
+            { english: "forward an email", polish: "przesłać e-mail dalej" }, // Poprawiona pisownia 'przesłać'
+            { english: "install apps", polish: "instalować aplikacje" },
+            { english: "log in", polish: "zalogować się" },
+            { english: "log out", polish: "wylogować się" },
+            { english: "make backups of your files", polish: "robić kopię zapasową plików" },
+            { english: "save your work", polish: "zapisać swoją pracę" },
+            { english: "send", polish: "wysyłać" }, // Poprawiona pisownia 'wysyłać'
+            { english: "upload videos", polish: "przesyłać filmy" } // Poprawiona pisownia 'przesyłać'
+        ];
+
+        const quizForm = document.getElementById('quizForm');
+        const resultsContainer = document.getElementById('results');
+
+        // Generowanie pól formularza na podstawie danych
+        quizData.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'question';
+            div.id = `question-${index}`; // Dodajemy ID do diva pytania
+
+            const label = document.createElement('label');
+            // Bezpieczne ustawienie tekstu etykiety
+            label.textContent = `${index + 1}. ${item.english}`;
+            label.htmlFor = `answer-${index}`;
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.id = `answer-${index}`;
+            input.name = `answer-${index}`;
+
+            div.appendChild(label);
+            div.appendChild(input);
+            quizForm.appendChild(div);
+        });
+
+        // Funkcja sprawdzająca odpowiedzi
+        function checkAnswers() {
+            let score = 0;
+            // Usuń poprzednie klasy oznaczające poprawność/niepoprawność
+            quizData.forEach((item, index) => {
+                 const questionDiv = document.getElementById(`question-${index}`);
+                 questionDiv.classList.remove('correct', 'incorrect');
+            });
+
+
+            quizData.forEach((item, index) => {
+                const inputElement = document.getElementById(`answer-${index}`);
+                const userAnswer = inputElement.value.trim().toLowerCase(); // Pobierz, oczyść i zmień na małe litery
+                const correctAnswer = item.polish.trim().toLowerCase(); // Poprawna odpowiedź też oczyszczona i małe litery
+                const questionDiv = document.getElementById(`question-${index}`); // Znajdź div dla pytania
+
+                // Proste porównanie
+                // W bardziej zaawansowanej wersji można by akceptować drobne warianty (np. 'touchpad' vs 'panel dotykowy')
+                if (userAnswer === correctAnswer || (item.english === "touchpad" && userAnswer === "touchpad")) { // Dodatkowy warunek dla 'touchpad'
+                    score++;
+                    questionDiv.classList.add('correct'); // Oznacz jako poprawne
+                } else {
+                     questionDiv.classList.add('incorrect'); // Oznacz jako niepoprawne
+                }
+            });
+
+            // Wyświetlenie wyniku - używamy textContent dla bezpieczeństwa
+            resultsContainer.textContent = `Twój wynik: ${score} z ${quizData.length}`;
+             if (score === quizData.length) {
+                resultsContainer.className = 'correct'; // Zielone tło dla perfekcyjnego wyniku
+            } else {
+                 resultsContainer.className = 'incorrect'; // Czerwone tło jeśli są błędy
+            }
+
+        }
+
+    </script>
+
+</body>
+</html>
