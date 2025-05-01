@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ćwiczenie - Uzupełnij Luki</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        .exercise-item {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .sentence {
+            margin-bottom: 10px;
+        }
+        input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin: 0 5px;
+            min-width: 150px; /* Minimalna szerokość pola */
+        }
+        .hint-button {
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+        .hint {
+            display: none; /* Ukryta podpowiedź */
+            font-style: italic;
+            color: #555;
+            margin-left: 10px;
+            font-size: 0.9em;
+        }
+        .check-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        .check-button:hover {
+            background-color: #45a049;
+        }
+        .feedback {
+            margin-left: 10px;
+            font-weight: bold;
+        }
+        .correct {
+            color: green;
+        }
+        .incorrect {
+            color: red;
+        }
+        .target-phrase {
+            font-weight: bold;
+            color: #0056b3; /* Kolor dla podpowiedzi zwrotu */
+            margin-bottom: 5px;
+            display: block; /* Zapewnia, że jest w nowej linii */
+        }
+    </style>
+</head>
+<body>
+
+<h1>Uzupełnij luki odpowiednimi zwrotami</h1>
+<p>Wpisz brakujący zwrot w puste miejsce. Możesz kliknąć "Podpowiedź", aby zobaczyć polskie znaczenie (lub kontekst). Kliknij "Sprawdź", aby zobaczyć, czy odpowiedź jest poprawna.</p>
+
+<div id="exercise-container">
+    <!-- Ćwiczenia zostaną dodane tutaj przez JavaScript -->
+</div>
+
+<script>
+    const exercises = [
+        { sentence: "The junior diplomat {gap} delivering the sensitive message.", answer: "was entrusted with", hint: "powierzono mu", target: "be entrusted with" },
+        { sentence: "The new manager {gap} for overseeing the entire department.", answer: "is charged with responsibility", hint: "jest odpowiedzialny za", target: "be charged with responsibility" },
+        { sentence: "After the investigation, the suspect {gap} fraud.", answer: "was charged with", hint: "został oskarżony o", target: "be charged with" },
+        { sentence: "We watched the flock of birds {gap} towards the horizon.", answer: "fly away", hint: "odlatywać", target: "fly away" },
+        { sentence: "Please {gap} and leave me alone for a while.", answer: "go away", hint: "odejdź", target: "go away" },
+        { sentence: "It's always sad when beloved public figures {gap}.", answer: "pass away", hint: "umierają / odchodzą", target: "pass away" },
+        { sentence: "The horse got spooked by the noise and {gap} across the field.", answer: "ran away", hint: "uciekł", target: "run away" },
+        { sentence: "The new office layout {gap}, finding it too open.", answer: "was not to her liking", hint: "nie przypadł jej do gustu", target: "be not to one's liking" },
+        { sentence: "The committee voted {gap} the new proposal.", answer: "in favour of", hint: "za / na korzyść", target: "in favour of" },
+        { sentence: "Security had to {gap} the fans {gap} rushing onto the stage.", answer: "stop from", hint: "powstrzymać przed", target: "stop someone from doing something" }, // Uwaga: luka podzielona
+        { sentence: "The government {gap} the economic downturn despite their efforts.", answer: "failed to prevent", hint: "nie zdołał zapobiec", target: "fail to prevent" },
+        { sentence: "You need to {gap} during the final exam; the questions can be tricky.", answer: "be on your toes", hint: "być czujnym", target: "be on one's toes" },
+        { sentence: "After losing his job, it took him a few months to {gap}.", answer: "get back on his feet", hint: "stanąć na nogi", target: "get back on one's feet" },
+        { sentence: "Her sudden resignation {gap} everyone {gap}.", answer: "caught off guard", hint: "zaskoczyła", target: "catch someone off guard" }, // Uwaga: luka podzielona
+        { sentence: "The exhausted marathon runner {gap} just after crossing the finish line.", answer: "fell on his knees", hint: "upadł na kolana", target: "fall on one's knees" },
+        { sentence: "High initial costs often deter small businesses, and {gap} renewable energy installations.", answer: "such is the case with", hint: "tak samo jest w przypadku", target: "such is the case with" },
+        { sentence: "Looking back, I {gap} the full impact of my words at that moment.", answer: "couldn't have realized", hint: "nie mogłem sobie uświadomić", target: "couldn't have realized" },
+        { sentence: "Until you pointed it out, I {gap} the typo in the headline.", answer: "hadn't realised", hint: "nie zdawałem sobie sprawy", target: "hadn't realised" },
+        { sentence: "Despite the pressure, the negotiator refused to {gap} on the key demands.", answer: "yield", hint: "ustąpić", target: "yield" },
+        { sentence: "The patient must {gap} the procedure before the doctors can begin.", answer: "consent to", hint: "wyrazić zgodę na", target: "consent to" },
+        { sentence: "Even when disagreeing, she {gap} presented her counterarguments.", answer: "still respectfully", hint: "nadal z szacunkiem", target: "still respectfully" },
+        { sentence: "{gap} all the available resources, completing the project on time was a challenge.", answer: "Even with", hint: "nawet z / pomimo", target: "even with" },
+        { sentence: "His groundbreaking discovery will surely {gap} as a major scientific achievement.", answer: "go down in history", hint: "zapisać się w historii", target: "go down in history" },
+        { sentence: "The years seem to {gap} faster as you get older.", answer: "go by", hint: "mijać", target: "go by" },
+        { sentence: "My phone alarm didn't {gap} this morning, so I overslept.", answer: "go off", hint: "włączyć się / zadzwonić", target: "go off" },
+        { sentence: "The argument seemed to {gap} forever without any resolution.", answer: "go on", hint: "trwać", target: "go on" },
+        { sentence: "Poor weather conditions {gap} to the delay of the flight.", answer: "may have contributed", hint: "mogły się przyczynić", target: "may have contributed" },
+        { sentence: "The device is designed to {gap} analog signals {gap} digital data.", answer: "convert into", hint: "przekształcać w", target: "convert" }, // Uwaga: luka podzielona
+        { sentence: "Steve Wozniak is often considered {gap} Apple's early innovations.", answer: "the brains behind", hint: "mózgiem (twórcą)", target: "the brains behind" },
+        { sentence: "Be careful with that antique rug; it's very fragile {gap}.", answer: "when stepped on", hint: "gdy się po nim depcze", target: "when stepped on" },
+        { sentence: "Do we have {gap} evidence to proceed with the case?", answer: "sufficient", hint: "wystarczające", target: "sufficient" },
+        { sentence: "The deadline for the project has been {gap} by two weeks.", answer: "extended", hint: "przedłużony", target: "extended" },
+        { sentence: "Although it was difficult, he decided to {gap} to climb the mountain.", answer: "make an attempt", hint: "podjąć próbę", target: "make an attempt" }
+    ];
+
+    const container = document.getElementById('exercise-container');
+
+    exercises.forEach((exercise, index) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'exercise-item';
+        itemDiv.id = `item-${index}`;
+
+        const targetPhraseSpan = document.createElement('span');
+        targetPhraseSpan.className = 'target-phrase';
+        targetPhraseSpan.textContent = `(${exercise.target})`;
+        itemDiv.appendChild(targetPhraseSpan);
+
+        const sentenceDiv = document.createElement('div');
+        sentenceDiv.className = 'sentence';
+
+        // Tworzenie pól input dla luk
+        let sentenceHTML = exercise.sentence.replace(/{gap}/g, () => `<input type="text" id="input-${index}-${Math.random()}" />`); // Używamy Math.random() dla unikalnych ID, jeśli jest więcej niż jedna luka
+        sentenceDiv.innerHTML = sentenceHTML;
+
+        const hintButton = document.createElement('button');
+        hintButton.className = 'hint-button';
+        hintButton.textContent = 'Podpowiedź';
+        hintButton.onclick = () => {
+            const hintSpan = document.getElementById(`hint-${index}`);
+            hintSpan.style.display = hintSpan.style.display === 'none' ? 'inline' : 'none';
+        };
+
+        const hintSpan = document.createElement('span');
+        hintSpan.className = 'hint';
+        hintSpan.id = `hint-${index}`;
+        hintSpan.textContent = exercise.hint;
+
+        const checkButton = document.createElement('button');
+        checkButton.className = 'check-button';
+        checkButton.textContent = 'Sprawdź';
+        checkButton.onclick = () => checkAnswer(index);
+
+        const feedbackSpan = document.createElement('span');
+        feedbackSpan.className = 'feedback';
+        feedbackSpan.id = `feedback-${index}`;
+
+        itemDiv.appendChild(sentenceDiv);
+        itemDiv.appendChild(hintButton);
+        itemDiv.appendChild(hintSpan);
+        itemDiv.appendChild(checkButton);
+        itemDiv.appendChild(feedbackSpan);
+
+        container.appendChild(itemDiv);
+    });
+
+    function checkAnswer(index) {
+        const exercise = exercises[index];
+        const inputs = document.querySelectorAll(`#item-${index} input[type="text"]`);
+        const feedbackSpan = document.getElementById(`feedback-${index}`);
+        let userAnswer = "";
+
+        // Zbieranie odpowiedzi z pól input
+        if (inputs.length === 1) {
+            userAnswer = inputs[0].value.trim().toLowerCase();
+        } else {
+            // Obsługa wielu luk (np. stop ... from) - łączymy odpowiedzi
+            let parts = [];
+            inputs.forEach(input => parts.push(input.value.trim().toLowerCase()));
+            userAnswer = parts.join(" "); // Zakładamy spację jako separator
+        }
+
+
+        const correctAnswer = exercise.answer.toLowerCase();
+
+        if (userAnswer === correctAnswer) {
+            feedbackSpan.textContent = '✓ Dobrze!';
+            feedbackSpan.className = 'feedback correct';
+        } else {
+            feedbackSpan.textContent = `✗ Źle. Poprawna odpowiedź: ${exercise.answer}`;
+            feedbackSpan.className = 'feedback incorrect';
+        }
+    }
+
+</script>
+
+</body>
+</html>
