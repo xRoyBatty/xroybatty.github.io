@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ćwiczenie z form czasownika w 3. osobie</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .exercise-container {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .question {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        .input-container {
+            margin-bottom: 15px;
+        }
+        input[type="text"] {
+            padding: 8px;
+            font-size: 16px;
+            width: 150px;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+        .correct {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+        .incorrect {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+        .explanation {
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .progress {
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .hidden {
+            display: none;
+        }
+        .summary {
+            background-color: #d9edf7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ćwiczenie z form czasownika w 3. osobie</h1>
+    
+    <p>Uzupełnij lukę w każdym zdaniu, wpisując odpowiednią formę czasownika podanego w nawiasie. Pamiętaj, że wszystkie zdania są w 3. osobie liczby pojedynczej.</p>
+    
+    <div class="progress">Pytanie <span id="current-question">1</span> z <span id="total-questions">17</span></div>
+    
+    <div class="exercise-container">
+        <div id="question-container"></div>
+        
+        <div class="input-container">
+            <input type="text" id="answer-input" placeholder="Wpisz odpowiedź">
+            <button id="check-btn">Sprawdź</button>
+            <button id="next-btn" disabled>Następne pytanie</button>
+        </div>
+        
+        <div id="feedback" class="feedback"></div>
+    </div>
+    
+    <div id="summary" class="summary">
+        <h2>Gratulacje! Ukończyłeś ćwiczenie!</h2>
+        <p>Twój wynik: <span id="score">0</span> z <span id="total">17</span> poprawnych odpowiedzi.</p>
+        <button id="restart-btn">Zacznij ponownie</button>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                sentence: "She ______ dinner with her family.",
+                infinitive: "have",
+                correctAnswer: "has",
+                explanation: "Czasownik 'have' jest nieregularny i w 3. osobie liczby pojedynczej zmienia się na 'has'."
+            },
+            {
+                sentence: "The child ______ TV in the evening.",
+                infinitive: "watch",
+                correctAnswer: "watches",
+                explanation: "Czasownik 'watch' kończy się na '-ch', więc dodajemy końcówkę '-es' zamiast '-s'."
+            },
+            {
+                sentence: "My sister ______ a shower in the morning.",
+                infinitive: "have",
+                correctAnswer: "has",
+                explanation: "Czasownik 'have' jest nieregularny i w 3. osobie liczby pojedynczej zmienia się na 'has'."
+            },
+            {
+                sentence: "She ______ her friend at the café.",
+                infinitive: "meet",
+                correctAnswer: "meets",
+                explanation: "Do czasownika 'meet' dodajemy końcówkę '-s' w 3. osobie liczby pojedynczej."
+            },
+            {
+                sentence: "My brother ______ to music after school.",
+                infinitive: "listen",
+                correctAnswer: "listens",
+                explanation: "Do czasownika 'listen' dodajemy końcówkę '-s' w 3. osobie liczby pojedynczej."
+            },
+            {
+                sentence: "The students ______ lessons from Monday to Friday.",
+                infinitive: "have",
+                correctAnswer: "have",
+                explanation: "Podmiot 'The students' jest w liczbie mnogiej, więc czasownik pozostaje w formie podstawowej, bez końcówki '-s'."
+            },
+            {
+                sentence: "She ______ up at seven o'clock.",
+                infinitive: "get",
+                correctAnswer: "gets",
+                explanation: "Do czasownika 'get' dodajemy końcówkę '-s' w 3. osobie liczby pojedynczej."
+            },
+            {
+                sentence: "My friend ______ ready for school at 7:30.",
+                infinitive: "get",
+                correctAnswer: "gets",
+                explanation: "Do czasownika 'get' dodajemy końcówkę '-s' w 3. osobie liczby pojedynczej."
+            },
+            {
+                sentence: "The boy ______ breakfast at eight o'clock.",
+                infinitive: "have",
+                correctAnswer: "has",
+                explanation: "Czasownik 'have' jest nieregularny i w 3. osobie liczby pojedynczej zmienia się na 'has'."
+            },
+            {
+                sentence: "The teacher ______ to bed at ten o'clock.",
+                infinitive: "go",
+                correctAnswer: "goes",
+                explanation: "Czasownik 'go' kończy się na '-o', więc dodajemy końcówkę '-es' zamiast '-s'."
+            },
+            {
+                sentence: "My friend ______ to school by bus.",
+                infinitive: "go",
+                correctAnswer: "goes",
+                explanation: "Czasownik 'go' kończy się na '-o', więc dodajemy końcówkę '-es' zamiast '-s'."
+            },
+            {
+                sentence: "He ______ lunch in the school canteen.",
+                infinitive: "have",
+                correctAnswer: "has",
+                explanation: "Czasownik 'have' jest nieregularny i w 3. osobie liczby pojedynczej zmienia się na 'has'."
+            },
+            {
+                sentence: "He ______ his homework every evening.",
+                infinitive: "do",
+                correctAnswer: "does",
+                explanation: "Czasownik 'do' jest nieregularny i w 3. osobie liczby pojedynczej zmienia się na 'does'."
+            },
+            {
+                sentence: "Tom ______ out with his friends on Saturday.",
+                infinitive: "hang",
+                correctAnswer: "hangs",
+                explanation: "Do czasownika 'hang' dodajemy końcówkę '-s' w 3. osobie liczby pojedynczej."
+            },
+            {
+                sentence: "She ______ her room on Sunday.",
+                infinitive: "tidy",
+                correctAnswer: "tidies",
+                explanation: "Czasownik 'tidy' kończy się na '-y' po spółgłosce, więc 'y' zmienia się na 'i' i dodajemy końcówkę '-es'."
+            },
+            {
+                sentence: "He ______ a student.",
+                infinitive: "be",
+                correctAnswer: "is",
+                explanation: "Czasownik 'be' jest nieregularny i w 3. osobie liczby pojedynczej (he/she/it) przyjmuje formę 'is'."
+            },
+            {
+                sentence: "The teacher ______ the bus to work.",
+                infinitive: "take",
+                correctAnswer: "takes",
+                explanation: "Do czasownika 'take' dodajemy końcówkę '-s' w 3. osobie liczby pojedynczej."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const totalQuestions = questions.length;
+
+        const questionContainer = document.getElementById('question-container');
+        const answerInput = document.getElementById('answer-input');
+        const checkBtn = document.getElementById('check-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const feedbackDiv = document.getElementById('feedback');
+        const currentQuestionSpan = document.getElementById('current-question');
+        const totalQuestionsSpan = document.getElementById('total-questions');
+        const summaryDiv = document.getElementById('summary');
+        const scoreSpan = document.getElementById('score');
+        const totalSpan = document.getElementById('total');
+        const restartBtn = document.getElementById('restart-btn');
+
+        function displayQuestion() {
+            const question = questions[currentQuestionIndex];
+            
+            const sentenceParts = question.sentence.split('______');
+            questionContainer.innerHTML = `
+                <div class="question">
+                    ${sentenceParts[0]}<u>______</u>${sentenceParts[1]} (${question.infinitive})
+                </div>
+            `;
+            
+            answerInput.value = '';
+            feedbackDiv.innerHTML = '';
+            feedbackDiv.style.display = 'none';
+            feedbackDiv.className = 'feedback';
+            
+            currentQuestionSpan.textContent = currentQuestionIndex + 1;
+            answerInput.focus();
+            checkBtn.disabled = false;
+            nextBtn.disabled = true;
+        }
+
+        function checkAnswer() {
+            const userAnswer = answerInput.value.trim().toLowerCase();
+            const correctAnswer = questions[currentQuestionIndex].correctAnswer.toLowerCase();
+            
+            if (userAnswer === correctAnswer) {
+                feedbackDiv.innerHTML = `
+                    <p>Prawidłowa odpowiedź! ✓</p>
+                    <div class="explanation">${questions[currentQuestionIndex].explanation}</div>
+                `;
+                feedbackDiv.className = 'feedback correct';
+                score++;
+            } else {
+                feedbackDiv.innerHTML = `
+                    <p>Nieprawidłowa odpowiedź. ✗</p>
+                    <p>Poprawna odpowiedź: <strong>${correctAnswer}</strong></p>
+                    <div class="explanation">${questions[currentQuestionIndex].explanation}</div>
+                `;
+                feedbackDiv.className = 'feedback incorrect';
+            }
+            
+            feedbackDiv.style.display = 'block';
+            checkBtn.disabled = true;
+            nextBtn.disabled = false;
+            
+            if (currentQuestionIndex === totalQuestions - 1) {
+                nextBtn.textContent = 'Zakończ';
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < totalQuestions) {
+                displayQuestion();
+            } else {
+                // Show summary
+                document.querySelector('.exercise-container').style.display = 'none';
+                document.querySelector('.progress').style.display = 'none';
+                summaryDiv.style.display = 'block';
+                scoreSpan.textContent = score;
+                totalSpan.textContent = totalQuestions;
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            document.querySelector('.exercise-container').style.display = 'block';
+            document.querySelector('.progress').style.display = 'block';
+            summaryDiv.style.display = 'none';
+            nextBtn.textContent = 'Następne pytanie';
+            displayQuestion();
+        }
+
+        // Event listeners
+        checkBtn.addEventListener('click', checkAnswer);
+        
+        answerInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !checkBtn.disabled) {
+                checkAnswer();
+            }
+        });
+        
+        nextBtn.addEventListener('click', nextQuestion);
+        restartBtn.addEventListener('click', restartQuiz);
+
+        // Initialize
+        totalQuestionsSpan.textContent = totalQuestions;
+        displayQuestion();
+    </script>
+</body>
+</html>
