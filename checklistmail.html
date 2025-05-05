@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poradnik Pisania E-maila - Matura Podstawowa</title>
+    <style>
+        :root {
+            --color-greeting: #6366f1;
+            --color-body: #8b5cf6;
+            --color-closing: #ec4899;
+            --color-connectors: #14b8a6;
+            --color-examples: #f97316;
+            --color-bg-light: #f8fafc;
+            --color-bg-dark: #f1f5f9;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #334155;
+            background-color: #e2e8f0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .intro {
+            background-color: var(--color-bg-light);
+            padding: 20px 30px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .sections {
+            padding: 30px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        
+        .section-header {
+            padding: 15px 20px;
+            color: white;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-header i {
+            margin-right: 10px;
+            font-size: 1.4rem;
+        }
+        
+        .section-content {
+            padding: 20px;
+        }
+        
+        .subsection {
+            margin-bottom: 25px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 15px;
+        }
+        
+        .subsection:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        h3 {
+            font-size: 1.2rem;
+            color: #475569;
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 15px;
+        }
+        
+        h3::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background-color: currentColor;
+            border-radius: 2px;
+        }
+        
+        .phrase-list {
+            list-style: none;
+        }
+        
+        .phrase-item {
+            margin-bottom: 10px;
+            background-color: var(--color-bg-light);
+            border-radius: 6px;
+            padding: 12px 15px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .phrase-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .english {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .polish {
+            display: block;
+            font-style: italic;
+            color: #64748b;
+        }
+        
+        .greeting .section-header {
+            background-color: var(--color-greeting);
+        }
+        
+        .body-section .section-header {
+            background-color: var(--color-body);
+        }
+        
+        .closing .section-header {
+            background-color: var(--color-closing);
+        }
+        
+        .connectors .section-header {
+            background-color: var(--color-connectors);
+        }
+        
+        .examples .section-header {
+            background-color: var(--color-examples);
+        }
+        
+        .example-topic {
+            background-color: var(--color-bg-light);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+        
+        .example-topic p:first-child {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .example-topic p:last-child {
+            color: #64748b;
+            font-style: italic;
+        }
+        
+        footer {
+            background-color: var(--color-bg-dark);
+            padding: 20px;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        
+        /* Additional styling for tip boxes */
+        .tip-box {
+            background-color: #e0f2fe;
+            border-left: 4px solid #0ea5e9;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 6px 6px 0;
+        }
+        
+        .tip-box p {
+            margin: 0;
+        }
+        
+        .tip-box-title {
+            font-weight: 600;
+            color: #0369a1;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            header {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .sections, .section-content {
+                padding: 15px;
+            }
+            
+            .section {
+                margin-bottom: 20px;
+            }
+        }
+        
+        /* For print */
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+            
+            .phrase-item:hover {
+                transform: none;
+                box-shadow: none;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>Checklista – Pisanie E-maila/Listu</h1>
+                <div class="subtitle">Matura Podstawowa z Języka Angielskiego</div>
+            </div>
+        </header>
+        
+        <div class="intro">
+            <p>Pamiętaj: Piszesz do kolegi/koleżanki, używaj stylu nieformalnego. Staraj się odpowiedzieć na wszystkie punkty z polecenia (zwykle 4). Celuj w 80-130 słów.</p>
+            
+            <div class="tip-box">
+                <span class="tip-box-title">Wskazówka</span>
+                <p>Przed rozpoczęciem pisania, podkreśl kluczowe punkty w poleceniu i zaplanuj, jak odpowiesz na każdy z nich. Możesz użyć krótkiego planu z 1-2 zdaniami dla każdego punktu.</p>
+            </div>
+        </div>
+        
+        <div class="sections">
+            <!-- GREETING SECTION -->
+            <div class="section greeting">
+                <div class="section-header">
+                    <i class="fas fa-hand-wave"></i>
+                    <span>Rozpoczęcie (Greeting & Opening)</span>
+                </div>
+                <div class="section-content">
+                    <div class="subsection">
+                        <h3>Przywitanie:</h3>
+                        <ul class="phrase-list">
+                            <li class="phrase-item">
+                                <span class="english">Hi [Imię],</span>
+                                <span class="polish">Cześć [Imię],</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">Hello [Imię],</span>
+                                <span class="polish">Witaj [Imię],</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">Dear [Imię],</span>
+                                <span class="polish">Drogi/Droga [Imię],</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3>Wstęp – nawiązanie / powód pisania:</h3>
+                        <ul class="phrase-list">
+                            <li class="phrase-item">
+                                <span class="english">Thanks for your last email.</span>
+                                <span class="polish">Dzięki za Twój ostatni e-mail.</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">It was great to hear from you.</span>
+                                <span class="polish">Miło było dostać od Ciebie wiadomość.</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">How are you? / How are things?</span>
+                                <span class="polish">Jak się masz? / Co słychać?</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">I hope you're well.</span>
+                                <span class="polish">Mam nadzieję, że u Ciebie wszystko dobrze.</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">I'm writing to tell you about...</span>
+                                <span class="polish">Piszę, żeby opowiedzieć Ci o...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">Guess what happened!</span>
+                                <span class="polish">Zgadnij, co się stało!</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">I have some exciting news!</span>
+                                <span class="polish">Mam ekscytujące wieści!</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">Sorry for not writing earlier, but I was busy.</span>
+                                <span class="polish">Przepraszam, że nie pisałem/am wcześniej, ale byłem/am zajęty/a.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- BODY SECTION -->
+            <div class="section body-section">
+                <div class="section-header">
+                    <i class="fas fa-align-left"></i>
+                    <span>Rozwinięcie (Body – Odpowiedź na punkty z polecenia)</span>
+                </div>
+                <div class="section-content">
+                    <div class="subsection">
+                        <h3>Opis wydarzenia / Doświadczenia (czas Past Simple):</h3>
+                        <ul class="phrase-list">
+                            <li class="phrase-item">
+                                <span class="english">Last week / Yesterday / Two days ago I went to...</span>
+                                <span class="polish">W zeszłym tygodniu / Wczoraj / Dwa dni temu poszedłem/poszłam do...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">I visited...</span>
+                                <span class="polish">Odwiedziłem/am...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">I saw...</span>
+                                <span class="polish">Zobaczyłem/am...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">I met...</span>
+                                <span class="polish">Spotkałem/am...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">I bought...</span>
+                                <span class="polish">Kupiłem/am...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">We decided to...</span>
+                                <span class="polish">Zdecydowaliśmy się...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">It happened when...</span>
+                                <span class="polish">To się stało, gdy...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">First, ... Then, ... After that, ... Finally, ...</span>
+                                <span class="polish">Najpierw... Potem... Po tym... Na koniec...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">The party / trip / event was great / fantastic / interesting / a bit boring.</span>
+                                <span class="polish">Impreza / wycieczka / wydarzenie było świetne / fantastyczne / interesujące / trochę nudne.</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">I had a good time.</span>
+                                <span class="polish">Dobrze się bawiłem/am.</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">I really enjoyed it.</span>
+                                <span class="polish">Naprawdę mi się podobało.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3>Wyrażanie opinii / Uczuć:</h3>
+                        <ul class="phrase-list">
+                            <li class="phrase-item">
+                                <span class="english">I think that...</span>
+                                <span class="polish">Myślę, że...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">In my opinion,...</span>
+                                <span class="polish">Moim zdaniem...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">I feel that...</span>
+                                <span class="polish">Czuję, że... / Uważam, że...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">I was happy / sad / surprised / disappointed / worried / excited because...</span>
+                                <span class="polish">Byłem/am szczęśliwy/a / smutny/a / zaskoczony/a / rozczarowany/a / zmartwiony/a / podekscytowany/a, ponieważ...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">The best / worst thing was...</span>
+                                <span class="polish">Najlepszą / Najgorszą rzeczą było...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">I liked it because...</span>
+                                <span class="polish">Podobało mi się to, ponieważ...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">I didn't like it because...</span>
+                                <span class="polish">Nie podobało mi się to, ponieważ...</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3>Opis miejsca (np. restauracja, szkoła, miasto):</h3>
+                        <ul class="phrase-list">
+                            <li class="phrase-item">
+                                <span class="english">The place was beautiful / modern / old / crowded / quiet.</span>
+                                <span class="polish">Miejsce było piękne / nowoczesne / stare / zatłoczone / ciche.</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">It is located in... / near...</span>
+                                <span class="polish">Znajduje się w... / blisko...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">There was / There were...</span>
+                                <span class="polish">Był / Była / Było / Były... (np. There were many interesting exhibits. - Było wiele interesujących eksponatów.)</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">The atmosphere was great / strange / relaxing.</span>
+                                <span class="polish">Atmosfera była świetna / dziwna / relaksująca.</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">The food was delicious / terrible.</span>
+                                <span class="polish">Jedzenie było pyszne / okropne.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3>Opis osoby (np. gość, znajomy):</h3>
+                        <ul class="phrase-list">
+                            <li class="phrase-item">
+                                <span class="english">He/She was very nice / friendly / helpful / rude.</span>
+                                <span class="polish">On/Ona był/a bardzo miły/a / przyjacielski/a / pomocny/a / niemiły/a.</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">He/She looked happy / tired / worried.</span>
+                                <span class="polish">On/Ona wyglądał/a na szczęśliwego/ą / zmęczonego/ą / zmartwionego/ą.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3>Opis problemu i rozwiązania:</h3>
+                        <ul class="phrase-list">
+                            <li class="phrase-item">
+                                <span class="english">Unfortunately, there was a problem.</span>
+                                <span class="polish">Niestety, pojawił się problem.</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">The problem was that...</span>
+                                <span class="polish">Problem polegał na tym, że...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">I didn't know what to do.</span>
+                                <span class="polish">Nie wiedziałem/am, co zrobić.</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">Luckily, ...</span>
+                                <span class="polish">Na szczęście...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">I decided to...</span>
+                                <span class="polish">Zdecydowałem/am się...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">Finally, I solved the problem by...</span>
+                                <span class="polish">Ostatecznie rozwiązałem/am problem poprzez...</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3>Plany / Obietnice / Prośby:</h3>
+                        <ul class="phrase-list">
+                            <li class="phrase-item">
+                                <span class="english">I will... / I'm going to... (np. I will send you photos. / I'm going to visit him next week.)</span>
+                                <span class="polish">Zrobię... / Zamierzam...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">I promise I will...</span>
+                                <span class="polish">Obiecuję, że...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">Could you help me? / Can you do me a favour?</span>
+                                <span class="polish">Czy mógłbyś/mogłabyś mi pomóc? / Czy możesz wyświadczyć mi przysługę?</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3>Udzielanie rady / Sugestie:</h3>
+                        <ul class="phrase-list">
+                            <li class="phrase-item">
+                                <span class="english">You should...</span>
+                                <span class="polish">Powinieneś/Powinnaś...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">You shouldn't...</span>
+                                <span class="polish">Nie powinieneś/Nie powinnaś...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">Maybe you could...</span>
+                                <span class="polish">Może mógłbyś/mogłabyś...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">It's a good idea to...</span>
+                                <span class="polish">Dobrym pomysłem jest...</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">Why don't you...?</span>
+                                <span class="polish">A może byś...?</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3>Pytanie o opinię / Doświadczenia kolegi/koleżanki:</h3>
+                        <ul class="phrase-list">
+                            <li class="phrase-item">
+                                <span class="english">What do you think about...?</span>
+                                <span class="polish">Co myślisz o...?</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">What is your opinion?</span>
+                                <span class="polish">Jakie jest Twoje zdanie?</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">Have you ever been to...?</span>
+                                <span class="polish">Czy kiedykolwiek byłeś/aś w...?</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">What about you?</span>
+                                <span class="polish">A Ty? / A co u Ciebie?</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">Tell me what you think.</span>
+                                <span class="polish">Daj znać, co myślisz.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3>Zaproszenie / Propozycja:</h3>
+                        <ul class="phrase-list">
+                            <li class="phrase-item">
+                                <span class="english">Would you like to join me/us?</span>
+                                <span class="polish">Czy chciałbyś/chciałabyś do mnie/nas dołączyć?</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">Maybe we could go together?</span>
+                                <span class="polish">Może moglibyśmy pójść razem?</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">How about meeting next week?</span>
+                                <span class="polish">Może spotkamy się w przyszłym tygodniu?</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CLOSING SECTION -->
+            <div class="section closing">
+                <div class="section-header">
+                    <i class="fas fa-envelope"></i>
+                    <span>Zakończenie (Closing Remarks & Sign-off)</span>
+                </div>
+                <div class="section-content">
+                    <div class="subsection">
+                        <h3>Zwroty kończące:</h3>
+                        <ul class="phrase-list">
+                            <li class="phrase-item">
+                                <span class="english">That's all for now.</span>
+                                <span class="polish">To wszystko na teraz.</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">I have to go now.</span>
+                                <span class="polish">Muszę już kończyć.</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">Write back soon.</span>
+                                <span class="polish">Odpisz wkrótce.</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">Hope to hear from you soon.</span>
+                                <span class="polish">Mam nadzieję na szybką odpowiedź.</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">Let me know.</span>
+                                <span class="polish">Daj znać.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="subsection">
+                        <h3>Pozdrowienia i podpis:</h3>
+                        <ul class="phrase-list">
+                            <li class="phrase-item">
+                                <span class="english">Best wishes,</span>
+                                <span class="polish">Pozdrawiam serdecznie,</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">All the best,</span>
+                                <span class="polish">Wszystkiego dobrego,</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">Bye for now,</span>
+                                <span class="polish">Na razie,</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">Take care,</span>
+                                <span class="polish">Trzymaj się,</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">Love,</span>
+                                <span class="polish">Uściski, (używaj ostrożnie, w zależności od relacji)</span>
+                            </li>
+                            <li class="phrase-item">
+                                <span class="english">XYZ (Koniecznie!)</span>
+                                <span class="polish"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CONNECTORS SECTION -->
+            <div class="section connectors">
+                <div class="section-header">
+                    <i class="fas fa-link"></i>
+                    <span>Przydatne spójniki (Connectors)</span>
+                </div>
+                <div class="section-content">
+                    <ul class="phrase-list">
+                        <li class="phrase-item">
+                            <span class="english">and, but, so, because</span>
+                            <span class="polish">i/a, ale, więc, ponieważ</span>
+                        </li>
+                        <li class="phrase-item">
+                            <span class="english">then, after that, later</span>
+                            <span class="polish">potem, po tym, później</span>
+                        </li>
+                        <li class="phrase-item">
+                            <span class="english">also, too</span>
+                            <span class="polish">także, też</span>
+                        </li>
+                        <li class="phrase-item">
+                            <span class="english">however, unfortunately, luckily</span>
+                            <span class="polish">jednakże, niestety, na szczęście</span>
+                        </li>
+                    </ul>
+                    
+                    <div class="tip-box">
+                        <span class="tip-box-title">Wskazówka</span>
+                        <p>Używanie spójników zwiększa płynność tekstu i ułatwia czytanie. Staraj się używać różnych spójników, aby uniknąć powtórzeń.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- EXAMPLES SECTION -->
+            <div class="section examples">
+                <div class="section-header">
+                    <i class="fas fa-tasks"></i>
+                    <span>Przykładowe tematy e-maili z podaniem arkusza</span>
+                </div>
+                <div class="section-content">
+                    <div class="example-topic">
+                        <p>Temat: Napisz e-mail do kolegi z Anglii o zorganizowanym przez Ciebie spotkaniu ze znaną osobą w szkole.</p>
+                        <p>Arkusz: Listopad 2015 (Operon, Gazeta Wyborcza, British Council)</p>
+                    </div>
+                    
+                    <div class="example-topic">
+                        <p>Temat: Napisz e-mail do kolegi z Anglii o planach zrobienia rocznej przerwy po maturze i wyjeździe za granicę.</p>
+                        <p>Arkusz: Czerwiec 2016 (CKE, MJA-P1_1P-163)</p>
+                    </div>
+                    
+                    <div class="example-topic">
+                        <p>Temat: Napisz e-mail do koleżanki z Anglii o wyjeździe za granicę w ramach wymiany międzynarodowej i przygotowanym występie artystycznym.</p>
+                        <p>Arkusz: Maj 2016 (CKE, MJA-P1_1P-162)</p>
+                    </div>
+                    
+                    <div class="example-topic">
+                        <p>Temat: Napisz e-mail do kolegi z Anglii o zgubieniu dowodu osobistego dwa dni przed planowanym wyjazdem do Londynu.</p>
+                        <p>Arkusz: Czerwiec 2019 (CKE, MJA-P1_1P-193)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2025 Poradnik Pisania E-maila - Matura Podstawowa | Projekt edukacyjny</p>
+        </footer>
+    </div>
+</body>
+</html>
