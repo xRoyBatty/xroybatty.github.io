@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matura Angielski - Quiz Gramatyczno-Leksykalny</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #0056b3;
+        }
+
+        /* Dashboard Styles */
+        #dashboard {
+            text-align: center;
+        }
+        .stage-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stage-button {
+            padding: 20px 15px;
+            font-size: 1em;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #e7f3ff;
+            transition: background-color 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .stage-button:hover {
+            background-color: #d0e8ff;
+        }
+        .stage-progress {
+            font-size: 0.8em;
+            color: #555;
+            margin-top: 5px;
+        }
+        .reset-button {
+             background-color: #f44336;
+             color: white;
+             padding: 10px 15px;
+             border: none;
+             border-radius: 4px;
+             cursor: pointer;
+             font-size: 0.9em;
+             margin-top: 20px;
+        }
+         .reset-button:hover {
+             background-color: #da190b;
+         }
+
+        /* Quiz Styles */
+        #quiz-area, #review-area {
+            display: none; /* Hidden by default */
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #eee;
+            background-color: #fdfdfd;
+            border-radius: 5px;
+        }
+        #question-container {
+            margin-bottom: 20px;
+        }
+        #question-text {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+        .options label {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #fff;
+            transition: background-color 0.2s;
+        }
+        .options label:hover {
+            background-color: #f0f0f0;
+        }
+         .options input[type="radio"] {
+             margin-right: 10px;
+             display: none; /* Hide default radio button */
+         }
+         .options label.selected {
+             background-color: #d0e8ff;
+             border-color: #0056b3;
+         }
+         .options label.correct {
+             background-color: #d4edda;
+             border-color: #c3e6cb;
+             color: #155724;
+         }
+         .options label.incorrect {
+             background-color: #f8d7da;
+             border-color: #f5c6cb;
+             color: #721c24;
+         }
+        #feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        #feedback.correct {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        #feedback.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        #explanation {
+            margin-top: 10px;
+            font-size: 0.95em;
+            color: #444;
+        }
+        #navigation {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #navigation button, .results-area button {
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+        }
+         #navigation button:disabled {
+             background-color: #ccc;
+             cursor: not-allowed;
+         }
+        #navigation button:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+        #stage-info {
+            font-weight: bold;
+        }
+        .results-area {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+                padding: 10px;
+            }
+            .stage-buttons {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                gap: 10px;
+            }
+            .stage-button {
+                padding: 15px 10px;
+                font-size: 0.9em;
+            }
+             h1 { font-size: 1.5em; }
+             h2 { font-size: 1.2em; }
+            #navigation { flex-direction: column; gap: 10px;}
+            #navigation button { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Matura Angielski Quiz</h1>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard">
+        <h2>Wybierz Etap</h2>
+        <div class="stage-buttons" id="stage-buttons-container">
+            <!-- Przyciski etapów zostaną dodane tutaj -->
+        </div>
+        <button id="reset-all-button" class="reset-button">Zresetuj Cały Postęp</button>
+    </div>
+
+    <!-- QUIZ AREA -->
+    <div id="quiz-area">
+        <h2 id="stage-title">Etap X</h2>
+        <div id="stage-info">Pytanie <span id="question-number">1</span> z 20</div>
+        <div id="question-container">
+            <div id="question-text"></div>
+            <div class="options" id="options-container">
+                <!-- Opcje odpowiedzi zostaną dodane tutaj -->
+            </div>
+        </div>
+        <div id="feedback" style="display: none;">
+            <p id="feedback-text"></p>
+            <p id="explanation"></p>
+        </div>
+        <div id="navigation">
+            <span id="stage-progress-indicator"></span>
+            <button id="next-button" disabled>Następne</button>
+        </div>
+         <button id="reset-stage-button" class="reset-button" style="margin-top: 10px;">Zresetuj Ten Etap</button>
+    </div>
+
+     <!-- REVIEW AREA -->
+     <div id="review-area">
+         <h2>Popraw Błędne Odpowiedzi</h2>
+         <div id="review-stage-info">Pytanie <span id="review-question-number">1</span> z <span id="review-total-questions">X</span></div>
+         <div id="review-question-container">
+             <div id="review-question-text"></div>
+             <div class="options" id="review-options-container">
+                 <!-- Opcje odpowiedzi do poprawki -->
+             </div>
+         </div>
+         <div id="review-feedback" style="display: none;">
+             <p id="review-feedback-text"></p>
+             <p id="review-explanation"></p>
+         </div>
+         <div id="review-navigation">
+             <button id="review-next-button" disabled>Następne (Poprawka)</button>
+         </div>
+     </div>
+
+     <!-- RESULTS AREA -->
+     <div id="results-area" style="display: none;" class="results-area">
+         <h2 id="results-title">Wyniki Etapu</h2>
+         <p id="results-summary"></p>
+         <button id="review-button" style="display: none;">Popraw Błędy</button>
+         <button id="dashboard-button">Wróć do Panelu</button>
+     </div>
+
+</div>
+
+<script>
+    // --- DATA ---
+    // !!! WAŻNE: Uzupełnij tę tablicę wszystkimi 120 pytaniami !!!
+        const allExercises = [
+        // --- Etap 1 (Pytania 1-20) --- Based on Ravenmaster, Churchill, Tiles, Beach
+        // Ravenmaster (1-5)
+        { id: 1, question: "And then there's the ravenmaster: Christopher Skaife, {gap} with caring for the seven corvids that reside at the Tower of London.", options: ["charged", "entrusted", "committed", "assigned"], answer: "B", explanation_pl: "Poprawny zwrot to 'be entrusted with something', oznaczający 'powierzyć komuś coś/opiekę nad czymś'." },
+        { id: 2, question: "Every mention of the Tower's ravens makes reference to how King Charles II issued a royal decree... after having been warned that if the birds ever {gap} away, the Tower itself would crumble...", options: ["go", "fly", "pass", "run"], answer: "B", explanation_pl: "W kontekście ptaków, 'fly away' (odlecieć) jest najbardziej naturalnym i poprawnym czasownikiem frazowym." },
+        { id: 3, question: "Skaife says the ravens... have a weakness for potato crisps... if the flavouring – say, cheddar and onion – is not to their {gap}.", options: ["liking", "favour", "appetite", "relish"], answer: "A", explanation_pl: "Idiom 'be not to one's liking' oznacza 'nie przypadać komuś do gustu'." },
+        { id: 4, question: "Previous caregivers substantially trimmed ravens' feathers {gap} them from flying altogether...", options: ["to stop", "stopping", "from stopping", "for stopping"], answer: "A", explanation_pl: "Konstrukcja bezokolicznika celu ('to stop' - żeby powstrzymać) jest tutaj poprawna gramatycznie i logicznie." },
+        { id: 5, question: "'You just never know what they're going to do, so you've always got to be on your {gap} when you're looking after them.'", options: ["feet", "guards", "toes", "knees"], answer: "C", explanation_pl: "Idiom 'be on one's toes' oznacza 'być czujnym, gotowym do reakcji'." },
+        // Churchill (6-10)
+        { id: 6, question: "Such is the {gap} with the iconic photo of Winston Churchill taken by Yousuf Karsh.", options: ["case", "incident", "point", "fate"], answer: "A", explanation_pl: "Wyrażenie 'such is the case with...' oznacza 'tak jest w przypadku...', służy do wprowadzenia przykładu." },
+        { id: 7, question: "After I had taken it, I knew that it was an important picture, but I {gap} that it would become one of the most widely reproduced images...", options: ["hadn't realised", "shouldn't realise", "wouldn't realise", "couldn't have realised"], answer: "D", explanation_pl: "Modalny perfect 'couldn't have realised' wyraża niemożliwość uświadomienia sobie czegoś w przeszłości (w tamtym momencie)." },
+        { id: 8, question: "He glanced at me and lit a fresh cigar... and then generously {gap} and said, 'You may take one.'", options: ["yielded", "allowed", "admitted", "consented"], answer: "A", explanation_pl: "'Yielded' oznacza 'ustąpił', 'poddał się', co pasuje do kontekstu niechętnej zgody Churchilla." },
+        { id: 9, question: "Then I stepped toward him and, without premeditation, but {gap} respectfully, I said, 'Forgive me, sir,'...", options: ["yet", "still", "ever", "even"], answer: "B", explanation_pl: "'Still' jako przysłówek oznacza 'wciąż', 'nadal', wskazując, że fotograf zachował szacunek pomimo swojego działania." },
+        { id: 10, question: "This second photo, in which Churchill is smiling, never {gap} in history as the other did.", options: ["went by", "went down", "went off", "went on"], answer: "B", explanation_pl: "Czasownik frazowy 'go down in history' oznacza 'przejść do historii', 'zostać zapamiętanym'." },
+        // Tiles (11-15)
+        { id: 11, question: "And as a result, they {gap} to a breakthrough in renewable power.", options: ["would rather contribute", "had better contribute", "may have contributed", "used to be contributed"], answer: "C", explanation_pl: "Modalny perfect 'may have contributed' wyraża możliwość zaistnienia czegoś w przeszłości." },
+        { id: 12, question: "Using a hybrid technology that {gap} kinetic energy into electricity...", options: ["applies", "converts", "generates", "discloses"], answer: "B", explanation_pl: "'Converts' (przekształca) jest poprawnym czasownikiem opisującym transformację jednej formy energii w inną." },
+        { id: 13, question: "Laurence Kemball-Cook, {gap} behind the technology, dreamt up the idea...", options: ["the heads", "the minds", "the wits", "the brains"], answer: "D", explanation_pl: "Idiom 'the brains behind something' odnosi się do osoby, która coś wymyśliła lub stworzyła." },
+        { id: 14, question: "The tile surface flexes about five millimetres {gap}, thus creating kinetic energy...", options: ["when stepped on", "to being stepped on", "having stepped on", "while stepping on"], answer: "A", explanation_pl: "'When stepped on' to skrócona forma zdania okolicznikowego czasu w stronie biernej ('when it is stepped on')." },
+        { id: 15, question: "...which provided {gap} energy to keep the walkway lights illuminated...", options: ["unnecessary", "extended", "foremost", "sufficient"], answer: "D", explanation_pl: "'Sufficient' oznacza 'wystarczający', co pasuje do kontekstu zapewnienia odpowiedniej ilości energii." },
+        // Glass Beach (16-20)
+        { id: 16, question: "Sometimes fires were lit in an {gap} to reduce the size of the trash pile.", options: ["aim", "eventuality", "intention", "attempt"], answer: "D", explanation_pl: "Wyrażenie 'in an attempt to do something' oznacza 'w próbie zrobienia czegoś', 'usiłując coś zrobić'." },
+        { id: 17, question: "...city leaders {gap} into launching various programs which were aimed at cleaning up the dump.", options: ["talked", "were to talk", "were talked", "used to be talked"], answer: "C", explanation_pl: "Czasownik frazowy w stronie biernej 'be talked into doing something' oznacza 'zostać namówionym do zrobienia czegoś'." },
+        { id: 18, question: "For a month the beach was {gap} as the police searched it for toxic waste.", options: ["washed up", "laid aside", "sealed off", "kept out"], answer: "C", explanation_pl: "'Seal off' oznacza 'odgrodzić', 'zamknąć dostęp', co pasuje do kontekstu." },
+        { id: 19, question: "{gap}, it proved impossible to remove the glass which had mingled among the pebbles.", options: ["Furthermore", "As a result", "Since then", "However"], answer: "D", explanation_pl: "'However' (jednakże) wprowadza kontrast do wcześniejszej informacji o akcji sprzątania." },
+        { id: 20, question: "...it was {gap} into the MacKerricher State Park.", options: ["incorporated", "implicated", "compiled", "united"], answer: "A", explanation_pl: "'Incorporate into' oznacza 'włączyć do', 'uczynić częścią'." },
+
+        // --- Etap 2 (Pytania 21-40) --- Based on Science, Light Bulb, Lego, Conman
+        // Science (21-25)
+        { id: 21, question: "When I was in high school... my teacher would present me {gap} a handful of variables...", options: ["to", "for", "with", "about"], answer: "C", explanation_pl: "Poprawny zwrot to 'present someone with something' (wręczyć komuś coś)." },
+        { id: 22, question: "And I always felt a smug sense of satisfaction {gap} the path to the correct answer.", options: ["by figuring out", "to have been figured out", "at having figured out", "on being figured out"], answer: "C", explanation_pl: "Po 'satisfaction' używamy przyimka 'at' (lub 'with'), a następnie formy gerund (-ing). Perfect gerund 'having figured out' wskazuje na wcześniejsze dokonanie." },
+        { id: 23, question: "And {gap} I eventually decided to pursue science in college, it was not because of any high-minded ideals.", options: ["although", "nonetheless", "despite", "yet"], answer: "A", explanation_pl: "'Although' (chociaż) jest spójnikiem wprowadzającym zdanie podrzędne przyzwalające, kontrastujące z poprzednią informacją." },
+        { id: 24, question: "This was such a powerful realization that I changed my {gap} of study.", options: ["section", "division", "grade", "course"], answer: "D", explanation_pl: "Poprawna kolokacja to 'course of study' (kierunek studiów)." },
+        { id: 25, question: "...there is a beautiful elegance to the physical {gap} that construct and connect our world.", options: ["rights", "laws", "orders", "regulations"], answer: "B", explanation_pl: "Poprawna kolokacja to 'physical laws' (prawa fizyki)." },
+        // Light Bulb (26-30)
+        { id: 26, question: "The light bulb has been {gap} for more than 150 years...", options: ["hanging around", "settling down", "coming out", "going along"], answer: "A", explanation_pl: "'Hang around' oznacza 'istnieć', 'być obecnym', 'wałęsać się', co pasuje do kontekstu długiej obecności żarówki." },
+        { id: 27, question: "Yet, these electricity-sapping glass orbs have finally {gap} with environmentally-conscious governments and consumers.", options: ["lost touch", "given a pass", "taken a step back", "fallen out of favour"], answer: "D", explanation_pl: "Idiom 'fall out of favour with someone' oznacza 'stracić czyjąś przychylność', 'wyjść z mody/użycia'." },
+        { id: 28, question: "The death warrant for the traditional bulb has already been signed and now its days are {gap}.", options: ["counted", "estimated", "numbered", "enumerated"], answer: "C", explanation_pl: "Idiom 'one's days are numbered' oznacza, że czyjś koniec jest bliski, dni są policzone." },
+        { id: 29, question: "It was compact fluorescent lamps which were supposed {gap} the end of the light bulb...", options: ["spelling", "to be spelt", "to have spelt", "having spelt"], answer: "C", explanation_pl: "Po 'be supposed to' używamy bezokolicznika. Perfect infinitive 'to have spelt' odnosi się do przeszłego oczekiwania/przeznaczenia." },
+        { id: 30, question: "Not only {gap} to be less of a burden on the environment, its backers say it will also respond intelligently...", options: ["it does promise", "does it promise", "is it to promise", "it is promised"], answer: "B", explanation_pl: "Po wyrażeniach typu 'Not only...' na początku zdania następuje inwersja (operator + podmiot + czasownik), stąd 'does it promise'." },
+         // Lego (31-35)
+        { id: 31, question: "For an {gap} American artist on his way to Britain, only plastic will do.", options: ["acclaimed", "enforceable", "abounding", "envisaged"], answer: "A", explanation_pl: "'Acclaimed' oznacza 'uznany', 'wysoko ceniony', co pasuje do opisu artysty." },
+        { id: 32, question: "...Lego is {gap} a toy.", options: ["nothing else than", "anything but", "none the less", "something more to"], answer: "B", explanation_pl: "Wyrażenie 'anything but' oznacza 'bynajmniej nie', 'wszystko, tylko nie', podkreślając, że Lego to coś więcej niż zabawka." },
+        { id: 33, question: "Each of them is {gap} thousands of pieces.", options: ["pulled out of", "brought up with", "set out from", "made up of"], answer: "D", explanation_pl: "Czasownik frazowy 'be made up of' oznacza 'składać się z'." },
+        { id: 34, question: "...and not smile in amazement {gap} the ambition.", options: ["with", "for", "at", "from"], answer: "C", explanation_pl: "Poprawny przyimek w tym kontekście to 'amazement at something' (zdumienie czymś)." },
+        { id: 35, question: "'Since then we {gap} the community almost triple,' said Mr Hayes.", options: ["had to see", "have seen", "used to see", "would have seen"], answer: "B", explanation_pl: "Present Perfect ('have seen') jest używany do opisania zmiany, która zaszła w okresie od przeszłości do teraz, co sygnalizuje 'since then'." },
+        // Conman (36-40)
+        { id: 36, question: "{gap}, if it is so outstanding... that it can fool an auction house expert, isn't it worth the price?", options: ["Even", "Yet", "Hence", "Therefore"], answer: "B", explanation_pl: "'Yet' (jednak, mimo to) wprowadza kontrast do poprzedniej myśli o spadku wartości dzieła." },
+        { id: 37, question: "The Dutchman never came close {gap} as an artist in his own right...", options: ["to be acclaimed", "for being acclaimed", "to being acclaimed", "having been acclaimed"], answer: "A", explanation_pl: "Konstrukcja 'come close to doing something' wymaga formy gerund (-ing), ale w znaczeniu 'być bliskim bycia kimś/czymś' często używa się 'to be'. W tym kontekście 'to be acclaimed' jest najbardziej idiomatyczne." }, // Note: 'to being acclaimed' is grammatically possible but less common here. 'to be' fits better.
+        { id: 38, question: "Before World War I, the modern way of painting had just begun to develop and it {gap} Van Meegeren... into being a conman.", options: ["might have pushed", "will have pushed", "had to be pushed", "had been pushed"], answer: "A", explanation_pl: "Modalny perfect 'might have pushed' wyraża możliwość lub spekulację dotyczącą przyczyny w przeszłości." },
+        { id: 39, question: "The painting was instantly {gap} as a previously unknown masterpiece by Vermeer...", options: ["disclosed", "captivated", "admitted", "acknowledged"], answer: "D", explanation_pl: "'Be acknowledged as' oznacza 'zostać uznanym za'." },
+        { id: 40, question: "In 1945, Van Meegeren was {gap} treason for selling a Vermeer to the Nazis...", options: ["acquitted of", "charged with", "released from", "bailed out of"], answer: "B", explanation_pl: "Poprawna kolokacja prawna to 'be charged with a crime' (zostać oskarżonym o przestępstwo)." },
+
+        // --- Etap 3 (Pytania 41-60) --- Based on Traffic, Attenborough, Gap-fill (mark, fall, cover, short, sight)
+        // Traffic (41-45)
+        { id: 41, question: "L.A. traffic congestion... It takes its {gap} on the quality of life...", options: ["toll", "impact", "bearing", "influence"], answer: "A", explanation_pl: "Idiom 'take its toll on something' oznacza 'odbijać się negatywnie na czymś', 'zbierać żniwo'." },
+        { id: 42, question: "...a study to identify strategies that could be {gap} and might produce significant effects within five years.", options: ["driven", "sampled", "implemented", "proceeded"], answer: "C", explanation_pl: "'Implement' (wdrożyć) pasuje do kontekstu wprowadzania strategii w życie." },
+        { id: 43, question: "...tackling the problem of congestion should mean {gap} increasing the supply of road space or reducing the demand...", options: ["neither", "likewise", "either", "otherwise"], answer: "C", explanation_pl: "Spójnik 'either... or...' służy do przedstawienia dwóch alternatyw." },
+        { id: 44, question: "Most residents fear {gap} by fast-flowing traffic day and night...", options: ["disturbing", "being disturbed", "to be disturbed", "having been disturbed"], answer: "B", explanation_pl: "Po czasowniku 'fear' używamy formy gerund (-ing). Strona bierna ('being disturbed' - bycie niepokojonym) jest tu poprawna." },
+        { id: 45, question: "And even if people {gap} to new highways, there is very little space to add road capacity...", options: ["complied", "endorsed", "sanctioned", "consented"], answer: "D", explanation_pl: "'Consent to something' oznacza 'zgodzić się na coś'." },
+        // Attenborough (46-50)
+        { id: 46, question: "This week Attenborough gave the clearest {gap} of who he sees as his natural successor...", options: ["evidence", "acknowledgement", "solution", "indication"], answer: "D", explanation_pl: "'Indication' (wskazówka, oznaka) pasuje najlepiej do kontekstu sugerowania, a nie bezpośredniego stwierdzania." },
+        { id: 47, question: "He insists that Attenborough could still {gap} his great programmes.", options: ["have made", "have been making", "be made", "be making"], answer: "D", explanation_pl: "Modalny 'could' z formą ciągłą ('be making') wyraża możliwość trwającej czynności (nadal mógłby tworzyć)." },
+        { id: 48, question: "...how they fill perhaps the biggest shoes in British broadcasting history once Attenborough decides to {gap}.", options: ["move out", "keep off", "step aside", "back up"], answer: "C", explanation_pl: "Czasownik frazowy 'step aside' oznacza 'usunąć się', 'zrobić miejsce komuś innemu'." },
+        { id: 49, question: "...discussions of 'the new Attenborough' are {gap} the point.", options: ["missing", "failing", "omitting", "passing"], answer: "A", explanation_pl: "Idiom 'miss the point' oznacza 'nie rozumieć sedna sprawy'." },
+        { id: 50, question: "{gap}, that is because of Attenborough's history in a genre he almost single-handedly invented...", options: ["Consequently", "However", "Partly", "Meanwhile"], answer: "C", explanation_pl: "'Partly' (częściowo) wskazuje, że podany powód jest jednym z kilku." },
+        // Gap-fill (mark, fall, cover, short, sight) (51-55)
+        { id: 51, question: "The patient's poor health continues to leave its {gap} on his mood.", options: ["sign", "mark", "trace", "effect"], answer: "B", explanation_pl: "Wyrażenie 'leave its mark on' oznacza 'zostawić ślad/piętno na'." },
+        { id: 52, question: "Appeals for residents to volunteer in the charity event often {gap} on stony ground.", options: ["land", "drop", "fall", "hit"], answer: "C", explanation_pl: "Idiom 'fall on stony ground' oznacza, że coś (np. apel, prośba) spotyka się z obojętnością, jest ignorowane." },
+        { id: 53, question: "The journalist selected to {gap} the American election for the BBC has won many prestigious awards.", options: ["report", "cover", "describe", "present"], answer: "B", explanation_pl: "'Cover an event' oznacza 'relacjonować wydarzenie' (w kontekście dziennikarskim)." },
+        { id: 54, question: "Please, hurry up, we're really {gap} of time.", options: ["lacking", "low", "scarce", "short"], answer: "D", explanation_pl: "Wyrażenie 'be short of time' oznacza 'mieć mało czasu'." },
+        { id: 55, question: "The tour guide warned the group to keep their bags in {gap} at all times.", options: ["view", "sight", "reach", "check"], answer: "B", explanation_pl: "Wyrażenie 'keep something in sight' oznacza 'mieć coś na oku', 'nie spuszczać z oczu'." },
+        // Gap-fill (land, force, meant, plain, fair) (56-60)
+        { id: 56, question: "Many people doubted that NASA would manage to {gap} the Curiosity rover on Mars.", options: ["land", "put", "set", "arrive"], answer: "A", explanation_pl: "'Land' oznacza 'lądować' (w kontekście pojazdu kosmicznego)." },
+        { id: 57, question: "Ambition was the driving {gap} behind his plans for taking the company over.", options: ["power", "motive", "force", "reason"], answer: "C", explanation_pl: "Wyrażenie 'driving force' oznacza 'siłę napędową'." },
+        { id: 58, question: "Getting into shape would have {gap} working out and changing my eating habits...", options: ["required", "involved", "meant", "needed"], answer: "C", explanation_pl: "'Mean + gerund (-ing)' oznacza 'wiązać się z czymś', 'oznaczać konieczność zrobienia czegoś'." },
+        { id: 59, question: "So as not to be recognized, the officers had to work in {gap} clothes...", options: ["normal", "plain", "simple", "civilian"], answer: "B", explanation_pl: "'Plain clothes' to ubranie cywilne noszone przez funkcjonariuszy (np. policji) na służbie." },
+        { id: 60, question: "Julie is {gap} sure that she has passed her driving test...", options: ["quite", "reasonably", "pretty", "fair"], answer: "D", explanation_pl: "'Fairly sure' (lub 'pretty sure') oznacza 'dość pewny', 'raczej pewny'." },
+
+        // --- Etap 4 (Pytania 61-80) --- Based on Gap-fill (slip, raised, served, hit, odd), Late Fees, Animals, Jellyfish
+        // Gap-fill (slip, raised, served, hit, odd) (61-65)
+        { id: 61, question: "Watch out, the floor is wet - one {gap} and you'll sprain your ankle.", options: ["fall", "trip", "slide", "slip"], answer: "D", explanation_pl: "'Slip' oznacza poślizgnięcie się." },
+        { id: 62, question: "The money we {gap} at the concert will be donated to UNICEF.", options: ["collected", "gained", "raised", "earned"], answer: "C", explanation_pl: "'Raise money' oznacza 'zbierać pieniądze' (na jakiś cel)." },
+        { id: 63, question: "Tom’s ability to speak four languages {gap} him well in his career.", options: ["helped", "benefited", "served", "aided"], answer: "C", explanation_pl: "Wyrażenie 'serve someone well' oznacza 'dobrze komuś służyć', 'być dla kogoś korzystnym'." },
+        { id: 64, question: "Car sales {gap} record levels last month and still continue to soar.", options: ["reached", "achieved", "hit", "gained"], answer: "C", explanation_pl: "'Hit record levels' oznacza 'osiągnąć rekordowy poziom'." },
+        { id: 65, question: "You don’t like Sundays? What an {gap} thing to say! Most people love them.", options: ["strange", "peculiar", "odd", "unusual"], answer: "C", explanation_pl: "'Odd' oznacza 'dziwny', 'nietypowy'." },
+        // Late Fees (66-70) - Already covered as 81-85, using those IDs/explanations
+        { id: 66, question: "The Salt Lake City library system is pretty much {gap} you'd expect a library system...", options: ["how", "that", "which", "what"], answer: "D", explanation_pl: "'What' wprowadza zdanie dopełnieniowe ('to, czego byś oczekiwał')." },
+        { id: 67, question: "...people who return books late will no {gap} be subject to fines.", options: ["more", "longer", "further", "extra"], answer: "B", explanation_pl: "'No longer' oznacza 'już nie'." },
+        { id: 68, question: "{gap} the fees produce substantial revenue for libraries..., they often undermine the purpose...", options: ["Despite", "However", "Although", "Because"], answer: "C", explanation_pl: "'Although' (chociaż, pomimo że) wprowadza zdanie przyzwalające." },
+        { id: 69, question: "Library fines can {gap} people who need books the most from borrowing them.", options: ["prevent", "avoid", "deny", "block"], answer: "A", explanation_pl: "Czasowniki 'prevent', 'discourage', 'keep' łączą się z 'from + gerund' w znaczeniu 'powstrzymywać przed'." },
+        { id: 70, question: "Some amnesty schemes {gap} the ones adopted in Los Angeles... have fueled circulation increases...", options: ["as", "like", "such", "similar"], answer: "B", explanation_pl: "'Like' używane jest do wprowadzania przykładów lub porównań." },
+        // Animals (71-75) - Already covered as 86-90, using those IDs/explanations
+        { id: 71, question: "...it is difficult to strike {gap} a two-way conversation.", options: ["on", "up", "out", "for"], answer: "B", explanation_pl: "Czasownik frazowy 'strike up' oznacza 'nawiązać' (np. rozmowę)." },
+        { id: 72, question: "{gap} these challenges, there is some evidence that dolphins use sounds to represent concepts.", options: ["Although", "However", "Despite", "Given"], answer: "C", explanation_pl: "'Despite' (pomimo) jest przyimkiem, po którym następuje rzeczownik lub fraza rzeczownikowa." },
+        { id: 73, question: "Dolphins use these whistles as badges of identity, and may modulate {gap} to reflect motivation and mood.", options: ["themselves", "their", "them", "they"], answer: "C", explanation_pl: "Zaimek 'them' odnosi się do 'whistles' (gwizdów) i jest dopełnieniem czasownika 'modulate'." },
+        { id: 74, question: "But {gap} humans to communicate with dolphins, more research is needed...", options: ["with", "to", "so", "for"], answer: "D", explanation_pl: "Konstrukcja 'for someone to do something' wyraża cel lub warunek." },
+        { id: 75, question: "...our success depends on {gap} the dolphins are willing to play along or not.", options: ["that", "if", "how", "whether"], answer: "D", explanation_pl: "'Whether' (lub 'if') wprowadza zdanie podrzędne dopełnieniowe wyrażające wątpliwość lub alternatywę ('czy... czy nie')." },
+        // Jellyfish (76-80) - Already covered as 105-109, using those IDs/explanations
+        { id: 76, question: "But news that jellyfish numbers may be rising carries {gap} far beyond the interrupted pastimes...", options: ["imply", "implications", "implying", "implicative"], answer: "B", explanation_pl: "Potrzebny jest rzeczownik w liczbie mnogiej 'implications' (implikacje, konsekwencje)." },
+        { id: 77, question: "Overfishing wipes out the creature's predators and {gap} warmer water... contributes to their spread.", options: ["considerable", "consideration", "considerably", "considering"], answer: "C", explanation_pl: "Potrzebny jest przysłówek 'considerably' (znacznie), modyfikujący 'warmer'." },
+        { id: 78, question: "It turns out that jellyfish are incredibly tolerant of this {gap}, much more than other sea creatures.", options: ["depriving", "deprivation", "deprived", "deprivement"], answer: "B", explanation_pl: "Potrzebny jest rzeczownik 'deprivation' (brak, niedobór)." },
+        { id: 79, question: "...many jellyfish experts are {gap} in declaring whether a global trend exists.", options: ["hesitation", "hesitant", "hesitantly", "hesitating"], answer: "B", explanation_pl: "Potrzebny jest przymiotnik 'hesitant' (niezdecydowany, wahający się)." },
+        { id: 80, question: "...the numbers of jellyfish in certain locations were described as {gap} but that doesn't prove that their population worldwide is growing.", options: ["unprecedented", "unprecendented", "unprecedence", "precedented"], answer: "A", explanation_pl: "Potrzebny jest przymiotnik 'unprecedented' (bezprecedensowy)." },
+
+        // --- Etap 5 (Pytania 81-100) --- Based on Silent Drama, Transformations (1st set, 2nd set, 3rd set)
+        // Silent Drama (81-85) - Already covered as 110-114, using those IDs/explanations
+        { id: 81, question: "Pantomime is a popular form of theatrical entertainment {gap} by wordless storytelling.", options: ["characterize", "characterizing", "character", "characterized"], answer: "D", explanation_pl: "Potrzebna jest forma bierna czasu przeszłego 'characterized' (charakteryzujący się)." },
+        { id: 82, question: "This art form is sometimes {gap} by music in the background...", options: ["accompany", "accompaniment", "accompanying", "accompanied"], answer: "D", explanation_pl: "Potrzebna jest forma bierna czasu przeszłego 'accompanied' (towarzyszy mu)." },
+        { id: 83, question: "Pantomime actors make gestures and use {gap} facial or bodily movements...", options: ["expression", "expressive", "expressively", "expressed"], answer: "B", explanation_pl: "Potrzebny jest przymiotnik 'expressive' (wyrazisty), opisujący ruchy." },
+        { id: 84, question: "The term pantomime is often used {gap} with the word mime.", options: ["interchange", "interchangeable", "interchanging", "interchangeably"], answer: "D", explanation_pl: "Potrzebny jest przysłówek 'interchangeably' (zamiennie)." },
+        { id: 85, question: "{gap} of which word is used, performances are often placed into two style categories...", options: ["Regard", "Regarding", "Regardless", "Regardful"], answer: "C", explanation_pl: "Wyrażenie 'regardless of' oznacza 'niezależnie od'." },
+        // Transformations (1st set) (86-90) - Already covered as 115-119, using those IDs/explanations
+        { id: 86, question: "My biology teacher was the first {gap} a prize in the science competition.", options: ["congratulating me for winning", "to congratulate me on winning", "who congratulated me for winning", "having congratulated me on winning"], answer: "B", explanation_pl: "Po konstrukcjach typu 'the first', 'the last', 'the only' używamy bezokolicznika z 'to'. Poprawny zwrot to 'congratulate someone on something'." },
+        { id: 87, question: "{gap} her advice if she ignores everything we say?", options: ["What's the use to give", "What's useful giving", "What's the use of giving", "What's in use for giving"], answer: "C", explanation_pl: "Poprawna konstrukcja pytająca o sens czegoś to 'What's the use of + gerund (-ing)'." },
+        { id: 88, question: "I'm afraid the agreement {gap} by all of the parties yesterday.", options: ["might not be signed", "might not have signed", "might not have been signed", "might not be signing"], answer: "C", explanation_pl: "Konstrukcja 'might not have been + past participle' wyraża przypuszczenie dotyczące przeszłości w stronie biernej." },
+        { id: 89, question: "The owner of the castle is said {gap} for the dining room table.", options: ["paying a fortune", "to pay a fortune", "having paid a fortune", "to have paid a fortune"], answer: "D", explanation_pl: "W konstrukcjach typu 'He is said to...' używamy bezokolicznika. Perfect infinitive ('to have paid') odnosi się do czynności wcześniejszej niż 'is said'." },
+        { id: 90, question: "Although my sister is a bit outspoken, she {gap} with everybody.", options: ["tends to be on good terms", "tends being on good terms", "is tending to be on good terms", "tends be on good terms"], answer: "A", explanation_pl: "Czasownik 'tend to do something' oznacza 'mieć tendencję do robienia czegoś'. Idiom 'be on good terms with someone' oznacza 'być z kimś w dobrych stosunkach'." },
+        // Transformations (2nd set) (91-95) - Already covered as 120-124, using those IDs/explanations
+        { id: 91, question: "James regrets not accepting the opportunity... James wishes that {gap} the opportunity...", options: ["he wouldn't turn down", "he hadn't turned down", "he didn't turn down", "he wouldn't have turned down"], answer: "B", explanation_pl: "Po 'wish' używamy Past Perfect do wyrażenia żalu dotyczącego przeszłości." },
+        { id: 92, question: "Mark, why should I give you advice if you never listen? Mark, {gap} my giving you advice if you never listen?", options: ["what's the point to", "what's the use of", "is there any use to", "what's useful of"], answer: "B", explanation_pl: "Konstrukcja 'What's the use of + (possessive) + gerund (-ing)?' pyta o sens robienia czegoś." },
+        { id: 93, question: "Although Kate strongly desired to live out in the country... Although Kate had {gap} living out in the country...", options: ["her heart set to", "set her heart on", "set her heart to", "her heart set on"], answer: "D", explanation_pl: "Idiom 'set one's heart on something' oznacza 'bardzo czegoś pragnąć'." },
+        { id: 94, question: "The injured driver is in far better shape now... There {gap} in the condition of the injured driver since the accident.", options: ["is a significant improvement", "was a significant improvement", "has been a significant improvement", "had been a significant improvement"], answer: "C", explanation_pl: "Present Perfect ('has been') jest używany do opisania zmiany, która zaszła w przeszłości i ma skutki w teraźniejszości, zwłaszcza z 'since'." },
+        { id: 95, question: "Nobody believed Mark when he falsely claimed... Nobody {gap} by Mark's false claims...", options: ["took in", "was taken in", "had taken in", "was taking in"], answer: "B", explanation_pl: "Czasownik frazowy 'take someone in' oznacza 'oszukać kogoś'. Używamy strony biernej ('was taken in')." },
+        // Transformations (3rd set) (96-100) - Already covered as 125-129, using those IDs/explanations
+        { id: 96, question: "I feel more confident now that I have spoken to my boss. My confidence {gap} to my boss.", options: ["increased since I spoke", "has increased since I spoke", "increased after I spoke", "was increasing since I spoke"], answer: "B", explanation_pl: "Present Perfect ('has increased') jest używany do opisania rezultatu przeszłej czynności ('spoke') widocznego teraz, co podkreśla 'since'." },
+        { id: 97, question: "Have you got any idea where I could find the latest version of his book? {gap} where I could find the latest version of his book?", options: ["Do you happen know", "Happen you to know", "Do you happen to know", "Are you happening to know"], answer: "C", explanation_pl: "'Do you happen to know...?' to grzeczniejsza, bardziej pośrednia forma pytania 'Do you know...?'." },
+        { id: 98, question: "'I won't leave your garage unless someone repairs my car,' the client said. The client refused to leave our garage unless he {gap}.", options: ["had repaired his car", "had his car repaired", "repaired his car", "got his car repair"], answer: "B", explanation_pl: "Konstrukcja kauzatywna 'have something done' (tutaj w Past Perfect 'had his car repaired') oznacza, że ktoś inny wykonał czynność dla podmiotu." },
+        { id: 99, question: "The hotel admitted they shouldn't have charged me so much... The hotel admitted they {gap} me so much...", options: ["made a mistake charging", "had made a mistake to charge", "made a mistake in charging", "made a mistake on charging"], answer: "C", explanation_pl: "Poprawna konstrukcja to 'make a mistake in doing something'." },
+        { id: 100, question: "She has finally started collecting the materials... She has finally {gap} the materials...", options: ["got down collecting", "got around collecting", "got down to collect", "got down to collecting"], answer: "D", explanation_pl: "Czasownik frazowy 'get down to doing something' oznacza 'zabrać się do robienia czegoś'. 'Get around to doing something' oznacza 'znaleźć w końcu czas na zrobienie czegoś'. Oba pasują, ale 'get down to' jest częstsze w kontekście rozpoczęcia pracy." }, // Note: get around to collecting also fits.
+
+        // --- Etap 6 (Pytania 101-120) --- Based on Transformations (4th, 5th, 6th, 7th sets)
+        // Transformations (4th set) (101-105) - Already covered as 130-134, using those IDs/explanations
+        { id: 101, question: "The story I heard yesterday {gap} my job.", options: ["made me to think about changing", "made me thinking about changing", "made me think about changing", "made me think to change"], answer: "C", explanation_pl: "Po czasowniku kauzatywnym 'make someone...' używamy bezokolicznika bez 'to' (bare infinitive)." },
+        { id: 102, question: "{gap}, the 80-year-old athlete running in this group is much fitter than the younger competitors.", options: ["Surprising it may seem", "Although it may seem surprising", "Surprising as it may seem", "As surprising it may seem"], answer: "C", explanation_pl: "Konstrukcja 'Adjective + as + subject + may seem' to forma zdania przyzwalającego z inwersją." },
+        { id: 103, question: "My sister {gap} anybody she talks to. It's so irritating!", options: ["has the habit of interrupting", "is in the habit of interrupting", "has the habit to interrupt", "is in the habit to interrupt"], answer: "B", explanation_pl: "Idiom 'be in the habit of + gerund (-ing)' oznacza 'mieć zwyczaj coś robić'." },
+        { id: 104, question: "I took a photo of a military base, which is forbidden, so it {gap}.", options: ["must be deleted", "had to be deleted", "was deleted", "should have been deleted"], answer: "B", explanation_pl: "Modalny 'had to' wyraża konieczność w przeszłości. Strona bierna 'be deleted' jest wymagana." },
+        { id: 105, question: "{gap} when a fire alarm went off.", options: ["Hardly she had started her presentation", "Hardly had she started her presentation", "Hardly she started her presentation", "She had hardly started her presentation"], answer: "B", explanation_pl: "Po przysłówkach typu 'Hardly...' na początku zdania stosujemy inwersję (operator 'had' + podmiot + reszta orzeczenia)." },
+        // Transformations (5th set) (106-110) - Already covered as 135-139, using those IDs/explanations
+        { id: 106, question: "It is believed that the Prime Minister is trying to establish good relations... The Prime Minister is believed {gap} an effort...", options: ["to make", "making", "to be making", "having made"], answer: "C", explanation_pl: "W konstrukcjach typu 'He is believed to...' używamy bezokolicznika. Continuous infinitive ('to be making') odnosi się do czynności trwającej w tym samym czasie co 'is believed'." },
+        { id: 107, question: "If we hadn't persevered, we wouldn't have achieved our goal. {gap} our perseverance, we wouldn't have achieved our goal.", options: ["If it wasn't for", "Had it not been for", "Weren't it for", "Without it having been"], answer: "B", explanation_pl: "'Had it not been for...' to forma inwersyjna trzeciego okresu warunkowego, zastępująca 'If it hadn't been for...'." },
+        { id: 108, question: "Unfortunately, two months from now holidays will be over. Unfortunately, holidays {gap} in two months' time.", options: ["will come to an end", "come to an end", "are coming to an end", "will have come to an end"], answer: "D", explanation_pl: "Future Perfect ('will have come') jest używany do opisania czynności, która zakończy się przed określonym momentem w przyszłości ('in two months' time')." },
+        { id: 109, question: "It is very unlikely that John will be given a pay rise soon. There is little {gap} given a pay rise soon.", options: ["likelihood that John will be", "chance for John being", "prospect that John is", "likelihood of John being"], answer: "D", explanation_pl: "Po rzeczownikach takich jak 'likelihood', 'chance', 'prospect' używamy przyimka 'of' + formy dzierżawczej lub zaimka dopełnieniowego + gerund ('John's being' lub 'John being')." },
+        { id: 110, question: "Organising this drama performance was Miss Gill's idea. It was Miss Gill {gap} the idea of organising this drama performance.", options: ["who put forward", "putting forward", "that came forward", "who came up"], answer: "A", explanation_pl: "Jest to zdanie rozszczepione (cleft sentence) podkreślające podmiot. 'Put forward an idea' to poprawny czasownik frazowy." },
+        // Transformations (6th set) (111-115) - Already covered as 140-144, using those IDs/explanations
+        { id: 111, question: "While the President was delivering his speech, {gap}. It was caused by an electrical fault.", options: ["the alarm went off", "an alarm has gone off", "the alarm had gone off", "an alarm was going off"], answer: "A", explanation_pl: "Czasownik frazowy 'go off' oznacza 'włączyć się' (o alarmie). Past Simple jest odpowiedni dla zakończonej czynności w przeszłości." },
+        { id: 112, question: "The last time I saw Sue she looked {gap} for a week.", options: ["as if she didn't sleep", "like she wasn't sleeping", "as though she hadn't slept", "as if she wouldn't sleep"], answer: "C", explanation_pl: "Po 'as if' / 'as though' używamy Past Perfect Subjunctive ('hadn't slept') do opisania nierealnej sytuacji z przeszłości, która ma wpływ na teraźniejszy wygląd." },
+        { id: 113, question: "There were two candidates, {gap} the absolute majority of votes needed to be elected.", options: ["none of whom got", "neither of whom got", "neither of which got", "none of which got"], answer: "B", explanation_pl: "'Neither of whom' odnosi się do dwóch osób; 'none of whom' do trzech lub więcej." },
+        { id: 114, question: "Rarely {gap} such symmetry in modern architecture.", options: ["is seen", "can see", "one sees", "is one able to see"], answer: "D", explanation_pl: "Po przysłówkach ograniczających jak 'Rarely' na początku zdania stosujemy inwersję (operator + podmiot + reszta orzeczenia). Opcja D jest poprawną formą inwersji modalnej." }, // Note: 'is such symmetry seen' is passive inversion, also possible but D fits better semantically.
+        { id: 115, question: "If he had remained silent, too many people {gap} in the success of this venture before it started.", options: ["might lose faith", "could lose faith", "might have lost faith", "would have lost faith"], answer: "C", explanation_pl: "Jest to trzeci okres warunkowy. W zdaniu głównym używamy modalnego perfect ('might have lost') do wyrażenia przypuszczenia dotyczącego przeszłości." },
+        // Transformations (7th set) (116-120) - Already covered as 145-149, using those IDs/explanations
+        { id: 116, question: "The winner of the competition didn't want newspapers to publish his name. The winner of the competition {gap} published in newspapers.", options: ["objected to his name being", "objected his name to be", "objected to have his name", "objected to having his name"], answer: "D", explanation_pl: "Czasownik 'object to' wymaga formy gerund (-ing). Konstrukcja 'having his name published' jest poprawna." },
+        { id: 117, question: "Jane considers anybody who hasn't graduated from university inferior. Jane {gap} anybody who hasn't graduated from university.", options: ["looks down at", "looks down on", "thinks down on", "looks low on"], answer: "B", explanation_pl: "Czasownik frazowy 'look down on someone' oznacza 'patrzeć na kogoś z góry', 'pogardzać kimś'." },
+        { id: 118, question: "I was anxious to get hold of John but he {gap} seen.", options: ["was nowhere to be", "could nowhere be", "was to be nowhere", "couldn't be nowhere"], answer: "A", explanation_pl: "Wyrażenie 'be nowhere to be seen/found' oznacza, że kogoś/czegoś nigdzie nie ma." },
+        { id: 119, question: "It was only because of your invaluable support that I didn't break down. If {gap} your invaluable support, I would have broken down.", options: ["it wasn't for", "it hadn't been for", "without", "hadn't it been"], answer: "B", explanation_pl: "Konstrukcja 'If it hadn't been for...' jest używana w trzecim okresie warunkowym do wyrażenia warunku, który nie został spełniony w przeszłości." },
+        { id: 120, question: "First they discussed social matters and then started to talk about the company's financial policy. After discussing social matters they {gap} about the company's financial policy.", options: ["went on talking", "continued to talk", "went on to talk", "carried on talking"], answer: "C", explanation_pl: "'Go on to do something' oznacza 'przejść do robienia czegoś innego' (następna czynność w sekwencji)." }
+
+    ];
+
+    // --- Stan Aplikacji ---
+    let currentStage = 0;
+    let currentQuestionIndex = 0;
+    let stageQuestions = [];
+    let userAnswers = {}; // Przechowuje odpowiedzi użytkownika dla bieżącego etapu
+    let incorrectlyAnswered = []; // Przechowuje ID pytań z błędnymi odp.
+    let stageProgress = {}; // { stage1: {completed: true, score: 18}, stage2: ... }
+    let isReviewMode = false;
+    let reviewQuestionIndex = 0;
+
+    // --- Elementy DOM ---
+    const dashboardDiv = document.getElementById('dashboard');
+    const quizAreaDiv = document.getElementById('quiz-area');
+    const reviewAreaDiv = document.getElementById('review-area');
+    const resultsAreaDiv = document.getElementById('results-area');
+    const stageButtonsContainer = document.getElementById('stage-buttons-container');
+    const stageTitleH2 = document.getElementById('stage-title');
+    const questionNumberSpan = document.getElementById('question-number');
+    const questionTextDiv = document.getElementById('question-text');
+    const optionsContainerDiv = document.getElementById('options-container');
+    const feedbackDiv = document.getElementById('feedback');
+    const feedbackTextP = document.getElementById('feedback-text');
+    const explanationP = document.getElementById('explanation');
+    const nextButton = document.getElementById('next-button');
+    const resetStageButton = document.getElementById('reset-stage-button');
+    const resetAllButton = document.getElementById('reset-all-button');
+    const resultsTitleH2 = document.getElementById('results-title');
+    const resultsSummaryP = document.getElementById('results-summary');
+    const reviewButton = document.getElementById('review-button');
+    const dashboardButton = document.getElementById('dashboard-button');
+    // Review elements
+    const reviewStageInfoDiv = document.getElementById('review-stage-info');
+    const reviewQuestionNumberSpan = document.getElementById('review-question-number');
+    const reviewTotalQuestionsSpan = document.getElementById('review-total-questions');
+    const reviewQuestionTextDiv = document.getElementById('review-question-text');
+    const reviewOptionsContainerDiv = document.getElementById('review-options-container');
+    const reviewFeedbackDiv = document.getElementById('review-feedback');
+    const reviewFeedbackTextP = document.getElementById('review-feedback-text');
+    const reviewExplanationP = document.getElementById('review-explanation');
+    const reviewNextButton = document.getElementById('review-next-button');
+
+
+    // --- Funkcje ---
+
+    function loadLocalStorage() {
+        const storedProgress = localStorage.getItem('maturaQuizProgress');
+        stageProgress = storedProgress ? JSON.parse(storedProgress) : {};
+    }
+
+    function updateLocalStorage() {
+        localStorage.setItem('maturaQuizProgress', JSON.stringify(stageProgress));
+    }
+
+    function renderDashboard() {
+        dashboardDiv.style.display = 'block';
+        quizAreaDiv.style.display = 'none';
+        reviewAreaDiv.style.display = 'none';
+        resultsAreaDiv.style.display = 'none';
+        stageButtonsContainer.innerHTML = ''; // Wyczyść przyciski
+
+        for (let i = 1; i <= 6; i++) {
+            const stageData = stageProgress[`stage${i}`];
+            const button = document.createElement('button');
+            button.className = 'stage-button';
+            button.textContent = `Etap ${i}`;
+            button.onclick = () => startStage(i);
+
+            const progressSpan = document.createElement('span');
+            progressSpan.className = 'stage-progress';
+            if (stageData?.completed) {
+                progressSpan.textContent = `Ukończono (${stageData.score}/20)`;
+                 button.style.backgroundColor = '#d4edda'; // Greenish background for completed
+            } else {
+                progressSpan.textContent = 'Nie rozpoczęto';
+            }
+            button.appendChild(progressSpan);
+            stageButtonsContainer.appendChild(button);
+        }
+    }
+
+     function startStage(stageNumber) {
+         currentStage = stageNumber;
+         currentQuestionIndex = 0;
+         userAnswers = {};
+         incorrectlyAnswered = [];
+         isReviewMode = false;
+         // Wybierz pytania dla danego etapu (20 pytań na etap)
+         const startIndex = (stageNumber - 1) * 20;
+         const endIndex = startIndex + 20;
+         stageQuestions = allExercises.slice(startIndex, endIndex);
+
+         dashboardDiv.style.display = 'none';
+         resultsAreaDiv.style.display = 'none';
+         reviewAreaDiv.style.display = 'none';
+         quizAreaDiv.style.display = 'block';
+         stageTitleH2.textContent = `Etap ${currentStage}`;
+         renderQuestion(currentQuestionIndex);
+     }
+
+     function renderQuestion(index) {
+         // Reset feedback and buttons
+         feedbackDiv.style.display = 'none';
+         feedbackTextP.textContent = '';
+         explanationP.textContent = '';
+         nextButton.disabled = true;
+         reviewNextButton.disabled = true; // Also disable review next button
+
+         const questionData = isReviewMode ? allExercises.find(ex => ex.id === incorrectlyAnswered[index]) : stageQuestions[index];
+         const questionContainer = isReviewMode ? reviewQuestionTextDiv : questionTextDiv;
+         const optionsContainer = isReviewMode ? reviewOptionsContainerDiv : optionsContainerDiv;
+         const questionNumber = isReviewMode ? reviewQuestionNumberSpan : questionNumberSpan;
+         const stageInfo = isReviewMode ? reviewStageInfoDiv : document.getElementById('stage-info');
+
+
+         if (!questionData) {
+             console.error("Question data not found for index:", index, "Review Mode:", isReviewMode);
+             // Handle error or end of questions
+              if (isReviewMode) finishReview(); else finishStage();
+             return;
+         }
+
+         questionNumber.textContent = index + 1;
+         questionContainer.innerHTML = questionData.question.replace('{gap}', '_____'); // Simple replacement
+         optionsContainer.innerHTML = ''; // Clear previous options
+
+         // Create radio buttons for options
+         ['A', 'B', 'C', 'D'].forEach((optionLetter, optionIndex) => {
+             const optionValue = questionData.options[optionIndex];
+             const label = document.createElement('label');
+             const radio = document.createElement('input');
+             radio.type = 'radio';
+             radio.name = `q${questionData.id}`; // Unique name per question
+             radio.value = optionLetter;
+             radio.id = `q${questionData.id}_${optionLetter}`;
+             radio.onchange = () => handleAnswerSelection(label, optionLetter, questionData.answer, questionData.explanation_pl);
+
+             label.htmlFor = radio.id;
+             label.appendChild(radio);
+             label.appendChild(document.createTextNode(` ${optionLetter}. ${optionValue}`));
+             optionsContainer.appendChild(label);
+         });
+
+         // Update stage info for review mode
+          if (isReviewMode) {
+              reviewTotalQuestionsSpan.textContent = incorrectlyAnswered.length;
+          }
+          stageInfo.style.display = 'block'; // Ensure stage info is visible
+     }
+
+     function handleAnswerSelection(selectedLabel, selectedOption, correctAnswer, explanation) {
+         // Highlight selected option
+         const allLabels = selectedLabel.parentNode.querySelectorAll('label');
+         allLabels.forEach(lbl => lbl.classList.remove('selected'));
+         selectedLabel.classList.add('selected');
+
+         // Enable next button
+         if (isReviewMode) {
+             reviewNextButton.disabled = false;
+         } else {
+             nextButton.disabled = false;
+         }
+         // Check answer immediately
+         checkAnswer(selectedOption, correctAnswer, explanation);
+     }
+
+
+     function checkAnswer(selectedOption, correctAnswer, explanation) {
+         const currentQuestionData = isReviewMode ? allExercises.find(ex => ex.id === incorrectlyAnswered[reviewQuestionIndex]) : stageQuestions[currentQuestionIndex];
+         const feedbackArea = isReviewMode ? reviewFeedbackDiv : feedbackDiv;
+         const feedbackText = isReviewMode ? reviewFeedbackTextP : feedbackTextP;
+         const explanationArea = isReviewMode ? reviewExplanationP : explanationP;
+         const optionsCont = isReviewMode ? reviewOptionsContainerDiv : optionsContainerDiv;
+
+
+         userAnswers[currentQuestionData.id] = selectedOption; // Store user answer
+
+         const isCorrect = selectedOption === correctAnswer;
+
+         feedbackArea.style.display = 'block';
+         explanationArea.textContent = explanation; // Show explanation always
+
+         // Disable options after answering
+         const radios = optionsCont.querySelectorAll('input[type="radio"]');
+         radios.forEach(radio => radio.disabled = true);
+         // Clear selected class before adding correct/incorrect
+         optionsCont.querySelectorAll('label').forEach(lbl => lbl.classList.remove('selected'));
+
+
+         if (isCorrect) {
+             feedbackText.textContent = '✓ Poprawnie!';
+             feedbackArea.className = 'feedback correct';
+              // Highlight correct answer green
+             optionsCont.querySelector(`label[for='q${currentQuestionData.id}_${selectedOption}']`).classList.add('correct');
+             if (isReviewMode) {
+                 // Remove from incorrect list if corrected during review
+                 const indexToRemove = incorrectlyAnswered.indexOf(currentQuestionData.id);
+                 if (indexToRemove > -1) {
+                    // This logic is tricky - we are iterating based on the original incorrect list.
+                    // Modifying it mid-iteration can cause issues.
+                    // Instead, we'll track corrections separately if needed, or just let them finish the review round.
+                 }
+             }
+         } else {
+             feedbackText.textContent = `✗ Błędnie! Poprawna odpowiedź: ${correctAnswer}`;
+             feedbackArea.className = 'feedback incorrect';
+              // Highlight user's incorrect answer red
+             optionsCont.querySelector(`label[for='q${currentQuestionData.id}_${selectedOption}']`).classList.add('incorrect');
+              // Highlight the correct answer green
+             optionsCont.querySelector(`label[for='q${currentQuestionData.id}_${correctAnswer}']`).classList.add('correct');
+
+             if (!isReviewMode && !incorrectlyAnswered.includes(currentQuestionData.id)) {
+                 incorrectlyAnswered.push(currentQuestionData.id);
+             }
+         }
+     }
+
+     function nextQuestion() {
+         if (isReviewMode) {
+             reviewQuestionIndex++;
+             if (reviewQuestionIndex < incorrectlyAnswered.length) {
+                 renderQuestion(reviewQuestionIndex);
+             } else {
+                 finishReview();
+             }
+         } else {
+             currentQuestionIndex++;
+             if (currentQuestionIndex < stageQuestions.length) {
+                 renderQuestion(currentQuestionIndex);
+             } else {
+                 finishStage();
+             }
+         }
+     }
+
+     function finishStage() {
+         quizAreaDiv.style.display = 'none';
+         resultsAreaDiv.style.display = 'block';
+         reviewAreaDiv.style.display = 'none';
+
+         let score = 0;
+         stageQuestions.forEach(q => {
+             if (userAnswers[q.id] === q.answer) {
+                 score++;
+             }
+         });
+
+         resultsTitleH2.textContent = `Wyniki Etapu ${currentStage}`;
+         resultsSummaryP.textContent = `Twój wynik: ${score} z ${stageQuestions.length}.`;
+
+         // Save progress
+         stageProgress[`stage${currentStage}`] = { completed: true, score: score, incorrect: incorrectlyAnswered };
+         updateLocalStorage();
+
+         if (incorrectlyAnswered.length > 0) {
+             resultsSummaryP.textContent += ` Masz ${incorrectlyAnswered.length} błędnych odpowiedzi.`;
+             reviewButton.style.display = 'inline-block';
+             reviewButton.onclick = startReview;
+         } else {
+             resultsSummaryP.textContent += ' Gratulacje, wszystko poprawnie!';
+             reviewButton.style.display = 'none';
+         }
+         dashboardButton.onclick = renderDashboard; // Set button action
+     }
+
+      function startReview() {
+          isReviewMode = true;
+          reviewQuestionIndex = 0;
+          resultsAreaDiv.style.display = 'none';
+          quizAreaDiv.style.display = 'none';
+          reviewAreaDiv.style.display = 'block';
+          renderQuestion(reviewQuestionIndex); // Render the first incorrect question
+      }
+
+      function finishReview() {
+          reviewAreaDiv.style.display = 'none';
+          resultsAreaDiv.style.display = 'block'; // Show results again
+          resultsTitleH2.textContent = `Koniec Poprawki - Etap ${currentStage}`;
+          // Optionally update the summary based on review performance if tracked
+          resultsSummaryP.textContent = `Zakończono poprawkę. Wynik pierwotny: ${stageProgress[`stage${currentStage}`].score}/${stageQuestions.length}.`;
+          reviewButton.style.display = 'none'; // Hide review button after review
+          dashboardButton.onclick = renderDashboard;
+      }
+
+
+     function resetStageProgress() {
+        if (confirm(`Czy na pewno chcesz zresetować postęp dla Etapu ${currentStage}?`)) {
+             delete stageProgress[`stage${currentStage}`];
+             updateLocalStorage();
+             renderDashboard(); // Go back to dashboard after reset
+        }
+     }
+
+     function resetAllProgress() {
+         if (confirm("Czy na pewno chcesz zresetować CAŁY postęp we wszystkich etapach?")) {
+             stageProgress = {};
+             updateLocalStorage();
+             renderDashboard();
+         }
+     }
+
+    // --- Inicjalizacja ---
+    nextButton.onclick = nextQuestion;
+    reviewNextButton.onclick = nextQuestion; // Use the same logic for next
+    resetStageButton.onclick = resetStageProgress;
+    resetAllButton.onclick = resetAllProgress;
+
+    loadLocalStorage();
+    renderDashboard(); // Pokaż dashboard na starcie
+
+</script>
+
+</body>
+</html>
