@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Egzamin Ósmoklasisty - Zadania 5 i 6</title>
+    <style>
+:root {
+    --primary-color: #4a90e2; /* Blue */
+    --secondary-color: #f5a623; /* Orange */
+    --background-color: #f4f7f6; /* Light grey */
+    --card-background: #ffffff;
+    --text-color: #333;
+    --correct-color: #28a745; /* Green */
+    --incorrect-color: #dc3545; /* Red */
+    --feedback-bg: #e9ecef;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --font-family: 'Poppins', sans-serif;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+main#app-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+#dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.exam-set-card {
+    background-color: var(--card-background);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--box-shadow);
+    transition: transform 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.exam-set-card:hover {
+    transform: translateY(-5px);
+}
+
+.exam-set-card h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    min-height: 60px; /* Ensure titles have space */
+}
+
+.progress-info {
+    margin: 1rem 0;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.progress-bar-container {
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    height: 10px;
+    margin-bottom: 0.5rem;
+}
+
+.progress-bar {
+    background-color: var(--secondary-color);
+    height: 100%;
+    width: 0%; /* Updated by JS */
+    transition: width 0.3s ease;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.button {
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.start-button {
+    background-color: var(--primary-color);
+    color: white;
+    flex-grow: 1;
+}
+
+.start-button:hover {
+    background-color: #357abd;
+}
+
+.reset-button {
+    background-color: #ccc;
+    color: var(--text-color);
+}
+
+.reset-button:hover {
+    background-color: #bbb;
+}
+
+/* Task View Styles */
+#task-view {
+    background-color: var(--card-background);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-top: 2rem;
+}
+
+#task-set-title {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.task5-question, .task6-item {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.task5-question p, .task6-item p:first-of-type {
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.options label {
+    display: block;
+    margin-bottom: 0.75rem;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.options label:hover {
+    background-color: #f9f9f9;
+}
+
+.options input[type="radio"] {
+    margin-right: 0.5rem;
+    display: none; /* Hide radio button, style the label */
+}
+
+.options label.selected {
+    border-color: var(--primary-color);
+    background-color: #e7f3ff;
+}
+
+.options label.correct {
+    border-color: var(--correct-color);
+    background-color: #e9f7ef;
+}
+
+.options label.incorrect {
+    border-color: var(--incorrect-color);
+    background-color: #fbe9e7;
+}
+
+.task6-item input[type="text"] {
+    width: calc(100% - 90px); /* Adjust width considering button */
+    padding: 0.7rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 0.5rem;
+    font-family: var(--font-family);
+}
+
+.check-button {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.check-button:hover {
+    background-color: #e08e0b;
+}
+
+.feedback {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 4px;
+    background-color: var(--feedback-bg);
+    font-size: 0.9rem;
+    display: none; /* Hidden by default */
+}
+
+.feedback.correct-feedback {
+    border-left: 5px solid var(--correct-color);
+    background-color: #e9f7ef;
+}
+
+.feedback.incorrect-feedback {
+    border-left: 5px solid var(--incorrect-color);
+    background-color: #fbe9e7;
+}
+
+.feedback strong {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.feedback.correct-feedback strong {
+    color: var(--correct-color);
+}
+
+.feedback.incorrect-feedback strong {
+    color: var(--incorrect-color);
+}
+
+.feedback ul {
+    margin-top: 0.5rem;
+    padding-left: 20px;
+}
+
+button:disabled, input:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.back-button, .finish-button {
+    display: block;
+    margin: 2rem auto 0 auto;
+    background-color: #6c757d; /* Grey */
+    color: white;
+}
+.back-button:hover, .finish-button:hover {
+    background-color: #5a6268;
+}
+
+footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding: 1rem;
+    font-size: 0.9rem;
+    color: #777;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 2rem 0;
+}
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>Egzamin Ósmoklasisty: Interaktywne Zadania 5 i 6</h1>
+    </header>
+
+    <main id="app-container">
+        <!-- Dashboard View -->
+        <section id="dashboard-view">
+            <h2>Wybierz zestaw egzaminacyjny:</h2>
+            <div id="dashboard-grid">
+                <!-- Dashboard sections will be generated by JS -->
+            </div>
+        </section>
+
+        <!-- Task View -->
+        <section id="task-view" style="display: none;">
+            <button id="back-to-dashboard" class="button back-button">← Powrót do panelu</button>
+            <h2 id="task-set-title">Tytuł Zestawu</h2>
+            <div id="task-content">
+                <h3>Zadanie 5</h3>
+                <div id="task5-container">
+                    <!-- Task 5 questions will be generated by JS -->
+                </div>
+                <hr>
+                <h3>Zadanie 6</h3>
+                <div id="task6-container">
+                    <!-- Task 6 items will be generated by JS -->
+                </div>
+            </div>
+             <button id="finish-set" class="button finish-button">Zakończ Zestaw (Wróć)</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>Interaktywny Trener Egzaminu Ósmoklasisty</p>
+    </footer>
+
+    <!-- Data file (MUST be included before app.js) -->
+    <script>
+
+// data.js - Zawartość 16 zestawów egzaminacyjnych (Zadania 5 i 6)
+
+const examData = [
+    // Set 1: Próbny Egzamin Ósmoklasisty, Marzec-Kwiecień 2020 (OJAP-100)
+    {
+        id: "set1",
+        title: "Próbny Egzamin Ósmoklasisty, Marzec-Kwiecień 2020 (OJAP-100)",
+        task5: [
+            {
+                questionNumber: "5.1",
+                questionText: "W kawiarni chcesz zamówić kawałek szarlotki. Co powiesz kelnerowi?",
+                options: [
+                    "A. Could I have a piece of apple pie, please.",
+                    "B. Will you order some apple pie?",
+                    "C. I’m not fond of apple pie."
+                ],
+                correctAnswer: "A",
+                justification: "Poprawna odpowiedź to A, ponieważ jest to grzeczne pytanie o zamówienie ('Could I have...?'). Opcja B to pytanie do kelnera, czy on zamówi. Opcja C wyraża brak sympatii do szarlotki, a nie chęć zamówienia."
+            },
+            {
+                questionNumber: "5.2",
+                questionText: "Babcia prosi Cię o pójście do apteki. Jak wyrazisz zgodę?",
+                options: [
+                    "A. Do you need any help?",
+                    "B. Well, can you ask my brother?",
+                    "C. Alright, what would you like me to get?"
+                ],
+                correctAnswer: "C",
+                justification: "Poprawna odpowiedź to C. Wyraża zgodę ('Alright') i pyta o szczegóły ('what would you like me to get?'). Opcja A to ogólna oferta pomocy. Opcja B sugeruje, by poprosić kogoś innego."
+            },
+             {
+                questionNumber: "5.3",
+                questionText: "Chcesz namówić kolegów do wspólnego wyjścia na basen. Jak im to zaproponujesz?",
+                options: [
+                    "A. Can you swim well?",
+                    "B. Do you like swimming?",
+                    "C. How about going swimming?"
+                ],
+                correctAnswer: "C",
+                justification: "Poprawna odpowiedź to C, ponieważ jest to typowa forma proponowania czegoś ('How about...?'). Opcje A i B to pytania o umiejętności lub preferencje, a nie propozycja wspólnego wyjścia."
+            },
+             {
+                questionNumber: "5.4",
+                questionText: "Twój młodszy brat wygrał konkurs. Jak go pochwalisz?",
+                options: [
+                    "A. Good luck!",
+                    "B. Good job!",
+                    "C. Good idea!"
+                ],
+                correctAnswer: "B",
+                justification: "Poprawna odpowiedź to B ('Good job!'), która jest typowym wyrażeniem pochwały za osiągnięcie. 'Good luck!' (A) mówi się przed wydarzeniem, a 'Good idea!' (C) wyraża aprobatę dla pomysłu."
+            }
+        ],
+        task6: [
+            {
+                gapId: "6.1",
+                prompt: "X: It’s been a wonderful party, but I really have to go now. It’s getting late.\nY: Oh dear. 6.1. ______ that you can’t stay any longer! I’ve made your favourite pizza.",
+                correctAnswers: ["What a pity", "It's a pity", "That's a pity", "What a shame", "It's a shame", "That's a shame"],
+                justification: "W tej luce potrzebne jest wyrażenie ubolewania, że gość musi już iść. Zwroty takie jak 'What a pity', 'It's a pity', 'That's a pity' (lub 'shame' zamiast 'pity') pasują do kontekstu wyrażenia żalu."
+            },
+             {
+                gapId: "6.2",
+                prompt: "X: Excuse me, how 6.2. ______ to the nearest post office?\nY: You need to turn left and then go straight on. It’s next to the bank.",
+                correctAnswers: ["do I get", "can I get"],
+                justification: "Pytamy o drogę, więc potrzebujemy zwrotu pytającego 'jak dotrzeć/dostać się do...'. Poprawne formy to 'how do I get' lub 'how can I get'."
+            },
+             {
+                gapId: "6.3",
+                prompt: "X: Oh, my mum’s texted me. She’s already in front of the school. I’ll see you on Monday. 6.3. ______ weekend!\nY: Thanks. You too!",
+                correctAnswers: ["Have a nice", "Have a good"],
+                justification: "Jest to pożegnanie przed weekendem, więc typowym zwrotem jest życzenie miłego weekendu, np. 'Have a nice weekend' lub 'Have a good weekend'."
+            }
+        ]
+    },
+    // Set 2: Egzamin Ósmoklasisty, 14 Czerwca 2023 (OJAP-100-2306)
+    {
+        id: "set2",
+        title: "Egzamin Ósmoklasisty, 14 Czerwca 2023 (OJAP-100-2306)",
+        task5: [
+             {
+                questionNumber: "5.1",
+                questionText: "Koleżanka znalazła telefon na przystanku. Co jej doradzisz?",
+                options: [
+                    "A. I can help you find the best one.",
+                    "B. We can look for the phone together.",
+                    "C. You should wait for its owner to call."
+                ],
+                correctAnswer: "C",
+                justification: "Poprawna odpowiedź to C, ponieważ jest to rozsądna rada w sytuacji znalezienia telefonu - poczekać na kontakt od właściciela. Opcja A jest nieadekwatna. Opcja B sugeruje wspólne szukanie telefonu, co nie jest celem."
+            },
+            {
+                questionNumber: "5.2",
+                questionText: "Chcesz zmienić tapetę na ekranie smartfona, ale nie wiesz, którą wybrać. Jak poprosisz kolegę o opinię?",
+                options: [
+                    "A. Can you show me your wallpaper?",
+                    "B. Which wallpaper do you think is the best?",
+                    "C. Why don’t you change your wallpaper?"
+                ],
+                correctAnswer: "B",
+                justification: "Poprawna odpowiedź to B, ponieważ bezpośrednio pyta o opinię na temat wyboru tapety. Opcja A pyta o pokazanie tapety kolegi. Opcja C to sugestia zmiany tapety, a nie prośba o opinię."
+            },
+             {
+                questionNumber: "5.3",
+                questionText: "Nie usłyszałeś(-aś), co powiedział kolega. Jak poprosisz go o powtórzenie?",
+                options: [
+                    "A. Could you say that again?",
+                    "B. Haven’t you heard that?",
+                    "C. Should I repeat what I said?"
+                ],
+                correctAnswer: "A",
+                justification: "Poprawna odpowiedź to A, jest to standardowa, grzeczna prośba o powtórzenie. Opcja B jest pytaniem retorycznym/wyrażeniem zdziwienia. Opcja C pyta, czy to ty masz coś powtórzyć."
+            },
+             {
+                questionNumber: "5.4",
+                questionText: "Zamierzasz wyjechać z rodziną na wakacje. Jak zapytasz recepcjonistę w hotelu o możliwość przyjazdu z psem?",
+                options: [
+                    "A. Are you going to the hotel with the dog?",
+                    "B. Are dogs allowed in the hotel?",
+                    "C. Has your family arrived with the dog?"
+                ],
+                correctAnswer: "B",
+                justification: "Poprawna odpowiedź to B, ponieważ pyta o zgodę hotelu na pobyt z psem ('Are dogs allowed...?'). Opcja A pyta o plany recepcjonisty. Opcja C pyta o przybycie rodziny z psem, a nie o możliwość."
+            }
+        ],
+        task6: [
+            {
+                gapId: "6.1",
+                prompt: "X: How about going to Spain this summer?\nY: Well, Spain is great but 6.1. ______ to go there in spring. Summer in Spain will be too hot for me.\nX: Perhaps you’re right. Let’s go to Norway this summer then.",
+                correctAnswers: ["I would prefer", "I'd prefer", "I prefer"],
+                justification: "Rozmówca Y wyraża swoją preferencję co do pory roku wyjazdu do Hiszpanii, kontrastując ją z propozycją X. Zwroty 'I would prefer', 'I'd prefer' lub 'I prefer' pasują do wyrażenia tej preferencji."
+            },
+             {
+                gapId: "6.2",
+                prompt: "X: Diana, 6.2. ______ something for me, please?\nY: Sure, what is it?\nX: Please call the hairdresser and tell her that I won’t be able to come today.",
+                correctAnswers: ["Could you do", "Can you do", "Will you do", "Would you do"],
+                justification: "Rozmówca X prosi Dianę o przysługę. Pytania typu 'Could you do', 'Can you do', 'Will you do', 'Would you do' są odpowiednimi formami grzecznej prośby."
+            }
+        ]
+    },
+    // Set 3: Ogólnopolski Próbny Egzamin Ósmoklasisty z Operonem i British Council, Grudzień 2019
+    {
+        id: "set3",
+        title: "Ogólnopolski Próbny Egzamin Ósmoklasisty z Operonem i British Council, Grudzień 2019",
+        task5: [
+            {
+                questionNumber: "5.1",
+                questionText: "Twoja kuzynka z Anglii zadzwoniła, żeby złożyć ci życzenia urodzinowe. Co jej powiesz?",
+                options: [
+                    "A. Happy birthday to you.",
+                    "B. It’s so kind of you.",
+                    "C. Never mind."
+                ],
+                correctAnswer: "B",
+                justification: "Poprawna odpowiedź to B, ponieważ jest to podziękowanie za złożone życzenia. Opcja A to składanie życzeń komuś innemu. Opcja C ('Nic nie szkodzi') jest nieadekwatna."
+            },
+            {
+                questionNumber: "5.2",
+                questionText: "Jak poprosisz kolegę, żeby na ciebie zaczekał?",
+                options: [
+                    "A. I wait for you.",
+                    "B. Give me a minute.",
+                    "C. I’m meeting you later."
+                ],
+                correctAnswer: "B",
+                justification: "Poprawna odpowiedź to B ('Give me a minute.'), jest to potoczna prośba o chwilę cierpliwości. Opcja A jest niegramatyczna w tym kontekście. Opcja C informuje o późniejszym spotkaniu, a nie prosi o zaczekanie."
+            },
+            {
+                questionNumber: "5.3",
+                questionText: "Twoja koleżanka powiedziała coś, czego nie dosłyszałeś/dosłyszałaś. Co jej powiesz?",
+                options: [
+                    "A. I’m not listening to you.",
+                    "B. Should I repeat once again?",
+                    "C. Sorry, I didn’t catch that."
+                ],
+                correctAnswer: "C",
+                justification: "Poprawna odpowiedź to C, jest to typowy, grzeczny zwrot informujący, że czegoś nie usłyszeliśmy. Opcja A jest niegrzeczna. Opcja B pyta, czy to my mamy coś powtórzyć."
+            },
+            {
+                questionNumber: "5.4",
+                questionText: "Twoja kuzynka nie może sobie poradzić z obsługą pewnego urządzenia. Jak zaoferujesz jej swoją pomoc?",
+                options: [
+                    "A. Let me try.",
+                    "B. Help yourself.",
+                    "C. Get some help."
+                ],
+                correctAnswer: "A",
+                justification: "Poprawna odpowiedź to A ('Let me try.'), jest to bezpośrednia oferta pomocy przy obsłudze urządzenia. 'Help yourself' (B) oznacza 'poczęstuj się'. 'Get some help' (C) to rada, by poszukać pomocy gdzie indziej."
+            }
+        ],
+        task6: [
+            {
+                gapId: "6.1",
+                prompt: "X: Excuse me, does this bus go to the shopping centre?\nY: Yes, it does.\nX: That’s great. And 6.1. ______ does it take for the bus to get there?",
+                correctAnswers: ["how long"],
+                justification: "Pytanie dotyczy czasu trwania podróży autobusem. Poprawnym zwrotem pytającym o czas trwania jest 'how long'."
+            },
+            {
+                gapId: "6.2",
+                prompt: "Y: About 20 minutes. You have to 6.2. ______ at the bus stop called “Santa Ana Mall”. That’s the name of a shopping centre.",
+                correctAnswers: ["get off"],
+                justification: "Mowa o wysiadaniu z autobusu na konkretnym przystanku. Poprawnym czasownikiem frazowym oznaczającym wysiadanie jest 'get off'."
+            },
+            {
+                gapId: "6.3",
+                prompt: "X: 6.3. ______ very much.\nY: You’re welcome.",
+                correctAnswers: ["Thank you", "Thanks"],
+                justification: "W odpowiedzi na informację i pomoc, naturalną reakcją jest podziękowanie. Pasują tu 'Thank you' lub krótsze 'Thanks'."
+            }
+        ]
+    },
+    // Set 4: Egzamin Ósmoklasisty, 23 Kwietnia 2020 (OJAP-100-2004)
+    {
+        id: "set4",
+        title: "Egzamin Ósmoklasisty, 23 Kwietnia 2020 (OJAP-100-2004)",
+        task5: [
+            {
+                questionNumber: "5.1",
+                questionText: "Koleżanka informuje Cię, że znany pisarz będzie podpisywał swoje książki w lokalnej bibliotece. Bardzo Cię to zaskoczyło. Co jej powiesz?",
+                options: [
+                    "A. Really? I can’t believe it!",
+                    "B. That doesn’t surprise me at all!",
+                    "C. You’ll never guess what happened!"
+                ],
+                correctAnswer: "A",
+                justification: "Poprawna odpowiedź to A, ponieważ wyraża zaskoczenie ('Really? I can’t believe it!'). Opcja B wyraża brak zaskoczenia. Opcja C zapowiada jakąś inną wiadomość."
+            },
+            {
+                questionNumber: "5.2",
+                questionText: "Chcesz utrzymywać kontakt z kolegą, który przeprowadza się do innego miasta. Co mu powiesz?",
+                options: [
+                    "A. I prefer to stay here.",
+                    "B. I forgot to phone you.",
+                    "C. I hope we’ll keep in touch."
+                ],
+                correctAnswer: "C",
+                justification: "Poprawna odpowiedź to C, jest to standardowy zwrot wyrażający nadzieję na utrzymanie kontaktu. Opcje A i B są nieadekwatne do sytuacji."
+            },
+            {
+                questionNumber: "5.3",
+                questionText: "Pokłóciłeś/Pokłóciłaś się z koleżanką. Jak ją przeprosisz?",
+                options: [
+                    "A. Sorry, you must try again later.",
+                    "B. Sorry, I didn’t mean to upset you.",
+                    "C. There’s nothing to be sorry about."
+                ],
+                correctAnswer: "B",
+                justification: "Poprawna odpowiedź to B, ponieważ są to przeprosiny wraz z wyjaśnieniem, że nie chciało się sprawić przykrości. Opcja A jest nieadekwatna. Opcja C sugeruje, że nie ma za co przepraszać."
+            },
+            {
+                questionNumber: "5.4",
+                questionText: "Kolega chce popływać w rzece. Uważasz, że nie powinien tego robić. Co mu powiesz?",
+                options: [
+                    "A. I can’t wait to swim with you.",
+                    "B. I wouldn’t swim there if I were you.",
+                    "C. We won’t go swimming if you don’t want to."
+                ],
+                correctAnswer: "B",
+                justification: "Poprawna odpowiedź to B, jest to forma udzielenia rady poprzez postawienie się w sytuacji kolegi (tryb warunkowy 'if I were you'). Opcja A wyraża entuzjazm. Opcja C jest niejasna i nie odradza pływania w rzece."
+            }
+        ],
+        task6: [
+             {
+                gapId: "6.1",
+                prompt: "Grandma: Hello Ben.\nBen: Good morning Grandma. 6.1. (ask) ______ you to do something for me?",
+                correctAnswers: ["Can I ask", "Could I ask", "May I ask"],
+                justification: "Ben pyta babcię, czy może ją o coś poprosić. Używamy tu modalnych czasowników 'can', 'could' lub 'may' w formie pytania o pozwolenie."
+            },
+             {
+                gapId: "6.2",
+                prompt: "Ben: I want to make a chocolate cake but I 6.2. (no) ______ how to do it.",
+                correctAnswers: ["don't know", "do not know"],
+                justification: "Ben mówi, że nie wie, jak zrobić ciasto. Czasownik 'know' w czasie Present Simple w formie przeczącej dla 'I' to 'don't know' lub 'do not know'."
+            },
+             {
+                gapId: "6.3",
+                prompt: "Ben: Oh, I 6.3. (like) ______ it myself. I just need you to show me how.",
+                correctAnswers: ["would like to do", "'d like to do", "would like to make", "'d like to make"],
+                justification: "Ben wyraża chęć zrobienia ciasta samodzielnie. Używamy konstrukcji 'would like to' + czasownik (np. 'do' lub 'make') aby wyrazić chęć lub preferencję."
+            }
+        ]
+    },
+    // ... Kontynuacja dla pozostałych zestawów ...
+
+    // Set 5: Egzamin Ósmoklasisty, 20 Grudnia 2018 (OJAP-100-1812)
+    {
+        id: "set5",
+        title: "Egzamin Ósmoklasisty, 20 Grudnia 2018 (OJAP-100-1812)",
+        task5: [
+            { questionNumber: "5.1", questionText: "Koleżanka pyta Cię, co przygotować na deser. Co jej poradzisz?", options: ["A. Why did you eat all the cake?", "B. Which is your favourite kind of cake?", "C. How about making some cake?"], correctAnswer: "C", justification: "Pytanie dotyczy rady co przygotować. Opcja C ('How about making...?') jest propozycją/radą. Opcje A i B są pytaniami o przeszłość lub preferencje." },
+            { questionNumber: "5.2", questionText: "Poproś ekspedientkę w sklepie o koszulę w większym rozmiarze.", options: ["A. Would you like a bigger size?", "B. Do you want to buy some more?", "C. Can I have it in a bigger size?"], correctAnswer: "C", justification: "Poprawna odpowiedź C to bezpośrednia prośba o większy rozmiar. Opcja A to pytanie sprzedawcy do klienta. Opcja B pyta o chęć kupienia większej ilości." },
+            { questionNumber: "5.3", questionText: "Kolega dziękuje Ci za pożyczenie tabletu. Jak zareagujesz?", options: ["A. Take your time.", "B. You’re welcome.", "C. I agree with you."], correctAnswer: "B", justification: "Standardową odpowiedzią na podziękowanie jest 'You’re welcome' (Proszę bardzo). Opcja A oznacza 'Nie spiesz się'. Opcja C oznacza 'Zgadzam się'." },
+            { questionNumber: "5.4", questionText: "Przechodzień pyta Cię, gdzie jest poczta. Jak wskażesz mu drogę?", options: ["A. It’s just round the corner.", "B. I’m afraid there is only one.", "C. It closes at nine."], correctAnswer: "A", justification: "Odpowiedź A wskazuje lokalizację ('tuż za rogiem'). Opcje B i C podają inne informacje o poczcie, a nie wskazówki jak dojść." }
+        ],
+        task6: [
+            { gapId: "6.1", prompt: "X: I’d like to book a table for tonight.\nY: No problem. ______ people?", correctAnswers: ["For how many", "How many"], justification: "Recepcjonista pyta, dla ilu osób ma być stolik. Poprawne pytanie to 'For how many people?' lub krócej 'How many people?'." },
+            { gapId: "6.2", prompt: "X: It’s so hot in here. ______ the window?", correctAnswers: ["Could you open", "Can you open", "Will you open", "Would you open"], justification: "Jest gorąco, więc X prosi o otwarcie okna. Używamy pytań z 'Could/Can/Will/Would you...?' jako grzecznych próśb." },
+            { gapId: "6.3", prompt: "X: Excuse me, ______?\nY: It’s a quarter past seven.", correctAnswers: ["what time is it", "what's the time", "what is the time"], justification: "Odpowiedź Y podaje godzinę, więc pytanie X musiało dotyczyć czasu. Standardowe pytania o godzinę to 'What time is it?' lub 'What's the time?'." }
+        ]
+    },
+    // Set 6: Egzamin Ósmoklasisty, Test Diagnostyczny, 4 Grudnia 2024 (OJAP-100-2412)
+    {
+        id: "set6",
+        title: "Egzamin Ósmoklasisty, Test Diagnostyczny, 4 Grudnia 2024 (OJAP-100-2412)",
+        task5: [
+             { questionNumber: "5.1", questionText: "Kolega proponuje Ci pomoc w odrobieniu pracy domowej, ale już udało Ci się ją odrobić. Co mu odpowiesz?", options: ["A. My homework is too difficult for me to do.", "B. Thanks for finishing the homework with me.", "C. I’ve already done my homework, but thanks anyway."], correctAnswer: "C", justification: "Odpowiedź C informuje, że praca jest już zrobiona, ale dziękuje za propozycję. Opcja A mówi o trudności zadania. Opcja B dziękuje za zrobienie pracy, co jest niezgodne z sytuacją." },
+             { questionNumber: "5.2", questionText: "Koleżanka wręcza Ci pamiątkę, którą przywiozła z wakacji specjalnie dla Ciebie. Co jej powiesz?", options: ["A. Here’s a souvenir for you.", "B. That’s very kind of you.", "C. Have a nice holiday."], correctAnswer: "B", justification: "Odpowiedź B jest podziękowaniem za miły gest wręczenia pamiątki. Opcja A to zwrot, gdy my coś wręczamy. Opcja C to życzenie udanych wakacji." },
+             { questionNumber: "5.3", questionText: "Jak poinformujesz osobę w centrum handlowym o tym, gdzie jest księgarnia?", options: ["A. The bookshop is next to the pharmacy.", "B. The bookshop closes in an hour.", "C. The bookshop is very popular."], correctAnswer: "A", justification: "Odpowiedź A podaje lokalizację księgarni ('obok apteki'). Opcje B i C podają inne informacje." },
+             { questionNumber: "5.4", questionText: "Kolega z Anglii chce pójść z Tobą dzisiaj do muzeum, ale Ty nie masz czasu. Jak mu odmówisz?", options: ["A. There’s no time to lose.", "B. I can’t make it today.", "C. I’m afraid he’s busy."], correctAnswer: "B", justification: "Odpowiedź B grzecznie odmawia, podając brak możliwości w danym dniu. Opcja A oznacza 'Nie ma czasu do stracenia'. Opcja C mówi o zajętości kolegi, a nie naszej." }
+        ],
+        task6: [
+             { gapId: "6.1", prompt: "X: Megan, 6.1. (like) ______ something to eat?\nY: No thanks. Just a glass of water, please.", correctAnswers: ["would you like", "'d you like"], justification: "Jest to oferta poczęstunku. Standardowym, grzecznym zwrotem jest 'Would you like...?'." },
+             { gapId: "6.2", prompt: "X: Excuse me, 6.2. (tell) ______ me what time the next train to Liverpool leaves?\nY: At 11.45.", correctAnswers: ["could you tell", "can you tell"], justification: "Jest to prośba o informację. Używamy 'Could you tell me...?' lub 'Can you tell me...?' jako grzecznych form pytania." }
+        ]
+    },
+    // Set 7: Egzamin Ósmoklasisty, 12 Czerwca 2024 (OJAP-100-2406)
+    {
+        id: "set7",
+        title: "Egzamin Ósmoklasisty, 12 Czerwca 2024 (OJAP-100-2406)",
+        task5: [
+             { questionNumber: "5.1", questionText: "Twoi koledzy grają w siatkówkę. Chcesz z nimi zagrać. Jak zapytasz ich o zgodę?", options: ["A. Can I join you?", "B. Will you play it for me?", "C. How about playing with us?"], correctAnswer: "A", justification: "Pytanie A ('Can I join you?') jest bezpośrednią prośbą o dołączenie do gry. Opcja B jest niestandardową prośbą. Opcja C to propozycja wspólnej gry, a nie prośba o dołączenie." },
+             { questionNumber: "5.2", questionText: "Kolega informuje Cię, że do waszej szkoły przyjeżdża znany muzyk. Jak wyrazisz swoje niedowierzanie?", options: ["A. What a shame!", "B. Don’t be surprised!", "C. You must be joking!"], correctAnswer: "C", justification: "Odpowiedź C ('You must be joking!') wyraża niedowierzanie/zaskoczenie. Opcja A wyraża żal. Opcja B jest zaprzeczeniem zaskoczenia." },
+             { questionNumber: "5.3", questionText: "Kolega poprosił Cię, żebyś go odwiedził(-a). Jak wyrazisz zgodę?", options: ["A. That would be great.", "B. Thank you for your visit.", "C. It’s nice to meet you."], correctAnswer: "A", justification: "Odpowiedź A ('That would be great.') wyraża akceptację i entuzjazm dla propozycji. Opcja B to podziękowanie za wizytę (po fakcie). Opcja C mówi się przy poznaniu kogoś." },
+             { questionNumber: "5.4", questionText: "Umawiasz się z kolegami. Obiecaj, że się nie spóźnisz.", options: ["A. Promise me you won’t be late.", "B. Don’t worry, I’ll be there on time.", "C. If I’m not on time, wait for me."], correctAnswer: "B", justification: "Odpowiedź B zawiera obietnicę punktualności ('I'll be there on time'). Opcja A to prośba do kogoś innego. Opcja C to instrukcja na wypadek spóźnienia." }
+        ],
+        task6: [
+             { gapId: "6.1", prompt: "X: Have you seen my scarf anywhere? I have a sore throat, but I need to go out.\nY: No, I haven’t. But why are you going out at all? I think 6.1. (stay) ______ at home if you aren’t feeling well.", correctAnswers: ["you should stay", "you ought to stay"], justification: "Rozmówca Y udziela rady X. Używamy 'should' lub 'ought to' do wyrażania rady lub sugestii." },
+             { gapId: "6.2", prompt: "X: My hamster has got out of his cage again. I can’t find him anywhere.\nY: 6.2. (want) ______ me to help you look for him?\nX: Thanks, I’d be grateful!", correctAnswers: ["Do you want", "Would you like"], justification: "Rozmówca Y oferuje pomoc. Można zapytać 'Do you want me to help...?' lub grzeczniej 'Would you like me to help...?'." }
+        ]
+    },
+     // Set 8: Egzamin Ósmoklasisty, 25 Maja 2023 (OJAP-100-2305)
+    {
+        id: "set8",
+        title: "Egzamin Ósmoklasisty, 25 Maja 2023 (OJAP-100-2305)",
+        task5: [
+             { questionNumber: "5.1", questionText: "Dzwonisz do kolegi mieszkającego w Londynie. Chcesz dowiedzieć się, jaka jest tam pogoda. Jak o to zapytasz?", options: ["A. How do you know about the weather in London?", "B. Why is the weather in London like that?", "C. What’s the weather like in London?"], correctAnswer: "C", justification: "Pytanie C ('What's the weather like...?') jest standardowym pytaniem o pogodę. Opcje A i B pytają o inne aspekty." },
+             { questionNumber: "5.2", questionText: "Chcesz, żeby koleżanka poszła z Tobą na zakupy. Co jej powiesz?", options: ["A. Will you do the shopping for me?", "B. What about going to the shops together?", "C. What would you like to get from the shop?"], correctAnswer: "B", justification: "Odpowiedź B ('What about going...?') jest propozycją wspólnego wyjścia na zakupy. Opcja A to prośba, by ktoś zrobił zakupy za nas. Opcja C pyta o preferencje zakupowe." },
+             { questionNumber: "5.3", questionText: "Co powiesz, podając koleżance z Anglii sałatkę podczas obiadu?", options: ["A. Here you are.", "B. The same to you.", "C. Not at all."], correctAnswer: "A", justification: "Zwrot 'Here you are.' (Proszę.) używany jest przy podawaniu czegoś komuś. Opcja B ('Nawzajem') i C ('Nic nie szkodzi / Ależ skąd') nie pasują." },
+             { questionNumber: "5.4", questionText: "Chcesz dowiedzieć się, czy Twój znajomy ma jakieś plany na weekend. Jak o to zapytasz?", options: ["A. Will you do it for me at the weekend?", "B. Do you often make plans for the weekend?", "C. Are you doing anything during the weekend?"], correctAnswer: "C", justification: "Pytanie C ('Are you doing anything...?') jest typowym sposobem pytania o plany na przyszłość (tutaj weekend). Opcja A to prośba. Opcja B pyta o częstotliwość planowania." }
+        ],
+        task6: [
+             { gapId: "6.1", prompt: "X: Why (waiting) ______ here?\nThe meeting is in another room.\nY: Oh, I didn’t know. Thanks.", correctAnswers: ["are you waiting", "are we waiting"], justification: "Pytanie dotyczy trwającej czynności (czekania). Używamy czasu Present Continuous w formie pytającej ('Are you/we waiting...?')." },
+             { gapId: "6.2", prompt: "X: I love these shoes. (much) ______ they?\nY: £25.\nX: Great. I’ll take them.", correctAnswers: ["How much are"], justification: "Pytanie dotyczy ceny butów (liczba mnoga). Poprawna forma to 'How much are they?'." }
+        ]
+    },
+    // Set 9: Ogólnopolski Próbny Egzamin Ósmoklasisty z Operonem i British Council, Listopad 2018
+    {
+        id: "set9",
+        title: "Ogólnopolski Próbny Egzamin Ósmoklasisty z Operonem i British Council, Listopad 2018",
+        task5: [
+             { questionNumber: "5.1", questionText: "Chcesz, żeby współpasażer ustąpił ci miejsca. Co powiesz?", options: ["A. Would you mind moving over?", "B. Are there any free seats left?", "C. Do I have to sit here?"], correctAnswer: "A", justification: "Pytanie A ('Would you mind...?') jest bardzo grzeczną prośbą o przesunięcie się. Opcja B pyta o wolne miejsca. Opcja C jest pytaniem o konieczność siedzenia w danym miejscu." },
+             { questionNumber: "5.2", questionText: "Zgadzasz się ze zdaniem kolegi. Jak to wyrazisz?", options: ["A. It’s on the right.", "B. I disagree.", "C. Good point."], correctAnswer: "C", justification: "Odpowiedź C ('Good point.') oznacza 'Słuszna uwaga', wyrażając zgodę lub uznanie dla argumentu. Opcja A odnosi się do lokalizacji. Opcja B wyraża niezgodę." },
+             { questionNumber: "5.3", questionText: "Twoja mama poczęstowała twoją koleżankę ciastem. Jak spytasz, czy jej smakowało?", options: ["A. What about eating this cake?", "B. Did you enjoy the cake?", "C. Have you tasted it?"], correctAnswer: "B", justification: "Pytanie B pyta bezpośrednio o wrażenia po zjedzeniu ciasta (w czasie przeszłym). Opcja A to propozycja. Opcja C pyta, czy próbowała, ale niekoniecznie czy jej smakowało." },
+             { questionNumber: "5.4", questionText: "Masz ochotę popływać w basenie. Jak zapytasz o pozwolenie?", options: ["A. Will you let me swim here?", "B. Do I have to swim here?", "C. Can you swim here?"], correctAnswer: "A", justification: "Pytanie A ('Will you let me...?') jest prośbą o pozwolenie na pływanie. Opcja B pyta o obowiązek. Opcja C pyta o czyjeś umiejętności lub ogólną możliwość pływania w danym miejscu (ale niekoniecznie o pozwolenie dla nas)." }
+        ],
+        task6: [
+             { gapId: "6.1", prompt: "X: Can I help you?\nY: Yes, I’m 6.1. ______ a tie. It’ll be a present for my brother’s birthday.", correctAnswers: ["looking for"], justification: "Klient mówi, czego szuka. Używamy zwrotu 'look for' w czasie Present Continuous ('I'm looking for...'), ponieważ czynność dzieje się teraz." },
+             { gapId: "6.2", prompt: "X: Sure. What colour 6.2. ______like? Something darker or lighter?", correctAnswers: ["would you"], justification: "Sprzedawca pyta o preferencje klienta dotyczące koloru. Używamy 'would you like' jako grzecznej formy pytania o preferencje." },
+             { gapId: "6.3", prompt: "X: Sure. How do you want 6.3. ______?\nY: Cash, please.", correctAnswers: ["to pay"], justification: "Sprzedawca pyta o preferowaną formę płatności. Po 'want' używamy bezokolicznika z 'to', stąd 'to pay'." }
+        ]
+    },
+     // Set 10: Egzamin Ósmoklasisty, Przykładowy arkusz (EO_1), Grudzień 2017
+    {
+        id: "set10",
+        title: "Egzamin Ósmoklasisty, Przykładowy arkusz (EO_1), Grudzień 2017",
+        task5: [
+             { questionNumber: "5.1", questionText: "Nie dosłyszałeś(-aś), co powiedziała koleżanka. Co powiesz?", options: ["A. Why are you speaking so loudly?", "B. Can you repeat that?", "C. Do you understand me?"], correctAnswer: "B", justification: "Odpowiedź B ('Can you repeat that?') to standardowa prośba o powtórzenie. Opcja A jest niegrzeczna. Opcja C pyta o zrozumienie nas przez rozmówcę." },
+             { questionNumber: "5.2", questionText: "Chcesz zaprosić koleżankę na przyjęcie. Co powiesz?", options: ["A. Would you like to come to my party?", "B. Is this your party?", "C. Are you enjoying the party?"], correctAnswer: "A", justification: "Pytanie A ('Would you like to come...?') jest grzecznym zaproszeniem. Opcja B pyta o własność przyjęcia. Opcja C pyta o wrażenia z trwającego przyjęcia." },
+             { questionNumber: "5.3", questionText: "Koleżanka uważa, że film, który obejrzeliście, był nudny. Nie zgadzasz się z jej opinią. Jak zareagujesz?", options: ["A. I can’t see why not.", "B. Well, I didn’t like it either.", "C. I’m afraid I don’t agree with you."], correctAnswer: "C", justification: "Odpowiedź C bezpośrednio wyraża brak zgody ('I don't agree'). Opcja A wyraża brak sprzeciwu. Opcja B wyraża zgodę z negatywną opinią." },
+             { questionNumber: "5.4", questionText: "Kolega dziękuje Ci za pożyczenie tabletu. Jak zareagujesz?", options: ["A. Don’t forget it.", "B. Don’t mention it.", "C. Don’t try to do it."], correctAnswer: "B", justification: "Odpowiedź B ('Don't mention it.') to typowa, grzeczna odpowiedź na podziękowanie, znacząca 'Nie ma za co'. Opcje A i C nie pasują do kontekstu." }
+        ],
+        task6: [
+             { gapId: "6.1", prompt: "X: Hi, Magda. I’ve booked my flight to Warsaw. I’m arriving on the 17th of February at 10.15 a.m.\nY: Great. Do you want me 6.1. ______ at the airport?", correctAnswers: ["to meet you", "to pick you up"], justification: "Magda oferuje spotkanie/odebranie Josha z lotniska. Po 'want me' używamy bezokolicznika z 'to'. 'To meet you' lub 'to pick you up' pasują do kontekstu." },
+             { gapId: "6.2", prompt: "X: Won’t this be a problem for you?\nY: No, not at all.\nX: Thanks. 6.2. That’s ______ you.", correctAnswers: ["very kind of", "so kind of", "really kind of", "nice of"], justification: "Josh dziękuje za uprzejmość Magdy. Używamy zwrotów 'That's very/so/really kind of you' lub 'That's nice of you'." },
+             { gapId: "6.3", prompt: "Y: And, Josh, a piece of advice before you come. It can be quite cold here at this time of the year, so you 6.3. ______ a warm jacket.", correctAnswers: ["should bring", "should take", "'d better bring", "'d better take", "need to bring", "need to take"], justification: "Magda udziela rady dotyczącej zabrania ciepłej kurtki. Używamy 'should', 'had better' lub 'need to' + czasownik (np. 'bring' lub 'take')." }
+        ]
+    },
+     // Set 11: Egzamin Ósmoklasisty, 18 Czerwca 2021 (OJAP-100-2106)
+    {
+        id: "set11",
+        title: "Egzamin Ósmoklasisty, 18 Czerwca 2021 (OJAP-100-2106)",
+        task5: [
+             { questionNumber: "5.1", questionText: "Chcesz wybrać się na wycieczkę rowerową. Jak zapytasz rodziców o zgodę?", options: ["A. Will you let me go on a bike trip?", "B. Would you like to take my bike for the trip?", "C. Are you going to take part in a bike trip?"], correctAnswer: "A", justification: "Pytanie A ('Will you let me...?') jest prośbą o pozwolenie. Opcja B pyta rodziców o ich chęć zabrania roweru. Opcja C pyta o ich plany." },
+             { questionNumber: "5.2", questionText: "Planujesz wziąć udział w biegu. Jak poinformujesz o tym swojego kolegę?", options: ["A. I prefer running to walking.", "B. I’ve just run a marathon.", "C. I’m going to take part in a run."], correctAnswer: "C", justification: "Odpowiedź C informuje o przyszłym zamiarze wzięcia udziału w biegu. Opcja A wyraża preferencję. Opcja B mówi o niedawno zakończonym maratonie." },
+             { questionNumber: "5.3", questionText: "W czasie deszczu Twoja koleżanka chce wyjść z domu. Jak jej to odradzisz?", options: ["A. We shouldn’t stay at home.", "B. I think it’s better to stay inside now.", "C. Let’s go inside, it’s going to rain."], correctAnswer: "B", justification: "Odpowiedź B jest radą, by zostać w środku. Opcja A sugeruje wyjście. Opcja C jest propozycją wejścia do środka, ale B lepiej wyraża odradzanie." },
+             { questionNumber: "5.4", questionText: "Nowy kolega pyta Cię, jak dojść do szkoły. Jak wskażesz mu drogę?", options: ["A. You’re right, we go to the same school.", "B. Call me when you get to school.", "C. Go down this street and you will see the school on your left."], correctAnswer: "C", justification: "Odpowiedź C zawiera konkretne wskazówki drogowe. Opcje A i B nie odpowiadają na pytanie o drogę." }
+        ],
+        task6: [
+             { gapId: "6.1", prompt: "X: (think) ______ about The Guitar’s new album?\nY: In my opinion it’s their best recording ever.", correctAnswers: ["What do you think", "What's your opinion"], justification: "X pyta o opinię na temat albumu. Standardowe pytanie to 'What do you think about...?' lub 'What's your opinion about...?'." },
+             { gapId: "6.2", prompt: "X: Oh no! I’ve missed my train.\nY: Don’t worry! You (can) ______ bus.", correctAnswers: ["can take the", "can catch the", "can get the"], justification: "Y pociesza X i sugeruje alternatywny środek transportu (autobus). Używamy 'can' + czasownik związany z transportem ('take', 'catch', 'get') + 'the bus'." }
+        ]
+    },
+     // Set 12: Egzamin Ósmoklasisty, 5 Czerwca 2019 (OJAP-100-1906)
+    {
+        id: "set12",
+        title: "Egzamin Ósmoklasisty, 5 Czerwca 2019 (OJAP-100-1906)",
+        task5: [ // Identyczne jak Set 1
+            { questionNumber: "5.1", questionText: "W kawiarni chcesz zamówić kawałek szarlotki. Co powiesz kelnerowi?", options: ["A. Could I have a piece of apple pie, please.", "B. Will you order some apple pie?", "C. I’m not fond of apple pie."], correctAnswer: "A", justification: "Poprawna odpowiedź to A, ponieważ jest to grzeczne pytanie o zamówienie ('Could I have...?'). Opcja B to pytanie do kelnera, czy on zamówi. Opcja C wyraża brak sympatii do szarlotki, a nie chęć zamówienia." },
+            { questionNumber: "5.2", questionText: "Babcia prosi Cię o pójście do apteki. Jak wyrazisz zgodę?", options: ["A. Do you need any help?", "B. Well, can you ask my brother?", "C. Alright, what would you like me to get?"], correctAnswer: "C", justification: "Poprawna odpowiedź to C. Wyraża zgodę ('Alright') i pyta o szczegóły ('what would you like me to get?'). Opcja A to ogólna oferta pomocy. Opcja B sugeruje, by poprosić kogoś innego." },
+            { questionNumber: "5.3", questionText: "Chcesz namówić kolegów do wspólnego wyjścia na basen. Jak im to zaproponujesz?", options: ["A. Can you swim well?", "B. Do you like swimming?", "C. How about going swimming?"], correctAnswer: "C", justification: "Poprawna odpowiedź to C, ponieważ jest to typowa forma proponowania czegoś ('How about...?'). Opcje A i B to pytania o umiejętności lub preferencje, a nie propozycja wspólnego wyjścia." },
+            { questionNumber: "5.4", questionText: "Twój młodszy brat wygrał konkurs. Jak go pochwalisz?", options: ["A. Good luck!", "B. Good job!", "C. Good idea!"], correctAnswer: "B", justification: "Poprawna odpowiedź to B ('Good job!'), która jest typowym wyrażeniem pochwały za osiągnięcie. 'Good luck!' (A) mówi się przed wydarzeniem, a 'Good idea!' (C) wyraża aprobatę dla pomysłu." }
+        ],
+        task6: [ // Identyczne jak Set 1
+            { gapId: "6.1", prompt: "X: It’s been a wonderful party, but I really have to go now. It’s getting late.\nY: Oh dear. 6.1. ______ that you can’t stay any longer! I’ve made your favourite pizza.", correctAnswers: ["What a pity", "It's a pity", "That's a pity", "What a shame", "It's a shame", "That's a shame"], justification: "W tej luce potrzebne jest wyrażenie ubolewania, że gość musi już iść. Zwroty takie jak 'What a pity', 'It's a pity', 'That's a pity' (lub 'shame' zamiast 'pity') pasują do kontekstu wyrażenia żalu." },
+            { gapId: "6.2", prompt: "X: Excuse me, how 6.2. ______ to the nearest post office?\nY: You need to turn left and then go straight on. It’s next to the bank.", correctAnswers: ["do I get", "can I get"], justification: "Pytamy o drogę, więc potrzebujemy zwrotu pytającego 'jak dotrzeć/dostać się do...'. Poprawne formy to 'how do I get' lub 'how can I get'." },
+            { gapId: "6.3", prompt: "X: Oh, my mum’s texted me. She’s already in front of the school. I’ll see you on Monday. 6.3. ______ weekend!\nY: Thanks. You too!", correctAnswers: ["Have a nice", "Have a good"], justification: "Jest to pożegnanie przed weekendem, więc typowym zwrotem jest życzenie miłego weekendu, np. 'Have a nice weekend' lub 'Have a good weekend'." }
+        ]
+    },
+    // Set 13: Egzamin Ósmoklasisty, Test Diagnostyczny, Marzec 2021 (OJAP-100-2103)
+    {
+        id: "set13",
+        title: "Egzamin Ósmoklasisty, Test Diagnostyczny, Marzec 2021 (OJAP-100-2103)",
+        task5: [
+             { questionNumber: "5.1", questionText: "Kolega prosi Cię o pomoc. Zgadzasz się. Co mu odpowiesz?", options: ["A. You can’t be more helpful.", "B. Not at all, it was my pleasure.", "C. No problem, where do we start?"], correctAnswer: "C", justification: "Odpowiedź C ('No problem, where do we start?') wyraża zgodę na pomoc i gotowość do działania. Opcja A jest nielogiczna. Opcja B jest odpowiedzią na podziękowanie, a nie zgodą na prośbę o pomoc." },
+             { questionNumber: "5.2", questionText: "Twój kolega jest smutny. Jak zapytasz go o powód zmartwienia?", options: ["A. What’s the matter?", "B. What do you mean?", "C. Why should I worry?"], correctAnswer: "A", justification: "Pytanie A ('What's the matter?') jest standardowym pytaniem o czyjeś samopoczucie lub problem. Opcja B prosi o wyjaśnienie. Opcja C jest pytaniem o powód do własnego zmartwienia." },
+             { questionNumber: "5.3", questionText: "Chcesz namówić koleżankę na wycieczkę rowerową. Jak jej to zaproponujesz?", options: ["A. How long is the bike ride?", "B. Why do you like riding a bike?", "C. Do you want to go for a bike ride?"], correctAnswer: "C", justification: "Pytanie C ('Do you want to go...?') jest bezpośrednią propozycją/zaproszeniem do wspólnej aktywności. Opcja A pyta o czas trwania. Opcja B pyta o powody lubienia jazdy na rowerze." },
+             { questionNumber: "5.4", questionText: "Twoja koleżanka wygrała zawody sportowe. Jak wyrazisz radość z tego powodu?", options: ["A. What a shame!", "B. That’s brilliant!", "C. You’re very rude!"], correctAnswer: "B", justification: "Odpowiedź B ('That's brilliant!') jest wyrazem podziwu i radości z czyjegoś sukcesu. Opcja A wyraża żal. Opcja C jest oskarżeniem o niegrzeczność." }
+        ],
+        task6: [
+             { gapId: "6.1", prompt: "Hey boys! You 6.1. ______ there! It’s dangerous!", correctAnswers: ["shouldn't go", "mustn't go", "can't go", "should not go", "must not go", "cannot go"], justification: "Jest to zakaz lub mocne odradzanie pójścia w dane miejsce z powodu niebezpieczeństwa. Używamy 'shouldn't', 'mustn't' lub 'can't' + 'go'." },
+             { gapId: "6.2", prompt: "What 6.2. ______ of our new history teacher?", correctAnswers: ["do you think"], justification: "Pytanie dotyczy opinii na temat nauczyciela. Standardowy zwrot to 'What do you think of...?'." }
+        ]
+    },
+     // Set 14: Egzamin Ósmoklasisty, 15 Czerwca 2022 (OJAP-100-2206)
+    {
+        id: "set14",
+        title: "Egzamin Ósmoklasisty, 15 Czerwca 2022 (OJAP-100-2206)",
+        task5: [
+             { questionNumber: "5.1", questionText: "Przychodzisz spóźniony(-a) na spotkanie z kolegą. Jak go przeprosisz?", options: ["A. Sorry, you’re too late.", "B. You should at least say sorry.", "C. I’m so sorry for being late."], correctAnswer: "C", justification: "Odpowiedź C jest bezpośrednim przeproszeniem za spóźnienie. Opcja A obwinia drugą osobę. Opcja B jest pouczeniem." },
+             { questionNumber: "5.2", questionText: "Twoja kuzynka pokazuje Ci prezent dla Twojej mamy. Jak wyrazisz opinię na jego temat?", options: ["A. You’re right. Mum’s opinion is the most important.", "B. You’re welcome. I’m glad you like it.", "C. It’s lovely. Mum will like it a lot."], correctAnswer: "C", justification: "Odpowiedź C wyraża pozytywną opinię o prezencie i przewiduje reakcję mamy. Opcja A jest nie na temat. Opcja B jest odpowiedzią na podziękowanie." },
+             { questionNumber: "5.3", questionText: "Koleżanka zaprasza Cię na urodziny. Jak przyjmiesz zaproszenie?", options: ["A. Great! I’ll be there.", "B. Not this time.", "C. I hope you had fun."], correctAnswer: "A", justification: "Odpowiedź A wyraża akceptację zaproszenia i potwierdzenie przybycia. Opcja B to odmowa. Opcja C odnosi się do przeszłości." },
+             { questionNumber: "5.4", questionText: "Kolega zdał ważny egzamin. Jak mu pogratulujesz?", options: ["A. Well done!", "B. Don’t worry!", "C. Take care of it!"], correctAnswer: "A", justification: "Odpowiedź A ('Well done!') to standardowe gratulacje. Opcja B to pocieszenie. Opcja C to pożegnanie/rada." }
+        ],
+        task6: [
+             { gapId: "6.1", prompt: "Y: Coach, 6.1. (ask) ______ you a question?", correctAnswers: ["can I ask", "could I ask", "may I ask"], justification: "Zawodnik pyta trenera o pozwolenie na zadanie pytania. Używamy 'Can/Could/May I ask...?'." },
+             { gapId: "6.2", prompt: "X: I have a better idea. The captain of our football team is great at maths. 6.2. (about) ______ talking to him? I’m sure he will agree to help, and you can keep coming to practice.", correctAnswers: ["How about", "What about"], justification: "Trener składa propozycję/sugestię. Używamy 'How about...?' lub 'What about...?' + forma gerund ('talking')." }
+        ]
+    },
+     // Set 15: Egzamin Ósmoklasisty, 26 Maja 2022 (OJAP-100-2205)
+    {
+        id: "set15",
+        title: "Egzamin Ósmoklasisty, 26 Maja 2022 (OJAP-100-2205)",
+        task5: [
+             { questionNumber: "5.1", questionText: "Twojemu koledze zepsuła się drukarka. Jak zaoferujesz mu pomoc?", options: ["A. Can I borrow your printer?", "B. Would you like to use my printer?", "C. Which printer did you break?"], correctAnswer: "B", justification: "Odpowiedź B ('Would you like to use...?') jest grzeczną ofertą udostępnienia własnej drukarki. Opcja A to prośba o pożyczenie. Opcja C pyta, która drukarka się zepsuła." },
+             { questionNumber: "5.2", questionText: "Twoja koleżanka wybiera się na łyżwy. Jak zaproponujesz wspólne wyjście?", options: ["A. Why don’t we go skating together?", "B. Do you know how to skate?", "C. Are these your skates?"], correctAnswer: "A", justification: "Odpowiedź A ('Why don't we go...?') jest typową formą propozycji wspólnego działania. Opcje B i C są pytaniami niebędącymi propozycją." },
+             { questionNumber: "5.3", questionText: "Kolega prosi Cię o pomoc w rozwiązaniu zadania. Jak mu odmówisz?", options: ["A. I’m afraid that’s not true.", "B. Excuse me, but I don’t know him.", "C. I’m sorry, I don’t know how to do it."], correctAnswer: "C", justification: "Odpowiedź C jest grzeczną odmową pomocy, podając jako powód brak wiedzy/umiejętności. Opcje A i B są nieadekwatne do sytuacji." },
+             { questionNumber: "5.4", questionText: "Twoja koleżanka mówi, że czuje się już lepiej. Jak wyrazisz swoje zadowolenie?", options: ["A. I hope you’ve enjoyed it.", "B. I think I’m very well, thanks.", "C. I’m glad to hear it."], correctAnswer: "C", justification: "Odpowiedź C ('I'm glad to hear it.') wyraża zadowolenie z usłyszanej dobrej wiadomości. Opcja A odnosi się do przyjemności z czegoś. Opcja B jest odpowiedzią na pytanie o nasze samopoczucie." }
+        ],
+        task6: [
+             { gapId: "6.1", prompt: "Really? I 6.1. ______ so.", correctAnswers: ["don't think", "do not think"], justification: "Rozmówca wyraża przeciwną opinię do stwierdzenia 'It's the best comedy...'. Używamy 'I don't think so'." },
+             { gapId: "6.2", prompt: "Your sister looks younger than you. 6.2. ______ she?", correctAnswers: ["How old is"], justification: "Pytanie dotyczy wieku siostry. Poprawna forma to 'How old is she?'." }
+        ]
+    },
+     // Set 16: Egzamin Ósmoklasisty, 27 Maja 2021 (OJAP-100-2105)
+    {
+        id: "set16",
+        title: "Egzamin Ósmoklasisty, 27 Maja 2021 (OJAP-100-2105)",
+        task5: [
+             { questionNumber: "5.1", questionText: "Koleżanka pyta Cię, co powinna wziąć na obóz narciarski. Co jej doradzisz?", options: ["A. You must try the food there.", "B. You need to have a warm sweater.", "C. In my opinion you should practise skiing."], correctAnswer: "B", justification: "Pytanie dotyczy rady, co zabrać. Odpowiedź B doradza zabranie ciepłego swetra. Opcje A i C odnoszą się do innych aspektów obozu." },
+             { questionNumber: "5.2", questionText: "Rozmawiasz z kuzynką o swoim przyjacielu. Jak opiszesz jego wygląd?", options: ["A. He’s good-looking.", "B. He’s looking at my friend.", "C. He’s looking for his glasses."], correctAnswer: "A", justification: "Pytanie dotyczy opisu wyglądu. Odpowiedź A ('He's good-looking.') opisuje wygląd. Opcje B i C opisują czynności." },
+             { questionNumber: "5.3", questionText: "Chcesz pożyczyć aparat fotograficzny od swojej cioci. Jak zapytasz ją o pozwolenie?", options: ["A. Why don’t you borrow my camera?", "B. Will you take care of this camera?", "C. Do you mind if I use your camera?"], correctAnswer: "C", justification: "Pytanie C ('Do you mind if I use...?') jest grzeczną formą pytania o pozwolenie. Opcja A to oferta pożyczenia. Opcja B to pytanie o dbanie o aparat." },
+             { questionNumber: "5.4", questionText: "Twoja koleżanka upiekła ciasto jabłkowe. Jak wyrazisz swoją pozytywną opinię o nim?", options: ["A. It’s the best apple cake I’ve ever had.", "B. Have another piece of the apple cake.", "C. Let’s use my favourite recipe for apple cake."], correctAnswer: "A", justification: "Odpowiedź A jest silnym komplementem wyrażającym bardzo pozytywną opinię. Opcja B to propozycja dokładki. Opcja C jest sugestią użycia przepisu." }
+        ],
+        task6: [
+             { gapId: "6.1", prompt: "Natalie: I’m going swimming, and what about you, John? 6.1. (doing) ______ anything this afternoon?", correctAnswers: ["Are you doing"], justification: "Natalie pyta Johna o jego plany na popołudnie. Używamy czasu Present Continuous do mówienia o zaplanowanych czynnościach w niedalekiej przyszłości, stąd 'Are you doing...?'." },
+             { gapId: "6.2", prompt: "John: No, the black hat is too warm. 6.2. (help) ______ me look for the red one?", correctAnswers: ["Can you help", "Could you help", "Will you help", "Would you help"], justification: "John prosi Natalie o pomoc w szukaniu czapki. Używamy 'Can/Could/Will/Would you help...?' jako prośby." }
+        ]
+    }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+    const dashboardGrid = document.getElementById('dashboard-grid');
+    const dashboardView = document.getElementById('dashboard-view');
+    const taskView = document.getElementById('task-view');
+    const taskSetTitle = document.getElementById('task-set-title');
+    const task5Container = document.getElementById('task5-container');
+    const task6Container = document.getElementById('task6-container');
+    const backToDashboardButton = document.getElementById('back-to-dashboard');
+    const finishSetButton = document.getElementById('finish-set');
+
+    let currentSetId = null;
+    let progressData = loadAllProgress();
+
+    // --- Rendering Functions ---
+
+    function renderDashboard() {
+        dashboardGrid.innerHTML = ''; // Clear existing
+        examData.forEach(set => {
+            const setProgress = progressData[set.id] || { answered: 0, correct: 0, totalTask5: set.task5.length, totalTask6: set.task6.length, task5Answers: {}, task6Answers: {} };
+            const totalTasks = setProgress.totalTask5 + setProgress.totalTask6;
+            const progressPercent = totalTasks > 0 ? Math.round((setProgress.answered / totalTasks) * 100) : 0;
+            const correctnessPercent = setProgress.answered > 0 ? Math.round((setProgress.correct / setProgress.answered) * 100) : 'N/A';
+
+            const card = document.createElement('section');
+            card.className = 'exam-set-card';
+            card.id = set.id;
+            card.innerHTML = `
+                <h3>${set.title}</h3>
+                <div class="progress-info">
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: ${progressPercent}%"></div>
+                    </div>
+                    <span>Postęp: ${progressPercent}%</span> |
+                    <span>Poprawność: ${correctnessPercent === 'N/A' ? 'N/A' : correctnessPercent + '%'}</span>
+                </div>
+                <div class="button-group">
+                    <button class="button start-button" data-setid="${set.id}">Rozpocznij</button>
+                    <button class="button reset-button" data-setid="${set.id}">Resetuj</button>
+                </div>
+            `;
+            dashboardGrid.appendChild(card);
+        });
+
+        // Add event listeners after rendering
+        document.querySelectorAll('.start-button').forEach(button => {
+            button.addEventListener('click', startSet);
+        });
+        document.querySelectorAll('.reset-button').forEach(button => {
+            button.addEventListener('click', resetSet);
+        });
+    }
+
+    function renderTaskView(setId) {
+        currentSetId = setId;
+        const set = examData.find(s => s.id === setId);
+        const setProgress = progressData[setId] || { answered: 0, correct: 0, totalTask5: set.task5.length, totalTask6: set.task6.length, task5Answers: {}, task6Answers: {} };
+
+        if (!set) return;
+
+        taskSetTitle.textContent = set.title;
+        task5Container.innerHTML = '';
+        task6Container.innerHTML = '';
+
+        // Render Task 5
+        set.task5.forEach((q, index) => {
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'task5-question';
+            questionDiv.innerHTML = `<p>${q.questionNumber}. ${q.questionText}</p>`;
+
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options';
+            optionsDiv.dataset.questionIndex = index; // Store index
+
+            q.options.forEach((option, optionIndex) => {
+                const label = document.createElement('label');
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = `task5_${setId}_${index}`;
+                input.value = String.fromCharCode(65 + optionIndex); // A, B, C
+                label.appendChild(input);
+                label.appendChild(document.createTextNode(option));
+                optionsDiv.appendChild(label);
+
+                input.addEventListener('change', handleTask5Answer);
+            });
+
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = 'feedback';
+            feedbackDiv.id = `feedback_task5_${setId}_${index}`;
+
+            questionDiv.appendChild(optionsDiv);
+            questionDiv.appendChild(feedbackDiv);
+            task5Container.appendChild(questionDiv);
+
+            // Restore previous state if exists
+             const savedAnswer = setProgress.task5Answers[`q${index}`];
+             if (savedAnswer) {
+                 const selectedRadio = optionsDiv.querySelector(`input[value="${savedAnswer.answer}"]`);
+                 if (selectedRadio) {
+                     selectedRadio.checked = true;
+                     showTask5Feedback(index, savedAnswer.answer, savedAnswer.isCorrect, q.correctAnswer, q.justification);
+                     disableOptions(optionsDiv); // Disable if already answered
+                 }
+             }
+        });
+
+        // Render Task 6
+        set.task6.forEach((item, index) => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'task6-item';
+            itemDiv.innerHTML = `
+                <p>${item.prompt.replace(item.gapId + '.', `<b>${item.gapId}.</b>`)}</p>
+                <div>
+                    <input type="text" id="input_task6_${setId}_${index}" placeholder="Wpisz odpowiedź...">
+                    <button class="button check-button" data-task-index="${index}">Sprawdź</button>
+                </div>
+                <div class="feedback" id="feedback_task6_${setId}_${index}"></div>
+            `;
+            task6Container.appendChild(itemDiv);
+
+            const checkButton = itemDiv.querySelector('.check-button');
+            checkButton.addEventListener('click', handleTask6Check);
+
+             // Restore previous state if exists
+            const savedAnswerData = setProgress.task6Answers[`q${index}`];
+            if (savedAnswerData) {
+                const inputField = itemDiv.querySelector('input');
+                inputField.value = savedAnswerData.answer;
+                showTask6Feedback(index, savedAnswerData.answer, savedAnswerData.isCorrect, item.correctAnswers, item.justification);
+                inputField.disabled = true;
+                checkButton.disabled = true;
+            }
+        });
+
+        dashboardView.style.display = 'none';
+        taskView.style.display = 'block';
+    }
+
+    // --- Event Handlers ---
+
+    function startSet(event) {
+        const setId = event.target.dataset.setid;
+        renderTaskView(setId);
+    }
+
+     function resetSet(event) {
+        const setId = event.target.dataset.setid;
+        if (confirm(`Czy na pewno chcesz zresetować postęp dla zestawu "${examData.find(s=>s.id===setId).title}"?`)) {
+            delete progressData[setId];
+            saveAllProgress(progressData);
+            renderDashboard(); // Re-render to show reset state
+        }
+    }
+
+    function handleTask5Answer(event) {
+        const selectedRadio = event.target;
+        const optionsDiv = selectedRadio.closest('.options');
+        const questionIndex = parseInt(optionsDiv.dataset.questionIndex);
+        const setId = currentSetId;
+        const set = examData.find(s => s.id === setId);
+        const question = set.task5[questionIndex];
+        const selectedAnswer = selectedRadio.value;
+        const isCorrect = selectedAnswer === question.correctAnswer;
+
+        showTask5Feedback(questionIndex, selectedAnswer, isCorrect, question.correctAnswer, question.justification);
+        disableOptions(optionsDiv);
+        updateProgress(setId, `task5_q${questionIndex}`, selectedAnswer, isCorrect);
+    }
+
+
+    function handleTask6Check(event) {
+        const button = event.target;
+        const taskIndex = parseInt(button.dataset.taskIndex);
+        const setId = currentSetId;
+        const set = examData.find(s => s.id === setId);
+        const item = set.task6[taskIndex];
+        const inputField = document.getElementById(`input_task6_${setId}_${taskIndex}`);
+        const userAnswer = inputField.value.trim(); // Trim whitespace
+
+        if (!userAnswer) return; // Don't check empty answers
+
+        // Case-insensitive check against all correct answers
+        const isCorrect = item.correctAnswers.some(correct => correct.toLowerCase() === userAnswer.toLowerCase());
+
+        showTask6Feedback(taskIndex, userAnswer, isCorrect, item.correctAnswers, item.justification);
+        inputField.disabled = true;
+        button.disabled = true;
+        updateProgress(setId, `task6_q${taskIndex}`, userAnswer, isCorrect);
+    }
+
+    function goBackToDashboard() {
+        renderDashboard(); // Update dashboard with latest progress
+        taskView.style.display = 'none';
+        dashboardView.style.display = 'block';
+        currentSetId = null;
+    }
+
+    // --- Feedback & UI Update Functions ---
+
+    function showTask5Feedback(qIndex, selected, correct, correctAnswer, justification) {
+        const feedbackDiv = document.getElementById(`feedback_task5_${currentSetId}_${qIndex}`);
+        const optionsLabels = document.querySelectorAll(`#task5-container .options[data-question-index="${qIndex}"] label`);
+
+        optionsLabels.forEach(label => {
+            const radio = label.querySelector('input');
+            if (radio.value === correctAnswer) {
+                label.classList.add('correct'); // Highlight correct answer regardless
+            }
+            if (radio.value === selected) {
+                label.classList.add('selected');
+                if (!correct) {
+                    label.classList.add('incorrect');
+                }
+            }
+        });
+
+        let feedbackHTML = `<strong>${correct ? 'Poprawnie!' : 'Niepoprawnie.'}</strong>`;
+        feedbackHTML += `<p>${justification}</p>`;
+        feedbackDiv.innerHTML = feedbackHTML;
+        feedbackDiv.className = `feedback ${correct ? 'correct-feedback' : 'incorrect-feedback'}`;
+        feedbackDiv.style.display = 'block';
+    }
+
+     function showTask6Feedback(qIndex, userAnswer, isCorrect, correctAnswers, justification) {
+        const feedbackDiv = document.getElementById(`feedback_task6_${currentSetId}_${qIndex}`);
+        let feedbackHTML = `<strong>${isCorrect ? 'Poprawnie!' : 'Niepoprawnie.'}</strong>`;
+
+        if (!isCorrect) {
+             feedbackHTML += `<p>Twoja odpowiedź: "${userAnswer}"</p>`;
+        }
+         feedbackHTML += `<p>Poprawna(e) odpowiedź(i): <ul>${correctAnswers.map(ans => `<li>${ans}</li>`).join('')}</ul></p>`;
+         feedbackHTML += `<p>Uzasadnienie: ${justification}</p>`;
+
+        feedbackDiv.innerHTML = feedbackHTML;
+        feedbackDiv.className = `feedback ${isCorrect ? 'correct-feedback' : 'incorrect-feedback'}`;
+        feedbackDiv.style.display = 'block';
+    }
+
+    function disableOptions(optionsDiv) {
+        optionsDiv.querySelectorAll('input[type="radio"]').forEach(input => {
+            input.disabled = true;
+            input.closest('label').style.cursor = 'default'; // Indicate non-interactivity
+             input.closest('label').onclick = (e) => e.preventDefault(); // Prevent click effects
+        });
+    }
+
+    // --- Progress & Local Storage ---
+
+    function loadAllProgress() {
+        const data = localStorage.getItem('examProgressData');
+        return data ? JSON.parse(data) : {};
+    }
+
+    function saveAllProgress(data) {
+        localStorage.setItem('examProgressData', JSON.stringify(data));
+    }
+
+     function updateProgress(setId, questionId, answer, isCorrect) {
+        if (!progressData[setId]) {
+             const set = examData.find(s => s.id === setId);
+            progressData[setId] = {
+                answered: 0,
+                correct: 0,
+                totalTask5: set.task5.length,
+                totalTask6: set.task6.length,
+                task5Answers: {},
+                task6Answers: {}
+            };
+        }
+
+        const setProgress = progressData[setId];
+        const taskType = questionId.startsWith('task5') ? 'task5Answers' : 'task6Answers';
+        const qKey = questionId.substring(questionId.indexOf('_q') + 1); // e.g., q0, q1
+
+        // Only count progress if it wasn't answered before
+        if (!setProgress[taskType][qKey]) {
+            setProgress.answered += 1;
+            if (isCorrect) {
+                setProgress.correct += 1;
+            }
+             // Store the answer and its correctness
+             setProgress[taskType][qKey] = { answer: answer, isCorrect: isCorrect };
+        }
+
+
+        saveAllProgress(progressData);
+        // Optionally update dashboard immediately if needed, but rendering on return is simpler
+    }
+
+
+    // --- Initial Setup ---
+    renderDashboard();
+    backToDashboardButton.addEventListener('click', goBackToDashboard);
+    finishSetButton.addEventListener('click', goBackToDashboard); // Same action as back
+
+});
+
+</script>
+</body>
+</html>
