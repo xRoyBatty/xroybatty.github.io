@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Egzamin Ósmoklasisty - Zadania 12 i 13</title>
+    <style>
+:root {
+    --primary-color: #4a90e2; /* Blue */
+    --secondary-color: #f5a623; /* Orange */
+    --background-color: #f4f7f6; /* Light grey */
+    --card-background: #ffffff;
+    --text-color: #333;
+    --correct-color: #28a745; /* Green */
+    --incorrect-color: #dc3545; /* Red */
+    --feedback-bg: #e9ecef;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --font-family: 'Poppins', sans-serif;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+main#app-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+#dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.exam-set-card {
+    background-color: var(--card-background);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--box-shadow);
+    transition: transform 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.exam-set-card:hover {
+    transform: translateY(-5px);
+}
+
+.exam-set-card h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    min-height: 60px; /* Ensure titles have space */
+}
+
+.progress-info {
+    margin: 1rem 0;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.progress-bar-container {
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    height: 10px;
+    margin-bottom: 0.5rem;
+}
+
+.progress-bar {
+    background-color: var(--secondary-color);
+    height: 100%;
+    width: 0%; /* Updated by JS */
+    transition: width 0.3s ease;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.button {
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.start-button {
+    background-color: var(--primary-color);
+    color: white;
+    flex-grow: 1;
+}
+
+.start-button:hover {
+    background-color: #357abd;
+}
+
+.reset-button {
+    background-color: #ccc;
+    color: var(--text-color);
+}
+
+.reset-button:hover {
+    background-color: #bbb;
+}
+
+/* Task View Styles */
+#task-view {
+    background-color: var(--card-background);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-top: 2rem;
+}
+
+#task-set-title {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.task-container { /* Ogólny kontener dla zadań 12 i 13 */
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.task-container p.instruction {
+    font-style: italic;
+    color: #555;
+    margin-bottom: 1rem;
+}
+
+.task-container .question-text { /* Dla tekstu zadania 12 */
+    font-weight: normal; /* Zmienione z 600, aby tekst nie był pogrubiony */
+    margin-bottom: 1rem;
+    white-space: pre-wrap; /* Zachowuje formatowanie akapitów */
+}
+
+
+.task13-item p { /* Dla treści zadania 13 */
+    font-weight: 600; /* Pogrubienie dla całego zdania z luką */
+    margin-bottom: 1rem;
+}
+
+
+.options label {
+    display: block;
+    margin-bottom: 0.75rem;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.options label:hover {
+    background-color: #f9f9f9;
+}
+
+.options input[type="radio"] {
+    margin-right: 0.5rem;
+    display: none; /* Hide radio button, style the label */
+}
+
+.options label.selected {
+    border-color: var(--primary-color);
+    background-color: #e7f3ff;
+}
+
+.options label.correct {
+    border-color: var(--correct-color);
+    background-color: #e9f7ef;
+}
+
+.options label.incorrect {
+    border-color: var(--incorrect-color);
+    background-color: #fbe9e7;
+}
+
+.task13-item input[type="text"] { /* Dostosowane dla zadania 13 */
+    width: 200px; /* Można dostosować szerokość */
+    padding: 0.7rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 0 0.3rem; /* Dodaje mały margines wokół pola tekstowego */
+    font-family: var(--font-family);
+    display: inline-block; /* Aby input był w linii z tekstem */
+    vertical-align: baseline;
+}
+
+
+.check-button {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.check-button:hover {
+    background-color: #e08e0b;
+}
+
+.feedback {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 4px;
+    background-color: var(--feedback-bg);
+    font-size: 0.9rem;
+    display: none; /* Hidden by default */
+}
+
+.feedback.correct-feedback {
+    border-left: 5px solid var(--correct-color);
+    background-color: #e9f7ef;
+}
+
+.feedback.incorrect-feedback {
+    border-left: 5px solid var(--incorrect-color);
+    background-color: #fbe9e7;
+}
+
+.feedback strong {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.feedback.correct-feedback strong {
+    color: var(--correct-color);
+}
+
+.feedback.incorrect-feedback strong {
+    color: var(--incorrect-color);
+}
+
+.feedback ul {
+    margin-top: 0.5rem;
+    padding-left: 20px;
+}
+
+button:disabled, input:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.back-button, .finish-button {
+    display: block;
+    margin: 2rem auto 0 auto;
+    background-color: #6c757d; /* Grey */
+    color: white;
+}
+.back-button:hover, .finish-button:hover {
+    background-color: #5a6268;
+}
+
+footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding: 1rem;
+    font-size: 0.9rem;
+    color: #777;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 2rem 0;
+}
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>Egzamin Ósmoklasisty: Interaktywne Zadania 12 i 13</h1>
+    </header>
+
+    <main id="app-container">
+        <!-- Dashboard View -->
+        <section id="dashboard-view">
+            <h2>Wybierz zestaw egzaminacyjny:</h2>
+            <div id="dashboard-grid">
+                <!-- Dashboard sections will be generated by JS -->
+            </div>
+        </section>
+
+        <!-- Task View -->
+        <section id="task-view" style="display: none;">
+            <button id="back-to-dashboard" class="button back-button">← Powrót do panelu</button>
+            <h2 id="task-set-title">Tytuł Zestawu</h2>
+            <div id="task-content">
+                <h3>Zadanie 12</h3>
+                <div id="task12-container" class="task-container">
+                    <!-- Task 12 questions will be generated by JS -->
+                </div>
+                <hr>
+                <h3>Zadanie 13</h3>
+                <div id="task13-container" class="task-container">
+                    <!-- Task 13 items will be generated by JS -->
+                </div>
+            </div>
+             <button id="finish-set" class="button finish-button">Zakończ Zestaw (Wróć)</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>Interaktywny Trener Egzaminu Ósmoklasisty</p>
+    </footer>
+
+    <script>
+    const examData = [
+    // Set 1: Próbny Egzamin Ósmoklasisty, Marzec-Kwiecień 2020 (OJAP-100)
+    {
+        id: "set1",
+        title: "Próbny Egzamin Ósmoklasisty, Marzec-Kwiecień 2020 (OJAP-100)",
+        task12: {
+            instruction: "Przeczytaj tekst. Wybierz poprawne uzupełnienie luk 12.1.–12.4. Zakreśl literę A, B lub C.",
+            text: `Dear Brett,
+Thanks for your email. Wow, you do lots of sports at school in Canada. I’d love 12.1._____
+ice hockey one day.
+We do lots of sports at our school, too. We’ve got a swimming pool at school and our
+class 12.2._____ swimming every Wednesday. We also play tennis, volleyball and football,
+but football in Australia is different than soccer. You can touch the ball 12.3._____ your
+hands!
+There are lots of after-school sports clubs in Australia, too. I go to a surfing club after
+school on Tuesdays and Thursdays. We go to the beach and learn 12.4._____ to surf. It’s
+great fun! Can you surf in your country?
+Write soon,
+Rob
+To: Brett Walker
+From: Rob Smith
+Subject: RE: sports
+adapted from https://learnenglishteens.britishcouncil.org`,
+            questions: [
+                { number: "12.1.", options: ["A. play", "B. to play", "C. playing"], correctAnswer: "B", justification: "Po 'I'd love' (would love) używamy bezokolicznika z 'to'." },
+                { number: "12.2.", options: ["A. goes", "B. is going", "C. have gone"], correctAnswer: "A", justification: "Mowa o regularnej czynności (co środę), więc używamy czasu Present Simple. 'Our class' to 3 os. l.poj., stąd 'goes'." },
+                { number: "12.3.", options: ["A. by", "B. with", "C. on"], correctAnswer: "B", justification: "W tym kontekście 'touch the ball with your hands' oznacza 'dotknąć piłki rękami'." },
+                { number: "12.4.", options: ["A. while", "B. how", "C. which"], correctAnswer: "B", justification: "Uczymy się 'jak' surfować, stąd 'learn how to surf'." }
+            ]
+        },
+        task13: {
+            instruction: "Przetłumacz na język angielski fragmenty podane w nawiasach, tak aby otrzymać zdania logiczne i gramatycznie poprawne. Wymagana jest pełna poprawność ortograficzna wpisywanych fragmentów zdań. Uwaga! W każdą lukę możesz wpisać maksymalnie trzy wyrazy.",
+            items: [
+                { number: "13.1.", sentenceStart: "I promise that I (nie zadzwonię) ", sentenceEnd: " you so late next time!", correctAnswers: ["will not call", "won't call"], justification: "Obietnica dotycząca przyszłości, forma przecząca od 'will call'." },
+                { number: "13.2.", sentenceStart: "Amy, this jam is (zbyt słodki) ", sentenceEnd: ". I can’t use it for this cake.", correctAnswers: ["too sweet"], justification: "'Zbyt słodki' tłumaczymy jako 'too sweet'." },
+                { number: "13.3.", sentenceStart: "My class teacher asked us (żeby pomóc) ", sentenceEnd: " her with collecting money for charity.", correctAnswers: ["to help"], justification: "Po 'asked us' (poprosił nas) używamy bezokolicznika z 'to' w celu wyrażenia celu/prośby." },
+                { number: "13.4.", sentenceStart: "Elsie, (czy odwiedziłaś) ", sentenceEnd: " Mrs Johnson yesterday?", correctAnswers: ["did you visit"], justification: "Pytanie o czynność w przeszłości (yesterday), używamy operatora 'did' i formy podstawowej czasownika." }
+            ]
+        }
+    },
+    // Set 2: Ogólnopolski Próbny Egzamin Ósmoklasisty z Operonem i British Council, Grudzień 2019
+    {
+        id: "set2",
+        title: "Ogólnopolski Próbny Egzamin Ósmoklasisty z Operonem i British Council, Grudzień 2019",
+        task12: {
+            instruction: "Przeczytaj tekst. Wybierz poprawne uzupełnienie luk 12.1.–12.4. Zakreśl jedną z liter: A, B albo C.",
+            text: `Anna,
+Guess what! I was at the optician’s with my mum yesterday and 12.1. _____ turned out
+that I need glasses. I wanted to choose the frames when I was there, but I didn’t know
+which of them would suit me best because they come in many shapes and colours! And
+then I thought about you – you wear glasses too and you have 12.2._____ a good taste in
+clothes and accessories. So, 12.3._____ you help me in shopping for my frames? Let me
+know if you have some free time 12.4._____ Friday or Saturday.
+Love,
+Tracy
+To: Anna Murray
+From: Tracy Smith
+Subject: My new glasses`,
+            questions: [
+                { number: "12.1.", options: ["A. they", "B. it", "C. we"], correctAnswer: "B", justification: "Odnosimy się do faktu, że potrzebuje okularów - 'it turned out'." },
+                { number: "12.2.", options: ["A. really", "B. so", "C. such"], correctAnswer: "C", justification: "Konstrukcja 'have such a good taste' oznacza 'mieć tak dobry gust'." },
+                { number: "12.3.", options: ["A. did", "B. do", "C. would"], correctAnswer: "C", justification: "Grzeczna prośba o pomoc, używamy 'Would you help me...?'." },
+                { number: "12.4.", options: ["A. on", "B. from", "C. for"], correctAnswer: "A", justification: "Pytamy o wolny czas 'w' piątek lub sobotę - 'on Friday or Saturday'." }
+            ]
+        },
+        task13: {
+            instruction: "Uzupełnij zdania 13.1.–13.4. Wykorzystaj w odpowiedniej formie wyrazy podane w nawiasach. Nie należy zmieniać kolejności podanych wyrazów, trzeba natomiast – jeżeli jest to konieczne – dodać inne wyrazy, tak aby otrzymać zdania logiczne i gramatycznie poprawne. Wymagana jest pełna poprawność ortograficzna wpisywanych fragmentów. Uwaga! W każdą lukę możesz wpisać maksymalnie trzy wyrazy, wliczając w to wyrazy już podane.",
+            items: [
+                { number: "13.1.", sentenceStart: "Mike was waiting for his sister when (I/meet/he) ", sentenceEnd: " at the train station last weekend.", correctAnswers: ["I met him"], justification: "Czynność dokonana w przeszłości, prosta forma czasu Past Simple." },
+                { number: "13.2.", sentenceStart: "Susie, which sport (John/prefer) ", sentenceEnd: ": volleyball or football?", correctAnswers: ["does John prefer"], justification: "Pytanie o preferencje w czasie Present Simple, dla 3 os. l.poj. używamy operatora 'does'." },
+                { number: "13.3.", sentenceStart: "I hope there (be) ", sentenceEnd: " a lot of people at my birthday party next Saturday.", correctAnswers: ["will be"], justification: "Wyrażenie nadziei dotyczącej przyszłości, używamy 'will be'." },
+                { number: "13.4.", sentenceStart: "It (have/never/snow) ", sentenceEnd: " in my city.", correctAnswers: ["has never snowed"], justification: "Mówimy o doświadczeniu (lub jego braku) do chwili obecnej, używamy czasu Present Perfect." }
+            ]
+        }
+    },
+    // Set 3: Egzamin Ósmoklasisty, 14 Czerwca 2023 (OJAP-100-2306)
+    {
+        id: "set3",
+        title: "Egzamin Ósmoklasisty, 14 Czerwca 2023 (OJAP-100-2306)",
+        task12: {
+            instruction: "Przeczytaj tekst. Wybierz poprawne uzupełnienie luk 12.1.–12.3. Zakreśl jedną z liter: A, B albo C.",
+            text: `LOST NO MORE!
+Do you often lose things? Do you spend hours looking for your keys or wallet? If so, today
+we 12.1. _____ a great offer for you – a Bluetooth tracker for everyday items. It costs just
+$15.00. This is 25% 12.2. _____ than usual. Spend a little money today and you will save
+yourself a lot of trouble in the future! All you need to do is attach it to an item you often lose.
+Our tracker comes in a few different 12.3. _____. And it works for 9 months without the need
+to change the battery.`,
+            questions: [
+                { number: "12.1.", options: ["A. having", "B. has", "C. have"], correctAnswer: "C", justification: "Mówimy o ofercie, którą 'my mamy' (we have) dzisiaj." },
+                { number: "12.2.", options: ["A. cheap", "B. cheaper", "C. the cheapest"], correctAnswer: "B", justification: "Porównujemy cenę obecną z normalną ('than usual'), więc używamy stopnia wyższego przymiotnika 'cheaper'." },
+                { number: "12.3.", options: ["A. colour’s", "B. colours", "C. colour"], correctAnswer: "B", justification: "Mowa o kilku różnych (a few different) kolorach, więc używamy liczby mnogiej 'colours'." }
+            ]
+        },
+        task13: {
+            instruction: "Wykorzystując wyrazy podane WIELKIMI literami, uzupełnij każde zdanie z luką, tak aby zachować sens zdania wyjściowego (13.1.–13.3.). Wymagana jest pełna poprawność ortograficzna i gramatyczna wpisywanych fragmentów zdań. Uwaga! Nie zmieniaj formy podanych wyrazów. W każdą lukę możesz wpisać maksymalnie cztery wyrazy, wliczając w to wyraz już podany.",
+            items: [
+                { number: "13.1.", sentenceStart: "There’s nothing to eat for breakfast, so I’ll go to the shop.\nANYTHING\nWe ", sentenceEnd: " to eat for breakfast, so I’ll go to the shop.", correctAnswers: ["don't have anything", "do not have anything"], justification: "Zdanie wyjściowe 'nic do jedzenia' można wyrazić jako 'nie mamy niczego' - 'don't have anything'." },
+                { number: "13.2.", sentenceStart: "The bookshop is close to my house.\nFAR\nThe bookshop is ", sentenceEnd: " my house.", correctAnswers: ["not far from", "isn't far from"], justification: "'Blisko mojego domu' oznacza 'nie jest daleko od mojego domu' - 'is not far from'." },
+                { number: "13.3.", sentenceStart: "Do you plan to visit your grandma next week?\nGOING\n", sentenceEnd: " visit your grandma next week?", correctAnswers: ["Are you going to"], justification: "Pytanie o plany na przyszłość można wyrazić za pomocą konstrukcji 'be going to'. W pytaniu: 'Are you going to...?'." }
+            ]
+        }
+    },
+    // Set 4: Egzamin Ósmoklasisty, 23 Kwietnia 2020 (OJAP-100-2004)
+    {
+        id: "set4",
+        title: "Egzamin Ósmoklasisty, 23 Kwietnia 2020 (OJAP-100-2004)",
+        task12: {
+            instruction: "Przeczytaj tekst. Wybierz poprawne uzupełnienie luk 12.1.–12.4. Zakreśl jedną z liter: A, B albo C.",
+            text: `The doughnut is the most famous American sweet snack. Millions
+are sold each year. But 12.1. _____ is there a hole in the middle of the doughnut? There are
+two stories that explain the doughnut’s hole. One is about a young sailor, Hanson Gregory,
+who 12.2. _____ making a hole in the middle so that the inside of the doughnut would cook
+as evenly as the outside. The 12.3. _____ story is that doughnuts took too much space in
+bakeries. So to save it, the bakers in New York decided to sell 12.4. _____ on long wooden
+sticks. That’s how the holes in doughnuts became popular.
+Na podstawie: wonderopolis.org`,
+            questions: [
+                { number: "12.1.", options: ["A. what", "B. where", "C. why"], correctAnswer: "C", justification: "Pytamy o przyczynę, dlaczego pączek ma dziurkę." },
+                { number: "12.2.", options: ["A. suggested", "B. happened", "C. thought"], correctAnswer: "A", justification: "Marynarz 'zasugerował' zrobienie dziurki." },
+                { number: "12.3.", options: ["A. only", "B. other", "C. every"], correctAnswer: "B", justification: "'The other story' - druga historia." },
+                { number: "12.4.", options: ["A. they", "B. them", "C. their"], correctAnswer: "B", justification: "Piekarze zdecydowali się sprzedawać 'je' (pączki - them) na patyczkach." }
+            ]
+        },
+        task13: {
+            instruction: "Przetłumacz na język angielski fragmenty podane w nawiasach, tak aby otrzymać zdania logiczne i gramatycznie poprawne. Wymagana jest pełna poprawność ortograficzna wpisywanych fragmentów zdań. Uwaga! W każdą lukę możesz wpisać maksymalnie trzy wyrazy.",
+             items: [
+                { number: "13.1.", sentenceStart: "I promise that I (nie zadzwonię) ", sentenceEnd: " you so late next time!", correctAnswers: ["will not call", "won't call"], justification: "Obietnica dotycząca przyszłości, forma przecząca od 'will call'." },
+                { number: "13.2.", sentenceStart: "Amy, this jam is (zbyt słodki) ", sentenceEnd: ". I can’t use it for this cake.", correctAnswers: ["too sweet"], justification: "'Zbyt słodki' tłumaczymy jako 'too sweet'." },
+                { number: "13.3.", sentenceStart: "My class teacher asked us (żeby pomóc) ", sentenceEnd: " her with collecting money for charity.", correctAnswers: ["to help"], justification: "Po 'asked us' (poprosił nas) używamy bezokolicznika z 'to' w celu wyrażenia celu/prośby." },
+                { number: "13.4.", sentenceStart: "Elsie, (czy odwiedziłaś) ", sentenceEnd: " Mrs Johnson yesterday?", correctAnswers: ["did you visit"], justification: "Pytanie o czynność w przeszłości (yesterday), używamy operatora 'did' i formy podstawowej czasownika." }
+            ]
+        }
+    },
+    // Set 5: Egzamin Ósmoklasisty, 20 Grudnia 2018 (OJAP-100-1812)
+    {
+        id: "set5",
+        title: "Egzamin Ósmoklasisty, 20 Grudnia 2018 (OJAP-100-1812)",
+        task12: {
+            instruction: "Przeczytaj tekst. Wybierz poprawne uzupełnienie luk 12.1.–12.4. Zakreśl jedną z liter: A, B albo C.",
+            text: `PAUL’S BLOG
+Last Tuesday afternoon, I decided 12.1. _____ a movie at a small cinema near my school.
+When I got there, the trailers had started and 12.2. _____ was already dark inside. I found
+my seat and sat down. I didn’t expect many people to be there and I was really 12.3. _____
+when the lights came up at the end. It turned out that I was sitting behind my classmate.
+When we looked 12.4. _____ each other, we started laughing. After the film we went for
+a pizza together and next Tuesday we’re going to the cinema again.`,
+            questions: [
+                { number: "12.1.", options: ["A. seeing", "B. to see", "C. see"], correctAnswer: "B", justification: "Po 'decided' używamy bezokolicznika z 'to'." },
+                { number: "12.2.", options: ["A. this", "B. what", "C. it"], correctAnswer: "C", justification: "'It was already dark inside' - 'it' odnosi się do sytuacji, atmosfery w kinie." },
+                { number: "12.3.", options: ["A. surprise", "B. surprised", "C. surprising"], correctAnswer: "B", justification: "Mówimy o uczuciu osoby ('I was really surprised') - byłem zaskoczony." },
+                { number: "12.4.", options: ["A. at", "B. for", "C. on"], correctAnswer: "A", justification: "Zwrot 'look at each other' oznacza 'patrzeć na siebie nawzajem'." }
+            ]
+        },
+        task13: {
+            instruction: "Wykorzystując wyrazy podane WIELKIMI literami, uzupełnij każde zdanie z luką, tak aby zachować sens zdania wyjściowego (13.1.–13.4.). Wymagana jest pełna poprawność ortograficzna i gramatyczna wpisywanych fragmentów zdań. Uwaga! Nie zmieniaj formy podanych wyrazów. W każdą lukę możesz wpisać maksymalnie trzy wyrazy, wliczając w to wyraz już podany.",
+            items: [
+                { number: "13.1.", sentenceStart: "I didn’t win the race because I was too slow.\nFAST\nI wasn’t ", sentenceEnd: " to win the race.", correctAnswers: ["fast enough"], justification: "Skoro byłem za wolny, to znaczy, że nie byłem 'wystarczająco szybki' - 'fast enough'." },
+                { number: "13.2.", sentenceStart: "Bob invited me to his birthday party yesterday.\nINVITED\nI ", sentenceEnd: " to Bob’s birthday party yesterday.", correctAnswers: ["was invited"], justification: "Zdanie w stronie biernej - 'zostałem zaproszony' - 'I was invited'." },
+                { number: "13.3.", sentenceStart: "I last went to the theatre in December 2016.\nTWO\nI haven’t been to the theatre ", sentenceEnd: ".", correctAnswers: ["for two years"], justification: "Od grudnia 2016 do momentu wypowiedzi minęły (lub mijają) dwa lata. 'For two years' oznacza 'od dwóch lat' (w kontekście Present Perfect)." },
+                { number: "13.4.", sentenceStart: "How long are you going to stay here?\nTIME\n", sentenceEnd: " are you going to spend here?", correctAnswers: ["How much time"], justification: "'Jak długo' można również zapytać 'Ile czasu' - 'How much time'." }
+            ]
+        }
+    },
+    // Set 6: Egzamin Ósmoklasisty, Test Diagnostyczny, 4 Grudnia 2024 (OJAP-100-2412)
+    {
+        id: "set6",
+        title: "Egzamin Ósmoklasisty, Test Diagnostyczny, 4 Grudnia 2024 (OJAP-100-2412)",
+        task12: {
+            instruction: "Przeczytaj tekst. Wybierz poprawne uzupełnienie luk 12.1.–12.3. Zakreśl jedną z liter: A, B albo C.",
+            text: `WALLET FOUND IN SNOW
+Laura Degnon from Maryland, USA, wants to publicly thank the person who returned
+a wallet which her son, Jake, had lost. Jake was driving back to university after the New
+Year break. On the way, he decided 12.1. _____ at a supermarket to buy a snack. Then
+he continued his journey. In the evening, he realized that his wallet was missing.
+It contained his student ID and quite a lot of money.
+Two days later, Laura, Jake’s mother, heard the doorbell ring and 12.2. _____ she
+opened the door, she saw a man holding the wallet. She couldn’t believe her eyes.
+The man had found it in the supermarket car park. In the wallet there was a piece of
+paper with the family’s address on it. The man drove 20 miles to 12.3. _____ house to
+give the wallet back.
+Na podstawie: www.goodnewsnetwork.org`,
+            questions: [
+                { number: "12.1.", options: ["A. stopping", "B. stop", "C. to stop"], correctAnswer: "C", justification: "Po 'decided' używamy bezokolicznika z 'to' - 'decided to stop'." },
+                { number: "12.2.", options: ["A. when", "B. until", "C. during"], correctAnswer: "A", justification: "'When' (kiedy) łączy dwa zdarzenia w czasie." },
+                { number: "12.3.", options: ["A. them", "B. theirs", "C. their"], correctAnswer: "C", justification: "Mowa o 'ich' domu (domu rodziny) - 'their house'." }
+            ]
+        },
+        task13: {
+            instruction: "Przetłumacz na język angielski fragmenty podane w nawiasach, tak aby otrzymać zdania logiczne i gramatycznie poprawne. Wymagana jest pełna poprawność ortograficzna wpisywanych fragmentów zdań. Uwaga! W każdą lukę możesz wpisać maksymalnie trzy wyrazy.",
+            items: [
+                { number: "13.1.", sentenceStart: "Amy, (czy jesteś zajęta) ", sentenceEnd: " right now?", correctAnswers: ["are you busy"], justification: "'Czy jesteś zajęta' tłumaczymy jako 'are you busy'." },
+                { number: "13.2.", sentenceStart: "Do you know the girl (która wygrała) ", sentenceEnd: " the writing competition last year?", correctAnswers: ["who won"], justification: "'Która wygrała' - używamy zaimka względnego 'who' i czasu Past Simple 'won'." },
+                { number: "13.3.", sentenceStart: "This house (był sprzedany) ", sentenceEnd: " for a lot of money two months ago.", correctAnswers: ["was sold"], justification: "Zdanie w stronie biernej w czasie Past Simple - 'był sprzedany' - 'was sold'." }
+            ]
+        }
+    },
+    // Set 7: Egzamin Ósmoklasisty, 12 Czerwca 2024 (OJAP-100-2406)
+    {
+        id: "set7",
+        title: "Egzamin Ósmoklasisty, 12 Czerwca 2024 (OJAP-100-2406)",
+        task12: {
+            instruction: "Przeczytaj tekst. Wybierz poprawne uzupełnienie luk 12.1.–12.3. Zakreśl jedną z liter: A, B albo C.",
+            text: `THE HISTORY OF MINECRAFT
+The story of Minecraft began in the 1980s in Stockholm, Sweden. Markus Persson’s
+father had one of the first personal computers and Markus learned how 12.1. _____
+programs when he was only seven years old. He produced his first video game at
+the age of eight. In May 2009, Markus invented a new game and called it Minecraft.
+Since then millions of people 12.2. _____ it. What is the secret of Minecraft’s success?
+Unlike other games, its rules are so simple that 12.3. _____ explanations are necessary.
+Players just use their imagination to create anything they want.`,
+            questions: [
+                { number: "12.1.", options: ["A. write", "B. to write", "C. writing"], correctAnswer: "B", justification: "Nauczył się 'jak pisać' programy - 'learned how to write'." },
+                { number: "12.2.", options: ["A. have played", "B. were played", "C. will play"], correctAnswer: "A", justification: "Od tamtej pory miliony ludzi 'grały' (i nadal grają) - czas Present Perfect 'have played'." },
+                { number: "12.3.", options: ["A. any", "B. many", "C. no"], correctAnswer: "C", justification: "Zasady są tak proste, że 'żadne' wyjaśnienia nie są potrzebne - 'no explanations'." }
+            ]
+        },
+        task13: {
+            instruction: "Uzupełnij zdania 13.1.–13.3. Wykorzystaj w odpowiedniej formie wyrazy podane w nawiasach. Nie należy zmieniać kolejności podanych wyrazów, trzeba natomiast – jeśli jest to konieczne – dodać inne wyrazy, tak aby otrzymać zdania logiczne i gramatycznie poprawne. Wymagana jest pełna poprawność ortograficzna wpisywanych fragmentów. Uwaga! W każdą lukę możesz wpisać maksymalnie cztery wyrazy, wliczając w to wyrazy już podane.",
+            items: [
+                { number: "13.1.", sentenceStart: "My friend (not / like) ", sentenceEnd: " eating vegetables when he was a child.", correctAnswers: ["did not like", "didn't like"], justification: "Mowa o czynności w przeszłości (kiedy był dzieckiem), forma przecząca czasu Past Simple." },
+                { number: "13.2.", sentenceStart: "I don’t have time to find the book now. I promise that I (look / it) ", sentenceEnd: " tomorrow morning.", correctAnswers: ["will look for it"], justification: "Obietnica dotycząca przyszłości, używamy 'will'. Czasownik 'look for' oznacza 'szukać'." },
+                { number: "13.3.", sentenceStart: "If he (win / next / match) ", sentenceEnd: ", he will get a gold medal.", correctAnswers: ["wins the next match"], justification: "Pierwszy okres warunkowy, po 'if' używamy czasu Present Simple (dla 3 os. l.poj. 'wins')." }
+            ]
+        }
+    },
+    // Set 8: Egzamin Ósmoklasisty, 25 Maja 2023 (OJAP-100-2305)
+    {
+        id: "set8",
+        title: "Egzamin Ósmoklasisty, 25 Maja 2023 (OJAP-100-2305)",
+        task12: {
+            instruction: "Przeczytaj tekst. Wybierz poprawne uzupełnienie luk 12.1.–12.3. Zakreśl jedną z liter: A, B albo C.",
+            text: `A GREAT PLACE FOR LEGO FANS
+The LEGO House is a huge building filled with
+25 million bricks. It was created 12.1. _____ Lego fans
+the best experience ever. It was opened 12.2. _____
+September 2017. Also known as “Home of the Brick”,
+this wonderful place is located in Billund, Denmark,
+where Lego was invented. In the LEGO House there
+are six different zones. Each zone offers a different
+activity like programming robots, building sea animals and constructing racing cars. You can
+visit the LEGO House all year round, except for 12.3. _____ days during the Christmas
+holidays.
+Na podstawie: www.bbc.co.uk; www.thetimes.co.uk`,
+            questions: [
+                { number: "12.1.", options: ["A. give", "B. to give", "C. given"], correctAnswer: "B", justification: "Został stworzony, 'aby dać' fanom Lego... - konstrukcja celu z 'to give'." },
+                { number: "12.2.", options: ["A. in", "B. on", "C. at"], correctAnswer: "A", justification: "Z miesiącami i latami używamy przyimka 'in' - 'in September 2017'." },
+                { number: "12.3.", options: ["A. more", "B. a little", "C. a few"], correctAnswer: "C", justification: "Mowa o policzalnej liczbie dni ('kilku dniach') - 'a few days'." }
+            ]
+        },
+        task13: {
+            instruction: "Uzupełnij zdania 13.1.–13.3. Wykorzystaj w odpowiedniej formie wyrazy podane w nawiasach. Nie należy zmieniać kolejności podanych wyrazów, trzeba natomiast – jeśli jest to konieczne – dodać inne wyrazy, tak aby otrzymać zdania logiczne i gramatycznie poprawne. Wymagana jest pełna poprawność ortograficzna wpisywanych fragmentów. Uwaga! W każdą lukę możesz wpisać maksymalnie cztery wyrazy, wliczając w to wyrazy już podane.",
+            items: [
+                { number: "13.1.", sentenceStart: "Can I have two (piece / cheesecake) ", sentenceEnd: ", please?", correctAnswers: ["pieces of cheesecake"], justification: "Chcemy 'dwa kawałki sernika'. 'Piece' jest policzalne, więc 'pieces'. Po 'pieces' używamy 'of'." },
+                { number: "13.2.", sentenceStart: "Yesterday, I (not / close) ", sentenceEnd: " the front door and my cat got out.", correctAnswers: ["did not close", "didn't close"], justification: "Czynność w przeszłości (yesterday), forma przecząca czasu Past Simple." },
+                { number: "13.3.", sentenceStart: "A student who wants to get a good mark in a test (have / listen) ", sentenceEnd: " carefully to the teacher’s instructions.", correctAnswers: ["has to listen"], justification: "Student 'musi słuchać'. 'Have to' oznacza musieć, dla 3 os. l.poj. 'has to'." }
+            ]
+        }
+    },
+    // Set 9: Ogólnopolski Próbny Egzamin Ósmoklasisty z Operonem i British Council, Listopad 2018
+    {
+        id: "set9",
+        title: "Ogólnopolski Próbny Egzamin Ósmoklasisty z Operonem i British Council, Listopad 2018",
+        task12: {
+            instruction: "Przeczytaj tekst. Wybierz poprawne uzupełnienie luk 12.1.–12.4. Zakreśl literę A, B lub C.",
+            text: `Dear Brett,
+Thanks for your email. Wow, you do lots of sports at school in Canada. I’d love 12.1._____
+ice hockey one day.
+We do lots of sports at our school, too. We’ve got a swimming pool at school and our
+class 12.2._____ swimming every Wednesday. We also play tennis, volleyball and football,
+but football in Australia is different than soccer. You can touch the ball 12.3._____ your
+hands!
+There are lots of after-school sports clubs in Australia, too. I go to a surfing club after
+school on Tuesdays and Thursdays. We go to the beach and learn 12.4._____ to surf. It’s
+great fun! Can you surf in your country?
+Write soon,
+Rob
+To: Brett Walker
+From: Rob Smith
+Subject: RE: sports
+adapted from https://learnenglishteens.britishcouncil.org`,
+            questions: [
+                { number: "12.1.", options: ["A. play", "B. to play", "C. playing"], correctAnswer: "B", justification: "Po 'I'd love' (would love) używamy bezokolicznika z 'to'." },
+                { number: "12.2.", options: ["A. goes", "B. is going", "C. have gone"], correctAnswer: "A", justification: "Mowa o regularnej czynności (co środę), więc używamy czasu Present Simple. 'Our class' to 3 os. l.poj., stąd 'goes'." },
+                { number: "12.3.", options: ["A. by", "B. with", "C. on"], correctAnswer: "B", justification: "W tym kontekście 'touch the ball with your hands' oznacza 'dotknąć piłki rękami'." },
+                { number: "12.4.", options: ["A. while", "B. how", "C. which"], correctAnswer: "B", justification: "Uczymy się 'jak' surfować, stąd 'learn how to surf'." }
+            ]
+        },
+        task13: {
+            instruction: "Uzupełnij zdania 13.1.–13.4. Wykorzystaj w odpowiedniej formie wyrazy podane w nawiasach. Nie należy zmieniać kolejności podanych wyrazów, trzeba natomiast – je żeli jest to konieczne – dodać inne wyrazy, tak aby otrzymać zdania logiczne i gramatycz nie poprawne. Wymagana jest pełna poprawność ortograficzna wpisywanych fragmentów. Uwaga: w każdą lukę możesz wpisać maksymalnie trzy wyrazy, wliczając w to wyrazy już podane.",
+            items: [
+                { number: "13.1.", sentenceStart: "Mary (seem/be) ", sentenceEnd: " better at volleyball than Susie. She should be our team leader.", correctAnswers: ["seems to be"], justification: "Czasownik 'seem' (wydawać się) w 3 os. l.poj. czasu Present Simple to 'seems'. Po 'seem' często występuje bezokolicznik z 'to'." },
+                { number: "13.2.", sentenceStart: "Yesterday there (be/some/scarf) ", sentenceEnd: " on sale in the clothes shop on High Street. I bought two.", correctAnswers: ["were some scarves"], justification: "Mowa o przeszłości (yesterday) i liczbie mnogiej (two), więc 'were'. 'Some scarves' - jakieś szaliki." },
+                { number: "13.3.", sentenceStart: "Who (you/talk) ", sentenceEnd: " to right now? Is it Robert?", correctAnswers: ["are you talking"], justification: "Czynność dziejąca się 'teraz' (right now), używamy czasu Present Continuous w formie pytającej." },
+                { number: "13.4.", sentenceStart: "My older brother is as (tall/as/we) ", sentenceEnd: " father.", correctAnswers: ["tall as our"], justification: "Porównanie stopnia równego 'as tall as'. 'Nasz ojciec' - 'our father'." }
+            ]
+        }
+    },
+    // Set 10: Egzamin Ósmoklasisty, Przykładowy arkusz (EO_1), Grudzień 2017
+    {
+        id: "set10",
+        title: "Egzamin Ósmoklasisty, Przykładowy arkusz (EO_1), Grudzień 2017",
+        task12: {
+            instruction: "Przeczytaj tekst. Wybierz poprawne uzupełnienie luk 12.1.–12.4. Zakreśl jedną z liter: A, B albo C.",
+            text: `GAME ON!
+Video games have been around 12.1. _____ the early 1970s. The first ever, Pong, made by
+Atari, was introduced in 1972, and was a great success. More and more people were 12.2. _____
+crazy about home video games and in 1985 Nintendo presented its first games console.
+Nowadays, there are a lot of games and console types available and the market for digital games
+is developing very 12.3. _____. It is worth about 100 billion dollars! The latest technologies
+are used and new accessories are invented to make the games more entertaining. In the near
+future, it 12.4. _____ possible to play most games using VR goggles and cybergloves.
+Na podstawie: electronics.howstuffworks.com`,
+            questions: [
+                { number: "12.1.", options: ["A. for", "B. since", "C. in"], correctAnswer: "B", justification: "'Since the early 1970s' oznacza 'od wczesnych lat 70-tych'." },
+                { number: "12.2.", options: ["A. going", "B. coming", "C. walking"], correctAnswer: "A", justification: "Ludzie 'szaleli' (byli podekscytowani) - 'were going crazy'." },
+                { number: "12.3.", options: ["A. quick", "B. quicker", "C. quickly"], correctAnswer: "C", justification: "Rynek rozwija się 'szybko' - potrzebny jest przysłówek 'quickly'." },
+                { number: "12.4.", options: ["A. going to", "B. will be", "C. is"], correctAnswer: "B", justification: "Mowa o przyszłości ('in the near future'), więc 'it will be possible'." }
+            ]
+        },
+        task13: {
+            instruction: "Uzupełnij zdania 13.1.–13.4. Wykorzystaj w odpowiedniej formie wyrazy podane w nawiasach. Nie należy zmieniać kolejności podanych wyrazów, trzeba natomiast – jeżeli jest to konieczne – dodać inne wyrazy, tak aby otrzymać zdania logiczne i gramatycznie poprawne. Wymagana jest pełna poprawność ortograficzna wpisywanych fragmentów. Uwaga! W każdą lukę możesz wpisać maksymalnie trzy wyrazy, wliczając w to wyrazy już podane.",
+            items: [
+                { number: "13.1.", sentenceStart: "I (never / be) ", sentenceEnd: " to Spain before.", correctAnswers: ["have never been"], justification: "Mówimy o doświadczeniu (lub jego braku) do chwili obecnej, używamy czasu Present Perfect." },
+                { number: "13.2.", sentenceStart: "We (take / photo) ", sentenceEnd: " outside our school last week.", correctAnswers: ["took a photo"], justification: "Czynność dokonana w przeszłości ('last week'), używamy czasu Past Simple." },
+                { number: "13.3.", sentenceStart: "Your sister likes biology very much. (she / want) ", sentenceEnd: " to be a doctor?", correctAnswers: ["Does she want"], justification: "Pytanie o chęć/pragnienie w czasie Present Simple, dla 3 os. l.poj. używamy operatora 'does'." },
+                { number: "13.4.", sentenceStart: "In last year’s competition I (be / fast) ", sentenceEnd: " than my best friend.", correctAnswers: ["was faster"], justification: "Porównanie w przeszłości, używamy stopnia wyższego przymiotnika i czasu Past Simple." }
+            ]
+        }
+    },
+    // Set 11: Egzamin Ósmoklasisty, 18 Czerwca 2021 (OJAP-100-2106)
+    {
+        id: "set11",
+        title: "Egzamin Ósmoklasisty, 18 Czerwca 2021 (OJAP-100-2106)",
+        task12: {
+            instruction: "Przeczytaj tekst. Wybierz poprawne uzupełnienie luk 12.1.–12.4. Zakreśl jedną z liter: A, B albo C.",
+            text: `AN UNUSUAL HOUSE
+An eco-friendly building made of old plastic bottles has recently appeared in Atlanta, USA.
+Some students heard about a house like that in Algeria and they wanted 12.1. _____ the idea.
+When they were building the house, 12.2. _____ people stopped to watch. Most of them didn’t
+believe it would be a comfortable place to live in. When the building 12.3. _____, they returned
+to see the final result. The walls of the house are made of plastic bottles, sand, cement, earth
+and dry grass. After a month spent in the house, the students are sure 12.4. _____ the building
+gives good protection from the heat and it won’t fall apart in heavy rain, either.`,
+            questions: [
+                { number: "12.1.", options: ["A. trying out", "B. try out", "C. to try out"], correctAnswer: "C", justification: "Po 'wanted' używamy bezokolicznika z 'to' - 'wanted to try out'." },
+                { number: "12.2.", options: ["A. a lot of", "B. much", "C. any"], correctAnswer: "A", justification: "'A lot of people' - dużo ludzi (rzeczownik policzalny)." },
+                { number: "12.3.", options: ["A. was completed", "B. completed", "C. has completed"], correctAnswer: "A", justification: "Budynek 'został ukończony' - strona bierna w czasie Past Simple." },
+                { number: "12.4.", options: ["A. how", "B. that", "C. such"], correctAnswer: "B", justification: "Studenci są pewni, 'że' budynek... - 'sure that'." }
+            ]
+        },
+        task13: {
+            instruction: "Przetłumacz na język angielski fragmenty podane w nawiasach, tak aby otrzymać zdania logiczne i gramatycznie poprawne. Wymagana jest pełna poprawność ortograficzna wpisywanych fragmentów zdań. Uwaga! W każdą lukę możesz wpisać maksymalnie cztery wyrazy.",
+            items: [
+                { number: "13.1.", sentenceStart: "Frankie is (najpiękniejszym kotem) ", sentenceEnd: " I’ve ever seen.", correctAnswers: ["the most beautiful cat", "the prettiest cat", "the cutest cat"], justification: "Stopień najwyższy przymiotnika, np. 'the most beautiful cat'." },
+                { number: "13.2.", sentenceStart: "In the end, we (nie poszliśmy) ", sentenceEnd: " to the swimming pool yesterday.", correctAnswers: ["did not go", "didn't go"], justification: "Czynność w przeszłości (yesterday), forma przecząca czasu Past Simple." },
+                { number: "13.3.", sentenceStart: "Annie, (ile) ", sentenceEnd: " pancakes do you want to order?", correctAnswers: ["how many"], justification: "Pytanie o ilość policzalnych naleśników - 'how many'." }
+            ]
+        }
+    },
+    // Set 12: Egzamin Ósmoklasisty, 5 Czerwca 2019 (OJAP-100-1906)
+    {
+        id: "set12",
+        title: "Egzamin Ósmoklasisty, 5 Czerwca 2019 (OJAP-100-1906)",
+        task12: {
+            instruction: "Przeczytaj tekst. Wybierz poprawne uzupełnienie luk 12.1.–12.4. Zakreśl jedną z liter: A, B albo C.",
+            text: `The doughnut is the most famous American sweet snack. Millions
+are sold each year. But 12.1. _____ is there a hole in the middle of the doughnut? There are
+two stories that explain the doughnut’s hole. One is about a young sailor, Hanson Gregory,
+who 12.2. _____ making a hole in the middle so that the inside of the doughnut would cook
+as evenly as the outside. The 12.3. _____ story is that doughnuts took too much space in
+bakeries. So to save it, the bakers in New York decided to sell 12.4. _____ on long wooden
+sticks. That’s how the holes in doughnuts became popular.
+Na podstawie: wonderopolis.org`,
+            questions: [
+                { number: "12.1.", options: ["A. what", "B. where", "C. why"], correctAnswer: "C", justification: "Pytamy o przyczynę, dlaczego pączek ma dziurkę." },
+                { number: "12.2.", options: ["A. suggested", "B. happened", "C. thought"], correctAnswer: "A", justification: "Marynarz 'zasugerował' zrobienie dziurki." },
+                { number: "12.3.", options: ["A. only", "B. other", "C. every"], correctAnswer: "B", justification: "'The other story' - druga historia." },
+                { number: "12.4.", options: ["A. they", "B. them", "C. their"], correctAnswer: "B", justification: "Piekarze zdecydowali się sprzedawać 'je' (pączki - them) na patyczkach." }
+            ]
+        },
+        task13: {
+            instruction: "Przetłumacz na język angielski fragmenty podane w nawiasach, tak aby otrzymać zdania logiczne i gramatycznie poprawne. Wymagana jest pełna poprawność ortograficzna wpisywanych fragmentów zdań. Uwaga! W każdą lukę możesz wpisać maksymalnie trzy wyrazy.",
+            items: [
+                { number: "13.1.", sentenceStart: "I promise that I (nie zadzwonię) ", sentenceEnd: " you so late next time!", correctAnswers: ["will not call", "won't call"], justification: "Obietnica dotycząca przyszłości, forma przecząca od 'will call'." },
+                { number: "13.2.", sentenceStart: "Amy, this jam is (zbyt słodki) ", sentenceEnd: ". I can’t use it for this cake.", correctAnswers: ["too sweet"], justification: "'Zbyt słodki' tłumaczymy jako 'too sweet'." },
+                { number: "13.3.", sentenceStart: "My class teacher asked us (żeby pomóc) ", sentenceEnd: " her with collecting money for charity.", correctAnswers: ["to help"], justification: "Po 'asked us' (poprosił nas) używamy bezokolicznika z 'to' w celu wyrażenia celu/prośby." },
+                { number: "13.4.", sentenceStart: "Elsie, (czy odwiedziłaś) ", sentenceEnd: " Mrs Johnson yesterday?", correctAnswers: ["did you visit"], justification: "Pytanie o czynność w przeszłości (yesterday), używamy operatora 'did' i formy podstawowej czasownika." }
+            ]
+        }
+    },
+    // Set 13: Egzamin Ósmoklasisty, Test Diagnostyczny, Marzec 2021 (OJAP-100-2103)
+    {
+        id: "set13",
+        title: "Egzamin Ósmoklasisty, Test Diagnostyczny, Marzec 2021 (OJAP-100-2103)",
+        task12: {
+            instruction: "Przeczytaj tekst. Wybierz poprawne uzupełnienie luk 12.1.–12.3. Zakreśl jedną z liter: A, B albo C.",
+            text: `NAME A PENGUIN
+Would you like to name a penguin? If so, this is your chance 12.1. _____ a baby royal
+penguin from Chicago Zoo needs a name.
+The animal was born this spring and is a happy little girl penguin. You can see her
+on the Zoo’s live YouTube webcam. It’s easy to see which penguin you should choose
+the name for. Our baby royal penguin 12.2. _____ a red ring on her leg.
+We are waiting for 12.3. _____ suggestions!
+The winning name will be published on our website on 30th June.
+kids.nationalgeographic.com`,
+            questions: [
+                { number: "12.1.", options: ["A. and", "B. but", "C. because"], correctAnswer: "C", justification: "Jest to twoja szansa, 'ponieważ' pingwin potrzebuje imienia." },
+                { number: "12.2.", options: ["A. has", "B. have", "C. had"], correctAnswer: "A", justification: "Pingwin (3 os. l.poj.) 'ma' czerwoną obrączkę - 'has'." },
+                { number: "12.3.", options: ["A. you", "B. your", "C. yours"], correctAnswer: "B", justification: "Czekamy na 'wasze' sugestie - 'your suggestions'." }
+            ]
+        },
+        task13: {
+            instruction: "Uzupełnij zdania 13.1.–13.3. Wykorzystaj w odpowiedniej formie wyrazy podane w nawiasach. Nie należy zmieniać kolejności podanych wyrazów, trzeba natomiast – jeśli jest to konieczne – dodać inne wyrazy, tak aby otrzymać zdania logiczne i gramatycznie poprawne. Wymagana jest pełna poprawność ortograficzna wpisywanych fragmentów. Uwaga! W każdą lukę możesz wpisać maksymalnie trzy wyrazy, wliczając w to wyrazy już podane.",
+            items: [
+                { number: "13.1.", sentenceStart: "My best friend is much (good / geography) ", sentenceEnd: " than anyone else in our class.", correctAnswers: ["better at geography"], justification: "Porównujemy umiejętności w geografii, stopień wyższy od 'good' to 'better'. 'Better at' - lepszy w czymś." },
+                { number: "13.2.", sentenceStart: "I learned to swim when I (be / six / year) ", sentenceEnd: " old.", correctAnswers: ["was six years"], justification: "Mowa o przeszłości, więc 'was'. 'Six years old' - sześć lat." },
+                { number: "13.3.", sentenceStart: "If we (not / hurry) ", sentenceEnd: " up, we’ll miss the bus.", correctAnswers: ["do not hurry", "don't hurry"], justification: "Pierwszy okres warunkowy, po 'if' używamy czasu Present Simple w formie przeczącej." }
+            ]
+        }
+    },
+    // Set 14: Egzamin Ósmoklasisty, 15 Czerwca 2022 (OJAP-100-2206)
+    {
+        id: "set14",
+        title: "Egzamin Ósmoklasisty, 15 Czerwca 2022 (OJAP-100-2206)",
+        task12: {
+            instruction: "Przeczytaj tekst. Wybierz poprawne uzupełnienie luk 12.1.–12.3. Zakreśl jedną z liter: A, B albo C.",
+            text: `MEGAN, THE CHILD ANNOUNCER
+Around a quarter of a million people use Victoria Station in London every day.
+On the platforms they hear a child’s voice telling them to take care when getting
+on and off the train. The voice belongs to Megan, a nine-year-old girl 12.1. _____
+parents work at the station. She was asked to record the safety information. Hearing
+a child’s voice on the loudspeakers is 12.2. _____ unusual that people listen more
+carefully. The number of accidents at the station has become smaller 12.3. _____
+Megan’s voice started to be used.
+Na podstawie: bbc.co.uk`,
+            questions: [
+                { number: "12.1.", options: ["A. whose", "B. who", "C. which"], correctAnswer: "A", justification: "Mowa o dziewczynce, 'której' rodzice pracują na stacji - zaimek dzierżawczy 'whose'." },
+                { number: "12.2.", options: ["A. such", "B. so", "C. as"], correctAnswer: "B", justification: "Konstrukcja 'so unusual that...' - tak niezwykłe, że..." },
+                { number: "12.3.", options: ["A. than", "B. since", "C. before"], correctAnswer: "B", justification: "Liczba wypadków zmalała, 'odkąd' zaczęto używać głosu Megan - 'since'." }
+            ]
+        },
+        task13: {
+            instruction: "Uzupełnij zdania 13.1.–13.3. Wykorzystaj w odpowiedniej formie wyrazy podane w nawiasach. Nie należy zmieniać kolejności podanych wyrazów, trzeba natomiast – jeśli jest to konieczne – dodać inne wyrazy, tak aby otrzymać zdania logiczne i gramatycznie poprawne. Wymagana jest pełna poprawność ortograficzna wpisywanych fragmentów. Uwaga: W każdą lukę możesz wpisać maksymalnie cztery wyrazy, wliczając w to wyrazy już podane.",
+            items: [
+                { number: "13.1.", sentenceStart: "Why (you / leave) ", sentenceEnd: " the party so early yesterday?", correctAnswers: ["did you leave"], justification: "Pytanie o czynność w przeszłości (yesterday), używamy operatora 'did'." },
+                { number: "13.2.", sentenceStart: "John Smith is (tall / person) ", sentenceEnd: " I’ve ever met.", correctAnswers: ["the tallest person"], justification: "Mówimy o najwyższej osobie, jaką kiedykolwiek spotkaliśmy - stopień najwyższy przymiotnika." },
+                { number: "13.3.", sentenceStart: "I’m getting up early tomorrow because I want (catch / bus) ", sentenceEnd: " to Manchester.", correctAnswers: ["to catch a bus"], justification: "Po 'want' używamy bezokolicznika z 'to'. 'Catch a bus' - złapać autobus." }
+            ]
+        }
+    },
+    // Set 15: Egzamin Ósmoklasisty, 26 Maja 2022 (OJAP-100-2205)
+    {
+        id: "set15",
+        title: "Egzamin Ósmoklasisty, 26 Maja 2022 (OJAP-100-2205)",
+        task12: {
+            instruction: "Przeczytaj tekst. Wybierz poprawne uzupełnienie luk 12.1.–12.3. Zakreśl jedną z liter: A, B albo C.",
+            text: `ICE CREAM FOR A SMILE
+Do you like ice cream? Many people do, 12.1. _____ it is sweet and makes you smile. Now
+a special ice cream machine can make people even happier. It has a special camera and
+when you come close to it, your image appears on a screen. Then, you just have to show
+12.2. _____ smile you can possibly manage. After that you can choose your ice cream –
+and you get it for free. The machine first appeared at a music festival in Portugal. It was
+12.3. _____ a great hit that its producers are thinking about making more of their ice cream
+machines soon.
+Na podstawie: unilever.com`,
+            questions: [
+                { number: "12.1.", options: ["A. or", "B. but", "C. because"], correctAnswer: "C", justification: "Wiele osób lubi lody, 'ponieważ' są słodkie - 'because'." },
+                { number: "12.2.", options: ["A. big", "B. bigger", "C. the biggest"], correctAnswer: "C", justification: "Musisz pokazać 'największy' uśmiech, na jaki cię stać - stopień najwyższy 'the biggest'." },
+                { number: "12.3.", options: ["A. such", "B. what", "C. so"], correctAnswer: "A", justification: "Konstrukcja 'such a great hit that...' - tak wielki hit, że..." }
+            ]
+        },
+        task13: {
+            instruction: "Wykorzystując wyrazy podane WIELKIMI literami, uzupełnij każde zdanie z luką, tak aby zachować sens zdania wyjściowego (13.1.–13.3.). Wymagana jest pełna poprawność ortograficzna i gramatyczna wpisywanych fragmentów zdań. Uwaga! Nie zmieniaj formy podanych wyrazów. W każdą lukę możesz wpisać maksymalnie cztery wyrazy, wliczając w to wyraz już podany.",
+            items: [
+                { number: "13.1.", sentenceStart: "Spiders don’t frighten me any more.\nAFRAID\nI ", sentenceEnd: " spiders any more.", correctAnswers: ["am not afraid of"], justification: "'Nie boję się pająków' można wyrazić jako 'I am not afraid of spiders'." },
+                { number: "13.2.", sentenceStart: "The cheetah is the fastest animal on Earth.\nAS\nThere’s no animal on Earth ", sentenceEnd: " the cheetah.", correctAnswers: ["as fast as"], justification: "Skoro gepard jest najszybszy, to żadne inne zwierzę nie jest 'tak szybkie jak' on - 'as fast as'." },
+                { number: "13.3.", sentenceStart: "People play football all over the world.\nPLAYED\nFootball ", sentenceEnd: " all over the world.", correctAnswers: ["is played"], justification: "Zdanie w stronie biernej w czasie Present Simple - 'piłka nożna jest grana' - 'Football is played'." }
+            ]
+        }
+    },
+    // Set 16: Egzamin Ósmoklasisty, 27 Maja 2021 (OJAP-100-2105)
+    {
+        id: "set16",
+        title: "Egzamin Ósmoklasisty, 27 Maja 2021 (OJAP-100-2105)",
+        task12: {
+            instruction: "Przeczytaj tekst. Wybierz poprawne uzupełnienie luk 12.1.–12.3. Zakreśl jedną z liter: A, B albo C.",
+            text: `NAME A PENGUIN
+Would you like to name a penguin? If so, this is your chance 12.1. _____ a baby royal
+penguin from Chicago Zoo needs a name.
+The animal was born this spring and is a happy little girl penguin. You can see her
+on the Zoo’s live YouTube webcam. It’s easy to see which penguin you should choose
+the name for. Our baby royal penguin 12.2. _____ a red ring on her leg.
+We are waiting for 12.3. _____ suggestions!
+The winning name will be published on our website on 30th June.
+kids.nationalgeographic.com`,
+            questions: [
+                { number: "12.1.", options: ["A. and", "B. but", "C. because"], correctAnswer: "C", justification: "Jest to twoja szansa, 'ponieważ' pingwin potrzebuje imienia." },
+                { number: "12.2.", options: ["A. has", "B. have", "C. had"], correctAnswer: "A", justification: "Pingwin (3 os. l.poj.) 'ma' czerwoną obrączkę - 'has'." },
+                { number: "12.3.", options: ["A. you", "B. your", "C. yours"], correctAnswer: "B", justification: "Czekamy na 'wasze' sugestie - 'your suggestions'." }
+            ]
+        },
+        task13: {
+            instruction: "Uzupełnij zdania 13.1.–13.3. Wykorzystaj w odpowiedniej formie wyrazy podane w nawiasach. Nie należy zmieniać kolejności podanych wyrazów, trzeba natomiast – jeśli jest to konieczne – dodać inne wyrazy, tak aby otrzymać zdania logiczne i gramatycznie poprawne. Wymagana jest pełna poprawność ortograficzna wpisywanych fragmentów. Uwaga! W każdą lukę możesz wpisać maksymalnie trzy wyrazy, wliczając w to wyrazy już podane.",
+            items: [
+                { number: "13.1.", sentenceStart: "In my opinion science fiction books are (interesting / than) ", sentenceEnd: " historical novels.", correctAnswers: ["more interesting than"], justification: "Porównujemy książki, używamy stopnia wyższego przymiotnika 'more interesting than'." },
+                { number: "13.2.", sentenceStart: "I checked John’s phone number twice before (I / phone) ", sentenceEnd: " him.", correctAnswers: ["I phoned"], justification: "Czynność wykonana przed inną czynnością w przeszłości, ale tutaj prosta forma Past Simple jest wystarczająca i naturalna." },
+                { number: "13.3.", sentenceStart: "There (be / three / egg) ", sentenceEnd: " in the fridge. To make pancakes we need to buy milk and flour.", correctAnswers: ["are three eggs"], justification: "Mówimy o liczbie mnogiej (trzy jajka), więc 'are three eggs'." }
+            ]
+        }
+    }
+];
+
+    // app.js - Logika aplikacji
+    document.addEventListener('DOMContentLoaded', () => {
+        const dashboardGrid = document.getElementById('dashboard-grid');
+        const dashboardView = document.getElementById('dashboard-view');
+        const taskView = document.getElementById('task-view');
+        const taskSetTitle = document.getElementById('task-set-title');
+        const task12Container = document.getElementById('task12-container');
+        const task13Container = document.getElementById('task13-container');
+        const backToDashboardButton = document.getElementById('back-to-dashboard');
+        const finishSetButton = document.getElementById('finish-set');
+
+        let currentSetId = null;
+        let progressData = loadAllProgress();
+
+        function renderDashboard() {
+            dashboardGrid.innerHTML = '';
+            examData.forEach(set => {
+                const setProgress = progressData[set.id] || {
+                    answered: 0,
+                    correct: 0,
+                    totalTask12: set.task12.questions.length,
+                    totalTask13: set.task13.items.length,
+                    task12Answers: {},
+                    task13Answers: {}
+                };
+                const totalTasks = setProgress.totalTask12 + setProgress.totalTask13;
+                const progressPercent = totalTasks > 0 ? Math.round((setProgress.answered / totalTasks) * 100) : 0;
+                const correctnessPercent = setProgress.answered > 0 ? Math.round((setProgress.correct / setProgress.answered) * 100) : 'N/A';
+
+                const card = document.createElement('section');
+                card.className = 'exam-set-card';
+                card.id = set.id;
+                card.innerHTML = `
+                    <h3>${set.title}</h3>
+                    <div class="progress-info">
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" style="width: ${progressPercent}%"></div>
+                        </div>
+                        <span>Postęp: ${progressPercent}%</span> |
+                        <span>Poprawność: ${correctnessPercent === 'N/A' ? 'N/A' : correctnessPercent + '%'}</span>
+                    </div>
+                    <div class="button-group">
+                        <button class="button start-button" data-setid="${set.id}">Rozpocznij</button>
+                        <button class="button reset-button" data-setid="${set.id}">Resetuj</button>
+                    </div>
+                `;
+                dashboardGrid.appendChild(card);
+            });
+
+            document.querySelectorAll('.start-button').forEach(button => {
+                button.addEventListener('click', startSet);
+            });
+            document.querySelectorAll('.reset-button').forEach(button => {
+                button.addEventListener('click', resetSet);
+            });
+        }
+
+        function renderTaskView(setId) {
+            currentSetId = setId;
+            const set = examData.find(s => s.id === setId);
+            const setProgress = progressData[setId] || {
+                answered: 0,
+                correct: 0,
+                totalTask12: set.task12.questions.length,
+                totalTask13: set.task13.items.length,
+                task12Answers: {},
+                task13Answers: {}
+            };
+
+            if (!set) return;
+
+            taskSetTitle.textContent = set.title;
+            task12Container.innerHTML = '';
+            task13Container.innerHTML = '';
+
+            // Render Task 12
+            const task12Instruction = document.createElement('p');
+            task12Instruction.className = 'instruction';
+            task12Instruction.textContent = set.task12.instruction;
+            task12Container.appendChild(task12Instruction);
+
+            const task12Text = document.createElement('div');
+            task12Text.className = 'question-text';
+            task12Text.innerHTML = set.task12.text.replace(/\n/g, '<br>');
+            task12Container.appendChild(task12Text);
+
+
+            set.task12.questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'task-container';
+                questionDiv.innerHTML = `<p><b>${q.number}</b></p>`;
+
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'options';
+                optionsDiv.dataset.questionIndex = index;
+
+                q.options.forEach((option, optionIndex) => {
+                    const label = document.createElement('label');
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `task12_${setId}_${index}`;
+                    input.value = String.fromCharCode(65 + optionIndex);
+                    label.appendChild(input);
+                    label.appendChild(document.createTextNode(option));
+                    optionsDiv.appendChild(label);
+                    input.addEventListener('change', handleTask12Answer);
+                });
+
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.className = 'feedback';
+                feedbackDiv.id = `feedback_task12_${setId}_${index}`;
+
+                questionDiv.appendChild(optionsDiv);
+                questionDiv.appendChild(feedbackDiv);
+                task12Container.appendChild(questionDiv);
+
+                const savedAnswer = setProgress.task12Answers[`q${index}`];
+                if (savedAnswer) {
+                    const selectedRadio = optionsDiv.querySelector(`input[value="${savedAnswer.answer}"]`);
+                    if (selectedRadio) {
+                        selectedRadio.checked = true;
+                        showTask12Feedback(index, savedAnswer.answer, savedAnswer.isCorrect, q.correctAnswer, q.justification);
+                        disableOptions(optionsDiv);
+                    }
+                }
+            });
+
+            // Render Task 13
+            const task13Instruction = document.createElement('p');
+            task13Instruction.className = 'instruction';
+            task13Instruction.textContent = set.task13.instruction;
+            task13Container.appendChild(task13Instruction);
+
+
+            set.task13.items.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'task13-item task-container';
+                const sentenceHTML = `${item.number} ${item.sentenceStart.replace(/\n/g, '<br>')} <input type="text" id="input_task13_${setId}_${index}" placeholder="Wpisz odpowiedź..."> ${item.sentenceEnd.replace(/\n/g, '<br>')}`;
+                itemDiv.innerHTML = `
+                    <p>${sentenceHTML}</p>
+                    <div>
+                        <button class="button check-button" data-task-type="13" data-task-index="${index}">Sprawdź</button>
+                    </div>
+                    <div class="feedback" id="feedback_task13_${setId}_${index}"></div>
+                `;
+                task13Container.appendChild(itemDiv);
+
+                const checkButton = itemDiv.querySelector('.check-button');
+                checkButton.addEventListener('click', handleTask13Check);
+
+                const savedAnswerData = setProgress.task13Answers[`q${index}`];
+                if (savedAnswerData) {
+                    const inputField = itemDiv.querySelector('input');
+                    inputField.value = savedAnswerData.answer;
+                    showTask13Feedback(index, savedAnswerData.answer, savedAnswerData.isCorrect, item.correctAnswers, item.justification);
+                    inputField.disabled = true;
+                    checkButton.disabled = true;
+                }
+            });
+
+            dashboardView.style.display = 'none';
+            taskView.style.display = 'block';
+        }
+
+
+        function handleTask12Answer(event) {
+            const selectedRadio = event.target;
+            const optionsDiv = selectedRadio.closest('.options');
+            const questionIndex = parseInt(optionsDiv.dataset.questionIndex);
+            const setId = currentSetId;
+            const set = examData.find(s => s.id === setId);
+            const question = set.task12.questions[questionIndex];
+            const selectedAnswer = selectedRadio.value;
+            const isCorrect = selectedAnswer === question.correctAnswer;
+
+            showTask12Feedback(questionIndex, selectedAnswer, isCorrect, question.correctAnswer, question.justification);
+            disableOptions(optionsDiv);
+            updateProgress(setId, `task12_q${questionIndex}`, selectedAnswer, isCorrect);
+        }
+
+        function handleTask13Check(event) {
+            const button = event.target;
+            const taskIndex = parseInt(button.dataset.taskIndex);
+            const setId = currentSetId;
+            const set = examData.find(s => s.id === setId);
+            const item = set.task13.items[taskIndex];
+            const inputField = document.getElementById(`input_task13_${setId}_${taskIndex}`);
+            const userAnswer = inputField.value.trim();
+
+            if (!userAnswer) return;
+
+            const isCorrect = item.correctAnswers.some(correct => correct.toLowerCase() === userAnswer.toLowerCase());
+
+            showTask13Feedback(taskIndex, userAnswer, isCorrect, item.correctAnswers, item.justification);
+            inputField.disabled = true;
+            button.disabled = true;
+            updateProgress(setId, `task13_q${taskIndex}`, userAnswer, isCorrect);
+        }
+
+        function showTask12Feedback(qIndex, selected, correct, correctAnswer, justification) {
+            const feedbackDiv = document.getElementById(`feedback_task12_${currentSetId}_${qIndex}`);
+            const optionsLabels = document.querySelectorAll(`#task12-container .options[data-question-index="${qIndex}"] label`);
+
+            optionsLabels.forEach(label => {
+                const radio = label.querySelector('input');
+                if (radio.value === correctAnswer) {
+                    label.classList.add('correct');
+                }
+                if (radio.value === selected) {
+                    label.classList.add('selected');
+                    if (!correct) {
+                        label.classList.add('incorrect');
+                    }
+                }
+            });
+
+            let feedbackHTML = `<strong>${correct ? 'Poprawnie!' : 'Niepoprawnie.'}</strong>`;
+            feedbackHTML += `<p>${justification}</p>`;
+            feedbackDiv.innerHTML = feedbackHTML;
+            feedbackDiv.className = `feedback ${correct ? 'correct-feedback' : 'incorrect-feedback'}`;
+            feedbackDiv.style.display = 'block';
+        }
+
+        function showTask13Feedback(qIndex, userAnswer, isCorrect, correctAnswers, justification) {
+            const feedbackDiv = document.getElementById(`feedback_task13_${currentSetId}_${qIndex}`);
+            let feedbackHTML = `<strong>${isCorrect ? 'Poprawnie!' : 'Niepoprawnie.'}</strong>`;
+
+            if (!isCorrect) {
+                 feedbackHTML += `<p>Twoja odpowiedź: "${userAnswer}"</p>`;
+            }
+             feedbackHTML += `<p>Poprawna(e) odpowiedź(i): <ul>${correctAnswers.map(ans => `<li>${ans}</li>`).join('')}</ul></p>`;
+             feedbackHTML += `<p>Uzasadnienie: ${justification}</p>`;
+
+            feedbackDiv.innerHTML = feedbackHTML;
+            feedbackDiv.className = `feedback ${isCorrect ? 'correct-feedback' : 'incorrect-feedback'}`;
+            feedbackDiv.style.display = 'block';
+        }
+
+
+        function disableOptions(optionsDiv) {
+            optionsDiv.querySelectorAll('input[type="radio"]').forEach(input => {
+                input.disabled = true;
+                input.closest('label').style.cursor = 'default';
+                input.closest('label').onclick = (e) => e.preventDefault();
+            });
+        }
+
+        function loadAllProgress() {
+            const data = localStorage.getItem('exam1213ProgressData');
+            return data ? JSON.parse(data) : {};
+        }
+
+        function saveAllProgress(data) {
+            localStorage.setItem('exam1213ProgressData', JSON.stringify(data));
+        }
+
+        function updateProgress(setId, questionId, answer, isCorrect) {
+            const set = examData.find(s => s.id === setId);
+            if (!progressData[setId]) {
+                progressData[setId] = {
+                    answered: 0,
+                    correct: 0,
+                    totalTask12: set.task12.questions.length,
+                    totalTask13: set.task13.items.length,
+                    task12Answers: {},
+                    task13Answers: {}
+                };
+            }
+
+            const setProgress = progressData[setId];
+            const taskType = questionId.startsWith('task12') ? 'task12Answers' : 'task13Answers';
+            const qKey = questionId.substring(questionId.indexOf('_q') + 1);
+
+            if (!setProgress[taskType][qKey]) {
+                setProgress.answered += 1;
+                if (isCorrect) {
+                    setProgress.correct += 1;
+                }
+                 setProgress[taskType][qKey] = { answer: answer, isCorrect: isCorrect };
+            }
+            saveAllProgress(progressData);
+        }
+
+        function startSet(event) {
+            const setId = event.target.dataset.setid;
+            renderTaskView(setId);
+        }
+
+        function resetSet(event) {
+            const setId = event.target.dataset.setid;
+            if (confirm(`Czy na pewno chcesz zresetować postęp dla zestawu "${examData.find(s=>s.id===setId).title}"?`)) {
+                delete progressData[setId];
+                saveAllProgress(progressData);
+                renderDashboard();
+            }
+        }
+
+        function goBackToDashboard() {
+            renderDashboard();
+            taskView.style.display = 'none';
+            dashboardView.style.display = 'block';
+            currentSetId = null;
+        }
+
+        renderDashboard();
+        backToDashboardButton.addEventListener('click', goBackToDashboard);
+        finishSetButton.addEventListener('click', goBackToDashboard);
+    });
+    </script>
+</body>
+</html>
