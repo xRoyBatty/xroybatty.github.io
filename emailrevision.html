@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-mail na Egzaminie Ósmoklasisty - Super Powtórka!</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.2; /* Zmniejszona interlinia */
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            font-size: 10px; /* Bazowa mała czcionka */
+        }
+        .container {
+            width: 210mm; /* Szerokość A4 */
+            min-height: 297mm; /* Wysokość A4 */
+            padding: 8mm; /* Zmniejszony margines strony */
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 10px; /* Zmniejszony margines */
+            border-bottom: 2px solid #4a90e2;
+            padding-bottom: 5px; /* Zmniejszony padding */
+        }
+        header img { /* Jeśli będzie logo, można dostosować */
+            max-height: 35px;
+            margin-bottom: 2px;
+        }
+        header h1 {
+            color: #4a90e2;
+            margin: 2px 0;
+            font-size: 18px; /* Zmniejszona czcionka nagłówka */
+            line-height: 1.3;
+        }
+        header p {
+            font-size: 10px; /* Zmniejszona czcionka podtytułu */
+            color: #555;
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        .content-wrapper-for-columns {
+            column-count: 2;
+            column-gap: 7mm; /* Odstęp między kolumnami */
+            column-fill: balance; /* Stara się wyrównać wysokość kolumn */
+            margin-top: 5mm;
+        }
+
+        /* Unikanie łamania elementów wewnątrz kolumn */
+        .content-wrapper-for-columns h2,
+        .content-wrapper-for-columns h3,
+        .content-wrapper-for-columns p,
+        .content-wrapper-for-columns table,
+        .content-wrapper-for-columns .tip,
+        .content-wrapper-for-columns .example-email,
+        .content-wrapper-for-columns ol,
+        .content-wrapper-for-columns ul,
+        .content-wrapper-for-columns .two-columns-inner { /* Zmieniono nazwę, aby uniknąć konfliktu z @media print */
+            break-inside: avoid-column;
+            page-break-inside: avoid; /* Dla drukowania */
+        }
+
+        h2 {
+            color: #4a90e2;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 2px; /* Zmniejszony padding */
+            font-size: 14px; /* Zmniejszona czcionka */
+            margin-top: 10px; /* Zmniejszony margines */
+            margin-bottom: 4px;
+            line-height: 1.2;
+        }
+        h3 {
+            color: #f5a623;
+            font-size: 12px; /* Zmniejszona czcionka */
+            margin-top: 8px; /* Zmniejszony margines */
+            margin-bottom: 3px;
+            line-height: 1.2;
+        }
+        p, li, td, th {
+            font-size: 10px; /* Główna czcionka tekstu */
+            line-height: 1.2; /* Zmniejszona interlinia */
+            margin-top: 2px;
+            margin-bottom: 2px;
+        }
+        .important {
+            font-weight: bold;
+            color: #dc3545;
+        }
+        .highlight {
+            background-color: #e7f3ff;
+            padding: 0px 2px; /* Minimalny padding */
+            border-radius: 2px;
+            font-weight: bold;
+        }
+        .example-email {
+            border: 1px dashed #ccc;
+            padding: 4px; /* Zmniejszony padding */
+            margin-top: 6px; /* Zmniejszony margines */
+            background-color: #f9f9f9;
+            border-radius: 3px;
+        }
+        .example-email strong {
+            color: #4a90e2;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 6px; /* Zmniejszony margines */
+            margin-bottom: 6px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 2px 3px; /* Zmniejszony padding komórek */
+            text-align: left;
+            vertical-align: top; /* Lepsze wyrównanie w komórkach */
+        }
+        th {
+            background-color: #4a90e2;
+            color: white;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 15px; /* Zmniejszony margines */
+            font-size: 9px; /* Zmniejszona czcionka stopki */
+            color: #777;
+            padding-top: 5px;
+            border-top: 1px solid #eee;
+        }
+        .two-columns-inner { /* Zmieniono nazwę, aby uniknąć konfliktu z @media print */
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-top: 3px;
+            margin-bottom: 3px;
+        }
+        .column {
+            width: 49%; /* Dostosowanie szerokości kolumn wewnętrznych */
+            margin-bottom: 5px;
+        }
+        ul, ol {
+            padding-left: 12px; /* Zmniejszony padding listy */
+            margin-top: 2px;
+            margin-bottom: 4px;
+        }
+        li {
+            margin-bottom: 1px; /* Minimalny odstęp między elementami listy */
+        }
+        .tip {
+            background-color: #fff3cd;
+            border-left: 3px solid #ffeeba;
+            padding: 5px; /* Zmniejszony padding */
+            margin: 6px 0; /* Zmniejszony margines */
+            font-size: 10px;
+        }
+         /* Ukryj niepotrzebne elementy na wydruku */
+        @media print {
+            body {
+                background-color: white; /* Białe tło dla wydruku */
+                font-size: 9pt; /* Można dostosować rozmiar czcionki dla druku */
+            }
+            .no-print {
+                display: none;
+            }
+            .container {
+                box-shadow: none;
+                width: 100%;
+                min-height: auto;
+                padding: 5mm; /* Minimalne marginesy druku */
+            }
+            header h1 { font-size: 16pt; }
+            header p { font-size: 9pt; }
+            h2 { font-size: 12pt; }
+            h3 { font-size: 10pt; }
+            p, li, td, th { font-size: 9pt; line-height: 1.15; }
+            .content-wrapper-for-columns {
+                column-count: 2;
+                column-gap: 5mm;
+            }
+            .tip { padding: 3px; margin: 4px 0; }
+            .example-email { padding: 3px; margin-top: 4px; }
+            table { margin-top: 4px; }
+            th, td { padding: 2px; }
+            ul, ol { padding-left: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>E-mail na Egzaminie Ósmoklasisty</h1>
+            <p>Super Powtórka: Schematy, Zwroty i Czasowniki!</p>
+        </header>
+
+        <div class="content-wrapper-for-columns">
+            <p class="tip"><span class="important">Cel na dziś:</span> Zdobyć pewność i narzędzia, by napisać e-mail na <span class="highlight">minimum 5-7 punktów!</span> Pamiętaj: liczy się przekazanie informacji z każdego z 3 punktów polecenia i zmieszczenie się w limicie <span class="highlight">50-120 słów</span>.</p>
+
+            <h2>1. Schemat Twojego E-maila (Zawsze taki sam!)</h2>
+            <ol>
+                <li><strong>Wstęp:</strong> (Już podany w arkuszu) + ewentualnie 1 zdanie od siebie, np. <span class="highlight">Guess what!</span> / <span class="highlight">I have some news for you.</span></li>
+                <li><strong>Rozwinięcie (3 krótkie akapity = 3 punkty z polecenia):</strong>
+                    <ul>
+                        <li><span class="highlight">Akapit 1:</span> Odpowiedź na <span class="important">1. podpunkt</span> (2-3 proste zdania).</li>
+                        <li><span class="highlight">Akapit 2:</span> Odpowiedź na <span class="important">2. podpunkt</span> (2-3 proste zdania).</li>
+                        <li><span class="highlight">Akapit 3:</span> Odpowiedź na <span class="important">3. podpunkt</span> (2-3 proste zdania).</li>
+                    </ul>
+                </li>
+                <li><strong>Zakończenie (1-2 zdania):</strong> np. <span class="highlight">That's all for now. Write back soon.</span> / <span class="highlight">What do you think?</span></li>
+                <li><strong>Pozdrowienia i podpis:</strong> np. <span class="highlight">Best wishes, XYZ</span></li>
+            </ol>
+
+            <h2>2. Uniwersalne Początki Zdań i Czasowniki (Twoja Baza!)</h2>
+            <p>Te zwroty pomogą Ci zacząć zdania i opisać różne sytuacje w 3 kluczowych czasach:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Zwrot / Czasownik</th>
+                        <th>Teraźniejszość (Present)</th>
+                        <th>Przeszłość (Past)</th>
+                        <th>Przyszłość (Future)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Brać udział w...</td>
+                        <td><span class="highlight">I'm taking part in...</span><br>(Biorę udział w...)</td>
+                        <td><span class="highlight">I took part in...</span><br>(Wziąłem udział w...)</td>
+                        <td><span class="highlight">I will take part in...</span><br>(Wezmę udział w...)</td>
+                    </tr>
+                    <tr>
+                        <td>Opiekować się...</td>
+                        <td><span class="highlight">I'm looking after...</span><br>(Opiekuję się...)</td>
+                        <td><span class="highlight">I looked after...</span><br>(Opiekowałem się...)</td>
+                        <td><span class="highlight">I will look after...</span><br>(Będę opiekował się...)</td>
+                    </tr>
+                    <tr>
+                        <td>Organizować...</td>
+                        <td><span class="highlight">I'm organising...</span><br>(Organizuję...)</td>
+                        <td><span class="highlight">I organised...</span><br>(Zorganizowałem...)</td>
+                        <td><span class="highlight">I will organise...</span><br>(Zorganizuję...)</td>
+                    </tr>
+                    <tr>
+                        <td>Potrzebować...</td>
+                        <td><span class="highlight">I need...</span><br>(Potrzebuję...)</td>
+                        <td><span class="highlight">I needed...</span><br>(Potrzebowałem...)</td>
+                        <td><span class="highlight">I will need...</span><br>(Będę potrzebował...)</td>
+                    </tr>
+                    <tr>
+                        <td>Chcieć...</td>
+                        <td><span class="highlight">I want to...</span><br>(Chcę...)</td>
+                        <td><span class="highlight">I wanted to...</span><br>(Chciałem...)</td>
+                        <td><span class="highlight">I will want to...</span><br>(Będę chciał...)</td>
+                    </tr>
+                     <tr>
+                        <td>Myśleć, że...</td>
+                        <td><span class="highlight">I think (that)...</span></td>
+                        <td><span class="highlight">I thought (that)...</span></td>
+                        <td>(częściej: I think I will...)</td>
+                    </tr>
+                     <tr>
+                        <td>Być (Super Ważne!)</td>
+                        <td><span class="highlight">It is... / They are...</span><br><span class="highlight">I am... / You are...</span></td>
+                        <td><span class="highlight">It was... / They were...</span><br><span class="highlight">I was... / You were...</span></td>
+                        <td><span class="highlight">It will be... / They will be...</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Przykłady użycia "there is/are/was/were/will be":</h3>
+            <ul>
+                <li><span class="highlight">There is</span> a new shop in my town. (Jest nowy sklep w moim mieście.)</li>
+                <li><span class="highlight">There are</span> many people here. (Jest tu wielu ludzi.)</li>
+                <li><span class="highlight">There was</span> a great film on TV yesterday. (Wczoraj w TV był świetny film.)</li>
+                <li><span class="highlight">There were</span> clouds in the sky. (Na niebie były chmury.)</li>
+                <li><span class="highlight">There will be</span> a party next week. (W przyszłym tygodniu będzie impreza.)</li>
+                <li><span class="highlight">There will be</span> fun activities. (Będą fajne aktywności.)</li>
+            </ul>
+
+            <p class="tip"><span class="important">Super-Uniwersalny Czasownik "BE" (być):</span><br>
+            Używaj go, aby opisać:
+            <ul>
+                <li><b>Kto/Co:</b> <span class="highlight">My friend was there.</span> / <span class="highlight">The party is fun.</span></li>
+                <li><b>Jaki/Jaka/Jakie:</b> <span class="highlight">The weather was beautiful.</span> / <span class="highlight">The poster is colourful.</span></li>
+                <li><b>Gdzie:</b> <span class="highlight">We were at school.</span> / <span class="highlight">The concert is in the park.</span></li>
+                <li><b>Kiedy:</b> <span class="highlight">The competition was yesterday.</span></li>
+                <li><b>Uczucia:</b> <span class="highlight">I was happy.</span> / <span class="highlight">She is excited.</span></li>
+            </ul>
+            Często zastąpi bardziej skomplikowane czasowniki! Np. zamiast "Wydarzenie odbyło się w parku" (The event took place in the park), możesz napisać <span class="highlight">The event was in the park.</span></p>
+
+            <h2>3. Niezbędnik Słów i Zwrotów</h2>
+            <div class="two-columns-inner">
+                <div class="column">
+                    <h3>Łączniki / Początki zdań:</h3>
+                    <ul>
+                        <li><span class="highlight">First of all,</span> (Po pierwsze)</li>
+                        <li><span class="highlight">Secondly,</span> (Po drugie) / <span class="highlight">Then,</span> (Potem)</li>
+                        <li><span class="highlight">Finally,</span> (W końcu)</li>
+                        <li><span class="highlight">Also,</span> (Również)</li>
+                        <li><span class="highlight">And</span> (I), <span class="highlight">But</span> (Ale), <span class="highlight">So</span> (Więc), <span class="highlight">Because</span> (Ponieważ)</li>
+                    </ul>
+                    <h3>Określenia miejsca (Gdzie? Z kim? Dla kogo?):</h3>
+                    <ul>
+                        <li><span class="highlight">at school</span> (w szkole)</li>
+                        <li><span class="highlight">in the park</span> (w parku)</li>
+                        <li><span class="highlight">at home</span> (w domu)</li>
+                        <li><span class="highlight">with my friend(s)</span> (z moim przyjacielem/przyjaciółmi)</li>
+                        <li><span class="highlight">with my family</span> (z moją rodziną)</li>
+                        <li><span class="highlight">for my friend</span> (dla mojego przyjaciela)</li>
+                        <li><span class="highlight">to the cinema/mountains</span> (do kina/w góry)</li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h3>Określenia czasu i częstotliwości:</h3>
+                    <ul>
+                        <li><span class="highlight">yesterday</span> (wczoraj)</li>
+                        <li><span class="highlight">last week/month/year</span> (w zeszłym tygodniu/miesiącu/roku)</li>
+                        <li><span class="highlight">next week/month/year</span> (w przyszłym tygodniu/miesiącu/roku)</li>
+                        <li><span class="highlight">tomorrow</span> (jutro)</li>
+                        <li><span class="highlight">now</span> (teraz)</li>
+                        <li><span class="highlight">sometimes</span> (czasami)</li>
+                        <li><span class="highlight">often</span> (często)</li>
+                        <li><span class="highlight">always</span> (zawsze)</li>
+                        <li><span class="highlight">every day</span> (codziennie)</li>
+                    </ul>
+                    <h3>Najpopularniejsze Przymiotniki/Przysłówki:</h3>
+                    <ul>
+                        <li><span class="highlight">good/bad</span> (dobry/zły)</li>
+                        <li><span class="highlight">happy/sad</span> (szczęśliwy/smutny)</li>
+                        <li><span class="highlight">big/small</span> (duży/mały)</li>
+                        <li><span class="highlight">nice/great/fantastic</span> (miły/świetny/fantastyczny)</li>
+                        <li><span class="highlight">interesting</span> (interesujący)</li>
+                        <li><span class="highlight">easy/difficult</span> (łatwy/trudny)</li>
+                        <li><span class="highlight">very</span> (bardzo), <span class="highlight">really</span> (naprawdę)</li>
+                    </ul>
+                </div>
+            </div>
+             <h3>Zakończenie e-maila:</h3>
+            <ul>
+                <li><span class="highlight">That's all for now.</span></li>
+                <li><span class="highlight">Write back soon.</span></li>
+                <li><span class="highlight">Best wishes,</span> / <span class="highlight">Lots of love,</span> / <span class="highlight">See you,</span></li>
+                <li>(Podpis XYZ)</li>
+            </ul>
+
+
+            <h2>4. Ćwiczenia – Piszemy Mini-Maile!</h2>
+            <p>Użyj schematu i powyższych zwrotów. Napisz po 2-3 proste zdania do każdego punktu w swoim zeszycie.</p>
+
+            <div class="example-email">
+                <p><strong>Przykład 1 (ulepszony): Wycieczka rowerowa</strong></p>
+                <p>W zeszły weekend byłeś/byłaś na wycieczce rowerowej razem z kolegami z klasy. W e-mailu do kolegi z Londynu:</p>
+                <ul>
+                    <li>wyjaśnij, dlaczego postanowiliście pojechać na wycieczkę rowerami,</li>
+                    <li>napisz, co przydarzyło Ci się podczas tej wycieczki,</li>
+                    <li>opisz reakcję kolegów na to, co Ci się przytrafiło.</li>
+                </ul>
+                <p><em>Hi Tom,</em><br>
+                <em>Last weekend, my classmates and I went for a bike ride. It was great!</em></p>
+                <p><strong>Przykładowy szkic (kontynuuj w zeszycie):</strong></p>
+                <p>1. <span class="highlight">First of all,</span> we <span class="highlight">wanted to</span> go because the weather <span class="highlight">was very good</span>. <span class="highlight">Also,</span> we <span class="highlight">wanted to</span> see the new park <span class="highlight">in our town</span>.</p>
+                <p>2. <span class="highlight">Then,</span> I <span class="highlight">had</span> a small problem <span class="highlight">during the trip</span>. My bike chain broke and I <span class="highlight">was very sad</span>.</p>
+                <p>3. <span class="highlight">Finally,</span> my friends <span class="highlight">were very helpful</span>. <span class="highlight">They</span> helped me fix it <span class="highlight">quickly</span>.</p>
+                <p><em><span class="highlight">What about your weekend? Did you have a good time?</span></em><br>
+                <em><span class="highlight">Best wishes,</span></em><br>
+                <em>XYZ</em></p>
+            </div>
+
+            <div class="example-email">
+                <p><strong>Przykład 2: Remont w domu</strong></p>
+                <p>W twoim domu właśnie trwa remont. W e-mailu do kolegi z Anglii:</p>
+                <ul>
+                    <li>napisz, co się zmieni w twoim domu po remoncie,</li>
+                    <li>opisz jeden problem, który pojawił się z powodu remontu, oraz wyjaśnij, jak został rozwiązany,</li>
+                    <li>dowiedz się, co twój kolega chciałby zmienić w swoim domu.</li>
+                </ul>
+                <p><em>Hi Mike,</em><br>
+                <em>Guess what! We are doing a big renovation right now.</em></p>
+                <p><em>Uzupełnij ten e-mail w zeszycie, pisząc po 2-3 zdania do każdego punktu. Pamiętaj o zakończeniu i podpisie.</em></p>
+            </div>
+
+            <div class="example-email">
+                <p><strong>Przykład 3: Konkurs plakatów</strong></p>
+                <p>Zwyciężyłeś(-aś) w szkolnym konkursie plakatów o tematyce przyrodniczej. W e-mailu do koleżanki z Anglii:</p>
+                <ul>
+                    <li>wyjaśnij, dlaczego zdecydowałeś(-aś) się wziąć udział w tym konkursie,</li>
+                    <li>opisz, co przedstawia Twój plakat konkursowy,</li>
+                    <li>napisz, jak zareagowałeś(-aś) na wiadomość o tym, że wygrałeś(-aś) ten konkurs.</li>
+                </ul>
+                <p><em>Hi Betty,</em><br>
+                <em>I’ve just won a poster competition called ‘Our Natural World’.</em></p>
+                <p><em>Uzupełnij ten e-mail w zeszycie, pisząc po 2-3 zdania do każdego punktu. Pamiętaj o zakończeniu i podpisie.</em></p>
+            </div>
+
+             <div class="example-email">
+                <p><strong>Przykład 4: Nowy klub w szkole</strong></p>
+                <p>Nauczyciele i uczniowie z twojej szkoły chcieliby stworzyć nowy klub zainteresowań. Postanowiłeś/Postanowiłaś włączyć się w tę akcję. W e-mailu do koleżanki z Anglii:</p>
+                <ul>
+                    <li>napisz, jaki klub zaproponowałeś/zaproponowałaś i na czym miałaby polegać jego działalność,</li>
+                    <li>opisz reakcję innych osób na twoją propozycję,</li>
+                    <li>zapytaj, w jaki sposób twoja koleżanka realizuje własne zainteresowania.</li>
+                </ul>
+                <p><em>Hi Kate,</em><br>
+                <em>Guess what! We’d like to create a new club in our school.</em></p>
+                <p><em>Uzupełnij ten e-mail w zeszycie, pisząc po 2-3 zdania do każdego punktu. Pamiętaj o zakończeniu i podpisie.</em></p>
+            </div>
+
+            <p class="tip"><span class="important">Pamiętajcie!</span> Prostota, realizacja 3 punktów i trzymanie się limitu słów to klucz do sukcesu. Powodzenia na egzaminie!</p>
+        </div> <!-- Koniec .content-wrapper-for-columns -->
+
+        <div class="footer">
+            Materiały pomocnicze dla Ósmoklasistów
+        </div>
+    </div>
+</body>
+</html>
