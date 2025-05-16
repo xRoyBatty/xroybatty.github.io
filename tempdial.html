@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szablon Dialogów - Plany Tygodniowe</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2980b9;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .dialogue-template {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 20px;
+        }
+        
+        .dialogue-line {
+            margin-bottom: 15px;
+            cursor: pointer;
+            position: relative;
+            transition: background-color 0.2s;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        
+        .dialogue-line:hover {
+            background-color: #e8f4fc;
+        }
+        
+        .person {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .blank {
+            display: inline-block;
+            border-bottom: 1px solid #bdc3c7;
+            width: 100px;
+            margin: 0 5px;
+            height: 16px;
+        }
+        
+        .tooltip {
+            visibility: hidden;
+            background-color: #34495e;
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px 12px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 20px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            width: 250px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            font-size: 14px;
+        }
+        
+        .dialogue-line:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 150px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 10px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .section-title {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        
+        .instruction {
+            background-color: #f5f6fa;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #9b59b6;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .tooltip {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Ćwiczenia Dialogów - Plany Tygodniowe</h1>
+    
+    <div class="container">
+        <div class="section-title">Szablony Dialogów</div>
+        <p class="instruction">Kliknij na dowolne zdanie, aby zobaczyć polskie tłumaczenie. Uzupełnij puste miejsca czynnościami, osobami i dniami tygodnia na podstawie swoich planów tygodniowych.</p>
+        
+        <h3>Dialog 1: Planowanie spotkania</h3>
+        <div class="dialogue-template">
+            <div class="dialogue-line">
+                <span class="person">Osoba A:</span> Are you free on <span class="blank"></span>?
+                <span class="tooltip">Czy jesteś wolny/wolna w _______?</span>
+            </div>
+            <div class="dialogue-line">
+                <span class="person">Osoba B:</span> I'm busy on <span class="blank"></span>.
+                <span class="tooltip">Jestem zajęty/zajęta w _______.</span>
+            </div>
+            <div class="dialogue-line">
+                <span class="person">Osoba A:</span> What about <span class="blank"></span>?
+                <span class="tooltip">A co z _______?</span>
+            </div>
+            <div class="dialogue-line">
+                <span class="person">Osoba B:</span> Yes, I'd love to, thanks.
+                <span class="tooltip">Tak, chętnie, dziękuję.</span>
+            </div>
+        </div>
+        
+        <h3>Dialog 2: Zapraszanie kogoś</h3>
+        <div class="dialogue-template">
+            <div class="dialogue-line">
+                <span class="person">Osoba A:</span> Would you like to hang out?
+                <span class="tooltip">Czy chciałbyś/chciałabyś się spotkać?</span>
+            </div>
+            <div class="dialogue-line">
+                <span class="person">Osoba B:</span> When?
+                <span class="tooltip">Kiedy?</span>
+            </div>
+            <div class="dialogue-line">
+                <span class="person">Osoba A:</span> On <span class="blank"></span> at <span class="blank"></span>.
+                <span class="tooltip">W _______ o _______.</span>
+            </div>
+            <div class="dialogue-line">
+                <span class="person">Osoba B:</span> I'm sorry, I can't come.
+                <span class="tooltip">Przepraszam, nie mogę przyjść.</span>
+            </div>
+            <div class="dialogue-line">
+                <span class="person">Osoba A:</span> Maybe next time.
+                <span class="tooltip">Może następnym razem.</span>
+            </div>
+        </div>
+        
+        <h3>Dialog 3: Zmiana planów</h3>
+        <div class="dialogue-template">
+            <div class="dialogue-line">
+                <span class="person">Osoba A:</span> Do you remember we're going to <span class="blank"></span> on <span class="blank"></span>?
+                <span class="tooltip">Pamiętasz, że idziemy do _______ w _______?</span>
+            </div>
+            <div class="dialogue-line">
+                <span class="person">Osoba B:</span> Yes, I remember.
+                <span class="tooltip">Tak, pamiętam.</span>
+            </div>
+            <div class="dialogue-line">
+                <span class="person">Osoba A:</span> Actually, can we change our plans?
+                <span class="tooltip">Właściwie, czy możemy zmienić nasze plany?</span>
+            </div>
+            <div class="dialogue-line">
+                <span class="person">Osoba B:</span> I understand. Maybe we can meet on <span class="blank"></span> instead?
+                <span class="tooltip">Rozumiem. Może spotkamy się w _______ zamiast tego?</span>
+            </div>
+            <div class="dialogue-line">
+                <span class="person">Osoba A:</span> That sounds great. Thank you.
+                <span class="tooltip">To brzmi świetnie. Dziękuję.</span>
+            </div>
+        </div>
+        
+        <h3>Dialog 4: Zaproszenie na aktywność</h3>
+        <div class="dialogue-template">
+            <div class="dialogue-line">
+                <span class="person">Osoba A:</span> Mum's taking us to <span class="blank"></span> on <span class="blank"></span>. Can you come?
+                <span class="tooltip">Mama zabiera nas do _______ w _______. Możesz przyjść?</span>
+            </div>
+            <div class="dialogue-line">
+                <span class="person">Osoba B:</span> I'd love to but I'm <span class="blank"></span>.
+                <span class="tooltip">Chciałbym/chciałabym, ale _______.</span>
+            </div>
+            <div class="dialogue-line">
+                <span class="person">Osoba A:</span> No problem. Another time.
+                <span class="tooltip">Nie ma problemu. Innym razem.</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="section-title">Stwórz Własne Dialogi</div>
+        <p class="instruction">Wykorzystaj powyższe szablony, aby stworzyć własne dialogi z partnerem na podstawie waszych planów tygodniowych</p>
+        
+        <h3>Twój pierwszy dialog:</h3>
+        <textarea placeholder="Napisz swój dialog tutaj..."></textarea>
+        
+        <h3>Twój drugi dialog:</h3>
+        <textarea placeholder="Napisz swój dialog tutaj..."></textarea>
+    </div>
+    
+    <script>
+        // Uczyń linie dialogu klikalnymi, aby wyświetlić tłumaczenie
+        document.querySelectorAll('.dialogue-line').forEach(line => {
+            line.addEventListener('click', function() {
+                const tooltip = this.querySelector('.tooltip');
+                if (tooltip.style.visibility === 'visible') {
+                    tooltip.style.visibility = 'hidden';
+                    tooltip.style.opacity = '0';
+                } else {
+                    // Najpierw ukryj wszystkie inne dymki
+                    document.querySelectorAll('.tooltip').forEach(t => {
+                        t.style.visibility = 'hidden';
+                        t.style.opacity = '0';
+                    });
+                    
+                    tooltip.style.visibility = 'visible';
+                    tooltip.style.opacity = '1';
+                    
+                    // Ukryj dymek po 3 sekundach
+                    setTimeout(() => {
+                        tooltip.style.visibility = 'hidden';
+                        tooltip.style.opacity = '0';
+                    }, 3000);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
