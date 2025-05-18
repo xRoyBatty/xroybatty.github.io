@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Polish Election Vocabulary: Interactive Matching Task with Origins</title>
+    <title>Polish Presidential Election Vocabulary: Interactive Matching Task</title>
     <style>
         :root {
             --primary-color: #3f51b5;
@@ -216,7 +216,7 @@
             margin: 20px 0;
         }
         
-        .check-answers-btn, .reset-btn, .show-answers-btn {
+        .check-answers-btn, .reset-btn {
             padding: 12px 24px;
             margin: 0 10px;
             border: none;
@@ -237,12 +237,7 @@
             color: white;
         }
         
-        .show-answers-btn {
-            background-color: var(--dark-color);
-            color: white;
-        }
-        
-        .check-answers-btn:hover, .reset-btn:hover, .show-answers-btn:hover {
+        .check-answers-btn:hover, .reset-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
@@ -308,7 +303,7 @@
         
         .answer-pairs {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 10px;
         }
         
@@ -507,7 +502,7 @@
                 align-items: center;
             }
             
-            .check-answers-btn, .reset-btn, .show-answers-btn {
+            .check-answers-btn, .reset-btn {
                 margin: 5px 0;
                 width: 80%;
             }
@@ -520,8 +515,8 @@
 </head>
 <body>
     <header>
-        <h1>Polish Election Vocabulary</h1>
-        <p class="subheader">Essential Terms for Understanding the Polish Electoral System</p>
+        <h1>Polish Presidential Election Vocabulary</h1>
+        <p class="subheader">Essential Terms for Understanding Presidential Elections & Voting Process</p>
         <div class="flag-colors">
             <div class="flag-white"></div>
             <div class="flag-blue"></div>
@@ -540,7 +535,7 @@
                 <div class="term-item" data-number="1" onclick="selectTerm(this)">
                     <div class="term-left">
                         <span class="term-number">1</span>
-                        <span class="term-text">Sejm</span>
+                        <span class="term-text">Presidency</span>
                     </div>
                     <div class="answer-box" onclick="removeAnswer(event, 1)"></div>
                 </div>
@@ -548,7 +543,7 @@
                 <div class="term-item" data-number="2" onclick="selectTerm(this)">
                     <div class="term-left">
                         <span class="term-number">2</span>
-                        <span class="term-text">Senate</span>
+                        <span class="term-text">Term of Office</span>
                     </div>
                     <div class="answer-box" onclick="removeAnswer(event, 2)"></div>
                 </div>
@@ -556,7 +551,7 @@
                 <div class="term-item" data-number="3" onclick="selectTerm(this)">
                     <div class="term-left">
                         <span class="term-number">3</span>
-                        <span class="term-text">National Electoral Commission</span>
+                        <span class="term-text">Presidential Election</span>
                     </div>
                     <div class="answer-box" onclick="removeAnswer(event, 3)"></div>
                 </div>
@@ -564,7 +559,7 @@
                 <div class="term-item" data-number="4" onclick="selectTerm(this)">
                     <div class="term-left">
                         <span class="term-number">4</span>
-                        <span class="term-text">Electoral Threshold</span>
+                        <span class="term-text">Presidential Candidate</span>
                     </div>
                     <div class="answer-box" onclick="removeAnswer(event, 4)"></div>
                 </div>
@@ -572,7 +567,7 @@
                 <div class="term-item" data-number="5" onclick="selectTerm(this)">
                     <div class="term-left">
                         <span class="term-number">5</span>
-                        <span class="term-text">Constituency</span>
+                        <span class="term-text">Incumbent President</span>
                     </div>
                     <div class="answer-box" onclick="removeAnswer(event, 5)"></div>
                 </div>
@@ -580,7 +575,7 @@
                 <div class="term-item" data-number="6" onclick="selectTerm(this)">
                     <div class="term-left">
                         <span class="term-number">6</span>
-                        <span class="term-text">Presidential Election</span>
+                        <span class="term-text">Voter Turnout</span>
                     </div>
                     <div class="answer-box" onclick="removeAnswer(event, 6)"></div>
                 </div>
@@ -588,7 +583,7 @@
                 <div class="term-item" data-number="7" onclick="selectTerm(this)">
                     <div class="term-left">
                         <span class="term-number">7</span>
-                        <span class="term-text">Parliamentary Election</span>
+                        <span class="term-text">Two-Round System</span>
                     </div>
                     <div class="answer-box" onclick="removeAnswer(event, 7)"></div>
                 </div>
@@ -596,7 +591,7 @@
                 <div class="term-item" data-number="8" onclick="selectTerm(this)">
                     <div class="term-left">
                         <span class="term-number">8</span>
-                        <span class="term-text">Voter Turnout</span>
+                        <span class="term-text">Voting Booth</span>
                     </div>
                     <div class="answer-box" onclick="removeAnswer(event, 8)"></div>
                 </div>
@@ -604,7 +599,7 @@
                 <div class="term-item" data-number="9" onclick="selectTerm(this)">
                     <div class="term-left">
                         <span class="term-number">9</span>
-                        <span class="term-text">Two-Round System</span>
+                        <span class="term-text">Ballot Box</span>
                     </div>
                     <div class="answer-box" onclick="removeAnswer(event, 9)"></div>
                 </div>
@@ -612,7 +607,7 @@
                 <div class="term-item" data-number="10" onclick="selectTerm(this)">
                     <div class="term-left">
                         <span class="term-number">10</span>
-                        <span class="term-text">Campaign Spot</span>
+                        <span class="term-text">Cast a Vote</span>
                     </div>
                     <div class="answer-box" onclick="removeAnswer(event, 10)"></div>
                 </div>
@@ -620,7 +615,7 @@
                 <div class="term-item" data-number="11" onclick="selectTerm(this)">
                     <div class="term-left">
                         <span class="term-number">11</span>
-                        <span class="term-text">Electoral Roll</span>
+                        <span class="term-text">Ballot Paper</span>
                     </div>
                     <div class="answer-box" onclick="removeAnswer(event, 11)"></div>
                 </div>
@@ -628,7 +623,7 @@
                 <div class="term-item" data-number="12" onclick="selectTerm(this)">
                     <div class="term-left">
                         <span class="term-number">12</span>
-                        <span class="term-text">D'Hondt Method</span>
+                        <span class="term-text">Commander-in-Chief</span>
                     </div>
                     <div class="answer-box" onclick="removeAnswer(event, 12)"></div>
                 </div>
@@ -644,7 +639,7 @@
                 <div class="term-item" data-number="14" onclick="selectTerm(this)">
                     <div class="term-left">
                         <span class="term-number">14</span>
-                        <span class="term-text">Polling Station</span>
+                        <span class="term-text">Presidential Pardon</span>
                     </div>
                     <div class="answer-box" onclick="removeAnswer(event, 14)"></div>
                 </div>
@@ -652,7 +647,7 @@
                 <div class="term-item" data-number="15" onclick="selectTerm(this)">
                     <div class="term-left">
                         <span class="term-number">15</span>
-                        <span class="term-text">Electoral Committee</span>
+                        <span class="term-text">Campaign Spot</span>
                     </div>
                     <div class="answer-box" onclick="removeAnswer(event, 15)"></div>
                 </div>
@@ -664,7 +659,7 @@
             <div class="definitions-list">
                 <div class="definition-item" data-letter="A" onclick="selectDefinition(this)">
                     <span class="definition-letter">A</span>
-                    <span class="definition-text">The period, typically 24 hours before and during election day, when campaigning is prohibited and no new polls or electoral predictions may be published</span>
+                    <span class="definition-text">The period, typically 24 hours before and during election day, when campaigning is prohibited and no new polls may be published</span>
                 </div>
                 
                 <div class="definition-item" data-letter="B" onclick="selectDefinition(this)">
@@ -674,67 +669,66 @@
                 
                 <div class="definition-item" data-letter="C" onclick="selectDefinition(this)">
                     <span class="definition-letter">C</span>
-                    <span class="definition-text">The lower house of the Polish parliament, consisting of 460 members elected to four-year terms</span>
+                    <span class="definition-text">The office and institution of the head of state in a republic</span>
                 </div>
                 
                 <div class="definition-item" data-letter="D" onclick="selectDefinition(this)">
                     <span class="definition-letter">D</span>
-                    <span class="definition-text">An official location where voters go to cast their ballots during an election</span>
+                    <span class="definition-text">The act of submitting your completed ballot into the ballot box</span>
                 </div>
                 
                 <div class="definition-item" data-letter="E" onclick="selectDefinition(this)">
                     <span class="definition-letter">E</span>
-                    <span class="definition-text">A voting system used to elect the President of Poland in which a second round is held if no candidate receives an absolute majority in the first round</span>
+                    <span class="definition-text">A voting system where a second round is held if no candidate receives an absolute majority in the first round</span>
                 </div>
                 
                 <div class="definition-item" data-letter="F" onclick="selectDefinition(this)">
-                    <span class="definition-letter">F</span>
-                    <span class="definition-text">The minimum percentage of votes that a political party needs to secure representation in the parliament (5% for single parties, 8% for coalitions in Poland)</span>
+                    <span class="definition-text">The fixed period of time that an elected president serves in office before the next election</span>
                 </div>
                 
                 <div class="definition-item" data-letter="G" onclick="selectDefinition(this)">
                     <span class="definition-letter">G</span>
-                    <span class="definition-text">The official body responsible for overseeing elections, verifying candidates, and certifying results in Poland</span>
+                    <span class="definition-text">The private enclosed space where voters mark their ballots in secret</span>
                 </div>
                 
                 <div class="definition-item" data-letter="H" onclick="selectDefinition(this)">
                     <span class="definition-letter">H</span>
-                    <span class="definition-text">Elections to select members of both chambers of the Polish parliament (Sejm and Senate)</span>
+                    <span class="definition-text">A person currently running for the office of president in an election</span>
                 </div>
                 
                 <div class="definition-item" data-letter="I" onclick="selectDefinition(this)">
                     <span class="definition-letter">I</span>
-                    <span class="definition-text">The upper house of the Polish parliament, comprising 100 senators elected in single-member districts</span>
+                    <span class="definition-text">The current serving president who is in office at the time of discussion</span>
                 </div>
                 
                 <div class="definition-item" data-letter="J" onclick="selectDefinition(this)">
                     <span class="definition-letter">J</span>
-                    <span class="definition-text">A short advertisement created by a political candidate to promote their candidacy during election campaigns</span>
+                    <span class="definition-text">A short advertisement created by a presidential candidate to promote their candidacy</span>
                 </div>
                 
                 <div class="definition-item" data-letter="K" onclick="selectDefinition(this)">
                     <span class="definition-letter">K</span>
-                    <span class="definition-text">The official list of people eligible to vote in a particular electoral district</span>
+                    <span class="definition-text">The secure container where completed ballots are deposited during voting</span>
                 </div>
                 
                 <div class="definition-item" data-letter="L" onclick="selectDefinition(this)">
                     <span class="definition-letter">L</span>
-                    <span class="definition-text">A proportional representation system used in Polish parliamentary elections to convert votes into seats by dividing the votes for each party by successive divisors</span>
+                    <span class="definition-text">The official document listing presidential candidates that voters mark to indicate their choice</span>
                 </div>
                 
                 <div class="definition-item" data-letter="M" onclick="selectDefinition(this)">
                     <span class="definition-letter">M</span>
-                    <span class="definition-text">A geographical area that elects representatives to the parliament; Poland has 41 constituencies for Sejm elections</span>
+                    <span class="definition-text">The president's constitutional role as the supreme leader of the armed forces</span>
                 </div>
                 
                 <div class="definition-item" data-letter="N" onclick="selectDefinition(this)">
                     <span class="definition-letter">N</span>
-                    <span class="definition-text">The direct election by citizens to choose the President of Poland, who serves a five-year term and can be re-elected only once</span>
+                    <span class="definition-text">The president's power to forgive crimes and reduce or eliminate criminal penalties</span>
                 </div>
                 
                 <div class="definition-item" data-letter="O" onclick="selectDefinition(this)">
                     <span class="definition-letter">O</span>
-                    <span class="definition-text">An officially registered group that has the right to nominate candidates for election, can be formed by political parties, voters, or organizations</span>
+                    <span class="definition-text">The democratic process by which citizens choose their president through voting</span>
                 </div>
             </div>
         </div>
@@ -748,71 +742,71 @@
     <div class="results">
         <h3>Your Results</h3>
         <p class="score">Score: <span id="score">0</span>/15</p>
-        <p class="feedback">Keep practicing to improve your understanding of Polish election terminology!</p>
+        <p class="feedback">Keep practicing to improve your understanding of presidential election terminology!</p>
     </div>
     
     <div class="answer-key">
         <h3>Answer Key</h3>
         <div class="answer-pairs">
             <div class="answer-pair">
-                <span class="pair-term">1. Sejm</span>
+                <span class="pair-term">1. Presidency</span>
                 <span class="pair-arrow">→</span>
                 <span>C</span>
             </div>
             <div class="answer-pair">
-                <span class="pair-term">2. Senate</span>
-                <span class="pair-arrow">→</span>
-                <span>I</span>
-            </div>
-            <div class="answer-pair">
-                <span class="pair-term">3. National Electoral Commission</span>
-                <span class="pair-arrow">→</span>
-                <span>G</span>
-            </div>
-            <div class="answer-pair">
-                <span class="pair-term">4. Electoral Threshold</span>
+                <span class="pair-term">2. Term of Office</span>
                 <span class="pair-arrow">→</span>
                 <span>F</span>
             </div>
             <div class="answer-pair">
-                <span class="pair-term">5. Constituency</span>
+                <span class="pair-term">3. Presidential Election</span>
                 <span class="pair-arrow">→</span>
-                <span>M</span>
+                <span>O</span>
             </div>
             <div class="answer-pair">
-                <span class="pair-term">6. Presidential Election</span>
-                <span class="pair-arrow">→</span>
-                <span>N</span>
-            </div>
-            <div class="answer-pair">
-                <span class="pair-term">7. Parliamentary Election</span>
+                <span class="pair-term">4. Presidential Candidate</span>
                 <span class="pair-arrow">→</span>
                 <span>H</span>
             </div>
             <div class="answer-pair">
-                <span class="pair-term">8. Voter Turnout</span>
+                <span class="pair-term">5. Incumbent President</span>
+                <span class="pair-arrow">→</span>
+                <span>I</span>
+            </div>
+            <div class="answer-pair">
+                <span class="pair-term">6. Voter Turnout</span>
                 <span class="pair-arrow">→</span>
                 <span>B</span>
             </div>
             <div class="answer-pair">
-                <span class="pair-term">9. Two-Round System</span>
+                <span class="pair-term">7. Two-Round System</span>
                 <span class="pair-arrow">→</span>
                 <span>E</span>
             </div>
             <div class="answer-pair">
-                <span class="pair-term">10. Campaign Spot</span>
+                <span class="pair-term">8. Voting Booth</span>
                 <span class="pair-arrow">→</span>
-                <span>J</span>
+                <span>G</span>
             </div>
             <div class="answer-pair">
-                <span class="pair-term">11. Electoral Roll</span>
+                <span class="pair-term">9. Ballot Box</span>
                 <span class="pair-arrow">→</span>
                 <span>K</span>
             </div>
             <div class="answer-pair">
-                <span class="pair-term">12. D'Hondt Method</span>
+                <span class="pair-term">10. Cast a Vote</span>
+                <span class="pair-arrow">→</span>
+                <span>D</span>
+            </div>
+            <div class="answer-pair">
+                <span class="pair-term">11. Ballot Paper</span>
                 <span class="pair-arrow">→</span>
                 <span>L</span>
+            </div>
+            <div class="answer-pair">
+                <span class="pair-term">12. Commander-in-Chief</span>
+                <span class="pair-arrow">→</span>
+                <span>M</span>
             </div>
             <div class="answer-pair">
                 <span class="pair-term">13. Election Silence</span>
@@ -820,50 +814,50 @@
                 <span>A</span>
             </div>
             <div class="answer-pair">
-                <span class="pair-term">14. Polling Station</span>
+                <span class="pair-term">14. Presidential Pardon</span>
                 <span class="pair-arrow">→</span>
-                <span>D</span>
+                <span>N</span>
             </div>
             <div class="answer-pair">
-                <span class="pair-term">15. Electoral Committee</span>
+                <span class="pair-term">15. Campaign Spot</span>
                 <span class="pair-arrow">→</span>
-                <span>O</span>
+                <span>J</span>
             </div>
         </div>
     </div>
     
     <!-- Origins and Trivia Section -->
     <div class="section-divider">
-        <h2>Electoral Terms: Origins & Trivia</h2>
+        <h2>Presidential Terms: Origins & Trivia</h2>
     </div>
     
     <div class="instructions">
-        <p>Now that you've tested your knowledge of electoral vocabulary, let's explore the fascinating origins and history behind some of these terms. Click on any card below to learn more!</p>
+        <p>Now that you've tested your knowledge of presidential election vocabulary, let's explore the fascinating origins and history behind some of these terms. Click on any card below to learn more!</p>
     </div>
     
     <div class="terms-container">
-        <div class="term-card" onclick="showInfo('constituency')">
-            <div class="term-name">Constituency</div>
+        <div class="term-card" onclick="showInfo('presidency')">
+            <div class="term-name">Presidency</div>
             <div class="click-instruction">Click to learn more</div>
         </div>
         
-        <div class="term-card" onclick="showInfo('voter-turnout')">
-            <div class="term-name">Voter Turnout</div>
+        <div class="term-card" onclick="showInfo('commander-in-chief')">
+            <div class="term-name">Commander-in-Chief</div>
             <div class="click-instruction">Click to learn more</div>
         </div>
         
-        <div class="term-card" onclick="showInfo('polling-station')">
-            <div class="term-name">Polling Station</div>
+        <div class="term-card" onclick="showInfo('ballot-box')">
+            <div class="term-name">Ballot Box</div>
             <div class="click-instruction">Click to learn more</div>
         </div>
         
-        <div class="term-card" onclick="showInfo('electoral-roll')">
-            <div class="term-name">Electoral Roll</div>
+        <div class="term-card" onclick="showInfo('presidential-pardon')">
+            <div class="term-name">Presidential Pardon</div>
             <div class="click-instruction">Click to learn more</div>
         </div>
         
-        <div class="term-card" onclick="showInfo('dhondt-method')">
-            <div class="term-name">D'Hondt Method</div>
+        <div class="term-card" onclick="showInfo('voting-booth')">
+            <div class="term-name">Voting Booth</div>
             <div class="click-instruction">Click to learn more</div>
         </div>
     </div>
@@ -892,28 +886,28 @@
     </div>
     
     <footer>
-        <p>Polish Election Vocabulary: Interactive Matching Task | Educational Resource</p>
+        <p>Polish Presidential Election Vocabulary: Interactive Matching Task | Educational Resource</p>
     </footer>
 
     <script>
         // Matching Exercise Scripts
-        // Answers key
+        // Updated answers key for presidential vocabulary
         const correctAnswers = {
-            "1": "C",
-            "2": "I",
-            "3": "G",
-            "4": "F",
-            "5": "M",
-            "6": "N",
-            "7": "H",
-            "8": "B",
-            "9": "E",
-            "10": "J",
-            "11": "K",
-            "12": "L",
-            "13": "A",
-            "14": "D",
-            "15": "O"
+            "1": "C",  // Presidency
+            "2": "F",  // Term of Office
+            "3": "O",  // Presidential Election
+            "4": "H",  // Presidential Candidate
+            "5": "I",  // Incumbent President
+            "6": "B",  // Voter Turnout
+            "7": "E",  // Two-Round System
+            "8": "G",  // Voting Booth
+            "9": "K",  // Ballot Box
+            "10": "D", // Cast a Vote
+            "11": "L", // Ballot Paper
+            "12": "M", // Commander-in-Chief
+            "13": "A", // Election Silence
+            "14": "N", // Presidential Pardon
+            "15": "J"  // Campaign Spot
         };
         
         let selectedTerm = null;
@@ -1003,13 +997,13 @@
             // Update feedback based on score
             const feedback = document.querySelector('.feedback');
             if (score === 15) {
-                feedback.textContent = "Perfect! You have an excellent understanding of Polish election terminology!";
+                feedback.textContent = "Perfect! You have an excellent understanding of presidential election terminology!";
             } else if (score >= 12) {
-                feedback.textContent = "Great job! You have a strong grasp of Polish election terminology.";
+                feedback.textContent = "Great job! You have a strong grasp of presidential election vocabulary.";
             } else if (score >= 8) {
                 feedback.textContent = "Good effort! Keep practicing to improve your understanding.";
             } else {
-                feedback.textContent = "Keep studying! Polish election terminology can be challenging.";
+                feedback.textContent = "Keep studying! Presidential election terminology can be challenging.";
             }
         }
         
@@ -1029,49 +1023,37 @@
             document.querySelector('.answer-key').style.display = 'none';
         }
         
-        function showAnswers() {
-            document.querySelector('.answer-key').style.display = 'block';
-            
-            // Fill in correct answers in the boxes
-            for (let number in correctAnswers) {
-                const answerBox = document.querySelector(`.term-item[data-number="${number}"] .answer-box`);
-                answerBox.textContent = correctAnswers[number];
-                userAnswers[number] = correctAnswers[number];
-            }
-        }
-        
-        // Origins & Trivia Scripts
-        // Term information database
+        // Origins & Trivia Scripts - Updated for presidential vocabulary
         const termInfo = {
-            'constituency': {
-                title: 'Constituency',
-                origin: 'The modern concept of electoral constituencies developed in medieval and early modern Britain as parliamentary democracy evolved. It became more formalized during the 17th and 18th centuries with the gradual expansion of voting rights and representation.',
-                etymology: 'The word "constituency" comes from the Latin "constituere" meaning "to establish together." It refers to a body of citizens that collectively establish or constitute a representative in government.',
-                trivia: 'The oldest continuous parliamentary constituencies in the world are in the UK, with some dating back to the 13th century. The boundaries of constituencies often become contentious due to "gerrymandering" - a term that originated in 1812 when Massachusetts Governor Elbridge Gerry created a district shaped like a salamander to benefit his party.'
+            'presidency': {
+                title: 'Presidency',
+                origin: 'The modern concept of presidency emerged from the Roman Republic\'s temporary "praesidium" (sitting before) and evolved through centuries of governance experiments. The American presidency, established in 1789, became the model for many modern republics, including Poland after 1989.',
+                etymology: 'From Latin "praesidens" meaning "sitting before" or "guarding." Originally referred to Roman governors who presided over provinces. The modern usage emphasizes the leadership role of the head of state.',
+                trivia: 'The Polish presidency was established in 1989 during the Round Table Talks. Lech Wałęsa became the first popularly elected president in 1990. The White House has been the official residence of US presidents since 1800, while the Polish Presidential Palace dates back to the 17th century and has served various functions throughout history.'
             },
-            'voter-turnout': {
-                title: 'Voter Turnout',
-                origin: 'The concept of tracking voter participation emerged with the development of mass democracy and universal suffrage. It became a formalized metric in the late 19th and early 20th centuries as more people gained voting rights and democracies sought to measure civic engagement.',
-                etymology: 'The term combines "voter" (one who votes) with "turnout" (the number of people attending or participating in an event), literally measuring how many eligible voters "turn out" to cast their ballots.',
-                trivia: 'Australia has had compulsory voting since 1924, resulting in voter turnout consistently above 90%. On the other end of the spectrum, the lowest recorded turnout for a modern national election was 0.96% in the 2020 Syrian parliamentary election during the civil war. In some countries like Belgium, elections are held on Sundays to increase turnout, while the United States holds elections on Tuesdays, a workday, which some argue contributes to lower participation.'
+            'commander-in-chief': {
+                title: 'Commander-in-Chief',
+                origin: 'This title has ancient roots but became formalized in modern constitutions as a way to ensure civilian control over the military. It prevents military coups by placing the armed forces under the authority of an elected civilian leader rather than a military leader.',
+                etymology: 'From Old French "commander" (to command) and "chief" from Latin "caput" (head). Literally means "the head who commands" or "supreme commander."',
+                trivia: 'In Poland, the President serves as Commander-in-Chief of the Armed Forces, a role established in the 1997 Constitution. This role became particularly significant during WWII when President Władysław Raczkiewicz led the Polish government-in-exile. Interestingly, some presidents have extensive military experience while others have none - civilian control is the key principle.'
             },
-            'polling-station': {
-                title: 'Polling Station',
-                origin: 'Dedicated spaces for voting began emerging in the 18th century with the development of the secret ballot. Before that, voting was often conducted in public, with voters declaring their choice aloud. The Australian ballot system, introducing private voting booths and standardized ballots, spread globally in the late 19th century, necessitating formal polling places.',
-                etymology: 'The word "poll" comes from Middle English "polle" meaning "head" - essentially counting heads. A polling station is literally a place where heads (voters) are counted.',
-                trivia: 'The world\'s most remote polling station is often set up in Antarctica for scientific research staff during elections. In India, election officials sometimes trek for days through mountains, forests, and rivers to set up single-voter polling stations in remote areas to ensure every citizen can vote. One such station in the Gir Forest in Gujarat is set up for a single temple priest who lives there. During the 2019 Indian general election, officials traveled to set up a polling booth for just one voter in the Malogam area in Arunachal Pradesh.'
+            'ballot-box': {
+                title: 'Ballot Box',
+                origin: 'Secure ballot boxes developed alongside the secret ballot in the 19th century. Before this, voting was often public and oral. The Australian ballot system (1856) introduced the concept of sealed containers to protect vote secrecy and prevent tampering.',
+                etymology: 'Ballot comes from Italian "ballotta" (little ball), referring to small balls used in Venice for voting. The "box" element is straightforward - a container. Together, it means a container for votes.',
+                trivia: 'The world\'s most creative ballot boxes include a giant pineapple in Costa Rica and traditional woven baskets in some African nations. In Polish elections, ballot boxes are sealed with special tape and multiple signatures. During the 1980s Solidarity movement, some ballot boxes were symbolically "stuffed" with protest votes as acts of resistance against the communist government.'
             },
-            'electoral-roll': {
-                title: 'Electoral Roll',
-                origin: 'Records of eligible voters began to be systematically kept in the 19th century as voting rights expanded beyond property owners to larger segments of the population. Modern, comprehensive electoral registers became necessary with universal suffrage movements in the late 19th and early 20th centuries.',
-                etymology: 'The term combines "electoral" (relating to elections or electors) with "roll" (a list, register, or catalog), referring to an official list of people qualified to vote.',
-                trivia: 'The first computerized electoral register in the world was implemented in Denmark in 1968. In ancient Athens (the birthplace of democracy), citizens were inscribed on wooden tablets called "pinakes" which served as an early form of electoral roll. In Australia, voting is compulsory, so being on the electoral roll is mandatory for citizens 18 and older, with fines for those who don\'t register or vote.'
+            'presidential-pardon': {
+                title: 'Presidential Pardon',
+                origin: 'The power of pardon has ancient royal origins, dating back to medieval kings\' "divine right" to show mercy. Modern presidents inherited this power as part of executive authority, intended as a check against overly harsh judicial sentences or to grant clemency in extraordinary circumstances.',
+                etymology: 'Pardon comes from Old French "pardoner" meaning "to grant forgiveness." Presidential adds the specification that this forgiveness comes from the highest executive authority in the land.',
+                trivia: 'The Polish President can grant pardons, but this power has been used sparingly. One of the most famous U.S. pardons was President Ford\'s pardon of Richard Nixon in 1974. In contrast, some countries like Germany limit this power significantly. Fun fact: In the U.S., presidents traditionally pardon a turkey each Thanksgiving - a much lighter use of this serious constitutional power!'
             },
-            'dhondt-method': {
-                title: 'D\'Hondt Method',
-                origin: 'This proportional representation method was designed by Belgian mathematician and lawyer Victor D\'Hondt and published in 1882 in his work "Système pratique et raisonné de représentation proportionnelle." It was first used officially in Belgium in 1899 and has since been adopted by many democracies worldwide.',
-                etymology: 'The method is named after its creator, Victor D\'Hondt (1841-1901), a Belgian jurist and mathematician who developed it to fairly allocate seats in a proportional representation system.',
-                trivia: 'Despite being widely used across Europe and parts of South America, Victor D\'Hondt was not a political scientist but a lawyer and mathematics professor at Ghent University. The system tends to favor larger parties compared to other proportional representation methods like Sainte-Laguë. Poland adopted the D\'Hondt method for Sejm elections after the fall of communism, though it briefly experimented with the modified Sainte-Laguë method between 2001 and 2005.'
+            'voting-booth': {
+                title: 'Voting Booth',
+                origin: 'Voting booths were introduced in the late 19th century as part of election reforms promoting the secret ballot. Massachusetts adopted the first booth voting law in 1888, and the practice spread globally as democracies sought to prevent voter intimidation and vote buying.',
+                etymology: 'Booth comes from Middle English "bothe" meaning a temporary shelter or stall. Voting booth literally means "a temporary shelter for voting," emphasizing the private, protected space it provides.',
+                trivia: 'Modern voting booths vary wildly in design. Some countries use cardboard screens, others wooden cabinets, and some high-tech electronic stations. In Poland, voting booths must provide sufficient privacy and are checked before each election. The classic "lever machine" booths used in the U.S. from the 1890s to 2000s were mechanical marvels with hundreds of moving parts - some are now displayed in museums!'
             }
         };
         
