@@ -764,19 +764,18 @@
     document.addEventListener('DOMContentLoaded', () => {
         if (!('speechSynthesis' in window)) {
             alert("Niestety, Twoja przeglądarka nie wspiera syntezy mowy. Funkcje audio nie będą działać.");
-            // Opcjonalnie: ukryj przyciski i elementy związane z audio
             document.querySelectorAll('button.play-btn, button.pause-btn, button.stop-btn, .global-controls').forEach(el => el.style.display = 'none');
-            document.querySelectorAll('.dialogue-header span:nth-child(2)').forEach(el => el.style.display = 'none'); // Ukryj "▶ Click to play"
-            return; // Zatrzymaj wykonywanie reszty skryptu audio
+            document.querySelectorAll('.dialogue-header span:nth-child(2)').forEach(el => el.style.display = 'none');
+            return;
         }
 
         const synth = window.speechSynthesis;
         let voices = [];
         let speakerA, speakerB;
-        let currentDialogue = null; // Wskazuje na aktualnie aktywny (rozwinięty/odtwarzany) dialog
+        let currentDialogue = null;
         let currentLineIndex = 0;
         let isPlaying = false; // Czy trwa odtwarzanie sekwencji linii w currentDialogue
-        let isPaused = false;  // Czy synteza mowy jest globalnie wstrzymana (synth.paused())
+        let isPaused = false;  // Czy synteza mowy jest globalnie wstrzymana (synth.paused)
 
         const globalControls = document.getElementById('global-controls');
         const globalPauseBtn = document.getElementById('global-pause');
@@ -785,90 +784,67 @@
 
         function initVoices() {
             voices = synth.getVoices();
-            // console.log('Available voices:', voices);
+            const englishVoices = voices.filter(voice => voice.lang.startsWith('en'));
             
-            const englishVoices = voices.filter(voice => voice.lang.includes('en'));
+            speakerA = englishVoices.find(voice => voice.name.toLowerCase().includes('male')) || 
+                       voices.find(voice => voice.lang.startsWith('en') && voice.name.toLowerCase().includes('male')) ||
+                       englishVoices[0] || voices.find(v => v.lang.startsWith('en'));
             
-            let femaleVoice = voices.find(voice => 
-                voice.name.toLowerCase().includes('eva') || 
-                voice.name.toLowerCase().includes('female')) ||
-                englishVoices.find(voice => voice.name.toLowerCase().includes('female')) ||
-                englishVoices[0];
-            
-            let maleVoice = voices.find(voice => 
-                voice.name.toLowerCase().includes('male') && 
-                !voice.name.toLowerCase().includes('female')) ||
-                englishVoices.find(voice => voice.name.toLowerCase().includes('male')) ||
-                englishVoices[1];
+            speakerB = englishVoices.find(voice => voice.name.toLowerCase().includes('eva') || voice.name.toLowerCase().includes('female')) ||
+                       voices.find(voice => voice.lang.startsWith('en') && voice.name.toLowerCase().includes('female')) ||
+                       englishVoices[1] || voices.find(v => v.lang.startsWith('en') && v !== speakerA);
 
-            // Fallbacks, jeśli preferowane głosy nie zostały znalezione
-            if (!femaleVoice && voices.length > 0) femaleVoice = voices[0];
-            if (!maleVoice && voices.length > 0) maleVoice = (voices.length > 1 ? voices[1] : voices[0]);
+            if (!speakerA && voices.length > 0) speakerA = voices[0];
+            if (!speakerB && voices.length > 0) speakerB = (voices.length > 1 ? voices[1] : voices[0]);
             
-            speakerA = maleVoice;
-            speakerB = femaleVoice;
-            
-            if (!speakerA || !speakerB) {
-                console.warn("Nie udało się znaleźć preferowanych głosów. Używane będą domyślne głosy systemowe.");
-            }
             // console.log('Selected voices:', { A: speakerA?.name, B: speakerB?.name });
+            if (!speakerA || !speakerB) {
+                console.warn("Nie udało się załadować preferowanych głosów. Jakość audio może być niższa.");
+                if (voices.length > 0 && !speakerA) speakerA = voices[0];
+                if (voices.length > 0 && !speakerB) speakerB = voices[voices.length > 1 ? 1 : 0];
+            }
         }
 
         if (synth.onvoiceschanged !== undefined) {
             synth.onvoiceschanged = initVoices;
-        } else {
-            // Niektóre przeglądarki (np. starsze Safari) mogą potrzebować tego timeoutu
-             setTimeout(initVoices, 250); // Zmniejszony timeout, ale onvoiceschanged jest lepsze
         }
-        initVoices(); // Spróbuj zainicjować od razu, na wypadek gdyby głosy już były dostępne
+        initVoices(); // Wywołaj raz na starcie, na wypadek gdyby głosy były już dostępne
 
-        function clearAllPlayingStates() {
+        function clearAllPlayingStatesExcept(keepActiveDialogueContainer) {
             document.querySelectorAll('.dialogue-line.playing').forEach(line => {
                 line.classList.remove('playing');
             });
-            document.querySelectorAll('.dialogue-header.active').forEach(header => {
-                header.classList.remove('active');
-            });
-            document.querySelectorAll('.dialogue-content.active').forEach(content => {
-                content.classList.remove('active');
-            });
-            document.querySelectorAll('.dialogue-controls.active').forEach(controls => {
-                controls.classList.remove('active');
-                const pauseBtn = controls.querySelector('.pause-btn');
-                if (pauseBtn) pauseBtn.textContent = 'Pause'; // Resetuj tekst przycisku
+            document.querySelectorAll('.dialogue-container').forEach(dc => {
+                if (dc !== keepActiveDialogueContainer) {
+                    dc.querySelector('.dialogue-header')?.classList.remove('active');
+                    dc.querySelector('.dialogue-content')?.classList.remove('active');
+                    dc.querySelector('.dialogue-controls')?.classList.remove('active');
+                    const localPauseBtn = dc.querySelector('.dialogue-controls .pause-btn');
+                    if (localPauseBtn) localPauseBtn.textContent = 'Pause';
+                }
             });
         }
+        
+        function activateDialogueUI(dialogueContainer) {
+            dialogueContainer.querySelector('.dialogue-header')?.classList.add('active');
+            dialogueContainer.querySelector('.dialogue-content')?.classList.add('active');
+            dialogueContainer.querySelector('.dialogue-controls')?.classList.add('active');
+            currentDialogue = dialogueContainer; // Ustaw jako aktywny
+        }
+
 
         function playSingleLine(lineElement) {
             const dialogueContainerOfLine = lineElement.closest('.dialogue-container');
             if (!dialogueContainerOfLine) return;
 
-            synth.cancel();
+            synth.cancel(); // Anuluj poprzednie mowy - to może wywołać 'interrupted' error dla nich
             isPlaying = false; 
             isPaused = false;  
 
-            // Dezaktywuj wszystkie inne dialogi
-            document.querySelectorAll('.dialogue-container').forEach(dc => {
-                if (dc !== dialogueContainerOfLine) {
-                    dc.querySelector('.dialogue-header')?.classList.remove('active');
-                    dc.querySelector('.dialogue-content')?.classList.remove('active');
-                    dc.querySelector('.dialogue-controls')?.classList.remove('active');
-                    dc.querySelectorAll('.dialogue-line.playing').forEach(l => l.classList.remove('playing'));
-                    const localPauseBtn = dc.querySelector('.dialogue-controls .pause-btn');
-                    if (localPauseBtn) localPauseBtn.textContent = 'Pause';
-                }
-            });
-
-            // Aktywuj UI dialogu bieżącej linii
-            dialogueContainerOfLine.querySelector('.dialogue-header')?.classList.add('active');
-            dialogueContainerOfLine.querySelector('.dialogue-content')?.classList.add('active');
-            dialogueContainerOfLine.querySelector('.dialogue-controls')?.classList.add('active');
-
-            // Zaktualizuj styl odtwarzanej linii
-            document.querySelectorAll('.dialogue-line.playing').forEach(l => l.classList.remove('playing'));
+            clearAllPlayingStatesExcept(dialogueContainerOfLine);
+            activateDialogueUI(dialogueContainerOfLine);
+            
             lineElement.classList.add('playing');
-
-            currentDialogue = dialogueContainerOfLine; 
 
             const text = lineElement.getAttribute('data-text');
             const speaker = lineElement.getAttribute('data-speaker');
@@ -880,49 +856,45 @@
 
             globalControls.classList.add('active');
             globalPauseBtn.textContent = 'Pause All'; 
-            globalStatus.textContent = `Odtwarzanie: ${speaker} - "${text.substring(0, 30)}..."`;
+            updateGlobalStatus(`Odtwarzanie (1 linia): ${speaker} - "${text.substring(0, 30)}..."`);
 
             utterance.onend = () => {
                 lineElement.classList.remove('playing');
-                if (currentDialogue === dialogueContainerOfLine && !isPlaying) {
-                    globalStatus.textContent = `${dialogueContainerOfLine.querySelector('.dialogue-title').textContent} aktywny. Gotowy.`;
+                if (currentDialogue === dialogueContainerOfLine && !isPlaying && !synth.speaking) {
+                     updateGlobalStatus(`${dialogueContainerOfLine.querySelector('.dialogue-title').textContent} aktywny.`);
                 }
-                // Globalne kontrolki pozostają aktywne, bo currentDialogue jest ustawiony
             };
 
             utterance.onerror = (e) => {
-                console.error('Błąd syntezy mowy:', e);
+                const context = "playSingleLine";
+                if (e.error === 'interrupted') {
+                    console.log(`Mowa przerwana (oczekiwane) [${context}]: "${e.utterance.text.substring(0,30)}..."`);
+                } else {
+                    console.error(`Błąd syntezy mowy [${context}]: ${e.error}, Text: "${e.utterance.text.substring(0,30)}..."`);
+                    updateGlobalStatus('Wystąpił błąd odtwarzania.');
+                }
                 lineElement.classList.remove('playing');
-                globalStatus.textContent = 'Wystąpił błąd';
             };
 
             synth.speak(utterance);
         }
 
         function playDialogue(dialogueContainer) {
-            synth.cancel();
+            synth.cancel(); // Anuluj poprzednie - to może wywołać 'interrupted' error dla nich
             
-            // Jeśli kliknięto ten sam dialog, który już grał i był spauzowany - wznow
             if (currentDialogue === dialogueContainer && isPlaying && isPaused) {
                 resumeDialogue();
                 return;
             }
 
-            clearAllPlayingStates(); // Czyści stany poprzednich dialogów
-
-            currentDialogue = dialogueContainer;
+            clearAllPlayingStatesExcept(dialogueContainer);
+            activateDialogueUI(dialogueContainer);
+            
             currentLineIndex = 0;
             isPlaying = true;
             isPaused = false;
 
-            const header = dialogueContainer.querySelector('.dialogue-header');
-            const content = dialogueContainer.querySelector('.dialogue-content');
-            const controls = dialogueContainer.querySelector('.dialogue-controls');
-            const localPauseBtn = controls.querySelector('.pause-btn');
-
-            if (header) header.classList.add('active');
-            if (content) content.classList.add('active');
-            if (controls) controls.classList.add('active');
+            const localPauseBtn = dialogueContainer.querySelector('.dialogue-controls .pause-btn');
             if (localPauseBtn) localPauseBtn.textContent = 'Pause';
 
             globalControls.classList.add('active');
@@ -935,16 +907,11 @@
             if (!currentDialogue || !isPlaying || isPaused) return;
 
             const lines = currentDialogue.querySelectorAll('.dialogue-line');
-            
-            // Usuń podświetlenie z poprzedniej linii
-            if (currentLineIndex > 0) {
-                 lines[currentLineIndex - 1]?.classList.remove('playing');
-            }
+            document.querySelectorAll('.dialogue-line.playing').forEach(l => l.classList.remove('playing')); // Usuń z poprzednich
             
             if (currentLineIndex >= lines.length) {
                 isPlaying = false;
-                globalStatus.textContent = `Dialog zakończony: ${currentDialogue.querySelector('.dialogue-title').textContent}.`;
-                // currentDialogue pozostaje ustawiony, dialog jest wciąż "aktywny/otwarty"
+                updateGlobalStatus(`Dialog zakończony: ${currentDialogue.querySelector('.dialogue-title').textContent}.`);
                 return;
             }
 
@@ -959,25 +926,39 @@
             if (voice) utterance.voice = voice;
             utterance.rate = 0.9;
 
-            globalStatus.textContent = `Odtwarzanie dialogu: ${speaker} (${currentLineIndex + 1}/${lines.length})`;
+            updateGlobalStatus(`Odtwarzanie dialogu: ${speaker} (${currentLineIndex + 1}/${lines.length})`);
 
             utterance.onend = () => {
-                lineElement.classList.remove('playing'); // Usuń 'playing' tylko z bieżącej linii po zakończeniu
-                currentLineIndex++;
-                setTimeout(() => { // Krótka przerwa między liniami
-                    playNextLine();
-                }, 500); // Zmniejszona pauza
+                lineElement.classList.remove('playing');
+                if (isPlaying && !isPaused) { // Upewnij się, że nadal powinniśmy grać
+                    currentLineIndex++;
+                    setTimeout(() => playNextLine(), 500);
+                }
             };
 
             utterance.onerror = (e) => {
-                console.error('Błąd syntezy mowy:', e);
-                lineElement.classList.remove('playing');
-                currentLineIndex++;
-                setTimeout(() => {
-                    playNextLine();
-                }, 500);
-            };
+                const context = "playNextLine";
+                lineElement.classList.remove('playing'); // Zawsze usuń klasę 'playing' z linii, która spowodowała błąd
 
+                if (e.error === 'interrupted') {
+                    console.log(`Mowa przerwana (oczekiwane) [${context}]: "${e.utterance.text.substring(0,30)}..."`);
+                    // Jeśli mowa została przerwana, to znaczy, że użytkownik zainicjował inną akcję
+                    // (np. stop, play single, play another dialogue).
+                    // Funkcje te (stopDialogue, playSingleLine, playDialogue) same zarządzają stanem isPlaying.
+                    // Dlatego tutaj nie powinniśmy automatycznie przechodzić do następnej linii.
+                } else {
+                    console.error(`Błąd syntezy mowy [${context}]: ${e.error}, Text: "${e.utterance.text.substring(0,30)}..."`);
+                    updateGlobalStatus('Błąd podczas odtwarzania dialogu.');
+                    
+                    // Spróbuj przejść do następnej linii tylko jeśli błąd NIE był przerwaniem
+                    // i nadal jesteśmy w trybie odtwarzania tego samego dialogu.
+                    if (isPlaying && currentDialogue && currentDialogue.contains(lineElement) && !isPaused) {
+                        console.warn("Nieoczekiwany błąd, próba przejścia do następnej linii.");
+                        currentLineIndex++;
+                        setTimeout(() => playNextLine(), 500);
+                    }
+                }
+            };
             synth.speak(utterance);
         }
 
@@ -985,7 +966,7 @@
             if (synth.speaking && !synth.paused) {
                 synth.pause();
                 isPaused = true;
-                globalStatus.textContent = 'Pauza';
+                updateGlobalStatus('Pauza');
                 globalPauseBtn.textContent = 'Resume All';
                 if (currentDialogue) {
                     const localPauseBtn = currentDialogue.querySelector('.dialogue-controls .pause-btn');
@@ -996,72 +977,85 @@
 
         function resumeDialogue() {
             if (synth.paused) {
-                const wasPlayingSequence = isPlaying; // Zapamiętaj, czy odtwarzano sekwencję
                 synth.resume();
-                isPaused = false;
+                isPaused = false; // isPaused jest teraz false
                 
                 globalPauseBtn.textContent = 'Pause All';
                 if (currentDialogue) {
                     const localPauseBtn = currentDialogue.querySelector('.dialogue-controls .pause-btn');
                     if (localPauseBtn) localPauseBtn.textContent = 'Pause';
 
-                    if (wasPlayingSequence) { // Jeśli była odtwarzana sekwencja
-                         // playNextLine() samo obsłuży kontynuację, jeśli isPaused jest false,
-                         // ale status może wymagać ręcznej aktualizacji natychmiast po wznowieniu
+                    // Zaktualizuj status na podstawie tego, co było odtwarzane
+                    if (isPlaying) { // Jeśli odtwarzano sekwencję
                          const lines = currentDialogue.querySelectorAll('.dialogue-line');
                          if (currentLineIndex < lines.length) {
                             const lineElement = lines[currentLineIndex];
                             const speaker = lineElement.getAttribute('data-speaker');
-                            globalStatus.textContent = `Odtwarzanie dialogu: ${speaker} (${currentLineIndex + 1}/${lines.length})`;
+                            updateGlobalStatus(`Wznowiono dialog: ${speaker} (${currentLineIndex + 1}/${lines.length})`);
                          }
-                    } else { // Jeśli odtwarzano pojedynczą linię
+                         // playNextLine jest wywoływane przez onend poprzedniego utterance jeśli nie było pauzy,
+                         // ale po resume, jeśli utterance nie zakończyło się, będzie kontynuować i jego onend wywoła playNextLine.
+                         // Jeśli utterance skończyło się podczas pauzy (mało prawdopodobne), onend mogło nie odpalić playNextLine.
+                         // Dla pewności można by wywołać playNextLine, jeśli isPlaying i !synth.speaking, ale to skomplikowane.
+                         // Zazwyczaj resume() po prostu kontynuuje bieżący utterance.
+                    } else { // Jeśli odtwarzano pojedynczą linię (lub nic aktywnego w sekwencji)
                         const playingLine = currentDialogue.querySelector('.dialogue-line.playing');
                         if (playingLine) {
-                            const speaker = playingLine.getAttribute('data-speaker');
                             const text = playingLine.getAttribute('data-text');
-                            globalStatus.textContent = `Odtwarzanie: ${speaker} - "${text.substring(0, 30)}..."`;
+                            const speaker = playingLine.getAttribute('data-speaker');
+                            updateGlobalStatus(`Wznowiono (1 linia): ${speaker} - "${text.substring(0, 30)}..."`);
                         } else {
-                             globalStatus.textContent = `Wznowiono. ${currentDialogue.querySelector('.dialogue-title').textContent} aktywny.`;
+                             updateGlobalStatus(`Wznowiono. ${currentDialogue.querySelector('.dialogue-title').textContent} aktywny.`);
                         }
                     }
                 } else {
-                    globalStatus.textContent = 'Wznowiono';
+                    updateGlobalStatus('Wznowiono');
                 }
-                // Jeśli odtwarzano sekwencję, playNextLine samo się wywoła, jeśli trzeba, po zakończeniu bieżącej kwestii
-                // Jeśli odtwarzano pojedynczą linię, ona po prostu będzie kontynuowana
             }
         }
 
         function stopDialogue() {
-            synth.cancel();
+            synth.cancel(); // To może wywołać 'interrupted' error dla bieżącej mowy
             isPlaying = false;
             isPaused = false;
 
-            if (currentDialogue) { // Resetuj lokalny przycisk pauzy, jeśli istniał aktywny dialog
+            if (currentDialogue) {
                 const localPauseBtn = currentDialogue.querySelector('.dialogue-controls .pause-btn');
                 if (localPauseBtn) localPauseBtn.textContent = 'Pause';
+                // Nie usuwaj currentDialogue, dialog może pozostać "otwarty" ale nie grający
+                // currentDialogue = null; // Decyzja: czy stop ma też "zamknąć" aktywny dialog?
             }
-            
-            currentDialogue = null; 
-            clearAllPlayingStates(); // Czyści UI wszystkich dialogów
-            
+            // Usuń wszystkie aktywne stany wizualne, bo wszystko zostało zatrzymane
+             document.querySelectorAll('.dialogue-line.playing').forEach(line => line.classList.remove('playing'));
+             // Pozostawienie kontrolek dialogu otwartego, jeśli taki był:
+             // clearAllPlayingStatesExcept(currentDialogue); // Jeśli chcemy zostawić otwarty ale nie grający
+             // Jeśli stop ma zwinąć wszystko:
+             clearAllPlayingStatesExcept(null); 
+             currentDialogue = null;
+
+
             globalControls.classList.remove('active');
-            globalStatus.textContent = 'Zatrzymano';
+            updateGlobalStatus('Zatrzymano. Gotowy.');
             globalPauseBtn.textContent = 'Pause All';
+        }
+        
+        function updateGlobalStatus(message) {
+            if (globalStatus) {
+                globalStatus.textContent = message;
+            }
         }
 
         // Event Listeners
         document.querySelectorAll('.dialogue-header').forEach(header => {
-            header.addEventListener('click', () => {
+            header.addEventListener('click', (e) => {
                 const dialogueContainer = header.closest('.dialogue-container');
-                if (currentDialogue === dialogueContainer && isPlaying && !isPaused) {
-                    // Jeśli kliknięto nagłówek aktywnie odtwarzanego dialogu, potraktuj to jak pauzę
-                    pauseDialogue();
-                } else if (currentDialogue === dialogueContainer && isPlaying && isPaused) {
-                    // Jeśli kliknięto nagłówek spauzowanego dialogu, wznow
-                    resumeDialogue();
-                }
-                else {
+                if (currentDialogue === dialogueContainer && isPlaying) { // Kliknięcie aktywnego, grającego dialogu
+                    if (isPaused) {
+                        resumeDialogue();
+                    } else {
+                        pauseDialogue();
+                    }
+                } else { // Inny dialog lub ten sam, ale nie grający aktywnie sekwencji
                     playDialogue(dialogueContainer);
                 }
             });
@@ -1069,7 +1063,6 @@
 
         document.querySelectorAll('.dialogue-line').forEach(line => {
             line.addEventListener('click', (e) => {
-                // Zapobiegaj propagacji do nagłówka, jeśli linia jest wewnątrz contentu, który jest klikalny
                 e.stopPropagation(); 
                 playSingleLine(line);
             });
@@ -1087,12 +1080,16 @@
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const dialogueContainer = btn.closest('.dialogue-container');
-                if (currentDialogue === dialogueContainer && (isPlaying || synth.speaking)) {
-                    if (synth.paused) {
+                // Przycisk pauzy działa tylko jeśli ten dialog jest aktualnie odtwarzany lub pauzowany
+                if (currentDialogue === dialogueContainer && (synth.speaking || synth.paused)) {
+                    if (isPaused) { // lub synth.paused
                         resumeDialogue();
                     } else {
                         pauseDialogue();
                     }
+                } else if (currentDialogue === dialogueContainer && !synth.speaking && !synth.paused){
+                    // Jeśli dialog jest aktywny, ale nic nie gra (np. skończył lub błąd), 'Play All' jest lepszą opcją
+                    playDialogue(dialogueContainer);
                 }
             });
         });
@@ -1100,21 +1097,17 @@
         document.querySelectorAll('.dialogue-controls .stop-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                // Sprawdź, czy ten dialog jest aktywny, zanim go zatrzymasz
                 const dialogueContainer = btn.closest('.dialogue-container');
-                if (currentDialogue === dialogueContainer) {
+                // Stop działa globalnie, ale można by go ograniczyć do aktywnego dialogu
+                // if (currentDialogue === dialogueContainer) {
                     stopDialogue();
-                } else {
-                    // Jeśli inny dialog jest aktywny, zatrzymaj go, ale niekoniecznie otwieraj ten.
-                    // Dla uproszczenia, stop zawsze działa globalnie.
-                    stopDialogue();
-                }
+                // }
             });
         });
 
         globalPauseBtn.addEventListener('click', () => {
-            if (synth.speaking || isPlaying) { // Działaj, jeśli coś się odtwarza lub jest w trybie sekwencji
-                if (synth.paused) {
+             if (synth.speaking || synth.paused) { // Działaj, jeśli coś się odtwarza lub jest spauzowane
+                if (isPaused) { // synth.paused
                     resumeDialogue();
                 } else {
                     pauseDialogue();
