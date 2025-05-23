@@ -811,7 +811,7 @@
                     Reset
                 </button>
                 <button class="btn btn-success" onclick="showHint()">
-                    Hint
+                    💡 Hint
                 </button>
             </div>
             
@@ -1297,13 +1297,9 @@
         }
         
         function getCorrectLetter(term) {
-            // Letter mapping for 15 terms (A-O)
-            const letterMap = {
-                1: 'A', 2: 'B', 3: 'C', 4: 'D', 5: 'E',
-                6: 'F', 7: 'G', 8: 'H', 9: 'I', 10: 'J',
-                11: 'K', 12: 'L', 13: 'M', 14: 'N', 15: 'O'
-            };
-            return letterMap[term.id];
+            // Find the definition element that matches this term's ID
+            const definitionElement = document.querySelector(`[data-term-id="${term.id}"][data-type="definition"]`);
+            return definitionElement ? definitionElement.dataset.letter : null;
         }
         
         function showResults(score) {
@@ -1571,21 +1567,39 @@
             }
         }
         
+        // Enhanced vocabulary data with etymology-based hints
+        const vocabularyHints = {
+            1: "Think about the Latin word 'terminus' meaning boundary or limit - this refers to a fixed period with clear start and end dates.",
+            2: "From Greek 'polis' (city) + 'stasis' (standing) - a place where citizens 'stand' to participate in democracy.",
+            3: "From Latin 'candidatus' meaning 'clothed in white' - in ancient Rome, those seeking office wore white togas to symbolize purity.",
+            4: "Think 'frequency' - this term measures how often something happens, specifically how many people show up.",
+            5: "The prefix 'bi-' means two, like bicycle or binary - this system has exactly two stages.",
+            6: "From Old French 'vote' meaning 'wish' or 'vow' - it's an enclosed space for making your private wish known.",
+            7: "Think of a 'ballot' (little ball used in voting) and a container - what holds the voting balls?",
+            8: "Three words: 'cast' (throw), 'a' (one), and 'vote' (choice) - the act of throwing your choice into the system.",
+            9: "From Italian 'ballotta' (little ball) - the physical document that replaced ancient voting balls.",
+            10: "Two parts: 'commander' (one who commands) and 'chief' (head/leader) - the top military authority.",
+            11: "From Latin 'silentium' - a period when all political noise must stop before the important day.",
+            12: "From Old French 'pardoner' (to forgive) - a presidential power of mercy and forgiveness.",
+            13: "Think 'campaign' (military expedition) + 'spot' (brief appearance) - a short promotional appearance in the political battle.",
+            14: "From Latin 'jurare' (to swear) - a solemn promise made before taking on great responsibility.",
+            15: "Think 'cabinet' (a group of advisors) + 'council' (meeting for advice) - when advisors meet with the leader."
+        };
+        
         function showHint() {
-            if (matchedPairs.size === vocabularyData.length) {
-                alert('All terms have been matched!');
-                return;
-            }
-            
-            // Find an unmatched term and show its definition
-            const unmatchedTerm = vocabularyData.find(term => !matchedPairs.has(term.id.toString()));
-            if (unmatchedTerm) {
-                // Find the corresponding definition element
-                const definitionElement = document.querySelector(`[data-term-id="${unmatchedTerm.id}"][data-type="definition"]`);
-                if (definitionElement) {
-                    const letter = definitionElement.dataset.letter;
-                    alert(`Hint: Term "${unmatchedTerm.english}" matches with definition ${letter}: "${unmatchedTerm.definition.substring(0, 50)}..."`);
+            // Check if there's a selected term
+            if (selectedItem && selectedItem.dataset.type === 'term') {
+                const termId = parseInt(selectedItem.dataset.termId);
+                const term = vocabularyData.find(t => t.id == termId);
+                const hint = vocabularyHints[termId];
+                
+                if (term && hint) {
+                    alert(`💡 Etymology Hint for "${term.english}":\n\n${hint}\n\nThink about what this suggests about the term's meaning!`);
+                } else {
+                    alert('💡 Select a term first, then click Hint to get an etymology clue!');
                 }
+            } else {
+                alert('💡 How to use hints:\n\n1. Click on any term to select it (it will turn red)\n2. Click the Hint button\n3. Get an etymology clue to help you think about the meaning!\n\nHints focus on word origins and make you think, rather than giving direct answers.');
             }
         }
         
