@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jak napisać email z zaproszeniem</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .slide {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h1 {
+            color: #764ba2;
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        h3 {
+            color: #764ba2;
+            font-size: 1.4em;
+            margin: 20px 0 10px 0;
+        }
+        
+        .email-example {
+            background: #f0f4ff;
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Arial', sans-serif;
+            line-height: 1.8;
+        }
+        
+        .highlight {
+            background: #ffd700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .structure-box {
+            background: #e0ffe0;
+            border: 2px solid #4caf50;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .vocabulary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .vocab-card {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .vocab-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .vocab-card .english {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .vocab-card .polish {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .practice-section {
+            background: #fff3e0;
+            border: 2px solid #ff9800;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .checklist {
+            background: #f3e5f5;
+            border: 2px solid #9c27b0;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .checklist ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .checklist li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .checklist li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4caf50;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        
+        .emoji {
+            font-size: 1.5em;
+            margin: 0 5px;
+        }
+        
+        .template {
+            background: #e8f5e9;
+            border-left: 5px solid #4caf50;
+            padding: 15px;
+            margin: 15px 0;
+            font-style: italic;
+        }
+        
+        .important-note {
+            background: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: bold;
+            color: #c62828;
+        }
+        
+        .button-next {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 30px;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto;
+            transition: transform 0.3s;
+        }
+        
+        .button-next:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Slajd 1: Wprowadzenie -->
+        <div class="slide">
+            <h1>🎉 Jak napisać email z zaproszeniem? 🎉</h1>
+            <p style="text-align: center; font-size: 1.2em; margin-bottom: 30px;">
+                Dzisiaj nauczymy się pisać emaile po angielsku! <span class="emoji">📧</span>
+            </p>
+            
+            <div class="email-example">
+                <strong>Przykładowy email:</strong><br><br>
+                <span class="highlight">Hi Wendy,</span><br>
+                What are you doing next Saturday? Would you like to spend the day with me?<br>
+                We're having a picnic in the park across the road. Lots of people from our block of flats are coming.<br>
+                We're meeting at the gate at one o'clock.<br>
+                It's a great way to meet our neighbours, have a good time together and become friends.<br>
+                We must all bring some food to the picnic: pies, sandwiches, cakes or biscuits.<br>
+                We can play music and dance too, but we mustn't make too much noise.<br>
+                Please come!<br>
+                <span class="highlight">Angie</span>
+            </div>
+        </div>
+
+        <!-- Slajd 2: Struktura emaila -->
+        <div class="slide">
+            <h2>📝 Struktura emaila z zaproszeniem</h2>
+            
+            <div class="structure-box">
+                <h3>1. Powitanie (Greeting) <span class="emoji">👋</span></h3>
+                <p><strong>Przykłady:</strong></p>
+                <ul>
+                    <li>Hi [imię] - Cześć [imię]</li>
+                    <li>Hello [imię] - Witaj [imię]</li>
+                    <li>Dear [imię] - Drogi/Droga [imię]</li>
+                </ul>
+            </div>
+
+            <div class="structure-box">
+                <h3>2. Pytanie wstępne (Opening question) <span class="emoji">❓</span></h3>
+                <p><strong>Przykłady:</strong></p>
+                <ul>
+                    <li>What are you doing...? - Co robisz...?</li>
+                    <li>Are you free...? - Czy jesteś wolny/wolna...?</li>
+                    <li>Would you like to...? - Czy chciałbyś/chciałabyś...?</li>
+                </ul>
+            </div>
+
+            <div class="structure-box">
+                <h3>3. Szczegóły imprezy (Party details) <span class="emoji">🎈</span></h3>
+                <p><strong>Co należy podać:</strong></p>
+                <ul>
+                    <li><strong>What?</strong> - Co? (rodzaj imprezy)</li>
+                    <li><strong>When?</strong> - Kiedy? (dzień i godzina)</li>
+                    <li><strong>Where?</strong> - Gdzie? (miejsce)</li>
+                    <li><strong>Who?</strong> - Kto? (kto będzie)</li>
+                </ul>
+            </div>
+
+            <div class="structure-box">
+                <h3>4. Zakończenie (Closing) <span class="emoji">✉️</span></h3>
+                <p><strong>Przykłady:</strong></p>
+                <ul>
+                    <li>Please come! - Proszę, przyjdź!</li>
+                    <li>Hope to see you! - Mam nadzieję, że cię zobaczę!</li>
+                    <li>Let me know! - Daj mi znać!</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slajd 3: Przydatne słownictwo -->
+        <div class="slide">
+            <h2>🌟 Przydatne słówka i zwroty</h2>
+            
+            <h3>Rodzaje imprez:</h3>
+            <div class="vocabulary-grid">
+                <div class="vocab-card">
+                    <div class="english">birthday party</div>
+                    <div class="polish">przyjęcie urodzinowe</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="english">picnic</div>
+                    <div class="polish">piknik</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="english">sleepover</div>
+                    <div class="polish">nocowanie u kogoś</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="english">movie night</div>
+                    <div class="polish">wieczór filmowy</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="english">game night</div>
+                    <div class="polish">wieczór gier</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="english">barbecue</div>
+                    <div class="polish">grill</div>
+                </div>
+            </div>
+
+            <h3>Dni tygodnia i czas:</h3>
+            <div class="vocabulary-grid">
+                <div class="vocab-card">
+                    <div class="english">next Saturday</div>
+                    <div class="polish">w następną sobotę</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="english">this weekend</div>
+                    <div class="polish">w ten weekend</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="english">at 3 o'clock</div>
+                    <div class="polish">o godzinie 3</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="english">in the afternoon</div>
+                    <div class="polish">po południu</div>
+                </div>
+            </div>
+
+            <h3>Miejsca:</h3>
+            <div class="vocabulary-grid">
+                <div class="vocab-card">
+                    <div class="english">at my house</div>
+                    <div class="polish">w moim domu</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="english">in the park</div>
+                    <div class="polish">w parku</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="english">at school</div>
+                    <div class="polish">w szkole</div>
+                </div>
+                <div class="vocab-card">
+                    <div class="english">in the garden</div>
+                    <div class="polish">w ogrodzie</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slajd 4: Przydatne zdania -->
+        <div class="slide">
+            <h2>💬 Gotowe zdania do wykorzystania</h2>
+            
+            <h3>Zapraszanie:</h3>
+            <div class="template">
+                • Would you like to come to my...? - Czy chciałbyś przyjść na moje...?<br>
+                • Can you come to...? - Czy możesz przyjść na...?<br>
+                • I'm having a... - Organizuję...<br>
+                • We're planning... - Planujemy...
+            </div>
+
+            <h3>Podawanie szczegółów:</h3>
+            <div class="template">
+                • It's on [dzień] at [godzina] - To jest w [dzień] o [godzina]<br>
+                • We're meeting at... - Spotykamy się o/w...<br>
+                • The party starts at... - Impreza zaczyna się o...<br>
+                • It will be at... - To będzie w...
+            </div>
+
+            <h3>Co przynieść/co będziemy robić:</h3>
+            <div class="template">
+                • Please bring... - Proszę, przynieś...<br>
+                • We can... - Możemy...<br>
+                • We're going to... - Będziemy...<br>
+                • There will be... - Będzie...
+            </div>
+
+            <h3>Zasady (must/mustn't):</h3>
+            <div class="template">
+                • You must... - Musisz...<br>
+                • We must... - Musimy...<br>
+                • You mustn't... - Nie możesz...<br>
+                • We mustn't... - Nie możemy...
+            </div>
+        </div>
+
+        <!-- Slajd 5: Krok po kroku -->
+        <div class="slide">
+            <h2>🚀 Napisz swój email - krok po kroku!</h2>
+            
+            <div class="practice-section">
+                <h3>Krok 1: Pomyśl o swojej imprezie <span class="emoji">🤔</span></h3>
+                <p>Odpowiedz na pytania:</p>
+                <ul>
+                    <li>• <strong>What?</strong> Jaka to impreza? (birthday party, picnic, movie night...)</li>
+                    <li>• <strong>When?</strong> Kiedy? (next Saturday, this Sunday at 2 o'clock...)</li>
+                    <li>• <strong>Where?</strong> Gdzie? (at my house, in the park...)</li>
+                    <li>• <strong>Who?</strong> Kto przyjdzie? (friends from class, neighbours...)</li>
+                    <li>• <strong>Activities?</strong> Co będziecie robić? (play games, dance, eat pizza...)</li>
+                    <li>• <strong>Rules?</strong> Jakie są zasady? (must bring food, mustn't be late...)</li>
+                </ul>
+            </div>
+
+            <div class="practice-section">
+                <h3>Krok 2: Napisz wersję roboczą <span class="emoji">✏️</span></h3>
+                <p>Użyj tego szablonu:</p>
+                <div class="template">
+                    Hi [imię przyjaciela],<br><br>
+                    
+                    What are you doing [kiedy]? Would you like to [co robić]?<br><br>
+                    
+                    I'm having a [rodzaj imprezy] at [miejsce]. [Kto] are coming.<br>
+                    We're meeting at [godzina].<br><br>
+                    
+                    We can [aktywność 1] and [aktywność 2]. [Dodatkowe informacje].<br>
+                    Please [co przynieść/zrobić]!<br><br>
+                    
+                    [Twoje imię]
+                </div>
+            </div>
+        </div>
+
+        <!-- Slajd 6: Przykłady -->
+        <div class="slide">
+            <h2>📚 Przykłady emaili</h2>
+            
+            <h3>Przykład 1: Urodziny <span class="emoji">🎂</span></h3>
+            <div class="email-example">
+                Hi Tom,<br><br>
+                Are you free next Saturday? Would you like to come to my birthday party?<br>
+                It's at my house at 4 o'clock. All our friends from class are coming.<br>
+                We can play games and eat pizza. There will be a big chocolate cake too!<br>
+                You must bring your favourite game. We mustn't be too loud because of my baby sister.<br>
+                Please come!<br><br>
+                Mike
+            </div>
+
+            <h3>Przykład 2: Wieczór filmowy <span class="emoji">🎬</span></h3>
+            <div class="email-example">
+                Hello Sara,<br><br>
+                What are you doing this Friday? Would you like to watch movies with me?<br>
+                I'm having a movie night at my house. Lucy and Emma are coming too.<br>
+                We're starting at 6 o'clock. We can watch funny films and eat popcorn.<br>
+                Please bring your favourite movie! You mustn't forget your pyjamas - it's a sleepover!<br>
+                Hope to see you!<br><br>
+                Kate
+            </div>
+        </div>
+
+        <!-- Slajd 7: Lista kontrolna -->
+        <div class="slide">
+            <h2>✅ Lista kontrolna przed wysłaniem</h2>
+            
+            <div class="checklist">
+                <h3>Sprawdź, czy twój email zawiera:</h3>
+                <ul>
+                    <li>Powitanie (Hi/Hello + imię)</li>
+                    <li>Pytanie czy przyjaciel jest wolny</li>
+                    <li>Informację o rodzaju imprezy</li>
+                    <li>Dzień i godzinę</li>
+                    <li>Miejsce spotkania</li>
+                    <li>Kto jeszcze przyjdzie</li>
+                    <li>Co będziecie robić</li>
+                    <li>Co przynieść lub zasady (must/mustn't)</li>
+                    <li>Prośbę o przyjście</li>
+                    <li>Twoje imię na końcu</li>
+                </ul>
+            </div>
+
+            <div class="important-note">
+                <span class="emoji">⚠️</span> WAŻNE! <span class="emoji">⚠️</span><br>
+                Pamiętaj o wielkiej literze na początku zdania i kropce na końcu!
+            </div>
+        </div>
+
+        <!-- Slajd 8: Podsumowanie -->
+        <div class="slide">
+            <h1>🌈 Świetna robota! 🌈</h1>
+            <p style="text-align: center; font-size: 1.3em; margin: 30px 0;">
+                Teraz jesteś gotowy/gotowa napisać swój email po angielsku!
+            </p>
+            
+            <div style="background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); 
+                        padding: 30px; border-radius: 20px; text-align: center; color: white;">
+                <h3 style="color: white; margin-bottom: 20px;">Pamiętaj o trzech krokach:</h3>
+                <p style="font-size: 1.2em;">
+                    1. <strong>PLAN</strong> - Zaplanuj swoją imprezę <span class="emoji">📝</span><br>
+                    2. <strong>WRITE</strong> - Napisz email używając szablonu <span class="emoji">✍️</span><br>
+                    3. <strong>CHECK</strong> - Sprawdź listę kontrolną <span class="emoji">✅</span>
+                </p>
+            </div>
+            
+            <button class="button-next">Good luck! Powodzenia! 🍀</button>
+        </div>
+    </div>
+</body>
+</html>
