@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zawody i Praca - Ćwiczenia Słownictwa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-weight: 500;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.6);
+            transform: translateY(-2px);
+        }
+
+        .task-section {
+            display: none;
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .task-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .task-title {
+            font-size: 1.8rem;
+            color: #5a67d8;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .clickable-term {
+            display: inline-block;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            margin: 5px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-weight: 500;
+        }
+
+        .clickable-term:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .english-translation {
+            display: none;
+            background: #e6fffa;
+            color: #2d3748;
+            border: 2px solid #38b2ac;
+            padding: 8px 16px;
+            margin: 5px;
+            border-radius: 15px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .exercise-content {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .exercise-item {
+            margin: 15px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .vocabulary-section {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .vocab-category {
+            margin-bottom: 25px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+
+        .vocab-category h3 {
+            color: #5a67d8;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 10px;
+        }
+
+        .vocab-item {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .vocab-item .english {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .vocab-item .polish {
+            color: #667eea;
+            font-style: italic;
+        }
+
+        .show-vocab-btn {
+            background: linear-gradient(45deg, #38b2ac, #4fd1c7);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 20px auto;
+            display: block;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .show-vocab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .vocab-hidden {
+            display: none;
+        }
+
+        .example-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .gap {
+            display: inline-block;
+            border-bottom: 2px solid #667eea;
+            min-width: 100px;
+            height: 20px;
+            margin: 0 5px;
+        }
+
+        .hint-btn {
+            background: linear-gradient(45deg, #ffc107, #ffeb3b);
+            color: #333;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin: 5px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .hint-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .hint-text {
+            background: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffeaa7;
+            padding: 8px 12px;
+            border-radius: 10px;
+            margin: 5px 0;
+            font-weight: 600;
+            animation: slideIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✨ Zawody i Praca ✨</h1>
+            <p>Ćwiczenia słownictwa - kliknij polskie słowa, aby zobaczyć tłumaczenia</p>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn active" onclick="showTask(1)">📋 Zadanie 1: Znajdź</button>
+            <button class="nav-btn" onclick="showTask(2)">✏️ Zadanie 2: Uzupełnij czasowniki</button>
+            <button class="nav-btn" onclick="showTask(3)">💭 Zadanie 3: Wybierz słowa</button>
+            <button class="nav-btn" onclick="showTask(4)">💰 Zadanie 4: Wynagrodzenie</button>
+        </div>
+
+        <!-- Task 1 -->
+        <div class="task-section active" id="task1">
+            <div class="task-title">📋 Zadanie 1: Znajdź odpowiednie słownictwo</div>
+            
+            <div class="exercise-content">
+                <h4>🏢 1. Nazwy pięciu zawodów, które zazwyczaj wykonuje się w biurze, np. <em>manager</em></h4>
+                <div style="margin: 15px 0;">
+                    <p><strong>Możliwe odpowiedzi:</strong></p>
+                    <p><em>księgowy, pracownik biurowy, recepcjonistka, urzędnik, programista komputerowy, informatyk, redaktor, dyrektor, pracownik biura podróży</em></p>
+                </div>
+            </div>
+
+            <div class="exercise-content">
+                <h4>🎨 2. Nazwy pięciu zawodów wymagających kreatywności, np. <em>architect</em></h4>
+                <div style="margin: 15px 0;">
+                    <p><strong>Możliwe odpowiedzi:</strong></p>
+                    <p><em>projektant mody, reżyser, autor aplikacji, muzyk, kwiaciarz, redaktor, dziennikarz, szef kuchni, prezenter telewizyjny</em></p>
+                </div>
+            </div>
+
+            <div class="exercise-content">
+                <h4>👮 3. Nazwy pięciu zawodów wykonywanych w stroju służbowym, np. <em>police officer</em></h4>
+                <div style="margin: 15px 0;">
+                    <p><strong>Możliwe odpowiedzi:</strong></p>
+                    <p><em>stewardesa, żołnierz, ochroniarz, pielęgniarka, sędzia, ratownik, marynarz</em></p>
+                </div>
+            </div>
+
+            <div class="exercise-content">
+                <h4>🗺️ 4. Cztery przymiotniki określające cechy dobrego przewodnika turystycznego, np. <em>energetic</em></h4>
+                <div style="margin: 15px 0;">
+                    <p><strong>Możliwe odpowiedzi:</strong></p>
+                    <p><em>entuzjastyczny, niezawodny, niezależny, wykwalifikowany, rozsądny, cierpliwy, przyjazny, doświadczony</em></p>
+                </div>
+            </div>
+
+            <div class="exercise-content">
+                <h4>🔄 5. Trzy wyrażenia lub zwroty związane ze zmianą pracy, np. <em>quit work</em></h4>
+                <div style="margin: 15px 0;">
+                    <p><strong>Możliwe odpowiedzi:</strong></p>
+                    <p><em>rzucić pracę, ubiegać się o pracę, zostać zwolnionym, dostać awans, założyć własną firmę, pracować za granicą, przejść na emeryturę</em></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Task 2 -->
+        <div class="task-section" id="task2">
+            <div class="task-title">✏️ Zadanie 2: Uzupełnij zdania odpowiednimi formami czasowników</div>
+            
+            <div class="exercise-content">
+                <h4>💼 Uzupełnij luki odpowiednimi czasownikami:</h4>
+                
+                <div class="exercise-item">
+                    <strong>1.</strong> You should always <span class="gap"></span> a contract when you start a new job.
+                    <br><button class="hint-btn" onclick="showHint(this, 'podpisać')">💡 Pokaż podpowiedź</button>
+                    <span class="hint-text" style="display: none;"></span>
+                </div>
+
+                <div class="exercise-item">
+                    <strong>2.</strong> Don't <span class="gap"></span> up work unless you have found a new one.
+                    <br><button class="hint-btn" onclick="showHint(this, 'porzucić')">💡 Pokaż podpowiedź</button>
+                    <span class="hint-text" style="display: none;"></span>
+                </div>
+
+                <div class="exercise-item">
+                    <strong>3.</strong> When you are <span class="gap"></span> for a job, you need to send your CV.
+                    <br><button class="hint-btn" onclick="showHint(this, 'ubiegając się')">💡 Pokaż podpowiedź</button>
+                    <span class="hint-text" style="display: none;"></span>
+                </div>
+
+                <div class="exercise-item">
+                    <strong>4.</strong> If you work hard, you will <span class="gap"></span> promoted in the end.
+                    <br><button class="hint-btn" onclick="showHint(this, 'dostać')">💡 Pokaż podpowiedź</button>
+                    <span class="hint-text" style="display: none;"></span>
+                </div>
+
+                <div class="exercise-item">
+                    <strong>5.</strong> It's a good idea to <span class="gap"></span> up your own company and be independent.
+                    <br><button class="hint-btn" onclick="showHint(this, 'założyć')">💡 Pokaż podpowiedź</button>
+                    <span class="hint-text" style="display: none;"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Task 3 -->
+        <div class="task-section" id="task3">
+            <div class="task-title">💭 Zadanie 3: Wybierz trzy wyrazy lub wyrażenia</div>
+            
+            <div class="exercise-content">
+                <h4>🎯 Instrukcja:</h4>
+                <p>Wybierz trzy słowa lub wyrażenia ze słowniczka i przekaż je koledze/koleżance. Jego/jej zadaniem jest napisanie zdań, w których wystąpią te słowa.</p>
+                
+                <div class="example-box">
+                    <h4>📝 Przykład:</h4>
+                    <p><strong>Wybrane słowa:</strong> 
+                        <span class="clickable-term" onclick="toggleTranslation(this, 'work')">praca</span>
+                        <span class="clickable-term" onclick="toggleTranslation(this, 'earn')">zarabiać</span>
+                        <span class="clickable-term" onclick="toggleTranslation(this, 'company')">firma</span>
+                    </p>
+                    
+                    <p><strong>Przykładowe zdania:</strong></p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><em>Joan works as a vlogger.</em></li>
+                        <li><em>She earns good money.</em></li>
+                        <li><em>She runs her company.</em></li>
+                    </ul>
+                </div>
+
+                <div style="text-align: center; margin: 20px 0;">
+                    <p><strong>💡 Wskazówka:</strong> Użyj słowniczka poniżej, aby wybrać różnorodne słowa z różnych kategorii!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Task 4 -->
+        <div class="task-section" id="task4">
+            <div class="task-title">💰 Zadanie 4: Uzupełnij zdania podanymi słowami</div>
+            
+            <div class="exercise-content">
+                <h4>💵 Słowniczek do zadania:</h4>
+                <div style="margin: 15px 0; text-align: center;">
+                    <span class="clickable-term" onclick="toggleTranslation(this, 'benefit')">zasiłek</span>
+                    <span class="clickable-term" onclick="toggleTranslation(this, 'rise')">podwyżka</span>
+                    <span class="clickable-term" onclick="toggleTranslation(this, 'pension')">emerytura</span>
+                    <span class="clickable-term" onclick="toggleTranslation(this, 'pocket')">kieszonkowe</span>
+                    <span class="clickable-term" onclick="toggleTranslation(this, 'salary')">pensja</span>
+                    <span class="clickable-term" onclick="toggleTranslation(this, 'wages')">płaca</span>
+                </div>
+
+                <div class="exercise-item">
+                    <strong>1.</strong> Nicole is a good lawyer, so she earns a good <span class="gap"></span>.
+                </div>
+
+                <div class="exercise-item">
+                    <strong>2.</strong> Amy finally managed to get a job as a waitress. Her <span class="gap"></span> are not very high, but better than the unemployment <span class="gap"></span> she had before.
+                </div>
+
+                <div class="exercise-item">
+                    <strong>3.</strong> Ethan doesn't earn very much, but he may get a <span class="gap"></span> next year.
+                </div>
+
+                <div class="exercise-item">
+                    <strong>4.</strong> My grandma is retired, so she gets a <span class="gap"></span>.
+                </div>
+
+                <div class="exercise-item">
+                    <strong>5.</strong> Every week Sam gets £10 <span class="gap"></span> money from his parents.
+                </div>
+            </div>
+        </div>
+
+        <!-- Vocabulary Section -->
+        <button class="show-vocab-btn" onclick="toggleVocabulary()">📚 Pokaż/Ukryj Słowniczek</button>
+        
+        <div class="vocabulary-section vocab-hidden" id="vocabulary">
+            <div class="task-title">📚 Kompletny Słowniczek</div>
+            
+            <div class="vocab-category">
+                <h3>👨‍💼 Zawody</h3>
+                <div class="vocab-grid">
+                    <div class="vocab-item"><span class="english">accountant</span><span class="polish">księgowy</span></div>
+                    <div class="vocab-item"><span class="english">app designer</span><span class="polish">autor aplikacji</span></div>
+                    <div class="vocab-item"><span class="english">babysitter</span><span class="polish">opiekunka do dziecka</span></div>
+                    <div class="vocab-item"><span class="english">chef</span><span class="polish">szef kuchni</span></div>
+                    <div class="vocab-item"><span class="english">clerk</span><span class="polish">urzędnik</span></div>
+                    <div class="vocab-item"><span class="english">computer programmer</span><span class="polish">programista komputerowy</span></div>
+                    <div class="vocab-item"><span class="english">director</span><span class="polish">reżyser</span></div>
+                    <div class="vocab-item"><span class="english">editor</span><span class="polish">redaktor</span></div>
+                    <div class="vocab-item"><span class="english">electrician</span><span class="polish">elektryk</span></div>
+                    <div class="vocab-item"><span class="english">engineer</span><span class="polish">inżynier</span></div>
+                    <div class="vocab-item"><span class="english">fashion designer</span><span class="polish">projektant mody</span></div>
+                    <div class="vocab-item"><span class="english">flight attendant</span><span class="polish">stewardesa</span></div>
+                    <div class="vocab-item"><span class="english">florist</span><span class="polish">kwiaciarz</span></div>
+                    <div class="vocab-item"><span class="english">guide</span><span class="polish">przewodnik</span></div>
+                    <div class="vocab-item"><span class="english">IT specialist</span><span class="polish">informatyk</span></div>
+                    <div class="vocab-item"><span class="english">journalist</span><span class="polish">dziennikarz</span></div>
+                    <div class="vocab-item"><span class="english">judge</span><span class="polish">sędzia</span></div>
+                    <div class="vocab-item"><span class="english">lawyer</span><span class="polish">prawnik</span></div>
+                    <div class="vocab-item"><span class="english">librarian</span><span class="polish">bibliotekarz</span></div>
+                    <div class="vocab-item"><span class="english">lifeguard</span><span class="polish">ratownik</span></div>
+                    <div class="vocab-item"><span class="english">manager</span><span class="polish">kierownik</span></div>
+                    <div class="vocab-item"><span class="english">musician</span><span class="polish">muzyk</span></div>
+                    <div class="vocab-item"><span class="english">nurse</span><span class="polish">pielęgniarka</span></div>
+                    <div class="vocab-item"><span class="english">office worker</span><span class="polish">pracownik biurowy</span></div>
+                    <div class="vocab-item"><span class="english">plumber</span><span class="polish">hydraulik</span></div>
+                    <div class="vocab-item"><span class="english">police officer</span><span class="polish">policjant</span></div>
+                    <div class="vocab-item"><span class="english">politician</span><span class="polish">polityk</span></div>
+                    <div class="vocab-item"><span class="english">psychologist</span><span class="polish">psycholog</span></div>
+                    <div class="vocab-item"><span class="english">receptionist</span><span class="polish">recepcjonistka</span></div>
+                    <div class="vocab-item"><span class="english">restaurant critic</span><span class="polish">krytyk kulinarny</span></div>
+                    <div class="vocab-item"><span class="english">sailor</span><span class="polish">marynarz, żeglarz</span></div>
+                    <div class="vocab-item"><span class="english">scientist</span><span class="polish">naukowiec</span></div>
+                    <div class="vocab-item"><span class="english">security guard</span><span class="polish">ochroniarz</span></div>
+                    <div class="vocab-item"><span class="english">soldier</span><span class="polish">żołnierz</span></div>
+                    <div class="vocab-item"><span class="english">travel agent</span><span class="polish">pracownik biura podróży</span></div>
+                    <div class="vocab-item"><span class="english">TV presenter</span><span class="polish">prezenter telewizyjny</span></div>
+                    <div class="vocab-item"><span class="english">vet</span><span class="polish">weterynarz</span></div>
+                </div>
+            </div>
+
+            <div class="vocab-category">
+                <h3>🏢 Miejsca pracy</h3>
+                <div class="vocab-grid">
+                    <div class="vocab-item"><span class="english">building site</span><span class="polish">budowa (miejsce budowy)</span></div>
+                    <div class="vocab-item"><span class="english">butcher's</span><span class="polish">sklep mięsny</span></div>
+                    <div class="vocab-item"><span class="english">embassy</span><span class="polish">ambasada</span></div>
+                    <div class="vocab-item"><span class="english">factory</span><span class="polish">fabryka</span></div>
+                    <div class="vocab-item"><span class="english">florist's</span><span class="polish">kwiaciarnia</span></div>
+                    <div class="vocab-item"><span class="english">laboratory</span><span class="polish">laboratorium</span></div>
+                    <div class="vocab-item"><span class="english">law court</span><span class="polish">sąd</span></div>
+                    <div class="vocab-item"><span class="english">prison</span><span class="polish">więzienie</span></div>
+                </div>
+            </div>
+
+            <div class="vocab-category">
+                <h3>⚡ Cechy i rodzaje pracy</h3>
+                <div class="vocab-grid">
+                    <div class="vocab-item"><span class="english">badly-paid</span><span class="polish">źle płatny</span></div>
+                    <div class="vocab-item"><span class="english">challenging (task)</span><span class="polish">ambitne, stanowiące wyzwanie (zadanie)</span></div>
+                    <div class="vocab-item"><span class="english">demanding job</span><span class="polish">wymagająca praca</span></div>
+                    <div class="vocab-item"><span class="english">full-time</span><span class="polish">pełny etat (40 godzin tygodniowo)</span></div>
+                    <div class="vocab-item"><span class="english">part-time</span><span class="polish">niepełny wymiar godzin</span></div>
+                    <div class="vocab-item"><span class="english">satisfying</span><span class="polish">satysfakcjonujący, zadowalający</span></div>
+                    <div class="vocab-item"><span class="english">shift work</span><span class="polish">praca zmianowa</span></div>
+                    <div class="vocab-item"><span class="english">temporary job</span><span class="polish">praca tymczasowa</span></div>
+                </div>
+            </div>
+
+            <div class="vocab-category">
+                <h3>🌟 Cechy osobowości w pracy</h3>
+                <div class="vocab-grid">
+                    <div class="vocab-item"><span class="english">enthusiastic</span><span class="polish">entuzjastyczny</span></div>
+                    <div class="vocab-item"><span class="english">frustrated</span><span class="polish">sfrustrowany</span></div>
+                    <div class="vocab-item"><span class="english">impatient</span><span class="polish">niecierpliwy</span></div>
+                    <div class="vocab-item"><span class="english">independent</span><span class="polish">niezależny, samodzielny</span></div>
+                    <div class="vocab-item"><span class="english">qualified</span><span class="polish">wykwalifikowany</span></div>
+                    <div class="vocab-item"><span class="english">reliable</span><span class="polish">niezawodny, solidny</span></div>
+                    <div class="vocab-item"><span class="english">sensible</span><span class="polish">rozsądny</span></div>
+                </div>
+            </div>
+
+            <div class="vocab-category">
+                <h3>🔧 Czynności zawodowe</h3>
+                <div class="vocab-grid">
+                    <div class="vocab-item"><span class="english">deliver</span><span class="polish">dostarczać</span></div>
+                    <div class="vocab-item"><span class="english">give orders</span><span class="polish">wydawać polecenia</span></div>
+                    <div class="vocab-item"><span class="english">take care of</span><span class="polish">opiekować się</span></div>
+                    <div class="vocab-item"><span class="english">manage people</span><span class="polish">zarządzać ludźmi</span></div>
+                    <div class="vocab-item"><span class="english">run a business</span><span class="polish">prowadzić firmę</span></div>
+                    <div class="vocab-item"><span class="english">treat a patient</span><span class="polish">leczyć pacjenta</span></div>
+                </div>
+            </div>
+
+            <div class="vocab-category">
+                <h3>💰 Wynagrodzenie i finanse</h3>
+                <div class="vocab-grid">
+                    <div class="vocab-item"><span class="english">earn a lot of money</span><span class="polish">zarabiać dużo pieniędzy</span></div>
+                    <div class="vocab-item"><span class="english">minimum wage</span><span class="polish">płaca minimalna</span></div>
+                    <div class="vocab-item"><span class="english">get a pay rise</span><span class="polish">dostać podwyżkę</span></div>
+                    <div class="vocab-item"><span class="english">pension</span><span class="polish">emerytura, renta (pieniądze)</span></div>
+                    <div class="vocab-item"><span class="english">salary</span><span class="polish">pensja, wynagrodzenie</span></div>
+                    <div class="vocab-item"><span class="english">leave a tip</span><span class="polish">zostawić napiwek dla kelnera</span></div>
+                    <div class="vocab-item"><span class="english">unemployment benefit</span><span class="polish">zasiłek dla bezrobotnych</span></div>
+                </div>
+            </div>
+
+            <div class="vocab-category">
+                <h3>🚀 Kariera i rozwój</h3>
+                <div class="vocab-grid">
+                    <div class="vocab-item"><span class="english">colleague</span><span class="polish">kolega z pracy, współpracownik</span></div>
+                    <div class="vocab-item"><span class="english">employee</span><span class="polish">pracownik</span></div>
+                    <div class="vocab-item"><span class="english">employer</span><span class="polish">pracodawca</span></div>
+                    <div class="vocab-item"><span class="english">staff</span><span class="polish">personel, pracownicy</span></div>
+                    <div class="vocab-item"><span class="english">apply for a job</span><span class="polish">ubiegać się o pracę</span></div>
+                    <div class="vocab-item"><span class="english">get fired</span><span class="polish">zostać zwolnionym z pracy</span></div>
+                    <div class="vocab-item"><span class="english">employ</span><span class="polish">zatrudniać</span></div>
+                    <div class="vocab-item"><span class="english">experience</span><span class="polish">doświadczenie</span></div>
+                    <div class="vocab-item"><span class="english">give up work</span><span class="polish">rzucić pracę</span></div>
+                    <div class="vocab-item"><span class="english">job interview</span><span class="polish">rozmowa kwalifikacyjna (o pracę)</span></div>
+                    <div class="vocab-item"><span class="english">skill</span><span class="polish">umiejętność</span></div>
+                    <div class="vocab-item"><span class="english">unemployed</span><span class="polish">bezrobotny</span></div>
+                    <div class="vocab-item"><span class="english">get promoted</span><span class="polish">dostać awans</span></div>
+                    <div class="vocab-item"><span class="english">retirement</span><span class="polish">emerytura</span></div>
+                    <div class="vocab-item"><span class="english">set up your own business</span><span class="polish">założyć własną firmę</span></div>
+                    <div class="vocab-item"><span class="english">work abroad</span><span class="polish">pracować za granicą</span></div>
+                    <div class="vocab-item"><span class="english">work irregular hours</span><span class="polish">mieć nieregulowane godziny pracy</span></div>
+                </div>
+            </div>
+
+            <div class="vocab-category">
+                <h3>💬 Przydatne zwroty</h3>
+                <div class="vocab-grid">
+                    <div class="vocab-item"><span class="english">What do you do for a living?</span><span class="polish">Czym się zajmujesz?</span></div>
+                    <div class="vocab-item"><span class="english">I'm responsible for...</span><span class="polish">Jestem odpowiedzialny za...</span></div>
+                    <div class="vocab-item"><span class="english">I will retire when I'm 60 years old.</span><span class="polish">Przejdę na emeryturę kiedy skończę 60 lat.</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTask(taskNumber) {
+            // Hide all tasks
+            document.querySelectorAll('.task-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected task
+            document.getElementById('task' + taskNumber).classList.add('active');
+            
+            // Update navigation buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        function toggleTranslation(element, englishText) {
+            const existingTranslation = element.nextElementSibling;
+            
+            if (existingTranslation && existingTranslation.classList.contains('english-translation')) {
+                existingTranslation.remove();
+            } else {
+                const translation = document.createElement('span');
+                translation.className = 'english-translation';
+                translation.textContent = englishText;
+                translation.style.display = 'inline-block';
+                element.parentNode.insertBefore(translation, element.nextSibling);
+            }
+        }
+
+        function toggleVocabulary() {
+            const vocab = document.getElementById('vocabulary');
+            vocab.classList.toggle('vocab-hidden');
+        }
+
+        function showHint(button, hintText) {
+            const hintSpan = button.nextElementSibling;
+            if (hintSpan.style.display === 'none') {
+                hintSpan.textContent = hintText;
+                hintSpan.style.display = 'inline-block';
+                button.textContent = '🔒 Ukryj podpowiedź';
+            } else {
+                hintSpan.style.display = 'none';
+                button.textContent = '💡 Pokaż podpowiedź';
+            }
+        }
+    </script>
+</body>
+</html>
