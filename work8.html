@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulary Preparation - Workplace Tasks</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            margin: 30px 0;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #4a5568;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .flashcards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .flashcard {
+            perspective: 1000px;
+            height: 180px;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(135deg, #43a047, #66bb6a);
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .flashcard-polish {
+            font-size: 1.4em;
+            font-weight: bold;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .flashcard-english {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .flashcard-example {
+            font-size: 0.9em;
+            font-style: italic;
+            opacity: 0.9;
+            text-align: center;
+        }
+
+        .navigation {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.9);
+            border-radius: 25px;
+            padding: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ccc;
+            margin: 8px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-dot.active {
+            background: #667eea;
+            transform: scale(1.3);
+        }
+
+        .flip-instruction {
+            text-align: center;
+            margin: 20px 0;
+            color: #666;
+            font-style: italic;
+            font-size: 1.1em;
+        }
+
+        .task-one .flashcard-front { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .task-two .flashcard-front { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        .task-three .flashcard-front { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .task-four .flashcard-front { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+
+        @media (max-width: 768px) {
+            .flashcards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .navigation {
+                display: none;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="header">
+            <h1>📚 Przygotowanie Słownictwa</h1>
+            <p>Kliknij kartę, aby zobaczyć angielski odpowiednik</p>
+        </div>
+
+        <!-- Task 1 Vocabulary -->
+        <div class="section task-one" id="section1">
+            <h2 class="section-title">🎯 Zadanie 1 - Słownictwo</h2>
+            <p class="flip-instruction">Kliknij każdą kartę, aby poznać angielskie odpowiedniki</p>
+            <div class="flashcards-grid">
+                <!-- Office Jobs -->
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">👨‍💼</div>
+                            <div class="flashcard-polish">Księgowy</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Accountant</div>
+                            <div class="flashcard-example">Zawód biurowy</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">👨‍💼</div>
+                            <div class="flashcard-polish">Kierownik</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Manager</div>
+                            <div class="flashcard-example">Zawód biurowy</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">📋</div>
+                            <div class="flashcard-polish">Urzędnik</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Clerk</div>
+                            <div class="flashcard-example">Zawód biurowy</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">💻</div>
+                            <div class="flashcard-polish">Pracownik biurowy</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Office Worker</div>
+                            <div class="flashcard-example">Zawód biurowy</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">📞</div>
+                            <div class="flashcard-polish">Recepcjonistka</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Receptionist</div>
+                            <div class="flashcard-example">Zawód biurowy</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Creative Jobs -->
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">🏗️</div>
+                            <div class="flashcard-polish">Architekt</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Architect</div>
+                            <div class="flashcard-example">Zawód kreatywny</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">🎬</div>
+                            <div class="flashcard-polish">Reżyser</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Director</div>
+                            <div class="flashcard-example">Zawód kreatywny</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">👗</div>
+                            <div class="flashcard-polish">Projektant mody</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Fashion Designer</div>
+                            <div class="flashcard-example">Zawód kreatywny</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">🎵</div>
+                            <div class="flashcard-polish">Muzyk</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Musician</div>
+                            <div class="flashcard-example">Zawód kreatywny</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">✏️</div>
+                            <div class="flashcard-polish">Redaktor</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Editor</div>
+                            <div class="flashcard-example">Zawód kreatywny</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Uniformed Jobs -->
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">👮</div>
+                            <div class="flashcard-polish">Policjant</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Police Officer</div>
+                            <div class="flashcard-example">Zawód w mundurze</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">✈️</div>
+                            <div class="flashcard-polish">Stewardesa</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Flight Attendant</div>
+                            <div class="flashcard-example">Zawód w mundurze</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">🪖</div>
+                            <div class="flashcard-polish">Żołnierz</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Soldier</div>
+                            <div class="flashcard-example">Zawód w mundurze</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">🛡️</div>
+                            <div class="flashcard-polish">Ochroniarz</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Security Guard</div>
+                            <div class="flashcard-example">Zawód w mundurze</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">👩‍⚕️</div>
+                            <div class="flashcard-polish">Pielęgniarka</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Nurse</div>
+                            <div class="flashcard-example">Zawód w mundurze</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tour Guide Qualities -->
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">⚡</div>
+                            <div class="flashcard-polish">Energiczny</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Energetic</div>
+                            <div class="flashcard-example">Cecha przewodnika</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">🎯</div>
+                            <div class="flashcard-polish">Entuzjastyczny</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Enthusiastic</div>
+                            <div class="flashcard-example">Cecha przewodnika</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">✅</div>
+                            <div class="flashcard-polish">Niezawodny</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Reliable</div>
+                            <div class="flashcard-example">Cecha przewodnika</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">🦅</div>
+                            <div class="flashcard-polish">Niezależny</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Independent</div>
+                            <div class="flashcard-example">Cecha przewodnika</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Job Change Expressions -->
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">🚪</div>
+                            <div class="flashcard-polish">Rzucić pracę</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Quit Work</div>
+                            <div class="flashcard-example">Zmiana pracy</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">📝</div>
+                            <div class="flashcard-polish">Ubiegać się o pracę</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Apply for a Job</div>
+                            <div class="flashcard-example">Zmiana pracy</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">📈</div>
+                            <div class="flashcard-polish">Dostać awans</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Get Promoted</div>
+                            <div class="flashcard-example">Zmiana pracy</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Task 2 Vocabulary -->
+        <div class="section task-two" id="section2">
+            <h2 class="section-title">✏️ Zadanie 2 - Czasowniki</h2>
+            <p class="flip-instruction">Kliknij każdą kartę, aby poznać angielskie czasowniki</p>
+            <div class="flashcards-grid">
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">✍️</div>
+                            <div class="flashcard-polish">Podpisać</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Sign</div>
+                            <div class="flashcard-example">Podpisać kontrakt</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">🚫</div>
+                            <div class="flashcard-polish">Rzucić / Zrezygnować</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Give Up</div>
+                            <div class="flashcard-example">Don't give up work</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">📋</div>
+                            <div class="flashcard-polish">Ubieganie się</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Applying</div>
+                            <div class="flashcard-example">Applying for a job</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">🎯</div>
+                            <div class="flashcard-polish">Dostać</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Get</div>
+                            <div class="flashcard-example">Get promoted</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">🏢</div>
+                            <div class="flashcard-polish">Założyć</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Set Up</div>
+                            <div class="flashcard-example">Set up a company</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">📄</div>
+                            <div class="flashcard-polish">Kontrakt</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Contract</div>
+                            <div class="flashcard-example">Sign a contract</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">🆕</div>
+                            <div class="flashcard-polish">Nowa praca</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">New Job</div>
+                            <div class="flashcard-example">Start a new job</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">📋</div>
+                            <div class="flashcard-polish">CV / Życiorys</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">CV</div>
+                            <div class="flashcard-example">Send your CV</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">💪</div>
+                            <div class="flashcard-polish">Ciężko pracować</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Work Hard</div>
+                            <div class="flashcard-example">If you work hard...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">📈</div>
+                            <div class="flashcard-polish">Awansowany</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Promoted</div>
+                            <div class="flashcard-example">Get promoted</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Task 3 Vocabulary -->
+        <div class="section task-three" id="section3">
+            <h2 class="section-title">💭 Zadanie 3 - Przykładowe Słownictwo</h2>
+            <p class="flip-instruction">Kliknij każdą kartę, aby poznać angielskie odpowiedniki</p>
+            <div class="flashcards-grid">
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">💼</div>
+                            <div class="flashcard-polish">Praca</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Work</div>
+                            <div class="flashcard-example">Joan works as a vlogger</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">💰</div>
+                            <div class="flashcard-polish">Zarabiać</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Earn</div>
+                            <div class="flashcard-example">She earns good money</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">🏢</div>
+                            <div class="flashcard-polish">Firma</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Company</div>
+                            <div class="flashcard-example">She runs her company</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">👨‍⚖️</div>
+                            <div class="flashcard-polish">Prawnik</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Lawyer</div>
+                            <div class="flashcard-example">Professional job</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">📺</div>
+                            <div class="flashcard-polish">Vloger</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Vlogger</div>
+                            <div class="flashcard-example">Modern profession</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">🏃</div>
+                            <div class="flashcard-polish">Prowadzić</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Run</div>
+                            <div class="flashcard-example">Run a business</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">👔</div>
+                            <div class="flashcard-polish">Pracuje jako</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Works As</div>
+                            <div class="flashcard-example">Works as a teacher</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">💸</div>
+                            <div class="flashcard-polish">Dobre pieniądze</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Good Money</div>
+                            <div class="flashcard-example">She earns good money</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Task 4 Vocabulary -->
+        <div class="section task-four" id="section4">
+            <h2 class="section-title">💵 Zadanie 4 - Pieniądze i Wynagrodzenia</h2>
+            <p class="flip-instruction">Kliknij każdą kartę, aby poznać angielskie odpowiedniki</p>
+            <div class="flashcards-grid">
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">💼</div>
+                            <div class="flashcard-polish">Pensja</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Salary</div>
+                            <div class="flashcard-example">Monthly payment</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">⏰</div>
+                            <div class="flashcard-polish">Płaca</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Wages</div>
+                            <div class="flashcard-example">Hourly/weekly payment</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">🎁</div>
+                            <div class="flashcard-polish">Zasiłek</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Benefit</div>
+                            <div class="flashcard-example">Government payment</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">📈</div>
+                            <div class="flashcard-polish">Podwyżka</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Rise</div>
+                            <div class="flashcard-example">Pay increase</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">👴</div>
+                            <div class="flashcard-polish">Emerytura</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Pension</div>
+                            <div class="flashcard-example">Retirement money</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon">🪙</div>
+                            <div class="flashcard-polish">Kieszonkowe</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-english">Pocket Money</div>
+                            <div class="flashcard-example">Money for children</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation dots -->
+    <div class="navigation">
+        <div class="nav-dot active" onclick="scrollToSection(1)"></div>
+        <div class="nav-dot" onclick="scrollToSection(2)"></div>
+        <div class="nav-dot" onclick="scrollToSection(3)"></div>
+        <div class="nav-dot" onclick="scrollToSection(4)"></div>
+    </div>
+
+    <script>
+        function flipCard(card) {
+            card.classList.toggle('flipped');
+        }
+
+        function scrollToSection(sectionNum) {
+            const section = document.getElementById(`section${sectionNum}`);
+            section.scrollIntoView({ behavior: 'smooth' });
+            
+            // Update navigation dots
+            document.querySelectorAll('.nav-dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index + 1 === sectionNum);
+            });
+        }
+
+        // Update navigation on scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.section');
+            const navDots = document.querySelectorAll('.nav-dot');
+            
+            let currentSection = 1;
+            sections.forEach((section, index) => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
+                    currentSection = index + 1;
+                }
+            });
+            
+            navDots.forEach((dot, index) => {
+                dot.classList.toggle('active', index + 1 === currentSection);
+            });
+        });
+
+        // Add entrance animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationDelay = '0.1s';
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        });
+
+        document.querySelectorAll('.section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
