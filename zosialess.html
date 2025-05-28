@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schools in the UK - Interactive Quiz</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+        .instruction {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .question {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #007bff;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], select {
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: calc(100% - 20px);
+            box-sizing: border-box;
+        }
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .feedback {
+            margin-top: 5px;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        .correct {
+            color: green;
+            font-weight: bold;
+        }
+        .incorrect {
+            color: red;
+            font-weight: bold;
+        }
+        .answer-key {
+            font-style: italic;
+            color: #007bff;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Schools in the UK - Interactive Quiz</h1>
+
+        <!-- Zadanie 1: Słownictwo -->
+        <div class="task">
+            <h2>Task 1: Vocabulary Check</h2>
+            <p class="instruction">Połącz angielskie słowa z ich polskimi odpowiednikami, wybierając właściwą literę z listy.</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>English Word</th>
+                        <th>Match (Polish Meaning)</th>
+                        <th style="width:10%;">Feedback</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1. Secondary school</td>
+                        <td>
+                            <select id="vocab1">
+                                <option value="">--Wybierz--</option>
+                                <option value="A">A. Mundurek szkolny</option>
+                                <option value="B">B. Zajęcia pozalekcyjne</option>
+                                <option value="C">C. Przedmioty (szkolne)</option>
+                                <option value="D">D. Wakacje letnie</option>
+                                <option value="E">E. Szkoła średnia</option>
+                                <option value="F">F. Stołówka</option>
+                                <option value="G">G. Orkiestra szkolna</option>
+                                <option value="H">H. Plac zabaw</option>
+                                <option value="I">I. Spódnica</option>
+                                <option value="J">J. Sweter</option>
+                                <option value="K">K. Spodnie</option>
+                            </select>
+                        </td>
+                        <td><span id="feedback_vocab1" class="feedback"></span></td>
+                    </tr>
+                    <tr>
+                        <td>2. Subjects</td>
+                        <td>
+                            <select id="vocab2">
+                                <option value="">--Wybierz--</option>
+                                <option value="A">A. Mundurek szkolny</option>
+                                <option value="B">B. Zajęcia pozalekcyjne</option>
+                                <option value="C">C. Przedmioty (szkolne)</option>
+                                <option value="D">D. Wakacje letnie</option>
+                                <option value="E">E. Szkoła średnia</option>
+                                <option value="F">F. Stołówka</option>
+                                <option value="G">G. Orkiestra szkolna</option>
+                                <option value="H">H. Plac zabaw</option>
+                                <option value="I">I. Spódnica</option>
+                                <option value="J">J. Sweter</option>
+                                <option value="K">K. Spodnie</option>
+                            </select>
+                        </td>
+                        <td><span id="feedback_vocab2" class="feedback"></span></td>
+                    </tr>
+                    <tr>
+                        <td>3. Canteen</td>
+                        <td>
+                            <select id="vocab3">
+                                <option value="">--Wybierz--</option>
+                                <option value="A">A. Mundurek szkolny</option>
+                                <option value="B">B. Zajęcia pozalekcyjne</option>
+                                <option value="C">C. Przedmioty (szkolne)</option>
+                                <option value="D">D. Wakacje letnie</option>
+                                <option value="E">E. Szkoła średnia</option>
+                                <option value="F">F. Stołówka</option>
+                                <option value="G">G. Orkiestra szkolna</option>
+                                <option value="H">H. Plac zabaw</option>
+                                <option value="I">I. Spódnica</option>
+                                <option value="J">J. Sweter</option>
+                                <option value="K">K. Spodnie</option>
+                            </select>
+                        </td>
+                        <td><span id="feedback_vocab3" class="feedback"></span></td>
+                    </tr>
+                     <tr>
+                        <td>4. Playground</td>
+                        <td>
+                            <select id="vocab4">
+                                <option value="">--Wybierz--</option>
+                                <option value="A">A. Mundurek szkolny</option>
+                                <option value="B">B. Zajęcia pozalekcyjne</option>
+                                <option value="C">C. Przedmioty (szkolne)</option>
+                                <option value="D">D. Wakacje letnie</option>
+                                <option value="E">E. Szkoła średnia</option>
+                                <option value="F">F. Stołówka</option>
+                                <option value="G">G. Orkiestra szkolna</option>
+                                <option value="H">H. Plac zabaw</option>
+                                <option value="I">I. Spódnica</option>
+                                <option value="J">J. Sweter</option>
+                                <option value="K">K. Spodnie</option>
+                            </select>
+                        </td>
+                        <td><span id="feedback_vocab4" class="feedback"></span></td>
+                    </tr>
+                    <tr>
+                        <td>5. School uniform</td>
+                        <td>
+                            <select id="vocab5">
+                                <option value="">--Wybierz--</option>
+                                <option value="A">A. Mundurek szkolny</option>
+                                <option value="B">B. Zajęcia pozalekcyjne</option>
+                                <option value="C">C. Przedmioty (szkolne)</option>
+                                <option value="D">D. Wakacje letnie</option>
+                                <option value="E">E. Szkoła średnia</option>
+                                <option value="F">F. Stołówka</option>
+                                <option value="G">G. Orkiestra szkolna</option>
+                                <option value="H">H. Plac zabaw</option>
+                                <option value="I">I. Spódnica</option>
+                                <option value="J">J. Sweter</option>
+                                <option value="K">K. Spodnie</option>
+                            </select>
+                        </td>
+                        <td><span id="feedback_vocab5" class="feedback"></span></td>
+                    </tr>
+                    <tr>
+                        <td>6. Trousers</td>
+                        <td>
+                            <select id="vocab6">
+                                <option value="">--Wybierz--</option>
+                                <option value="A">A. Mundurek szkolny</option>
+                                <option value="B">B. Zajęcia pozalekcyjne</option>
+                                <option value="C">C. Przedmioty (szkolne)</option>
+                                <option value="D">D. Wakacje letnie</option>
+                                <option value="E">E. Szkoła średnia</option>
+                                <option value="F">F. Stołówka</option>
+                                <option value="G">G. Orkiestra szkolna</option>
+                                <option value="H">H. Plac zabaw</option>
+                                <option value="I">I. Spódnica</option>
+                                <option value="J">J. Sweter</option>
+                                <option value="K">K. Spodnie</option>
+                            </select>
+                        </td>
+                        <td><span id="feedback_vocab6" class="feedback"></span></td>
+                    </tr>
+                    <tr>
+                        <td>7. Skirt</td>
+                        <td>
+                            <select id="vocab7">
+                                <option value="">--Wybierz--</option>
+                                <option value="A">A. Mundurek szkolny</option>
+                                <option value="B">B. Zajęcia pozalekcyjne</option>
+                                <option value="C">C. Przedmioty (szkolne)</option>
+                                <option value="D">D. Wakacje letnie</option>
+                                <option value="E">E. Szkoła średnia</option>
+                                <option value="F">F. Stołówka</option>
+                                <option value="G">G. Orkiestra szkolna</option>
+                                <option value="H">H. Plac zabaw</option>
+                                <option value="I">I. Spódnica</option>
+                                <option value="J">J. Sweter</option>
+                                <option value="K">K. Spodnie</option>
+                            </select>
+                        </td>
+                        <td><span id="feedback_vocab7" class="feedback"></span></td>
+                    </tr>
+                     <tr>
+                        <td>8. Jumper</td>
+                        <td>
+                            <select id="vocab8">
+                                <option value="">--Wybierz--</option>
+                                <option value="A">A. Mundurek szkolny</option>
+                                <option value="B">B. Zajęcia pozalekcyjne</option>
+                                <option value="C">C. Przedmioty (szkolne)</option>
+                                <option value="D">D. Wakacje letnie</option>
+                                <option value="E">E. Szkoła średnia</option>
+                                <option value="F">F. Stołówka</option>
+                                <option value="G">G. Orkiestra szkolna</option>
+                                <option value="H">H. Plac zabaw</option>
+                                <option value="I">I. Spódnica</option>
+                                <option value="J">J. Sweter</option>
+                                <option value="K">K. Spodnie</option>
+                            </select>
+                        </td>
+                        <td><span id="feedback_vocab8" class="feedback"></span></td>
+                    </tr>
+                    <tr>
+                        <td>9. After-school clubs</td>
+                        <td>
+                            <select id="vocab9">
+                                <option value="">--Wybierz--</option>
+                                <option value="A">A. Mundurek szkolny</option>
+                                <option value="B">B. Zajęcia pozalekcyjne</option>
+                                <option value="C">C. Przedmioty (szkolne)</option>
+                                <option value="D">D. Wakacje letnie</option>
+                                <option value="E">E. Szkoła średnia</option>
+                                <option value="F">F. Stołówka</option>
+                                <option value="G">G. Orkiestra szkolna</option>
+                                <option value="H">H. Plac zabaw</option>
+                                <option value="I">I. Spódnica</option>
+                                <option value="J">J. Sweter</option>
+                                <option value="K">K. Spodnie</option>
+                            </select>
+                        </td>
+                        <td><span id="feedback_vocab9" class="feedback"></span></td>
+                    </tr>
+                    <tr>
+                        <td>10. School orchestra</td>
+                        <td>
+                            <select id="vocab10">
+                                <option value="">--Wybierz--</option>
+                                <option value="A">A. Mundurek szkolny</option>
+                                <option value="B">B. Zajęcia pozalekcyjne</option>
+                                <option value="C">C. Przedmioty (szkolne)</option>
+                                <option value="D">D. Wakacje letnie</option>
+                                <option value="E">E. Szkoła średnia</option>
+                                <option value="F">F. Stołówka</option>
+                                <option value="G">G. Orkiestra szkolna</option>
+                                <option value="H">H. Plac zabaw</option>
+                                <option value="I">I. Spódnica</option>
+                                <option value="J">J. Sweter</option>
+                                <option value="K">K. Spodnie</option>
+                            </select>
+                        </td>
+                        <td><span id="feedback_vocab10" class="feedback"></span></td>
+                    </tr>
+                    <tr>
+                        <td>11. Summer holidays</td>
+                        <td>
+                            <select id="vocab11">
+                                <option value="">--Wybierz--</option>
+                                <option value="A">A. Mundurek szkolny</option>
+                                <option value="B">B. Zajęcia pozalekcyjne</option>
+                                <option value="C">C. Przedmioty (szkolne)</option>
+                                <option value="D">D. Wakacje letnie</option>
+                                <option value="E">E. Szkoła średnia</option>
+                                <option value="F">F. Stołówka</option>
+                                <option value="G">G. Orkiestra szkolna</option>
+                                <option value="H">H. Plac zabaw</option>
+                                <option value="I">I. Spódnica</option>
+                                <option value="J">J. Sweter</option>
+                                <option value="K">K. Spodnie</option>
+                            </select>
+                        </td>
+                        <td><span id="feedback_vocab11" class="feedback"></span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Zadanie 2: Prawda czy Fałsz -->
+        <div class="task">
+            <h2>Task 2: True or False</h2>
+            <p class="instruction">Przeczytaj poniższe zdania. Zaznacz T (True - Prawda) lub F (False - Fałsz) na podstawie informacji z wideo.</p>
+            
+            <div class="question">
+                <p>1. Lessons in secondary school in the UK usually start at 8:00.</p>
+                <label><input type="radio" name="tf1" value="T"> True</label>
+                <label><input type="radio" name="tf1" value="F"> False</label>
+                <span id="feedback_tf1" class="feedback"></span>
+            </div>
+            <div class="question">
+                <p>2. Students study only one subject.</p>
+                <label><input type="radio" name="tf2" value="T"> True</label>
+                <label><input type="radio" name="tf2" value="F"> False</label>
+                <span id="feedback_tf2" class="feedback"></span>
+            </div>
+            <div class="question">
+                <p>3. Students eat their lunch in the school canteen.</p>
+                <label><input type="radio" name="tf3" value="T"> True</label>
+                <label><input type="radio" name="tf3" value="F"> False</label>
+                <span id="feedback_tf3" class="feedback"></span>
+            </div>
+            <div class="question">
+                <p>4. Lunchtime is usually two hours long.</p>
+                <label><input type="radio" name="tf4" value="T"> True</label>
+                <label><input type="radio" name="tf4" value="F"> False</label>
+                <span id="feedback_tf4" class="feedback"></span>
+            </div>
+            <div class="question">
+                <p>5. Boys at school wear skirts.</p>
+                <label><input type="radio" name="tf5" value="T"> True</label>
+                <label><input type="radio" name="tf5" value="F"> False</label>
+                <span id="feedback_tf5" class="feedback"></span>
+            </div>
+            <div class="question">
+                <p>6. Afternoon lessons finish at 3 o'clock.</p>
+                <label><input type="radio" name="tf6" value="T"> True</label>
+                <label><input type="radio" name="tf6" value="F"> False</label>
+                <span id="feedback_tf6" class="feedback"></span>
+            </div>
+             <div class="question">
+                <p>7. Schools do not offer after-school clubs.</p>
+                <label><input type="radio" name="tf7" value="T"> True</label>
+                <label><input type="radio" name="tf7" value="F"> False</label>
+                <span id="feedback_tf7" class="feedback"></span>
+            </div>
+            <div class="question">
+                <p>8. Summer holidays in the UK last for six weeks.</p>
+                <label><input type="radio" name="tf8" value="T"> True</label>
+                <label><input type="radio" name="tf8" value="F"> False</label>
+                <span id="feedback_tf8" class="feedback"></span>
+            </div>
+            <div class="question">
+                <p>9. Summer holidays start in June.</p>
+                <label><input type="radio" name="tf9" value="T"> True</label>
+                <label><input type="radio" name="tf9" value="F"> False</label>
+                <span id="feedback_tf9" class="feedback"></span>
+            </div>
+            <div class="question">
+                <p>10. Students can play instruments in the school orchestra.</p>
+                <label><input type="radio" name="tf10" value="T"> True</label>
+                <label><input type="radio" name="tf10" value="F"> False</label>
+                <span id="feedback_tf10" class="feedback"></span>
+            </div>
+        </div>
+
+        <!-- Zadanie 3: Uzupełnij luki -->
+        <div class="task">
+            <h2>Task 3: Fill in the Gaps</h2>
+            <p class="instruction">Uzupełnij poniższe zdania, wpisując brakujące słowa lub liczby na podstawie wideo.</p>
+
+            <div class="question">
+                <p>1. At secondary school, lessons usually start at <input type="text" id="gap1" size="5"> o'clock.</p>
+                <span id="feedback_gap1" class="feedback"></span>
+            </div>
+            <div class="question">
+                <p>2. Students study lots of different <input type="text" id="gap2" size="10">.</p>
+                <span id="feedback_gap2" class="feedback"></span>
+            </div>
+            <div class="question">
+                <p>3. Students have their <input type="text" id="gap3" size="10"> at school.</p>
+                <span id="feedback_gap3" class="feedback"></span>
+            </div>
+            <div class="question">
+                <p>4. Lunchtime is usually <input type="text" id="gap4" size="5"> hour.</p>
+                <span id="feedback_gap4" class="feedback"></span>
+            </div>
+            <div class="question">
+                <p>5. Girls can wear trousers or a <input type="text" id="gap5" size="10">.</p>
+                <span id="feedback_gap5" class="feedback"></span>
+            </div>
+            <div class="question">
+                <p>6. Besides a shirt and tie, students wear a <input type="text" id="gap6" size="10"> or a jumper.</p>
+                <span id="feedback_gap6" class="feedback"></span>
+            </div>
+            <div class="question">
+                <p>7. Secondary schools usually have after-school <input type="text" id="gap7" size="10">.</p>
+                <span id="feedback_gap7" class="feedback"></span>
+            </div>
+            <div class="question">
+                <p>8. Sports clubs mentioned include basketball and <input type="text" id="gap8" size="10">.</p>
+                <span id="feedback_gap8" class="feedback"></span>
+            </div>
+            <div class="question">
+                <p>9. The school summer holidays are <input type="text" id="gap9" size="5"> weeks long.</p>
+                <span id="feedback_gap9" class="feedback"></span>
+            </div>
+            <div class="question">
+                <p>10. Summer holidays start in <input type="text" id="gap10" size="10"> and end in September.</p>
+                <span id="feedback_gap10" class="feedback"></span>
+            </div>
+        </div>
+
+        <!-- Zadanie 4: Krótkie odpowiedzi -->
+        <div class="task">
+            <h2>Task 4: Short Answers</h2>
+            <p class="instruction">Odpowiedz krótko na poniższe pytania.</p>
+
+            <div class="question">
+                <p>1. Name three school subjects mentioned in the video.</p>
+                <input type="text" id="short1" placeholder="Subject 1, Subject 2, Subject 3">
+                <span id="feedback_short1" class="feedback"></span>
+            </div>
+            <div class="question">
+                <p>2. Where can students play games and talk with friends during break time?</p>
+                <input type="text" id="short2">
+                <span id="feedback_short2" class="feedback"></span>
+            </div>
+            <div class="question">
+                <p>3. What are the two options for lunch at school?</p>
+                <input type="text" id="short3" placeholder="Option 1 and Option 2">
+                <span id="feedback_short3" class="feedback"></span>
+            </div>
+        </div>
+
+        <button onclick="checkAllAnswers()">Sprawdź odpowiedzi</button>
+        <div id="overall_feedback"></div>
+    </div>
+
+    <script>
+        const answers = {
+            vocab1: "E", vocab2: "C", vocab3: "F", vocab4: "H", vocab5: "A",
+            vocab6: "K", vocab7: "I", vocab8: "J", vocab9: "B", vocab10: "G", vocab11: "D",
+            tf1: "F", tf2: "F", tf3: "T", tf4: "F", tf5: "F", tf6: "T", tf7: "F", tf8: "T", tf9: "F", tf10: "T",
+            gap1: ["9", "nine"], gap2: ["subjects"], gap3: ["lunch"], gap4: ["one", "1"], gap5: ["skirt"],
+            gap6: ["jacket"], gap7: ["clubs"], gap8: ["gymnastics"], gap9: ["six", "6"], gap10: ["july"],
+            short1_key: "Any three of: Science, Maths, Music, P.E., cooking",
+            short2_key: "In the playground",
+            short3_key: "Have a school meal or bring lunch from home"
+        };
+
+        function checkAllAnswers() {
+            let score = 0;
+            let totalQuestions = 0;
+
+            // Task 1: Vocabulary
+            for (let i = 1; i <= 11; i++) {
+                totalQuestions++;
+                const userAnswer = document.getElementById(`vocab${i}`).value;
+                const correctAnswer = answers[`vocab${i}`];
+                const feedbackEl = document.getElementById(`feedback_vocab${i}`);
+                if (userAnswer === correctAnswer) {
+                    feedbackEl.textContent = "Correct!";
+                    feedbackEl.className = "feedback correct";
+                    score++;
+                } else {
+                    feedbackEl.textContent = `Incorrect. Correct: ${correctAnswer}`;
+                    feedbackEl.className = "feedback incorrect";
+                }
+            }
+
+            // Task 2: True/False
+            for (let i = 1; i <= 10; i++) {
+                totalQuestions++;
+                const radioButtons = document.getElementsByName(`tf${i}`);
+                let userAnswer = "";
+                for (let j = 0; j < radioButtons.length; j++) {
+                    if (radioButtons[j].checked) {
+                        userAnswer = radioButtons[j].value;
+                        break;
+                    }
+                }
+                const correctAnswer = answers[`tf${i}`];
+                const feedbackEl = document.getElementById(`feedback_tf${i}`);
+                if (userAnswer === correctAnswer) {
+                    feedbackEl.textContent = "Correct!";
+                    feedbackEl.className = "feedback correct";
+                    score++;
+                } else if (userAnswer === "") {
+                     feedbackEl.textContent = `Not answered. Correct: ${correctAnswer === "T" ? "True" : "False"}`;
+                     feedbackEl.className = "feedback incorrect";
+                }
+                else {
+                    feedbackEl.textContent = `Incorrect. Correct: ${correctAnswer === "T" ? "True" : "False"}`;
+                    feedbackEl.className = "feedback incorrect";
+                }
+            }
+
+            // Task 3: Fill in the Gaps
+            for (let i = 1; i <= 10; i++) {
+                totalQuestions++;
+                const userAnswer = document.getElementById(`gap${i}`).value.trim().toLowerCase();
+                const correctAnswersArray = answers[`gap${i}`];
+                const feedbackEl = document.getElementById(`feedback_gap${i}`);
+                if (correctAnswersArray.includes(userAnswer)) {
+                    feedbackEl.textContent = "Correct!";
+                    feedbackEl.className = "feedback correct";
+                    score++;
+                } else {
+                    feedbackEl.textContent = `Incorrect. Correct: ${correctAnswersArray.join(" or ")}`;
+                    feedbackEl.className = "feedback incorrect";
+                }
+            }
+
+            // Task 4: Short Answers (manual check encouraged)
+            document.getElementById('feedback_short1').innerHTML = `<span class="answer-key">Model Answer: ${answers.short1_key}</span>`;
+            document.getElementById('feedback_short2').innerHTML = `<span class="answer-key">Model Answer: ${answers.short2_key}</span>`;
+            document.getElementById('feedback_short3').innerHTML = `<span class="answer-key">Model Answer: ${answers.short3_key}</span>`;
+            // For short answers, scoring is not implemented automatically here.
+            // You can add a simple keyword check if desired, or just provide model answers.
+
+            // Overall Feedback (optional)
+            // const overallFeedbackEl = document.getElementById('overall_feedback');
+            // overallFeedbackEl.innerHTML = `<h3>Your score (Tasks 1-3): ${score} / ${totalQuestions}</h3>
+            //                              <p>For Task 4, please compare your answers with the model answers provided.</p>`;
+             alert(`Sprawdzono! Zadań 1-3: ${score} / ${totalQuestions}. Dla zadania 4 porównaj swoje odpowiedzi z wzorcowymi.`);
+        }
+    </script>
+</body>
+</html>
