@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>🎈 Dzień Dziecka Bydgoszcz - 1 czerwca 2025</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 8px;
+            font-size: 14px;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header h1 {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+        
+        .header h2 {
+            font-size: 14px;
+            font-weight: normal;
+            opacity: 0.9;
+        }
+        
+        .current-time {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+            margin-top: 8px;
+            font-size: 12px;
+            display: inline-block;
+        }
+        
+        .quick-info {
+            background: #fff3cd;
+            padding: 12px;
+            border-left: 4px solid #ffc107;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        .time-slot {
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .time-header {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 16px;
+            font-weight: bold;
+            font-size: 16px;
+            position: sticky;
+            top: 68px; /* Adjusted based on typical header height */
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .time-status {
+            font-size: 11px;
+            padding: 3px 6px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .events-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+        
+        .event-card {
+            padding: 14px;
+            border-bottom: 1px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .event-card:hover, .event-card:active {
+            background: #f8f9fa;
+            transform: translateX(4px);
+        }
+        
+        .event-card.featured {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border-left: 4px solid #ffc107;
+        }
+        
+        .event-card.free {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-left: 4px solid #28a745;
+        }
+        
+        .event-card.premium {
+            background: linear-gradient(135deg, #e2e3e5 0%, #d6d8db 100%);
+            border-left: 4px solid #6c757d;
+        }
+        
+        .event-title {
+            font-weight: bold;
+            font-size: 15px;
+            color: #2c3e50;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            line-height: 1.2;
+        }
+        
+        .event-icon {
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        
+        .event-location {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            text-decoration: underline;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            line-height: 1.2;
+        }
+        
+        .event-location:hover {
+            color: #c0392b;
+        }
+        
+        .event-description {
+            color: #34495e;
+            font-size: 12px;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+        
+        .event-meta {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .event-type {
+            background: #ecf0f1;
+            padding: 3px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+            color: #2c3e50;
+        }
+        
+        .event-cost {
+            font-weight: bold;
+            font-size: 11px;
+        }
+        
+        .event-cost.free {
+            color: #27ae60;
+        }
+        
+        .event-cost.paid {
+            color: #e67e22;
+        }
+        
+        .expand-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            color: #7f8c8d;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .expand-btn:hover {
+            background: #ecf0f1;
+            transform: scale(1.1);
+        }
+        
+        .event-details {
+            display: none;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #e9ecef;
+            font-size: 11px;
+        }
+        
+        .event-details.expanded {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .detail-section {
+            margin-bottom: 8px;
+        }
+        
+        .detail-label {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 11px;
+            margin-bottom: 2px;
+        }
+        
+        .detail-value {
+            color: #34495e;
+            font-size: 11px;
+            line-height: 1.3;
+        }
+        
+        .key-events {
+            background: #e3f2fd;
+            padding: 12px;
+            margin: 0;
+            border-left: 4px solid #2196f3;
+        }
+        
+        .key-events h3 {
+            color: #1976d2;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+        
+        .key-events ul {
+            list-style: none;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+        
+        .key-events li {
+            margin-bottom: 4px;
+            padding-left: 12px;
+            position: relative;
+        }
+        
+        .key-events li:before {
+            content: "🌟"; /* Changed emoji for better visibility */
+            position: absolute;
+            left: -4px;
+        }
+        
+        .legend {
+            padding: 10px;
+            background: #f8f9fa;
+            font-size: 11px;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+        
+        .legend-color.free { background: #28a745; }
+        .legend-color.featured { background: #ffc107; }
+        .legend-color.premium { background: #6c757d; }
+        
+        .footer-note {
+            background: #e2e3e5;
+            padding: 12px;
+            font-size: 11px;
+            text-align: center;
+            color: #6c757d;
+            line-height: 1.4;
+        }
+        
+        .expanded .expand-btn {
+            transform: rotate(180deg);
+        }
+        
+        @media (max-width: 320px) {
+            .event-title { font-size: 14px; }
+            .event-location { font-size: 11px; }
+            .event-description { font-size: 11px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎈 Dzień Dziecka Bydgoszcz</h1>
+            <h2>1 czerwca 2025 (niedziela)</h2>
+            <div class="current-time" id="currentTime">Ładowanie...</div>
+        </div>
+        
+        <div class="key-events">
+            <h3>🌟 NAJWAŻNIEJSZE WYDARZENIA DNIA</h3>
+            <ul>
+                <li><strong>FABRYKA LLOYDA</strong> - 14:00-21:00, koncert Ani Karwan 19:00, BEZPŁATNE</li>
+                <li><strong>DZIEŃ DZIECKA Z OPONEO.PL</strong> - 15:00-18:00, ul. Sielska 12, BEZPŁATNE</li>
+                <li><strong>POKEMON TCG & DISNEY LORCANA</strong> - 12:00-18:00, Hala Pomp, BEZPŁATNE</li>
+                <li><strong>DZIEŃ DZIECKA Z ZAWISZĄ</strong> - 11:00-15:00, Kompl. Sportowy, BEZPŁATNE</li>
+                <li><strong>HAWAJSKI DZIEŃ DZIECKA HELIOS</strong> - Seanse + animacje na holu</li>
+                <li><strong>TERENOWA MASAKRA</strong> - od 9:00, Myślęcinek (Płatne, duże wydarzenie)</li>
+            </ul>
+        </div>
+        
+        <div class="quick-info">
+            <strong>💡 WSKAZÓWKI:</strong> Kliknij w lokalizację aby otworzyć w Google Maps • Kliknij przycisk ▼ aby rozwinąć szczegóły • Kolory oznaczają: Zielony = BEZPŁATNE, Żółty = WYDARZENIE SPECJALNE, Szary = PŁATNE/OGÓLNE
+        </div>
+        
+        <!-- 09:00 -->
+        <div class="time-slot">
+            <div class="time-header">
+                <span>🕘 09:00</span>
+                <span class="time-status">Rano</span>
+            </div>
+            <div class="events-grid">
+                <div class="event-card featured">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🏃‍♂️</span>
+                        Terenowa Masakra 2025
+                    </div>
+                    <div class="event-location" onclick="openMaps('Park Myślęcinek, Bydgoszcz')">
+                        📍 Park Myślęcinek
+                    </div>
+                    <div class="event-description">
+                        Bieg z przeszkodami w ekstremalnie trudnym terenie (dystanse: 3km, 5km, 7km, 10km).
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Wydarzenie sportowe</span>
+                        <span class="event-cost paid">Zapisy na terenowamasakra.pl</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="detail-section">
+                            <div class="detail-label">Czas trwania:</div>
+                            <div class="detail-value">Start o 9:00, różne dystanse i fale startowe.</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Dla kogo:</div>
+                            <div class="detail-value">Dzieci i dorośli, różne kategorie wiekowe i poziomy trudności.</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Dodatkowe info:</div>
+                            <div class="detail-value">Wymagana rejestracja online, przygotuj odpowiedni strój sportowy. Niezapomniane wrażenia gwarantowane!</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="event-card premium">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🦁</span>
+                        Zoo Myślęcinek - Wczesne zwiedzanie
+                    </div>
+                    <div class="event-location" onclick="openMaps('Ogród Zoologiczny Myślęcinek, Gdańska 173-175, Bydgoszcz')">
+                        📍 Zoo Myślęcinek
+                    </div>
+                    <div class="event-description">
+                        Otwarcie zoo o 9:00 - idealna pora na spokojne zwiedzanie i obserwację ponad 120 gatunków zwierząt.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Ogród zoologiczny</span>
+                        <span class="event-cost paid">Według cennika zoo</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="detail-section">
+                            <div class="detail-label">Godziny otwarcia:</div>
+                            <div class="detail-value">9:00-19:00 (kasa do 18:30).</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Zalety porannego zwiedzania:</div>
+                            <div class="detail-value">Mniej tłumów, zwierzęta często bardziej aktywne, łatwiejsze parkowanie.</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Dodatkowe atrakcje w Myślęcinku:</div>
+                            <div class="detail-value">Park Rozrywki Zaginiony Świat, kolejka parkowa, Ogród Botaniczny.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 10:00 -->
+        <div class="time-slot">
+            <div class="time-header">
+                <span>🕙 10:00</span>
+                <span class="time-status">Rano</span>
+            </div>
+            <div class="events-grid">
+                 <div class="event-card free">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🏰</span>
+                        Gzuby na spacerze: Średniowieczna Bydgoszcz
+                    </div>
+                    <div class="event-location" onclick="openMaps('Pomnik Walki i Męczeństwa, Stary Rynek, Bydgoszcz')">
+                        📍 Start: Pomnik Walki i Męczeństwa
+                    </div>
+                    <div class="event-description">
+                        Rodzinny spacer edukacyjny z przewodnikiem śladami średniowiecznej Bydgoszczy.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Spacer edukacyjny</span>
+                        <span class="event-cost free">BEZPŁATNE</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="detail-section">
+                            <div class="detail-label">Czas trwania:</div>
+                            <div class="detail-value">Ok. 1,5 godziny.</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Dla kogo:</div>
+                            <div class="detail-value">Rodziny z dziećmi, wszystkie grupy wiekowe.</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Tematyka:</div>
+                            <div class="detail-value">Historia miasta, zabytki, legendy.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="event-card free">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🚢</span>
+                        Zostań turystą: Kanał Bydgoski
+                    </div>
+                    <div class="event-location" onclick="openMaps('Stary Rynek, Bydgoszcz')">
+                        📍 Start: Stary Rynek
+                    </div>
+                    <div class="event-description">
+                        Bezpłatne zwiedzanie z przewodnikiem: Kanał Bydgoski i Muzeum Kanału Bydgoskiego.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Zwiedzanie z przewodnikiem</span>
+                        <span class="event-cost free">BEZPŁATNE</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="detail-section">
+                            <div class="detail-label">Czas trwania:</div>
+                            <div class="detail-value">Ok. 3 godziny.</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Program:</div>
+                            <div class="detail-value">Historia budowy kanału, ciekawostki, wizyta w muzeum.</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Dodatkowe informacje:</div>
+                            <div class="detail-value">Wygodne buty, możliwość fotografowania. Finansowane z BBO.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-card featured">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🌺</span>
+                        Hawajski Dzień Dziecka - Helios
+                    </div>
+                    <div class="event-location" onclick="openMaps('Kino Helios, aleja Powstańców Wielkopolskich 4, Bydgoszcz')">
+                        📍 Kino Helios
+                    </div>
+                    <div class="event-description">
+                        Specjalne seanse "Lilo i Stitch" z konkursami przed filmem oraz animacje hawajskie na holu kina.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Kino + animacje</span>
+                        <span class="event-cost paid">Bilety na helios.pl</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="detail-section">
+                            <div class="detail-label">Atrakcje na holu:</div>
+                            <div class="detail-value">Tropikalne Studio Blasku (brokatowe tatuaże), Koło Aloha Niespodzianek, Wyspa Kolorowych Korali (tworzenie naszyjników), Limbo na Plaży, Deska Wspomnień.</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Konkursy:</div>
+                            <div class="detail-value">Nagrody od partnerów.</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Daty:</div>
+                            <div class="detail-value">30-31 maja i 1 czerwca 2025. Sprawdź godziny seansów.</div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="event-card premium">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🏛️</span>
+                        Wizyta w Muzeach / Młyny Rothera
+                    </div>
+                    <div class="event-location" onclick="openMaps('Młyny Rothera, Wyspa Młyńska, Bydgoszcz')">
+                        📍 Młyny Rothera / Inne muzea
+                    </div>
+                    <div class="event-description">
+                        Odkryj interaktywne wystawy w Młynach Rothera (SOWA, Młyn-Maszyna) lub odwiedź inne bydgoskie muzea.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Edukacja / Rozrywka</span>
+                        <span class="event-cost paid">Zależnie od muzeum</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="detail-section">
+                            <div class="detail-label">Młyny Rothera:</div>
+                            <div class="detail-value">Wystawa SOWA (Strefa Odkrywania, Wyobraźni, Aktywności), Wystawa Młyn-Maszyna. Sprawdź godziny i bilety.</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Inne muzea:</div>
+                            <div class="detail-value">Muzeum Mydła i Historii Brudu (warsztaty), Exploseum (wymagana rezerwacja), Muzeum Okręgowe.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 11:00 -->
+        <div class="time-slot">
+            <div class="time-header">
+                <span>🕚 11:00</span>
+                <span class="time-status">Przed południem</span>
+            </div>
+            <div class="events-grid">
+                <div class="event-card free">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">⚽</span>
+                        Dzień Dziecka z Zawiszą Bydgoszcz
+                    </div>
+                    <div class="event-location" onclick="openMaps('Kompleks Sportowy Zawisza, Gdańska 163, Bydgoszcz')">
+                        📍 Kompleks Sportowy Zawisza
+                    </div>
+                    <div class="event-description">
+                        Festyn z okazji Dnia Dziecka: dmuchańce, pokazy strażackie, konkursy sportowe, malowanie twarzy.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Festyn rodzinny</span>
+                        <span class="event-cost free">BEZPŁATNE ATRAKCJE</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="detail-section">
+                            <div class="detail-label">Czas trwania:</div>
+                            <div class="detail-value">11:00 - 15:00.</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Atrakcje:</div>
+                            <div class="detail-value">Gigantyczna strefa dmuchańców, pokazy służb mundurowych, konkursy sportowe z nagrodami, malowanie twarzy, tatuaże dla dzieci.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-card featured">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🗺️</span>
+                        Sprytne Dzieciaki III Edycja
+                    </div>
+                    <div class="event-location" onclick="openMaps('ul. Komandosów 56, Bydgoszcz (górka za Biedronką)')">
+                        📍 ul. Komandosów 56 (górka za Biedronką)
+                    </div>
+                    <div class="event-description">
+                        Przygodowy rajd pieszy z mapą i historią w tle. Odkrywanie ciekawych miejsc.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Rajd przygodowy</span>
+                        <span class="event-cost paid">Rejestracja, info: waleczneserca.weebly.com</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="detail-section">
+                            <div class="detail-label">Tematyka:</div>
+                            <div class="detail-value">Ślady archeologiczne, pruski poligon, dawne zabudowania. Konkursy i zabawa.</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Bonusy:</div>
+                            <div class="detail-value">Za stroje/rekwizyty z epoki kamienia i zebrane śmieci.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="event-card premium">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🎶</span>
+                        CCLIII Poranek Muzyczny
+                    </div>
+                    <div class="event-location" onclick="openMaps('Akademia Muzyczna, Sala Koncertowa, Gdańska 20, Bydgoszcz')">
+                        📍 Akademia Muzyczna, ul. Gdańska 20
+                    </div>
+                    <div class="event-description">
+                        "Czy to bajka czy nie bajka – muzyka filmowa na Dzień Dziecka!" - koncert dla dzieci i rodziców.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Koncert familijny</span>
+                        <span class="event-cost paid">Biletowany</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="detail-section">
+                            <div class="detail-label">Godzina:</div>
+                            <div class="detail-value">11:30.</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Repertuar:</div>
+                            <div class="detail-value">Znane motywy z filmów dla dzieci.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-card premium">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">⛵</span>
+                        Tramwaj wodny - Rejs po Brdzie
+                    </div>
+                    <div class="event-location" onclick="openMaps('Rybi Rynek, Bydgoszcz')">
+                        📍 Rybi Rynek
+                    </div>
+                    <div class="event-description">
+                        Rejs o 11:00 - zwiedzanie Bydgoszczy z perspektywy rzeki.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Rejs turystyczny</span>
+                        <span class="event-cost paid">20zł normalny, 15zł ulgowy</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="detail-section">
+                            <div class="detail-label">Czas trwania:</div>
+                            <div class="detail-value">Ok. 45 minut.</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Kolejne rejsy:</div>
+                            <div class="detail-value">Co godzinę do 19:00.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 12:00 -->
+        <div class="time-slot">
+            <div class="time-header">
+                <span>🕛 12:00</span>
+                <span class="time-status">Południe</span>
+            </div>
+            <div class="events-grid">
+                <div class="event-card free">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🃏</span>
+                        Dzień Dziecka z Pokemon TCG & Disney Lorcana
+                    </div>
+                    <div class="event-location" onclick="openMaps('Hala Pomp-Muzeum Wodociągów, ul. Gdańska 242, Bydgoszcz')">
+                        📍 Hala Pomp-Muzeum Wodociągów
+                    </div>
+                    <div class="event-description">
+                        Gry karciane, nauka gry, turnieje (Pokemon 12:30, Lorcana 13:00), animacje, malowanie twarzy.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Gry i animacje</span>
+                        <span class="event-cost free">WSTĘP WOLNY!</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="detail-section">
+                            <div class="detail-label">Czas trwania:</div>
+                            <div class="detail-value">12:00 - 18:00.</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Atrakcje:</div>
+                            <div class="detail-value">Nauka gry Pokemon TCG i Disney Lorcana, strefa wymiany kart, turnieje z nagrodami, malowanie twarzy, strefa rysunku "mój ulubiony bohater".</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Organizator:</div>
+                            <div class="detail-value">Centrum gier Pegaz.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="event-card premium">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🍲</span>
+                        Wspólne gotowanie na Dzień Dziecka
+                    </div>
+                    <div class="event-location" onclick="openMaps('Kuchnia Agaty, ul. 11 listopada 13, Bydgoszcz')">
+                        📍 Kuchnia Agaty, ul. 11 listopada 13
+                    </div>
+                    <div class="event-description">
+                        Warsztaty kulinarne dla par rodzic-dziecko. Menu: azjatyckie pierożki, mini serniczki.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Warsztaty kulinarne</span>
+                        <span class="event-cost paid">Płatne, rezerwacja</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="detail-section">
+                            <div class="detail-label">Czas trwania:</div>
+                            <div class="detail-value">Ok. 3 godziny.</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Kontakt:</div>
+                            <div class="detail-value">warsztaty@kuchniaagaty.pl / 508 256 507.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-card premium">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🎭</span>
+                        SCENA (NIE)OCZYWISTA! - Festiwal Teatrów
+                    </div>
+                    <div class="event-location" onclick="openMaps('Hangar Kultury, Jana Piwnika-Ponurego 10, Bydgoszcz')">
+                        📍 Hangar Kultury
+                    </div>
+                    <div class="event-description">
+                        Festiwal teatrów amatorskich. Prezentacje spektakli, dyskusje.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Festiwal teatralny</span>
+                        <span class="event-cost paid">Sprawdzić u organizatora (prawdopodobnie wstęp wolny na spektakle)</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="detail-section">
+                            <div class="detail-label">Czas trwania:</div>
+                            <div class="detail-value">12:00 - 21:00 (cały festiwal).</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Dla kogo:</div>
+                            <div class="detail-value">Miłośnicy teatru, rodziny (sprawdź repertuar pod kątem dzieci).</div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="event-card premium">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🏞️</span>
+                        Rejs po Wiśle z przewodnikiem
+                    </div>
+                    <div class="event-location" onclick="openMaps('Nabrzeże Fordon, ul. A. Frycza-Modrzewskiego, Bydgoszcz')">
+                        📍 Nabrzeże Fordon
+                    </div>
+                    <div class="event-description">
+                        Godzinny rejs drewnianą łodzią po Wiśle z kawą i ciastem na wiślanym piasku. Dla osób 12+.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Rejs z przewodnikiem</span>
+                        <span class="event-cost paid">70zł (rejs + przewodnik + poczęstunek)</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="detail-section">
+                            <div class="detail-label">Przewodnik:</div>
+                            <div class="detail-value">Hanna Rzadkosz-Florkowska.</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Rezerwacja:</div>
+                            <div class="detail-value">Anita Błaszkiewicz, tel. 603 255 741.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="event-card premium">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🚶</span>
+                        Dookoła Śródmieścia - Spacer
+                    </div>
+                    <div class="event-location" onclick="openMaps('Bydgoskie Centrum Informacji, Batorego 2, Bydgoszcz')">
+                        📍 Start: BCI, ul. Batorego 2
+                    </div>
+                    <div class="event-description">
+                        Spacer z przewodnikiem po bydgoskim Śródmieściu. Fontanna Potop, Plac Wolności, kamienice.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Spacer z przewodnikiem</span>
+                        <span class="event-cost paid">20zł (dzieci do 10 lat gratis)</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="detail-section">
+                            <div class="detail-label">Godzina startu:</div>
+                            <div class="detail-value">12:30.</div>
+                        </div>
+                         <div class="detail-section">
+                            <div class="detail-label">Czas trwania:</div>
+                            <div class="detail-value">Ok. 1,5 godziny.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 13:00 -->
+        <div class="time-slot">
+            <div class="time-header">
+                <span>🕐 13:00</span>
+                <span class="time-status">Popołudnie</span>
+            </div>
+            <div class="events-grid">
+                <div class="event-card premium"> <!-- General Activity -->
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🎠</span>
+                        Myślęcinek - Park Rozrywki / Zoo
+                    </div>
+                    <div class="event-location" onclick="openMaps('Park Myślęcinek, Bydgoszcz')">
+                        📍 Park Myślęcinek
+                    </div>
+                    <div class="event-description">
+                        Kontynuuj zabawę w Parku Rozrywki (Zaginiony Świat, karuzele) lub zwiedzaj Zoo.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Rekreacja</span>
+                        <span class="event-cost paid">Bilety na poszczególne atrakcje</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="detail-section">
+                            <div class="detail-label">Park Rozrywki:</div>
+                            <div class="detail-value">Dinozaury, park linowy, karuzele, kolejka.</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Zoo:</div>
+                            <div class="detail-value">Otwarte do 19:00.</div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="event-card premium">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">⛵</span>
+                        Tramwaj wodny - Rejs po Brdzie
+                    </div>
+                    <div class="event-location" onclick="openMaps('Rybi Rynek, Bydgoszcz')">
+                        📍 Rybi Rynek
+                    </div>
+                    <div class="event-description">
+                        Rejs o 13:00 - podziwiaj miasto z perspektywy rzeki.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Rejs turystyczny</span>
+                        <span class="event-cost paid">20zł normalny, 15zł ulgowy</span>
+                    </div>
+                </div>
+                <!-- Kontynuacja wydarzeń z 12:00 jak Pokemon, Zawisza (do 15), Gotowanie (do 15) -->
+                 <div class="event-card free">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">⚽</span>
+                        Dzień Dziecka z Zawiszą (Kontynuacja)
+                    </div>
+                    <div class="event-location" onclick="openMaps('Kompleks Sportowy Zawisza, Gdańska 163, Bydgoszcz')">
+                        📍 Kompleks Sportowy Zawisza
+                    </div>
+                    <div class="event-description">
+                        Festyn trwa! Dmuchańce, konkursy i inne atrakcje do 15:00.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Festyn rodzinny</span>
+                        <span class="event-cost free">BEZPŁATNE ATRAKCJE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 14:00 -->
+        <div class="time-slot">
+            <div class="time-header">
+                <span>🕑 14:00</span>
+                <span class="time-status">Popołudnie</span>
+            </div>
+            <div class="events-grid">
+                <div class="event-card free">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🎉</span>
+                        DZIEŃ DZIECKA W FABRYCE LLOYDA!
+                    </div>
+                    <div class="event-location" onclick="openMaps('Fabryka Lloyda, ul. Fordońska 156, Bydgoszcz')">
+                        📍 Fabryka Lloyda, ul. Fordońska 156
+                    </div>
+                    <div class="event-description">
+                        Start wielkiego pikniku rodzinnego! Dmuchańce, tor przeszkód, animacje (14:00-21:00).
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Duże wydarzenie bezpłatne</span>
+                        <span class="event-cost free">WSTĘP WOLNY!</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="detail-section">
+                            <div class="detail-label">Harmonogram:</div>
+                            <div class="detail-value">14:00 Start, 14:05 Strefa Zabaw (dmuchańce, tor przeszkód), 15:00 Strefa Kreatywna (malowanie twarzy, warkoczyki) i Sportowa (prezentacje klubów), 16:00 Strefa Młodych Talentów, 17:00 Strefa Kultury (konkursy), 18:00 Nagrody, 19:00 Koncert Ani Karwan, 21:00 Zakończenie.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="event-card featured">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">⚔️</span>
+                        Wikingowie Musical Nieletni (Seans 1)
+                    </div>
+                    <div class="event-location" onclick="openMaps('Teatr Kameralny, Grodzka 14-16, Bydgoszcz')">
+                        📍 Teatr Kameralny
+                    </div>
+                    <div class="event-description">
+                        Familijny spektakl muzyczny o przygodach dzieci-wikingów. Przyjaźń, dojrzewanie, skandynawskie pieśni.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Spektakl teatralny</span>
+                        <span class="event-cost paid">Według cennika teatru</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="detail-section">
+                            <div class="detail-label">Godzina:</div>
+                            <div class="detail-value">14:00 (Drugi seans o 17:00).</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Dla kogo:</div>
+                            <div class="detail-value">Całe rodziny, miłośnicy musicali i przygód.</div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="event-card premium">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">⛵</span>
+                        Tramwaj wodny - Rejs po Brdzie
+                    </div>
+                    <div class="event-location" onclick="openMaps('Rybi Rynek, Bydgoszcz')">
+                        📍 Rybi Rynek
+                    </div>
+                    <div class="event-description">
+                        Rejs o 14:00.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Rejs turystyczny</span>
+                        <span class="event-cost paid">20zł normalny, 15zł ulgowy</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 15:00 -->
+        <div class="time-slot">
+            <div class="time-header">
+                <span>🕒 15:00</span>
+                <span class="time-status">Popołudnie</span>
+            </div>
+            <div class="events-grid">
+                <div class="event-card free">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🎈</span>
+                        Dzień Dziecka z Oponeo.pl
+                    </div>
+                    <div class="event-location" onclick="openMaps('ul. Sielska 12, Fordon, Bydgoszcz')">
+                        📍 ul. Sielska 12, Fordon (Budowlany KS)
+                    </div>
+                    <div class="event-description">
+                        Dmuchańce, malowanie twarzy, pokaz akrobatyczny, wóz strażacki, bańki mydlane, konkursy.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Festyn rodzinny</span>
+                        <span class="event-cost free">WSTĘP BEZPŁATNY!</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="detail-section">
+                            <div class="detail-label">Czas trwania:</div>
+                            <div class="detail-value">15:00 - 18:00.</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Atrakcje:</div>
+                            <div class="detail-value">Dmuchane zjeżdżalnie, malowanie twarzy, pokaz artystyczno-akrobatyczny, wóz strażacki OSP, konkurencje piłkarsko-sportowe, gigantyczne bańki mydlane, gość Goofy, grill.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="event-card free"> <!-- Kontynuacja Fabryki Lloyda -->
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🎨</span>
+                        Fabryka Lloyda: Strefa Kreatywna i Sportowa
+                    </div>
+                    <div class="event-location" onclick="openMaps('Fabryka Lloyda, ul. Fordońska 156, Bydgoszcz')">
+                        📍 Fabryka Lloyda
+                    </div>
+                    <div class="event-description">
+                        Piknik trwa! Czas na malowanie twarzy, kolorowe warkoczyki i prezentacje klubów sportowych.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Piknik rodzinny</span>
+                        <span class="event-cost free">WSTĘP WOLNY!</span>
+                    </div>
+                </div>
+                 <div class="event-card premium">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🎭</span>
+                        Dwoje na zakręcie - Komedia
+                    </div>
+                    <div class="event-location" onclick="openMaps('Adria Teatr, Naruszewicza 11, Bydgoszcz')">
+                        📍 Adria Teatr
+                    </div>
+                    <div class="event-description">
+                        Komedia teatralna dla dorosłych z Katarzyną Herman i Bartłomiejem Topą.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Spektakl teatralny</span>
+                        <span class="event-cost paid">Biletowany</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 16:00 -->
+        <div class="time-slot">
+            <div class="time-header">
+                <span>🕓 16:00</span>
+                <span class="time-status">Popołudnie</span>
+            </div>
+            <div class="events-grid">
+                <div class="event-card free"> <!-- Kontynuacja Fabryki Lloyda -->
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🎤</span>
+                        Fabryka Lloyda: Strefa Młodych Talentów
+                    </div>
+                    <div class="event-location" onclick="openMaps('Fabryka Lloyda, ul. Fordońska 156, Bydgoszcz')">
+                        📍 Fabryka Lloyda
+                    </div>
+                    <div class="event-description">
+                        Na scenie Lloyda prezentują się młode talenty taneczne i wokalne.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Piknik rodzinny</span>
+                        <span class="event-cost free">WSTĘP WOLNY!</span>
+                    </div>
+                </div>
+                <div class="event-card free"> <!-- Kontynuacja Oponeo -->
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🎈</span>
+                        Dzień Dziecka z Oponeo.pl (Kontynuacja)
+                    </div>
+                    <div class="event-location" onclick="openMaps('ul. Sielska 12, Fordon, Bydgoszcz')">
+                        📍 ul. Sielska 12, Fordon
+                    </div>
+                    <div class="event-description">
+                        Zabawa trwa! Dmuchańce, konkursy i inne atrakcje do 18:00.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Festyn rodzinny</span>
+                        <span class="event-cost free">WSTĘP BEZPŁATNY!</span>
+                    </div>
+                </div>
+                 <div class="event-card premium">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">⛵</span>
+                        Tramwaj wodny - Rejs po Brdzie
+                    </div>
+                    <div class="event-location" onclick="openMaps('Rybi Rynek, Bydgoszcz')">
+                        📍 Rybi Rynek
+                    </div>
+                    <div class="event-description">
+                        Rejs o 16:00.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Rejs turystyczny</span>
+                        <span class="event-cost paid">20zł normalny, 15zł ulgowy</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 17:00 -->
+        <div class="time-slot">
+            <div class="time-header">
+                <span>🕔 17:00</span>
+                <span class="time-status">Wieczór</span>
+            </div>
+            <div class="events-grid">
+                <div class="event-card featured">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🎼</span>
+                        Bajkowa lista przebojów vol. 2
+                    </div>
+                    <div class="event-location" onclick="openMaps('Filharmonia Pomorska, Andrzeja Szwalbego 6, Bydgoszcz')">
+                        📍 Filharmonia Pomorska
+                    </div>
+                    <div class="event-description">
+                        Koncert familijny z największymi piosenkami z bajek Disneya. Orkiestra Kameralna Capella Bydgostiensis i Dziecięcy Chór FP.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Koncert dla dzieci</span>
+                        <span class="event-cost paid">Według cennika filharmonii</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="detail-section">
+                            <div class="detail-label">Repertuar:</div>
+                            <div class="detail-value">Piosenki m.in. z "Tarzan", "Król Lew", "Kraina lodu", "Piękna i Bestia", "Moje magiczne Encanto", "Zaplątani".</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="event-card featured">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">⚔️</span>
+                        Wikingowie Musical Nieletni (Seans 2)
+                    </div>
+                    <div class="event-location" onclick="openMaps('Teatr Kameralny, Grodzka 14-16, Bydgoszcz')">
+                        📍 Teatr Kameralny
+                    </div>
+                    <div class="event-description">
+                        Drugi seans familijnego musicalu o przygodach dzieci-wikingów.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Spektakl teatralny</span>
+                        <span class="event-cost paid">Według cennika teatru</span>
+                    </div>
+                </div>
+                 <div class="event-card free"> <!-- Kontynuacja Fabryki Lloyda -->
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🏛️</span>
+                        Fabryka Lloyda: Strefa Kultury
+                    </div>
+                    <div class="event-location" onclick="openMaps('Fabryka Lloyda, ul. Fordońska 156, Bydgoszcz')">
+                        📍 Fabryka Lloyda
+                    </div>
+                    <div class="event-description">
+                        Konkursy i quizy o Bydgoszczy, jej kulturze i przyrodzie.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Piknik rodzinny</span>
+                        <span class="event-cost free">WSTĘP WOLNY!</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 18:00 -->
+        <div class="time-slot">
+            <div class="time-header">
+                <span>🕕 18:00</span>
+                <span class="time-status">Wieczór</span>
+            </div>
+            <div class="events-grid">
+                <div class="event-card free"> <!-- Kontynuacja Fabryki Lloyda -->
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🏆</span>
+                        Fabryka Lloyda: Rozdanie Nagród
+                    </div>
+                    <div class="event-location" onclick="openMaps('Fabryka Lloyda, ul. Fordońska 156, Bydgoszcz')">
+                        📍 Fabryka Lloyda
+                    </div>
+                    <div class="event-description">
+                        Wręczenie nagród i wyróżnień w ramach pikniku rodzinnego.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Piknik rodzinny</span>
+                        <span class="event-cost free">WSTĘP WOLNY!</span>
+                    </div>
+                </div>
+                <div class="event-card premium"> <!-- Zoo Myślęcinek -->
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🦁</span>
+                        Zoo Myślęcinek - Ostatnia godzina
+                    </div>
+                    <div class="event-location" onclick="openMaps('Ogród Zoologiczny Myślęcinek, Gdańska 173-175, Bydgoszcz')">
+                        📍 Zoo Myślęcinek
+                    </div>
+                    <div class="event-description">
+                        Zoo czynne do 19:00 (kasa do 18:30). Ostatnia szansa na wizytę tego dnia.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Ogród zoologiczny</span>
+                        <span class="event-cost paid">Według cennika zoo</span>
+                    </div>
+                </div>
+                 <div class="event-card premium">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">⛵</span>
+                        Tramwaj wodny - Rejs po Brdzie
+                    </div>
+                    <div class="event-location" onclick="openMaps('Rybi Rynek, Bydgoszcz')">
+                        📍 Rybi Rynek
+                    </div>
+                    <div class="event-description">
+                        Rejs o 18:00.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Rejs turystyczny</span>
+                        <span class="event-cost paid">20zł normalny, 15zł ulgowy</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 19:00 -->
+        <div class="time-slot">
+            <div class="time-header">
+                <span>🕖 19:00</span>
+                <span class="time-status">Wieczór</span>
+            </div>
+            <div class="events-grid">
+                <div class="event-card free">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🌟</span>
+                        Koncert Ani Karwan
+                    </div>
+                    <div class="event-location" onclick="openMaps('Fabryka Lloyda, ul. Fordońska 156, Bydgoszcz')">
+                        📍 Fabryka Lloyda
+                    </div>
+                    <div class="event-description">
+                        Gwiazda wieczoru w ramach Dnia Dziecka w Fabryce Lloyda. Wielki finał pikniku!
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Koncert bezpłatny</span>
+                        <span class="event-cost free">WSTĘP WOLNY!</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="detail-section">
+                            <div class="detail-label">Artystka:</div>
+                            <div class="detail-value">Ania Karwan - znana polska wokalistka.</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Koniec pikniku:</div>
+                            <div class="detail-value">Ok. 21:00.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="event-card premium">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">💃</span>
+                        Drums Fusion: Compañía Mercedes Ruiz
+                    </div>
+                    <div class="event-location" onclick="openMaps('Opera Nova, Marszałka Ferdynanda Focha 5, Bydgoszcz')">
+                        📍 Opera Nova
+                    </div>
+                    <div class="event-description">
+                        Spektakl flamenco "ROMANCERO DEL BAILE FLAMENCO" w ramach festiwalu Drums Fusion 2025.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Spektakl taneczny</span>
+                        <span class="event-cost paid">Bilety 110/130/150 zł</span>
+                    </div>
+                </div>
+                 <div class="event-card premium">
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">⛵</span>
+                        Tramwaj wodny - Ostatni rejs
+                    </div>
+                    <div class="event-location" onclick="openMaps('Rybi Rynek, Bydgoszcz')">
+                        📍 Rybi Rynek
+                    </div>
+                    <div class="event-description">
+                        Ostatni rejs dnia o 19:00.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Rejs turystyczny</span>
+                        <span class="event-cost paid">20zł normalny, 15zł ulgowy</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 20:00 -->
+        <div class="time-slot">
+            <div class="time-header">
+                <span>🕗 20:00</span>
+                <span class="time-status">Późny Wieczór</span>
+            </div>
+            <div class="events-grid">
+                 <div class="event-card free"> <!-- Kontynuacja Fabryki Lloyda -->
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🎉</span>
+                        Fabryka Lloyda - Finał Pikniku
+                    </div>
+                    <div class="event-location" onclick="openMaps('Fabryka Lloyda, ul. Fordońska 156, Bydgoszcz')">
+                        📍 Fabryka Lloyda
+                    </div>
+                    <div class="event-description">
+                        Koncert Ani Karwan trwa, piknik dobiega końca o 21:00.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Piknik / Koncert</span>
+                        <span class="event-cost free">WSTĘP WOLNY!</span>
+                    </div>
+                </div>
+                <div class="event-card premium"> <!-- Kontynuacja Opery -->
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">💃</span>
+                        Drums Fusion: Compañía Mercedes Ruiz (Kontynuacja)
+                    </div>
+                    <div class="event-location" onclick="openMaps('Opera Nova, Marszałka Ferdynanda Focha 5, Bydgoszcz')">
+                        📍 Opera Nova
+                    </div>
+                    <div class="event-description">
+                        Spektakl flamenco trwa.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Spektakl taneczny</span>
+                        <span class="event-cost paid">Biletowany</span>
+                    </div>
+                </div>
+                 <div class="event-card premium"> <!-- SCENA (NIE)OCZYWISTA! -->
+                    <button class="expand-btn">▼</button>
+                    <div class="event-title">
+                        <span class="event-icon">🎭</span>
+                        SCENA (NIE)OCZYWISTA! - Finał Festiwalu
+                    </div>
+                    <div class="event-location" onclick="openMaps('Hangar Kultury, Jana Piwnika-Ponurego 10, Bydgoszcz')">
+                        📍 Hangar Kultury
+                    </div>
+                    <div class="event-description">
+                        Festiwal teatrów amatorskich dobiega końca o 21:00.
+                    </div>
+                    <div class="event-meta">
+                        <span class="event-type">Festiwal teatralny</span>
+                        <span class="event-cost paid">Sprawdzić u organizatora</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color free"></div>
+                <span>Wydarzenie bezpłatne</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color featured"></div>
+                <span>Wydarzenie specjalne / Polecane</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color premium"></div>
+                <span>Wydarzenie płatne / Ogólna atrakcja</span>
+            </div>
+        </div>
+        
+        <div class="footer-note">
+            📱 Kliknij w lokalizację, aby otworzyć Google Maps<br>
+            🔄 Dane aktualizowane na podstawie dostępnych informacji z dnia 28.05.2024.<br>
+            ⚠️ Sprawdź aktualność godzin i cen bezpośrednio u organizatorów przed wyjściem. Miłej zabawy!
+        </div>
+    </div>
+    
+    <script>
+        function updateTime() {
+            const now = new Date();
+            // Symulacja daty 1 czerwca 2025 dla celów demonstracyjnych statusu pory dnia
+            // const targetEventDate = new Date(2025, 5, 1, now.getHours(), now.getMinutes(), now.getSeconds());
+            const timeString = now.toLocaleTimeString('pl-PL', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('currentTime').textContent = `Aktualna godzina: ${timeString}`;
+
+            // Aktualizacja statusu pory dnia (opcjonalne, jeśli chcemy dynamicznie zmieniać "Rano", "Wieczór" etc.)
+            // Ta część wymagałaby bardziej złożonej logiki do oznaczania przeszłych/aktualnych/przyszłych slotów czasowych
+            // Na potrzeby tego przykładu, statusy są statyczne w HTML.
+        }
+        
+        function openMaps(location) {
+            const encodedLocation = encodeURIComponent(location);
+            const url = `https://www.google.com/maps/search/?api=1&query=${encodedLocation}`;
+            window.open(url, '_blank');
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTime(); // Initial call
+            setInterval(updateTime, 60000); // Update time every minute
+            
+            const expandButtons = document.querySelectorAll('.expand-btn');
+            expandButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Zapobiega kliknięciu na kartę
+                    const card = this.closest('.event-card');
+                    const details = card.querySelector('.event-details');
+                    
+                    if (details.classList.contains('expanded')) {
+                        details.classList.remove('expanded');
+                        this.style.transform = ''; // Resetuj obrót przycisku
+                    } else {
+                        // Zamknij inne otwarte szczegóły, jeśli chcesz mieć tylko jedne otwarte naraz
+                        // document.querySelectorAll('.event-details.expanded').forEach(openDetail => {
+                        //     openDetail.classList.remove('expanded');
+                        //     openDetail.closest('.event-card').querySelector('.expand-btn').style.transform = '';
+                        // });
+                        details.classList.add('expanded');
+                        this.style.transform = 'rotate(180deg)'; // Obróć przycisk
+                    }
+                });
+            });
+            
+            // Opcjonalnie: Kliknięcie na całą kartę (poza przyciskiem i linkiem lokalizacji) również rozwija/zwija
+            const eventCards = document.querySelectorAll('.event-card');
+            eventCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // Nie rób nic, jeśli kliknięto na przycisk rozwijania lub link lokalizacji
+                    if (e.target.classList.contains('expand-btn') || e.target.closest('.expand-btn') || e.target.classList.contains('event-location') || e.target.closest('.event-location')) {
+                        return;
+                    }
+                    
+                    const button = this.querySelector('.expand-btn');
+                    if (button) {
+                        button.click(); // Symuluj kliknięcie przycisku
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
