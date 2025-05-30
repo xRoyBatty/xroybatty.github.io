@@ -1,0 +1,2048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Making Explanations: Interactive Self-Study Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 5px;
+            margin-top: 1rem;
+        }
+
+        .progress-bar {
+            background: #27ae60;
+            height: 8px;
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .task-counter {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .navigation {
+            background: #34495e;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .task-numbers {
+            display: flex;
+            gap: 0.3rem;
+            flex-wrap: wrap;
+        }
+
+        .task-num {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .task-num:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .task-num.active {
+            background: #27ae60;
+        }
+
+        .task-num.completed {
+            background: #2ecc71;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .check-btn {
+            background: #27ae60;
+        }
+
+        .check-btn:hover {
+            background: #229954;
+        }
+
+        .reset-btn {
+            background: #e74c3c;
+        }
+
+        .reset-btn:hover {
+            background: #c0392b;
+        }
+
+        main {
+            padding: 2rem;
+            min-height: 60vh;
+        }
+
+        .task {
+            display: none;
+        }
+
+        .task.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .task-header {
+            background: #ecf0f1;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #3498db;
+        }
+
+        .task-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .task-instructions {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        /* Task 1 specific styles */
+        .task1-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .story-text {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            line-height: 1.8;
+            border: 2px solid #e9ecef;
+        }
+
+        .story-text h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .clickable-phrase {
+            background: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+            cursor: pointer;
+            border: 1px solid #ffeaa7;
+            transition: all 0.3s ease;
+        }
+
+        .clickable-phrase:hover {
+            background: #ffd93d;
+        }
+
+        .clickable-phrase.found {
+            background: #d4edda;
+            border-color: #27ae60;
+            color: #155724;
+        }
+
+        .task1-sidebar {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            height: fit-content;
+        }
+
+        .phrase-categories {
+            margin-bottom: 1.5rem;
+        }
+
+        .phrase-categories h4 {
+            color: #495057;
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+
+        .phrase-list {
+            background: #f8f9fa;
+            border-radius: 5px;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            min-height: 60px;
+        }
+
+        .found-phrase {
+            background: #d4edda;
+            color: #155724;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            margin: 0.2rem;
+            display: inline-block;
+            font-size: 0.8rem;
+            border: 1px solid #c3e6cb;
+        }
+
+        /* Regular task styles */
+        .question {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .question h4 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .options {
+            display: grid;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem;
+            background: #f8f9fa;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+        }
+
+        .option input {
+            margin-right: 0.8rem;
+        }
+
+        .option.selected {
+            border-color: #3498db;
+            background: #ebf3fd;
+        }
+
+        .option.correct {
+            border-color: #27ae60;
+            background: #d4edda;
+        }
+
+        .option.incorrect {
+            border-color: #e74c3c;
+            background: #f8d7da;
+        }
+
+        .fill-blank {
+            display: inline-block;
+            min-width: 100px;
+            padding: 0.3rem 0.6rem;
+            border: 2px solid #dee2e6;
+            border-radius: 4px;
+            margin: 0 0.3rem;
+        }
+
+        .task-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .feedback {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .feedback.success {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .feedback.error {
+            background: #f8d7da;
+            border: 2px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .explanation {
+            margin-top: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .task1-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .nav-buttons {
+                justify-content: space-between;
+            }
+            
+            .task-numbers {
+                justify-content: center;
+            }
+            
+            main {
+                padding: 1rem;
+            }
+        }
+
+        /* Vocabulary categorization table */
+        .vocab-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .vocab-table th, .vocab-table td {
+            border: 2px solid #dee2e6;
+            padding: 0.8rem;
+            text-align: left;
+        }
+
+        .vocab-table th {
+            background: #f8f9fa;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .vocab-table td {
+            background: white;
+        }
+
+        /* Slider styles */
+        .slider-container {
+            margin: 1rem 0;
+        }
+
+        .slider {
+            width: 100%;
+            margin: 0.5rem 0;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Making Explanations: Interactive Self-Study Guide</h1>
+            <p>Pre-Intermediate to Intermediate Level</p>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="task-counter">
+                Task <span id="currentTask">1</span> of <span id="totalTasks">8</span>
+            </div>
+        </header>
+
+        <nav class="navigation">
+            <div class="nav-buttons">
+                <button id="prevBtn" onclick="previousTask()">← Previous</button>
+                <button id="nextBtn" onclick="nextTask()">Next →</button>
+            </div>
+            <div class="task-numbers" id="taskNumbers">
+                <!-- Task numbers will be populated by JavaScript -->
+            </div>
+        </nav>
+
+        <main>
+            <!-- Task 1: Language Discovery -->
+            <div class="task active" id="task1">
+                <div class="task-header">
+                    <h2 class="task-title">🔍 Task 1: Language Discovery</h2>
+                    <p class="task-instructions">
+                        <strong>Instructions:</strong> Read Emma's story and click on phrases that match each category. 
+                        Click on the highlighted phrases in the text to collect them in the categories below.
+                    </p>
+                </div>
+
+                <div class="task1-layout">
+                    <div class="story-text">
+                        <h3>📖 Emma's Worst Day Ever</h3>
+                        <p>Emma woke up late on Monday morning because her phone had died overnight and her alarm didn't go off. <span class="clickable-phrase" data-category="explanation" data-phrase="The thing is">"The thing is,"</span> she texted her manager, "my charger broke and I didn't realize my phone was dead until this morning. <span class="clickable-phrase" data-category="regret" data-phrase="I feel terrible about">I feel terrible about</span> being late!"</p>
+
+                        <p><span class="clickable-phrase" data-category="explanation" data-phrase="What happened was">What happened was</span> even worse. Emma rushed to catch the bus, but slipped on the wet pavement and landed in a puddle. Her white shirt was completely soaked and muddy. <span class="clickable-phrase" data-category="explanation" data-phrase="You see">"You see,"</span> she explained to her colleague later, "I was running so fast that I didn't notice the water on the ground. <span class="clickable-phrase" data-category="explanation" data-phrase="Due to">Due to</span> the rain last night, the sidewalk was <span class="clickable-phrase" data-category="idiom" data-phrase="like an ice rink">like an ice rink</span>!"</p>
+
+                        <p>At lunch, Emma had planned to meet her best friend Sarah at their favorite café. However, she got completely lost because she was using an old map app. <span class="clickable-phrase" data-category="regret" data-phrase="I'm so embarrassed">"I'm so embarrassed!"</span> Emma called Sarah frantically. <span class="clickable-phrase" data-category="explanation" data-phrase="What happened was">"What happened was</span> my GPS app crashed, and I've been walking in circles for 30 minutes. <span class="clickable-phrase" data-category="explanation" data-phrase="The problem was">The problem was</span> I was too proud to ask for directions!"</p>
+
+                        <p>The afternoon brought more <span class="clickable-phrase" data-category="problem" data-phrase="disasters">disasters</span>. Emma was supposed to submit an important report by 4 PM, but her computer <span class="clickable-phrase" data-category="problem" data-phrase="crashed">crashed</span> just as she was finishing it. <span class="clickable-phrase" data-category="regret" data-phrase="I hate to say this">"I hate to say this,"</span> she emailed her boss, "but I lost three hours of work. The reason is our office computer system had a major <span class="clickable-phrase" data-category="problem" data-phrase="glitch">glitch</span>. I tried everything to recover the file, but it was no use."</p>
+
+                        <p>On her way home, Emma's train was <span class="clickable-phrase" data-category="problem" data-phrase="delayed">delayed</span> for two hours due to signal problems. She was supposed to have dinner with her parents, but arrived just as they were finishing dessert. <span class="clickable-phrase" data-category="regret" data-phrase="I feel so bad about">"I feel so bad about</span> missing dinner!" she apologized. "The circumstances were completely beyond my control. First, there was a signal <span class="clickable-phrase" data-category="problem" data-phrase="failure">failure</span>, then they had to wait for an engineer, and finally we were stuck between stations for an hour."</p>
+
+                        <p>Emma's mother just laughed. "Don't worry, dear. <span class="clickable-phrase" data-category="idiom" data-phrase="Better late than never">Better late than never</span>! We saved you some food. Besides, <span class="clickable-phrase" data-category="idiom" data-phrase="no harm done">no harm done</span> – these things happen to everyone."</p>
+
+                        <p>By the time Emma got to bed, she was exhausted. "Tomorrow has to be better," she thought. "I mean, what are the chances of having such a terrible day twice in a row?" Little did she know, her alarm was already set for the wrong time...</p>
+                    </div>
+
+                    <div class="task1-sidebar">
+                        <div class="phrase-categories">
+                            <h4>📝 Explanation Starters:</h4>
+                            <div class="phrase-list" id="explanation-phrases">
+                                <em>Click phrases in the text that start explanations...</em>
+                            </div>
+
+                            <h4>😔 Regret/Apology Expressions:</h4>
+                            <div class="phrase-list" id="regret-phrases">
+                                <em>Click phrases that show regret...</em>
+                            </div>
+
+                            <h4>⚠️ Problem/Difficulty Words:</h4>
+                            <div class="phrase-list" id="problem-phrases">
+                                <em>Click words describing problems...</em>
+                            </div>
+
+                            <h4>🎭 Idioms:</h4>
+                            <div class="phrase-list" id="idiom-phrases">
+                                <em>Click idiomatic expressions...</em>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="task-controls">
+                    <button class="check-btn" onclick="checkTask1()">Check Answers</button>
+                    <button class="reset-btn" onclick="resetTask1()">Reset</button>
+                </div>
+
+                <div class="feedback" id="task1-feedback"></div>
+            </div>
+
+            <!-- Task 2: True/False -->
+            <div class="task" id="task2">
+                <div class="task-header">
+                    <h2 class="task-title">✅ Task 2: Tricky True or False</h2>
+                    <p class="task-instructions">
+                        <strong>Instructions:</strong> Read each statement carefully and decide if it's true or false. 
+                        Some statements are tricky - pay attention to the details!
+                    </p>
+                </div>
+
+                <div class="question">
+                    <h4>1. Emma's phone alarm didn't work because she forgot to set it.</h4>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 'task2', 1)">
+                            <input type="radio" name="q1"> True
+                        </div>
+                        <div class="option" onclick="selectOption(this, 'task2', 1)">
+                            <input type="radio" name="q1"> False
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h4>2. Emma slipped because she was running too fast and didn't see the water.</h4>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 'task2', 2)">
+                            <input type="radio" name="q2"> True
+                        </div>
+                        <div class="option" onclick="selectOption(this, 'task2', 2)">
+                            <input type="radio" name="q2"> False
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h4>3. Sarah was angry when Emma got lost trying to find the café.</h4>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 'task2', 3)">
+                            <input type="radio" name="q3"> True
+                        </div>
+                        <div class="option" onclick="selectOption(this, 'task2', 3)">
+                            <input type="radio" name="q3"> False
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h4>4. Emma's computer crashed before she could finish her report.</h4>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 'task2', 4)">
+                            <input type="radio" name="q4"> True
+                        </div>
+                        <div class="option" onclick="selectOption(this, 'task2', 4)">
+                            <input type="radio" name="q4"> False
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h4>5. The train delay was Emma's fault.</h4>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 'task2', 5)">
+                            <input type="radio" name="q5"> True
+                        </div>
+                        <div class="option" onclick="selectOption(this, 'task2', 5)">
+                            <input type="radio" name="q5"> False
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h4>6. Emma's parents were upset that she missed dinner.</h4>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 'task2', 6)">
+                            <input type="radio" name="q6"> True
+                        </div>
+                        <div class="option" onclick="selectOption(this, 'task2', 6)">
+                            <input type="radio" name="q6"> False
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h4>7. Emma learned from her mistakes and won't have problems tomorrow.</h4>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 'task2', 7)">
+                            <input type="radio" name="q7"> True
+                        </div>
+                        <div class="option" onclick="selectOption(this, 'task2', 7)">
+                            <input type="radio" name="q7"> False
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h4>8. Emma gave different types of explanations to different people.</h4>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 'task2', 8)">
+                            <input type="radio" name="q8"> True
+                        </div>
+                        <div class="option" onclick="selectOption(this, 'task2', 8)">
+                            <input type="radio" name="q8"> False
+                        </div>
+                    </div>
+                </div>
+
+                <div class="task-controls">
+                    <button class="check-btn" onclick="checkTask2()">Check Answers</button>
+                    <button class="reset-btn" onclick="resetTask2()">Reset</button>
+                </div>
+
+                <div class="feedback" id="task2-feedback"></div>
+            </div>
+
+            <!-- Task 3: Pattern Analysis -->
+            <div class="task" id="task3">
+                <div class="task-header">
+                    <h2 class="task-title">🧩 Task 3: Pattern Analysis</h2>
+                    <p class="task-instructions">
+                        <strong>Instructions:</strong> Complete the patterns and match expressions with their formality levels.
+                    </p>
+                </div>
+
+                <div class="question">
+                    <h4>A. Complete the explanation patterns:</h4>
+                    <p>1. Due <input type="text" class="fill-blank" id="pattern1" placeholder="to"> ...</p>
+                    <p>2. You <input type="text" class="fill-blank" id="pattern2" placeholder="see">, ...</p>
+                    <p>3. What <input type="text" class="fill-blank" id="pattern3" placeholder="happened"> was...</p>
+                    <p>4. The <input type="text" class="fill-blank" id="pattern4" placeholder="problem"> was...</p>
+                    <p>5. The <input type="text" class="fill-blank" id="pattern5" placeholder="reason"> is...</p>
+                </div>
+
+                <div class="question">
+                    <h4>B. Match expressions with their formality level:</h4>
+                    <table class="vocab-table">
+                        <tr>
+                            <th>Expression</th>
+                            <th>Formal</th>
+                            <th>Informal</th>
+                            <th>Very Formal</th>
+                        </tr>
+                        <tr>
+                            <td>I feel terrible about...</td>
+                            <td><input type="radio" name="formal1" value="formal"></td>
+                            <td><input type="radio" name="formal1" value="informal"></td>
+                            <td><input type="radio" name="formal1" value="very-formal"></td>
+                        </tr>
+                        <tr>
+                            <td>I hate to say this...</td>
+                            <td><input type="radio" name="formal2" value="formal"></td>
+                            <td><input type="radio" name="formal2" value="informal"></td>
+                            <td><input type="radio" name="formal2" value="very-formal"></td>
+                        </tr>
+                        <tr>
+                            <td>I'm so embarrassed!</td>
+                            <td><input type="radio" name="formal3" value="formal"></td>
+                            <td><input type="radio" name="formal3" value="informal"></td>
+                            <td><input type="radio" name="formal3" value="very-formal"></td>
+                        </tr>
+                        <tr>
+                            <td>I feel so bad about...</td>
+                            <td><input type="radio" name="formal4" value="formal"></td>
+                            <td><input type="radio" name="formal4" value="informal"></td>
+                            <td><input type="radio" name="formal4" value="very-formal"></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="task-controls">
+                    <button class="check-btn" onclick="checkTask3()">Check Answers</button>
+                    <button class="reset-btn" onclick="resetTask3()">Reset</button>
+                </div>
+
+                <div class="feedback" id="task3-feedback"></div>
+            </div>
+
+            <!-- Task 4: Grammar Focus -->
+            <div class="task" id="task4">
+                <div class="task-header">
+                    <h2 class="task-title">📚 Task 4: Grammar Focus - Causal Language</h2>
+                    <p class="task-instructions">
+                        <strong>Instructions:</strong> Complete the grammar rules and rewrite sentences using different causal expressions.
+                    </p>
+                </div>
+
+                <div class="question">
+                    <h4>A. Complete the grammar rules:</h4>
+                    <p>1. Because of + <input type="text" class="fill-blank" id="grammar1" placeholder="noun/noun phrase"></p>
+                    <p>Example: Because of the rain, the sidewalk was slippery.</p>
+                    
+                    <p>2. Due to + <input type="text" class="fill-blank" id="grammar2" placeholder="noun/noun phrase"></p>
+                    <p>Example: Due to <input type="text" class="fill-blank" id="grammar2b" placeholder="signal"> problems, the train was delayed.</p>
+                    
+                    <p>3. Since + <input type="text" class="fill-blank" id="grammar3" placeholder="subject + verb"></p>
+                    <p>Example: Since my phone <input type="text" class="fill-blank" id="grammar3b" placeholder="was"> dead, the alarm didn't work.</p>
+                    
+                    <p>4. As a result of + <input type="text" class="fill-blank" id="grammar4" placeholder="noun/noun phrase"></p>
+                    <p>Example: As a result of the computer <input type="text" class="fill-blank" id="grammar4b" placeholder="crash">, I lost my work.</p>
+                </div>
+
+                <div class="question">
+                    <h4>B. Rewrite these sentences using different causal expressions:</h4>
+                    <p><strong>1.</strong> Emma was late because her alarm didn't work.</p>
+                    <p>→ Due to <input type="text" class="fill-blank" id="rewrite1" placeholder="her alarm not working" style="min-width: 200px;"></p>
+                    
+                    <p><strong>2.</strong> She got lost because her GPS crashed.</p>
+                    <p>→ As a result of <input type="text" class="fill-blank" id="rewrite2" placeholder="her GPS crashing" style="min-width: 200px;"></p>
+                    
+                    <p><strong>3.</strong> The dinner was cold because the train was delayed.</p>
+                    <p>→ Because of <input type="text" class="fill-blank" id="rewrite3" placeholder="the train delay" style="min-width: 200px;"></p>
+                </div>
+
+                <div class="task-controls">
+                    <button class="check-btn" onclick="checkTask4()">Check Answers</button>
+                    <button class="reset-btn" onclick="resetTask4()">Reset</button>
+                </div>
+
+                <div class="feedback" id="task4-feedback"></div>
+            </div>
+
+            <!-- Task 5: Vocabulary Building -->
+            <div class="task" id="task5">
+                <div class="task-header">
+                    <h2 class="task-title">🎯 Task 5: Vocabulary Building</h2>
+                    <p class="task-instructions">
+                        <strong>Instructions:</strong> Categorize words and rate the intensity of apology expressions.
+                    </p>
+                </div>
+
+                <div class="question">
+                    <h4>A. Sort these words into categories:</h4>
+                    <p><em>emergency, apologize, circumstances, explanation, embarrassing, malfunction, delay, regretful, complication, justify, unfortunate, clarify</em></p>
+                    
+                    <table class="vocab-table">
+                        <tr>
+                            <th>Problems/Difficulties</th>
+                            <th>Feelings</th>
+                            <th>Actions</th>
+                            <th>Situations</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="text" id="prob1" placeholder="malfunction" style="width: 100%; margin: 2px;">
+                                <input type="text" id="prob2" placeholder="delay" style="width: 100%; margin: 2px;">
+                                <input type="text" id="prob3" placeholder="complication" style="width: 100%; margin: 2px;">
+                            </td>
+                            <td>
+                                <input type="text" id="feel1" placeholder="embarrassing" style="width: 100%; margin: 2px;">
+                                <input type="text" id="feel2" placeholder="regretful" style="width: 100%; margin: 2px;">
+                                <input type="text" id="feel3" placeholder="unfortunate" style="width: 100%; margin: 2px;">
+                            </td>
+                            <td>
+                                <input type="text" id="act1" placeholder="apologize" style="width: 100%; margin: 2px;">
+                                <input type="text" id="act2" placeholder="justify" style="width: 100%; margin: 2px;">
+                                <input type="text" id="act3" placeholder="clarify" style="width: 100%; margin: 2px;">
+                            </td>
+                            <td>
+                                <input type="text" id="sit1" placeholder="emergency" style="width: 100%; margin: 2px;">
+                                <input type="text" id="sit2" placeholder="circumstances" style="width: 100%; margin: 2px;">
+                                <input type="text" id="sit3" placeholder="explanation" style="width: 100%; margin: 2px;">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="question">
+                    <h4>B. Rate these apology expressions from 1 (mild) to 5 (very strong):</h4>
+                    
+                    <div class="slider-container">
+                        <label>I'm sorry:</label>
+                        <input type="range" class="slider" id="sorry" min="1" max="5" value="2">
+                        <div class="slider-labels">
+                            <span>1 (Mild)</span>
+                            <span id="sorry-value">2</span>
+                            <span>5 (Very Strong)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label>I apologize:</label>
+                        <input type="range" class="slider" id="apologize" min="1" max="5" value="3">
+                        <div class="slider-labels">
+                            <span>1 (Mild)</span>
+                            <span id="apologize-value">3</span>
+                            <span>5 (Very Strong)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label>I feel bad:</label>
+                        <input type="range" class="slider" id="feel-bad" min="1" max="5" value="3">
+                        <div class="slider-labels">
+                            <span>1 (Mild)</span>
+                            <span id="feel-bad-value">3</span>
+                            <span>5 (Very Strong)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label>I feel terrible:</label>
+                        <input type="range" class="slider" id="feel-terrible" min="1" max="5" value="4">
+                        <div class="slider-labels">
+                            <span>1 (Mild)</span>
+                            <span id="feel-terrible-value">4</span>
+                            <span>5 (Very Strong)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label>I'm devastated:</label>
+                        <input type="range" class="slider" id="devastated" min="1" max="5" value="5">
+                        <div class="slider-labels">
+                            <span>1 (Mild)</span>
+                            <span id="devastated-value">5</span>
+                            <span>5 (Very Strong)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="task-controls">
+                    <button class="check-btn" onclick="checkTask5()">Check Answers</button>
+                    <button class="reset-btn" onclick="resetTask5()">Reset</button>
+                </div>
+
+                <div class="feedback" id="task5-feedback"></div>
+            </div>
+
+            <!-- Task 6: Expression Practice -->
+            <div class="task" id="task6">
+                <div class="task-header">
+                    <h2 class="task-title">💬 Task 6: Expression Practice</h2>
+                    <p class="task-instructions">
+                        <strong>Instructions:</strong> Choose the best expressions for each situation and create complete explanations.
+                    </p>
+                </div>
+
+                <div class="question">
+                    <h4>A. Complete the dialogues by choosing the best expression:</h4>
+                    
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 5px; margin: 1rem 0;">
+                        <p><strong>1. Situation:</strong> You're 30 minutes late for a study session.</p>
+                        <p><strong>You say:</strong> 
+                            <select id="dialogue1" style="padding: 0.3rem;">
+                                <option value="">Choose...</option>
+                                <option value="due-to">Due to</option>
+                                <option value="what-happened">What happened was</option>
+                                <option value="you-see">You see</option>
+                            </select>
+                            , I got on the wrong bus and ended up across town!"
+                        </p>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 5px; margin: 1rem 0;">
+                        <p><strong>2. Situation:</strong> You forgot to bring the book you promised to return.</p>
+                        <p><strong>You say:</strong> 
+                            <select id="dialogue2a" style="padding: 0.3rem;">
+                                <option value="">Choose...</option>
+                                <option value="hate-to-say">I hate to say</option>
+                                <option value="feel-terrible">I feel terrible</option>
+                                <option value="problem-was">The problem was</option>
+                            </select>
+                            , I left it at home. 
+                            <select id="dialogue2b" style="padding: 0.3rem;">
+                                <option value="">Choose...</option>
+                                <option value="you-see">You see</option>
+                                <option value="thing-is">The thing is</option>
+                                <option value="due-to">Due to</option>
+                            </select>
+                            I was rushing this morning."
+                        </p>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 5px; margin: 1rem 0;">
+                        <p><strong>3. Situation:</strong> Your presentation file won't open in class.</p>
+                        <p><strong>You say:</strong> 
+                            <select id="dialogue3" style="padding: 0.3rem;">
+                                <option value="">Choose...</option>
+                                <option value="what-happened">What happened was</option>
+                                <option value="embarrassed">I'm so embarrassed</option>
+                                <option value="due-to">Due to</option>
+                            </select>
+                            , my computer crashed last night and corrupted the file!"
+                        </p>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h4>B. Create full explanations for these scenarios:</h4>
+                    
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 5px; margin: 1rem 0;">
+                        <p><strong>Scenario:</strong> You missed your cousin's wedding ceremony.</p>
+                        <p><strong>Your explanation (include: regret + reason + details + taking responsibility):</strong></p>
+                        <textarea id="scenario1" rows="3" style="width: 100%; padding: 0.5rem;" placeholder="I feel terrible about missing your wedding ceremony..."></textarea>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 5px; margin: 1rem 0;">
+                        <p><strong>Scenario:</strong> You didn't finish reading the assigned chapter.</p>
+                        <p><strong>Your explanation (include: apologetic start + circumstances + promise for future):</strong></p>
+                        <textarea id="scenario2" rows="3" style="width: 100%; padding: 0.5rem;" placeholder="I'm so sorry that I didn't finish the chapter..."></textarea>
+                    </div>
+                </div>
+
+                <div class="task-controls">
+                    <button class="check-btn" onclick="checkTask6()">Check Answers</button>
+                    <button class="reset-btn" onclick="resetTask6()">Reset</button>
+                </div>
+
+                <div class="feedback" id="task6-feedback"></div>
+            </div>
+
+            <!-- Task 7: Idiom Exploration -->
+            <div class="task" id="task7">
+                <div class="task-header">
+                    <h2 class="task-title">🎭 Task 7: Idiom Exploration</h2>
+                    <p class="task-instructions">
+                        <strong>Instructions:</strong> Match idioms with their meanings and complete sentences with the correct idioms.
+                    </p>
+                </div>
+
+                <div class="question">
+                    <h4>A. Match the idioms with their meanings:</h4>
+                    <table class="vocab-table">
+                        <tr>
+                            <th>Idiom</th>
+                            <th>Meaning</th>
+                        </tr>
+                        <tr>
+                            <td>1. Better late than never</td>
+                            <td>
+                                <select id="idiom1">
+                                    <option value="">Choose meaning...</option>
+                                    <option value="a">Something from the past that's forgiven</option>
+                                    <option value="b">Something good eventually, even if late</option>
+                                    <option value="c">In trouble or difficulty</option>
+                                    <option value="d">Surprised by something unexpected</option>
+                                    <option value="e">It's okay, no damage done</option>
+                                    <option value="f">In a difficult or awkward situation</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2. Water under the bridge</td>
+                            <td>
+                                <select id="idiom2">
+                                    <option value="">Choose meaning...</option>
+                                    <option value="a">Something from the past that's forgiven</option>
+                                    <option value="b">Something good eventually, even if late</option>
+                                    <option value="c">In trouble or difficulty</option>
+                                    <option value="d">Surprised by something unexpected</option>
+                                    <option value="e">It's okay, no damage done</option>
+                                    <option value="f">In a difficult or awkward situation</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3. In hot water</td>
+                            <td>
+                                <select id="idiom3">
+                                    <option value="">Choose meaning...</option>
+                                    <option value="a">Something from the past that's forgiven</option>
+                                    <option value="b">Something good eventually, even if late</option>
+                                    <option value="c">In trouble or difficulty</option>
+                                    <option value="d">Surprised by something unexpected</option>
+                                    <option value="e">It's okay, no damage done</option>
+                                    <option value="f">In a difficult or awkward situation</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4. Caught off guard</td>
+                            <td>
+                                <select id="idiom4">
+                                    <option value="">Choose meaning...</option>
+                                    <option value="a">Something from the past that's forgiven</option>
+                                    <option value="b">Something good eventually, even if late</option>
+                                    <option value="c">In trouble or difficulty</option>
+                                    <option value="d">Surprised by something unexpected</option>
+                                    <option value="e">It's okay, no damage done</option>
+                                    <option value="f">In a difficult or awkward situation</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>5. No harm done</td>
+                            <td>
+                                <select id="idiom5">
+                                    <option value="">Choose meaning...</option>
+                                    <option value="a">Something from the past that's forgiven</option>
+                                    <option value="b">Something good eventually, even if late</option>
+                                    <option value="c">In trouble or difficulty</option>
+                                    <option value="d">Surprised by something unexpected</option>
+                                    <option value="e">It's okay, no damage done</option>
+                                    <option value="f">In a difficult or awkward situation</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>6. In a pickle</td>
+                            <td>
+                                <select id="idiom6">
+                                    <option value="">Choose meaning...</option>
+                                    <option value="a">Something from the past that's forgiven</option>
+                                    <option value="b">Something good eventually, even if late</option>
+                                    <option value="c">In trouble or difficulty</option>
+                                    <option value="d">Surprised by something unexpected</option>
+                                    <option value="e">It's okay, no damage done</option>
+                                    <option value="f">In a difficult or awkward situation</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="question">
+                    <h4>B. Complete these sentences with the correct idioms:</h4>
+                    
+                    <p>1. When Emma slipped in the puddle, she was really 
+                        <select id="context1">
+                            <option value="">Choose idiom...</option>
+                            <option value="caught-off-guard">caught off guard</option>
+                            <option value="in-hot-water">in hot water</option>
+                            <option value="better-late">better late than never</option>
+                        </select>
+                        because she wasn't expecting the wet pavement.
+                    </p>
+                    
+                    <p>2. After missing dinner, Emma was 
+                        <select id="context2">
+                            <option value="">Choose idiom...</option>
+                            <option value="in-hot-water">in hot water</option>
+                            <option value="no-harm-done">no harm done</option>
+                            <option value="water-bridge">water under the bridge</option>
+                        </select>
+                        with her parents, but they forgave her.
+                    </p>
+                    
+                    <p>3. Emma's mother said " 
+                        <select id="context3">
+                            <option value="">Choose idiom...</option>
+                            <option value="no-harm-done">No harm done</option>
+                            <option value="better-late">Better late than never</option>
+                            <option value="in-pickle">In a pickle</option>
+                        </select>
+                        – we're just happy you're safe!"
+                    </p>
+                    
+                    <p>4. The argument about being late is 
+                        <select id="context4">
+                            <option value="">Choose idiom...</option>
+                            <option value="water-bridge">water under the bridge</option>
+                            <option value="no-harm-done">no harm done</option>
+                            <option value="caught-off-guard">caught off guard</option>
+                        </select>
+                        now; let's move on.
+                    </p>
+                </div>
+
+                <div class="task-controls">
+                    <button class="check-btn" onclick="checkTask7()">Check Answers</button>
+                    <button class="reset-btn" onclick="resetTask7()">Reset</button>
+                </div>
+
+                <div class="feedback" id="task7-feedback"></div>
+            </div>
+
+            <!-- Task 8: Idiom Application -->
+            <div class="task" id="task8">
+                <div class="task-header">
+                    <h2 class="task-title">🎯 Task 8: Idiom Application</h2>
+                    <p class="task-instructions">
+                        <strong>Instructions:</strong> Choose the idiom that best describes each situation.
+                    </p>
+                </div>
+
+                <div class="question">
+                    <h4>A. Choose the idiom that best describes each situation:</h4>
+                    
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 5px; margin: 1rem 0;">
+                        <p><strong>1. Situation:</strong> Sarah had been preparing for her presentation all week. Five minutes before she had to present, the projector suddenly broke and no one could fix it.</p>
+                        <p><strong>Which idiom best describes Sarah's situation?</strong></p>
+                        <div class="options">
+                            <div class="option" onclick="selectOption(this, 'task8', 1)">
+                                <input type="radio" name="situation1"> a) Water under the bridge
+                            </div>
+                            <div class="option" onclick="selectOption(this, 'task8', 1)">
+                                <input type="radio" name="situation1"> b) Caught off guard
+                            </div>
+                            <div class="option" onclick="selectOption(this, 'task8', 1)">
+                                <input type="radio" name="situation1"> c) In hot water
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 5px; margin: 1rem 0;">
+                        <p><strong>2. Situation:</strong> Tom forgot his girlfriend's birthday and didn't buy a gift. When she found out, she was furious and wouldn't speak to him for days.</p>
+                        <p><strong>Which idiom best describes Tom's situation?</strong></p>
+                        <div class="options">
+                            <div class="option" onclick="selectOption(this, 'task8', 2)">
+                                <input type="radio" name="situation2"> a) In a pickle
+                            </div>
+                            <div class="option" onclick="selectOption(this, 'task8', 2)">
+                                <input type="radio" name="situation2"> b) In hot water
+                            </div>
+                            <div class="option" onclick="selectOption(this, 'task8', 2)">
+                                <input type="radio" name="situation2"> c) No harm done
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 5px; margin: 1rem 0;">
+                        <p><strong>3. Situation:</strong> Lisa promised to bring dessert to the family dinner but completely forgot. She arrived empty-handed just as everyone was sitting down to eat.</p>
+                        <p><strong>Which idiom best describes Lisa's situation?</strong></p>
+                        <div class="options">
+                            <div class="option" onclick="selectOption(this, 'task8', 3)">
+                                <input type="radio" name="situation3"> a) In a pickle
+                            </div>
+                            <div class="option" onclick="selectOption(this, 'task8', 3)">
+                                <input type="radio" name="situation3"> b) Better late than never
+                            </div>
+                            <div class="option" onclick="selectOption(this, 'task8', 3)">
+                                <input type="radio" name="situation3"> c) Caught off guard
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 5px; margin: 1rem 0;">
+                        <p><strong>4. Situation:</strong> Mike was supposed to submit his assignment last Friday but handed it in on Monday instead. His teacher accepted it and said there would be no penalty.</p>
+                        <p><strong>Which idiom best applies to this situation?</strong></p>
+                        <div class="options">
+                            <div class="option" onclick="selectOption(this, 'task8', 4)">
+                                <input type="radio" name="situation4"> a) Water under the bridge
+                            </div>
+                            <div class="option" onclick="selectOption(this, 'task8', 4)">
+                                <input type="radio" name="situation4"> b) Better late than never
+                            </div>
+                            <div class="option" onclick="selectOption(this, 'task8', 4)">
+                                <input type="radio" name="situation4"> c) In hot water
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <h4>B. Complete these explanations using the most appropriate idiom:</h4>
+                    
+                    <p><strong>1. Situation:</strong> You accidentally deleted your friend's important files from their computer.</p>
+                    <p>"I'm so sorry! I know I'm 
+                        <select id="complete1">
+                            <option value="">Choose idiom...</option>
+                            <option value="no-harm-done">no harm done</option>
+                            <option value="in-hot-water">in hot water</option>
+                            <option value="better-late">better late than never</option>
+                        </select>
+                        now, but I promise I'll help you recover everything."
+                    </p>
+                    
+                    <p><strong>2. Situation:</strong> Your boss surprised you with an unexpected deadline that you couldn't meet.</p>
+                    <p>"The deadline was moved up suddenly and I was completely 
+                        <select id="complete2">
+                            <option value="">Choose idiom...</option>
+                            <option value="water-bridge">water under the bridge</option>
+                            <option value="caught-off-guard">caught off guard</option>
+                            <option value="in-pickle">in a pickle</option>
+                        </select>
+                        ."
+                    </p>
+                    
+                    <p><strong>3. Situation:</strong> You missed your flight but managed to catch the next one and still arrived in time for your meeting.</p>
+                    <p>"I missed my original flight, but 
+                        <select id="complete3">
+                            <option value="">Choose idiom...</option>
+                            <option value="in-hot-water">in hot water</option>
+                            <option value="better-late">better late than never</option>
+                            <option value="caught-off-guard">caught off guard</option>
+                        </select>
+                        – I still made it to the meeting on time!"
+                    </p>
+                    
+                    <p><strong>4. Situation:</strong> You and your friend had an argument last month, but now you've both forgiven each other and moved on.</p>
+                    <p>"That argument we had is 
+                        <select id="complete4">
+                            <option value="">Choose idiom...</option>
+                            <option value="in-pickle">in a pickle</option>
+                            <option value="water-bridge">water under the bridge</option>
+                            <option value="no-harm-done">no harm done</option>
+                        </select>
+                        now. Let's not worry about it anymore."
+                    </p>
+                </div>
+
+                <div class="task-controls">
+                    <button class="check-btn" onclick="checkTask8()">Check Answers</button>
+                    <button class="reset-btn" onclick="resetTask8()">Reset</button>
+                </div>
+
+                <div class="feedback" id="task8-feedback"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Application state
+        let currentTaskNumber = 1;
+        const totalTasks = 8;
+        let completedTasks = new Set();
+        let taskAnswers = {};
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProgress();
+            updateTaskNumbers();
+            updateProgress();
+            updateNavigation();
+            initializeSliders();
+            showTask(currentTaskNumber);
+        });
+
+        // Task navigation
+        function showTask(taskNum) {
+            // Hide all tasks
+            document.querySelectorAll('.task').forEach(task => {
+                task.classList.remove('active');
+            });
+            
+            // Show current task
+            document.getElementById(`task${taskNum}`).classList.add('active');
+            currentTaskNumber = taskNum;
+            
+            // Update UI
+            document.getElementById('currentTask').textContent = taskNum;
+            updateTaskNumbers();
+            updateNavigation();
+            
+            // Hide feedback when switching tasks
+            hideAllFeedback();
+            
+            saveProgress();
+        }
+
+        function nextTask() {
+            if (currentTaskNumber < totalTasks) {
+                showTask(currentTaskNumber + 1);
+            }
+        }
+
+        function previousTask() {
+            if (currentTaskNumber > 1) {
+                showTask(currentTaskNumber - 1);
+            }
+        }
+
+        function updateNavigation() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.disabled = currentTaskNumber === 1;
+            nextBtn.disabled = currentTaskNumber === totalTasks;
+        }
+
+        function updateTaskNumbers() {
+            const container = document.getElementById('taskNumbers');
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= totalTasks; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'task-num';
+                btn.textContent = i;
+                btn.onclick = () => showTask(i);
+                
+                if (i === currentTaskNumber) {
+                    btn.classList.add('active');
+                }
+                if (completedTasks.has(i)) {
+                    btn.classList.add('completed');
+                }
+                
+                container.appendChild(btn);
+            }
+        }
+
+        function updateProgress() {
+            const progress = (completedTasks.size / totalTasks) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        // Progress saving and loading
+        function saveProgress() {
+            const progress = {
+                currentTask: currentTaskNumber,
+                completedTasks: Array.from(completedTasks),
+                taskAnswers: taskAnswers
+            };
+            localStorage.setItem('explanationsGuideProgress', JSON.stringify(progress));
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('explanationsGuideProgress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                currentTaskNumber = progress.currentTask || 1;
+                completedTasks = new Set(progress.completedTasks || []);
+                taskAnswers = progress.taskAnswers || {};
+            }
+        }
+
+        // Option selection
+        function selectOption(element, taskId, questionNum) {
+            // Remove selected class from siblings
+            element.parentNode.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            element.classList.add('selected');
+            
+            // Update radio button
+            const radio = element.querySelector('input[type="radio"]');
+            if (radio) {
+                radio.checked = true;
+            }
+        }
+
+        // Initialize sliders with value display
+        function initializeSliders() {
+            const sliders = document.querySelectorAll('.slider');
+            sliders.forEach(slider => {
+                const valueSpan = document.getElementById(slider.id + '-value');
+                if (valueSpan) {
+                    slider.addEventListener('input', function() {
+                        valueSpan.textContent = this.value;
+                    });
+                }
+            });
+        }
+
+        // Feedback functions
+        function showFeedback(taskId, isSuccess, message) {
+            const feedback = document.getElementById(`${taskId}-feedback`);
+            feedback.className = `feedback ${isSuccess ? 'success' : 'error'} show`;
+            feedback.innerHTML = message;
+        }
+
+        function hideAllFeedback() {
+            document.querySelectorAll('.feedback').forEach(feedback => {
+                feedback.classList.remove('show');
+            });
+        }
+
+        // Task 1: Language Discovery
+        let task1Answers = {
+            explanation: [],
+            regret: [],
+            problem: [],
+            idiom: []
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click handlers to clickable phrases
+            document.querySelectorAll('.clickable-phrase').forEach(phrase => {
+                phrase.addEventListener('click', function() {
+                    if (!this.classList.contains('found')) {
+                        const category = this.dataset.category;
+                        const phraseText = this.dataset.phrase;
+                        
+                        // Mark as found
+                        this.classList.add('found');
+                        
+                        // Add to answers
+                        if (!task1Answers[category].includes(phraseText)) {
+                            task1Answers[category].push(phraseText);
+                        }
+                        
+                        // Update display
+                        updateTask1Display(category, phraseText);
+                    }
+                });
+            });
+        });
+
+        function updateTask1Display(category, phrase) {
+            const container = document.getElementById(`${category}-phrases`);
+            const span = document.createElement('span');
+            span.className = 'found-phrase';
+            span.textContent = phrase;
+            
+            // Remove placeholder text if this is the first phrase
+            if (container.querySelector('em')) {
+                container.innerHTML = '';
+            }
+            
+            container.appendChild(span);
+        }
+
+        function checkTask1() {
+            const expectedAnswers = {
+                explanation: ["The thing is", "What happened was", "You see", "Due to", "The problem was"],
+                regret: ["I feel terrible about", "I'm so embarrassed", "I hate to say this", "I feel so bad about"],
+                problem: ["disasters", "crashed", "glitch", "delayed", "failure"],
+                idiom: ["like an ice rink", "Better late than never", "no harm done"]
+            };
+
+            let correctCount = 0;
+            let totalExpected = 0;
+            
+            Object.keys(expectedAnswers).forEach(category => {
+                totalExpected += expectedAnswers[category].length;
+                expectedAnswers[category].forEach(phrase => {
+                    if (task1Answers[category].includes(phrase)) {
+                        correctCount++;
+                    }
+                });
+            });
+
+            const percentage = Math.round((correctCount / totalExpected) * 100);
+            
+            if (percentage >= 80) {
+                completedTasks.add(1);
+                showFeedback('task1', true, 
+                    `🎉 Excellent work! You found ${correctCount} out of ${totalExpected} phrases (${percentage}%). 
+                    You've successfully identified the key language patterns for making explanations!`);
+            } else {
+                showFeedback('task1', false, 
+                    `You found ${correctCount} out of ${totalExpected} phrases (${percentage}%). 
+                    <div class="explanation">Try clicking on more highlighted phrases in the text. Look for:
+                    <br>• Words that start explanations (like "The thing is", "What happened was")
+                    <br>• Expressions showing regret (like "I feel terrible", "I'm so embarrassed")
+                    <br>• Words describing problems (like "crashed", "delayed", "glitch")
+                    <br>• Idiomatic expressions (like "Better late than never")</div>`);
+            }
+            
+            updateProgress();
+            updateTaskNumbers();
+            saveProgress();
+        }
+
+        function resetTask1() {
+            task1Answers = { explanation: [], regret: [], problem: [], idiom: [] };
+            
+            // Reset phrases in text
+            document.querySelectorAll('.clickable-phrase').forEach(phrase => {
+                phrase.classList.remove('found');
+            });
+            
+            // Reset display containers
+            document.querySelectorAll('.phrase-list').forEach(container => {
+                const category = container.id.split('-')[0];
+                container.innerHTML = `<em>Click phrases that ${
+                    category === 'explanation' ? 'start explanations' :
+                    category === 'regret' ? 'show regret' :
+                    category === 'problem' ? 'describe problems' :
+                    'are idiomatic expressions'
+                }...</em>`;
+            });
+            
+            hideAllFeedback();
+        }
+
+        // Task 2: True/False
+        function checkTask2() {
+            const correctAnswers = [false, true, false, false, false, false, false, true];
+            const explanations = [
+                "False - Emma's alarm didn't work because her phone died overnight (battery), not because she forgot to set it.",
+                "True - The text says she was running fast and didn't notice the water on the ground.",
+                "False - The text doesn't mention Sarah being angry, only that Emma called her frantically.",
+                "False - The computer crashed 'just as she was finishing it', meaning she had nearly completed it.",
+                "False - The train delay was due to signal problems, which were beyond Emma's control.",
+                "False - Emma's parents were understanding and even saved her food.",
+                "False - The story ends with her alarm being set for the wrong time, suggesting more problems ahead.",
+                "True - Emma used different levels of formality: formal with her manager, casual with colleagues, apologetic with family."
+            ];
+
+            let correctCount = 0;
+            let feedbackText = '<h4>Results:</h4>';
+            
+            for (let i = 1; i <= 8; i++) {
+                const selectedOption = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selectedOption) {
+                    const userAnswer = selectedOption.parentNode.textContent.trim() === 'True';
+                    const isCorrect = userAnswer === correctAnswers[i-1];
+                    if (isCorrect) correctCount++;
+                    
+                    feedbackText += `<p><strong>Question ${i}:</strong> ${isCorrect ? '✅' : '❌'} ${explanations[i-1]}</p>`;
+                } else {
+                    feedbackText += `<p><strong>Question ${i}:</strong> ❌ No answer selected. ${explanations[i-1]}</p>`;
+                }
+            }
+
+            const percentage = Math.round((correctCount / 8) * 100);
+            
+            if (percentage >= 70) {
+                completedTasks.add(2);
+                showFeedback('task2', true, 
+                    `🎉 Great job! You got ${correctCount}/8 correct (${percentage}%). ${feedbackText}`);
+            } else {
+                showFeedback('task2', false, 
+                    `You got ${correctCount}/8 correct (${percentage}%). ${feedbackText}
+                    <div class="explanation">Read the questions more carefully and pay attention to specific details in Emma's story.</div>`);
+            }
+            
+            updateProgress();
+            updateTaskNumbers();
+            saveProgress();
+        }
+
+        function resetTask2() {
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.checked = false;
+            });
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+            });
+            hideAllFeedback();
+        }
+
+        // Task 3: Pattern Analysis
+        function checkTask3() {
+            const patternAnswers = {
+                pattern1: 'to',
+                pattern2: 'see',
+                pattern3: 'happened',
+                pattern4: 'problem',
+                pattern5: 'reason'
+            };
+
+            const formalityAnswers = {
+                formal1: 'formal',
+                formal2: 'formal', 
+                formal3: 'informal',
+                formal4: 'informal'
+            };
+
+            let correctCount = 0;
+            let totalQuestions = 9;
+            let feedbackText = '<h4>Results:</h4>';
+
+            // Check pattern completion
+            Object.keys(patternAnswers).forEach(id => {
+                const userAnswer = document.getElementById(id).value.toLowerCase().trim();
+                const correctAnswer = patternAnswers[id];
+                const isCorrect = userAnswer === correctAnswer;
+                if (isCorrect) correctCount++;
+                
+                feedbackText += `<p><strong>${id.replace('pattern', 'Pattern ')}:</strong> ${isCorrect ? '✅' : '❌'} 
+                    ${isCorrect ? 'Correct!' : `Should be "${correctAnswer}"`}</p>`;
+            });
+
+            // Check formality levels
+            Object.keys(formalityAnswers).forEach(name => {
+                const selectedOption = document.querySelector(`input[name="${name}"]:checked`);
+                if (selectedOption) {
+                    const isCorrect = selectedOption.value === formalityAnswers[name];
+                    if (isCorrect) correctCount++;
+                    
+                    const expressions = {
+                        formal1: "I feel terrible about...",
+                        formal2: "I hate to say this...",
+                        formal3: "I'm so embarrassed!",
+                        formal4: "I feel so bad about..."
+                    };
+                    
+                    feedbackText += `<p><strong>${expressions[name]}:</strong> ${isCorrect ? '✅' : '❌'} 
+                        ${isCorrect ? 'Correct!' : `Should be "${formalityAnswers[name]}"`}</p>`;
+                } else {
+                    feedbackText += `<p><strong>Formality question:</strong> ❌ No answer selected</p>`;
+                }
+            });
+
+            const percentage = Math.round((correctCount / totalQuestions) * 100);
+            
+            if (percentage >= 70) {
+                completedTasks.add(3);
+                showFeedback('task3', true, 
+                    `🎉 Excellent! You got ${correctCount}/${totalQuestions} correct (${percentage}%). ${feedbackText}`);
+            } else {
+                showFeedback('task3', false, 
+                    `You got ${correctCount}/${totalQuestions} correct (${percentage}%). ${feedbackText}
+                    <div class="explanation">Review the explanation patterns from Emma's story and think about which expressions sound more formal or casual.</div>`);
+            }
+            
+            updateProgress();
+            updateTaskNumbers();
+            saveProgress();
+        }
+
+        function resetTask3() {
+            // Reset pattern inputs
+            ['pattern1', 'pattern2', 'pattern3', 'pattern4', 'pattern5'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            
+            // Reset formality radio buttons
+            ['formal1', 'formal2', 'formal3', 'formal4'].forEach(name => {
+                document.querySelectorAll(`input[name="${name}"]`).forEach(radio => {
+                    radio.checked = false;
+                });
+            });
+            
+            hideAllFeedback();
+        }
+
+        // Task 4: Grammar Focus
+        function checkTask4() {
+            const grammarAnswers = {
+                grammar1: 'noun/noun phrase',
+                grammar2: 'noun/noun phrase',
+                grammar2b: 'signal',
+                grammar3: 'subject + verb',
+                grammar3b: 'was',
+                grammar4: 'noun/noun phrase',
+                grammar4b: 'crash',
+                rewrite1: 'her alarm not working',
+                rewrite2: 'her GPS crashing',
+                rewrite3: 'the train delay'
+            };
+
+            let correctCount = 0;
+            let totalQuestions = Object.keys(grammarAnswers).length;
+            let feedbackText = '<h4>Results:</h4>';
+
+            Object.keys(grammarAnswers).forEach(id => {
+                const userAnswer = document.getElementById(id).value.toLowerCase().trim();
+                const correctAnswer = grammarAnswers[id].toLowerCase();
+                
+                // Allow some flexibility in answers
+                let isCorrect = false;
+                if (id.includes('grammar1') || id.includes('grammar2') || id.includes('grammar4')) {
+                    isCorrect = userAnswer.includes('noun');
+                } else if (id.includes('grammar3') && !id.includes('3b')) {
+                    isCorrect = userAnswer.includes('subject') && userAnswer.includes('verb');
+                } else {
+                    isCorrect = userAnswer === correctAnswer || 
+                              userAnswer.includes(correctAnswer) ||
+                              correctAnswer.includes(userAnswer);
+                }
+                
+                if (isCorrect) correctCount++;
+                
+                const questionLabel = id.replace('grammar', 'Grammar ').replace('rewrite', 'Rewrite ');
+                feedbackText += `<p><strong>${questionLabel}:</strong> ${isCorrect ? '✅' : '❌'} 
+                    ${isCorrect ? 'Correct!' : `Expected: "${grammarAnswers[id]}"`}</p>`;
+            });
+
+            const percentage = Math.round((correctCount / totalQuestions) * 100);
+            
+            if (percentage >= 70) {
+                completedTasks.add(4);
+                showFeedback('task4', true, 
+                    `🎉 Well done! You got ${correctCount}/${totalQuestions} correct (${percentage}%). ${feedbackText}`);
+            } else {
+                showFeedback('task4', false, 
+                    `You got ${correctCount}/${totalQuestions} correct (${percentage}%). ${feedbackText}
+                    <div class="explanation">Remember: "Because of" and "Due to" are followed by nouns, while "Since" is followed by a complete clause (subject + verb).</div>`);
+            }
+            
+            updateProgress();
+            updateTaskNumbers();
+            saveProgress();
+        }
+
+        function resetTask4() {
+            ['grammar1', 'grammar2', 'grammar2b', 'grammar3', 'grammar3b', 'grammar4', 'grammar4b', 
+             'rewrite1', 'rewrite2', 'rewrite3'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            hideAllFeedback();
+        }
+
+        // Task 5: Vocabulary Building
+        function checkTask5() {
+            const vocabAnswers = {
+                problems: ['malfunction', 'delay', 'complication'],
+                feelings: ['embarrassing', 'regretful', 'unfortunate'],
+                actions: ['apologize', 'justify', 'clarify'],
+                situations: ['emergency', 'circumstances', 'explanation']
+            };
+
+            const intensityAnswers = {
+                sorry: 2,
+                apologize: 3,
+                'feel-bad': 3,
+                'feel-terrible': 4,
+                devastated: 5
+            };
+
+            let correctCount = 0;
+            let totalQuestions = 17; // 12 vocab + 5 intensity
+            let feedbackText = '<h4>Results:</h4>';
+
+            // Check vocabulary categorization
+            ['prob', 'feel', 'act', 'sit'].forEach((prefix, categoryIndex) => {
+                const categoryNames = ['problems', 'feelings', 'actions', 'situations'];
+                const categoryName = categoryNames[categoryIndex];
+                
+                for (let i = 1; i <= 3; i++) {
+                    const userAnswer = document.getElementById(`${prefix}${i}`).value.toLowerCase().trim();
+                    const correctAnswers = vocabAnswers[categoryName];
+                    
+                    if (correctAnswers.some(answer => answer.toLowerCase() === userAnswer)) {
+                        correctCount++;
+                        feedbackText += `<p><strong>${categoryName.charAt(0).toUpperCase() + categoryName.slice(1)} ${i}:</strong> ✅ Correct!</p>`;
+                    } else {
+                        feedbackText += `<p><strong>${categoryName.charAt(0).toUpperCase() + categoryName.slice(1)} ${i}:</strong> ❌ 
+                            Expected one of: ${correctAnswers.join(', ')}</p>`;
+                    }
+                }
+            });
+
+            // Check intensity ratings (allow ±1 tolerance)
+            Object.keys(intensityAnswers).forEach(id => {
+                const userRating = parseInt(document.getElementById(id).value);
+                const correctRating = intensityAnswers[id];
+                const isCorrect = Math.abs(userRating - correctRating) <= 1;
+                
+                if (isCorrect) correctCount++;
+                
+                const labels = {
+                    sorry: "I'm sorry",
+                    apologize: "I apologize",
+                    'feel-bad': "I feel bad",
+                    'feel-terrible': "I feel terrible",
+                    devastated: "I'm devastated"
+                };
+                
+                feedbackText += `<p><strong>${labels[id]} intensity:</strong> ${isCorrect ? '✅' : '❌'} 
+                    ${isCorrect ? 'Good assessment!' : `Expected around ${correctRating}, you chose ${userRating}`}</p>`;
+            });
+
+            const percentage = Math.round((correctCount / totalQuestions) * 100);
+            
+            if (percentage >= 60) {
+                completedTasks.add(5);
+                showFeedback('task5', true, 
+                    `🎉 Great work! You got ${correctCount}/${totalQuestions} correct (${percentage}%). ${feedbackText}`);
+            } else {
+                showFeedback('task5', false, 
+                    `You got ${correctCount}/${totalQuestions} correct (${percentage}%). ${feedbackText}
+                    <div class="explanation">Think about what type of word each one is: Does it describe a problem, a feeling, an action, or a situation?</div>`);
+            }
+            
+            updateProgress();
+            updateTaskNumbers();
+            saveProgress();
+        }
+
+        function resetTask5() {
+            // Reset vocabulary inputs
+            ['prob1', 'prob2', 'prob3', 'feel1', 'feel2', 'feel3', 
+             'act1', 'act2', 'act3', 'sit1', 'sit2', 'sit3'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            
+            // Reset sliders to default values
+            const defaults = { sorry: 2, apologize: 3, 'feel-bad': 3, 'feel-terrible': 4, devastated: 5 };
+            Object.keys(defaults).forEach(id => {
+                const slider = document.getElementById(id);
+                const valueSpan = document.getElementById(id + '-value');
+                slider.value = defaults[id];
+                if (valueSpan) valueSpan.textContent = defaults[id];
+            });
+            
+            hideAllFeedback();
+        }
+
+        // Task 6: Expression Practice
+        function checkTask6() {
+            const dialogueAnswers = {
+                dialogue1: 'what-happened',
+                dialogue2a: 'feel-terrible',
+                dialogue2b: 'you-see',
+                dialogue3: 'embarrassed'
+            };
+
+            let correctCount = 0;
+            let totalQuestions = 6; // 4 dialogues + 2 scenarios (subjective)
+            let feedbackText = '<h4>Results:</h4>';
+
+            // Check dialogue completions
+            Object.keys(dialogueAnswers).forEach(id => {
+                const userAnswer = document.getElementById(id).value;
+                const correctAnswer = dialogueAnswers[id];
+                const isCorrect = userAnswer === correctAnswer;
+                
+                if (isCorrect) correctCount++;
+                
+                const explanations = {
+                    dialogue1: '"What happened was" is best because it introduces a specific explanation.',
+                    dialogue2a: '"I feel terrible" shows appropriate regret for forgetting.',
+                    dialogue2b: '"You see" is good for giving additional explanation.',
+                    dialogue3: '"I\'m so embarrassed" shows strong personal regret for the technical problem.'
+                };
+                
+                feedbackText += `<p><strong>Dialogue ${id.slice(-1)}:</strong> ${isCorrect ? '✅' : '❌'} 
+                    ${explanations[id]}</p>`;
+            });
+
+            // Check scenarios (give credit if not empty and reasonably appropriate)
+            const scenario1 = document.getElementById('scenario1').value.trim();
+            const scenario2 = document.getElementById('scenario2').value.trim();
+            
+            if (scenario1.length > 20 && (scenario1.toLowerCase().includes('sorry') || 
+                scenario1.toLowerCase().includes('terrible') || scenario1.toLowerCase().includes('feel'))) {
+                correctCount++;
+                feedbackText += `<p><strong>Wedding scenario:</strong> ✅ Good explanation with appropriate regret!</p>`;
+            } else {
+                feedbackText += `<p><strong>Wedding scenario:</strong> ❌ Include more regret, reason, details, and responsibility.</p>`;
+            }
+            
+            if (scenario2.length > 20 && (scenario2.toLowerCase().includes('sorry') || 
+                scenario2.toLowerCase().includes('will') || scenario2.toLowerCase().includes('promise'))) {
+                correctCount++;
+                feedbackText += `<p><strong>Chapter scenario:</strong> ✅ Good explanation with future promise!</p>`;
+            } else {
+                feedbackText += `<p><strong>Chapter scenario:</strong> ❌ Include apologetic start, circumstances, and future promise.</p>`;
+            }
+
+            const percentage = Math.round((correctCount / totalQuestions) * 100);
+            
+            if (percentage >= 70) {
+                completedTasks.add(6);
+                showFeedback('task6', true, 
+                    `🎉 Excellent work! You got ${correctCount}/${totalQuestions} correct (${percentage}%). ${feedbackText}`);
+            } else {
+                showFeedback('task6', false, 
+                    `You got ${correctCount}/${totalQuestions} correct (${percentage}%). ${feedbackText}
+                    <div class="explanation">For scenarios, make sure to include all required elements: regret, reasons, details, and taking responsibility.</div>`);
+            }
+            
+            updateProgress();
+            updateTaskNumbers();
+            saveProgress();
+        }
+
+        function resetTask6() {
+            ['dialogue1', 'dialogue2a', 'dialogue2b', 'dialogue3'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            ['scenario1', 'scenario2'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            hideAllFeedback();
+        }
+
+        // Task 7: Idiom Exploration
+        function checkTask7() {
+            const idiomAnswers = {
+                idiom1: 'b', // Better late than never
+                idiom2: 'a', // Water under the bridge
+                idiom3: 'c', // In hot water
+                idiom4: 'd', // Caught off guard
+                idiom5: 'e', // No harm done
+                idiom6: 'f'  // In a pickle
+            };
+
+            const contextAnswers = {
+                context1: 'caught-off-guard',
+                context2: 'in-hot-water',
+                context3: 'no-harm-done',
+                context4: 'water-bridge'
+            };
+
+            let correctCount = 0;
+            let totalQuestions = 10;
+            let feedbackText = '<h4>Results:</h4>';
+
+            // Check idiom meanings
+            Object.keys(idiomAnswers).forEach(id => {
+                const userAnswer = document.getElementById(id).value;
+                const correctAnswer = idiomAnswers[id];
+                const isCorrect = userAnswer === correctAnswer;
+                
+                if (isCorrect) correctCount++;
+                
+                const idiomNames = {
+                    idiom1: 'Better late than never',
+                    idiom2: 'Water under the bridge',
+                    idiom3: 'In hot water',
+                    idiom4: 'Caught off guard',
+                    idiom5: 'No harm done',
+                    idiom6: 'In a pickle'
+                };
+                
+                feedbackText += `<p><strong>${idiomNames[id]}:</strong> ${isCorrect ? '✅' : '❌'} 
+                    ${isCorrect ? 'Correct!' : 'Review the meaning of this idiom.'}</p>`;
+            });
+
+            // Check context usage
+            Object.keys(contextAnswers).forEach(id => {
+                const userAnswer = document.getElementById(id).value;
+                const correctAnswer = contextAnswers[id];
+                const isCorrect = userAnswer === correctAnswer;
+                
+                if (isCorrect) correctCount++;
+                
+                const contexts = {
+                    context1: 'Emma slipping unexpectedly',
+                    context2: 'Emma in trouble with parents',
+                    context3: 'Mother\'s reassuring response',
+                    context4: 'Past argument being forgiven'
+                };
+                
+                feedbackText += `<p><strong>${contexts[id]}:</strong> ${isCorrect ? '✅' : '❌'} 
+                    ${isCorrect ? 'Perfect context!' : 'Consider which idiom best fits this situation.'}</p>`;
+            });
+
+            const percentage = Math.round((correctCount / totalQuestions) * 100);
+            
+            if (percentage >= 80) {
+                completedTasks.add(7);
+                showFeedback('task7', true, 
+                    `🎉 Outstanding! You got ${correctCount}/${totalQuestions} correct (${percentage}%). ${feedbackText}`);
+            } else {
+                showFeedback('task7', false, 
+                    `You got ${correctCount}/${totalQuestions} correct (${percentage}%). ${feedbackText}
+                    <div class="explanation">Think about the specific situation each idiom describes. "Caught off guard" = surprised, "In hot water" = in trouble, etc.</div>`);
+            }
+            
+            updateProgress();
+            updateTaskNumbers();
+            saveProgress();
+        }
+
+        function resetTask7() {
+            ['idiom1', 'idiom2', 'idiom3', 'idiom4', 'idiom5', 'idiom6',
+             'context1', 'context2', 'context3', 'context4'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            hideAllFeedback();
+        }
+
+        // Task 8: Idiom Application
+        function checkTask8() {
+            const situationAnswers = [
+                'b', // Caught off guard (Sarah surprised by projector breaking)
+                'b', // In hot water (Tom in serious trouble)
+                'a', // In a pickle (Lisa in awkward situation)
+                'b'  // Better late than never (Mike's late but accepted assignment)
+            ];
+
+            const completionAnswers = {
+                complete1: 'in-hot-water',
+                complete2: 'caught-off-guard',
+                complete3: 'better-late',
+                complete4: 'water-bridge'
+            };
+
+            let correctCount = 0;
+            let totalQuestions = 8;
+            let feedbackText = '<h4>Results:</h4>';
+
+            // Check situation analysis
+            for (let i = 1; i <= 4; i++) {
+                const selectedOption = document.querySelector(`input[name="situation${i}"]:checked`);
+                if (selectedOption) {
+                    const userAnswer = selectedOption.parentNode.textContent.trim().charAt(0).toLowerCase();
+                    const correctAnswer = situationAnswers[i-1];
+                    const isCorrect = userAnswer === correctAnswer;
+                    
+                    if (isCorrect) correctCount++;
+                    
+                    const explanations = [
+                        'Sarah was "caught off guard" - surprised by the unexpected projector failure.',
+                        'Tom is "in hot water" - in serious trouble with his girlfriend.',
+                        'Lisa is "in a pickle" - in a difficult, awkward situation.',
+                        '"Better late than never" - good outcome despite the delay.'
+                    ];
+                    
+                    feedbackText += `<p><strong>Situation ${i}:</strong> ${isCorrect ? '✅' : '❌'} 
+                        ${explanations[i-1]}</p>`;
+                } else {
+                    feedbackText += `<p><strong>Situation ${i}:</strong> ❌ No answer selected.</p>`;
+                }
+            }
+
+            // Check completion exercises
+            Object.keys(completionAnswers).forEach(id => {
+                const userAnswer = document.getElementById(id).value;
+                const correctAnswer = completionAnswers[id];
+                const isCorrect = userAnswer === correctAnswer;
+                
+                if (isCorrect) correctCount++;
+                
+                const explanations = {
+                    complete1: '"In hot water" - in serious trouble for deleting files.',
+                    complete2: '"Caught off guard" - surprised by unexpected deadline.',
+                    complete3: '"Better late than never" - good result despite missing first flight.',
+                    complete4: '"Water under the bridge" - past issue that\'s been forgiven.'
+                };
+                
+                feedbackText += `<p><strong>Completion ${id.slice(-1)}:</strong> ${isCorrect ? '✅' : '❌'} 
+                    ${explanations[id]}</p>`;
+            });
+
+            const percentage = Math.round((correctCount / totalQuestions) * 100);
+            
+            if (percentage >= 75) {
+                completedTasks.add(8);
+                showFeedback('task8', true, 
+                    `🎉 Fantastic! You got ${correctCount}/${totalQuestions} correct (${percentage}%). You've mastered idiom usage! ${feedbackText}
+                    <div class="explanation"><strong>🎓 Congratulations! You've completed all tasks and are now ready for advanced explanation activities!</strong></div>`);
+            } else {
+                showFeedback('task8', false, 
+                    `You got ${correctCount}/${totalQuestions} correct (${percentage}%). ${feedbackText}
+                    <div class="explanation">Focus on the specific type of situation each idiom describes: trouble, surprise, awkwardness, or positive outcomes.</div>`);
+            }
+            
+            updateProgress();
+            updateTaskNumbers();
+            saveProgress();
+        }
+
+        function resetTask8() {
+            // Reset radio buttons
+            for (let i = 1; i <= 4; i++) {
+                document.querySelectorAll(`input[name="situation${i}"]`).forEach(radio => {
+                    radio.checked = false;
+                });
+            }
+            
+            // Reset dropdowns
+            ['complete1', 'complete2', 'complete3', 'complete4'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            
+            // Reset option styling
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+            });
+            
+            hideAllFeedback();
+        }
+    </script>
+</body>
+</html>
