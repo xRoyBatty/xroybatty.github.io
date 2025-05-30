@@ -234,6 +234,80 @@
             opacity: 0.5;
             cursor: not-allowed;
         }
+        
+        /* New CSS classes to replace inline styles */
+        .category-btn {
+            color: white;
+            margin: 0.2rem;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .category-btn[data-category="explanation"] {
+            background: #3498db;
+        }
+        
+        .category-btn[data-category="regret"] {
+            background: #e74c3c;
+        }
+        
+        .category-btn[data-category="problem"] {
+            background: #f39c12;
+        }
+        
+        .category-btn[data-category="idiom"] {
+            background: #9b59b6;
+        }
+        
+        .category-buttons {
+            margin-bottom: 1rem;
+        }
+        
+        .selected-phrase {
+            background: #fff3cd;
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            font-weight: bold;
+            min-height: 20px;
+            border: 2px dashed #ffc107;
+        }
+        
+        .dialogue-container {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+        
+        .vocab-input {
+            width: 100%;
+            margin: 2px;
+            padding: 0.3rem;
+            border: 1px solid #dee2e6;
+            border-radius: 3px;
+        }
+        
+        .dialogue-select {
+            padding: 0.3rem;
+            border: 1px solid #dee2e6;
+            border-radius: 3px;
+        }
+        
+        .scenario-textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #dee2e6;
+            border-radius: 3px;
+            resize: vertical;
+        }
+        
+        .rewrite-input {
+            min-width: 200px;
+        }
 
         .task1-sidebar {
             background: white;
@@ -497,14 +571,14 @@
 
                     <div class="task1-sidebar">
                         <div class="phrase-categories">
-                            <div class="category-buttons" style="margin-bottom: 1rem;">
-                                <button class="category-btn" data-category="explanation" style="background: #3498db; color: white; margin: 0.2rem; padding: 0.5rem; border: none; border-radius: 4px; cursor: pointer;">📝 Explanation Starters</button>
-                                <button class="category-btn" data-category="regret" style="background: #e74c3c; color: white; margin: 0.2rem; padding: 0.5rem; border: none; border-radius: 4px; cursor: pointer;">😔 Regret/Apology</button>
-                                <button class="category-btn" data-category="problem" style="background: #f39c12; color: white; margin: 0.2rem; padding: 0.5rem; border: none; border-radius: 4px; cursor: pointer;">⚠️ Problems</button>
-                                <button class="category-btn" data-category="idiom" style="background: #9b59b6; color: white; margin: 0.2rem; padding: 0.5rem; border: none; border-radius: 4px; cursor: pointer;">🎭 Idioms</button>
+                            <div class="category-buttons">
+                                <button class="category-btn" data-category="explanation" role="button" tabindex="0" aria-label="Categorize as explanation starter">📝 Explanation Starters</button>
+                                <button class="category-btn" data-category="regret" role="button" tabindex="0" aria-label="Categorize as regret expression">😔 Regret/Apology</button>
+                                <button class="category-btn" data-category="problem" role="button" tabindex="0" aria-label="Categorize as problem word">⚠️ Problems</button>
+                                <button class="category-btn" data-category="idiom" role="button" tabindex="0" aria-label="Categorize as idiom">🎭 Idioms</button>
                             </div>
                             
-                            <div id="selected-phrase" style="background: #fff3cd; padding: 0.5rem; border-radius: 4px; margin-bottom: 1rem; font-weight: bold; min-height: 20px; border: 2px dashed #ffc107;">
+                            <div id="selected-phrase" class="selected-phrase" aria-live="polite">
                                 <em>Select a phrase from the text above...</em>
                             </div>
 
@@ -664,7 +738,7 @@
 
                 <div class="question">
                     <h4>A. Complete the explanation patterns:</h4>
-                    <p><strong>Word bank:</strong> <em>happened, reason, to, see, issue</em></p>
+                    <p><strong>Word bank:</strong> <em>happened, reason, to, see, problem</em></p>
                     <p>1. Due <input type="text" class="fill-blank" id="pattern1"> ...</p>
                     <p>2. You <input type="text" class="fill-blank" id="pattern2">, ...</p>
                     <p>3. What <input type="text" class="fill-blank" id="pattern3"> was...</p>
@@ -1121,13 +1195,13 @@
                         <p><strong>Which idiom best describes Sarah's situation?</strong></p>
                         <div class="options">
                             <div class="option" onclick="selectOption(this, 'task8', 1)">
-                                <input type="radio" name="situation1"> a) Water under the bridge
+                                <input type="radio" name="situation1" value="a"> a) Water under the bridge
                             </div>
                             <div class="option" onclick="selectOption(this, 'task8', 1)">
-                                <input type="radio" name="situation1"> b) Caught off guard
+                                <input type="radio" name="situation1" value="b"> b) Caught off guard
                             </div>
                             <div class="option" onclick="selectOption(this, 'task8', 1)">
-                                <input type="radio" name="situation1"> c) In hot water
+                                <input type="radio" name="situation1" value="c"> c) In hot water
                             </div>
                         </div>
                     </div>
@@ -1137,13 +1211,13 @@
                         <p><strong>Which idiom best describes Tom's situation?</strong></p>
                         <div class="options">
                             <div class="option" onclick="selectOption(this, 'task8', 2)">
-                                <input type="radio" name="situation2"> a) In a pickle
+                                <input type="radio" name="situation2" value="a"> a) In a pickle
                             </div>
                             <div class="option" onclick="selectOption(this, 'task8', 2)">
-                                <input type="radio" name="situation2"> b) In hot water
+                                <input type="radio" name="situation2" value="b"> b) In hot water
                             </div>
                             <div class="option" onclick="selectOption(this, 'task8', 2)">
-                                <input type="radio" name="situation2"> c) No harm done
+                                <input type="radio" name="situation2" value="c"> c) No harm done
                             </div>
                         </div>
                     </div>
@@ -1153,13 +1227,13 @@
                         <p><strong>Which idiom best describes Lisa's situation?</strong></p>
                         <div class="options">
                             <div class="option" onclick="selectOption(this, 'task8', 3)">
-                                <input type="radio" name="situation3"> a) In a pickle
+                                <input type="radio" name="situation3" value="a"> a) In a pickle
                             </div>
                             <div class="option" onclick="selectOption(this, 'task8', 3)">
-                                <input type="radio" name="situation3"> b) Better late than never
+                                <input type="radio" name="situation3" value="b"> b) Better late than never
                             </div>
                             <div class="option" onclick="selectOption(this, 'task8', 3)">
-                                <input type="radio" name="situation3"> c) Caught off guard
+                                <input type="radio" name="situation3" value="c"> c) Caught off guard
                             </div>
                         </div>
                     </div>
@@ -1169,13 +1243,13 @@
                         <p><strong>Which idiom best applies to this situation?</strong></p>
                         <div class="options">
                             <div class="option" onclick="selectOption(this, 'task8', 4)">
-                                <input type="radio" name="situation4"> a) Water under the bridge
+                                <input type="radio" name="situation4" value="a"> a) Water under the bridge
                             </div>
                             <div class="option" onclick="selectOption(this, 'task8', 4)">
-                                <input type="radio" name="situation4"> b) Better late than never
+                                <input type="radio" name="situation4" value="b"> b) Better late than never
                             </div>
                             <div class="option" onclick="selectOption(this, 'task8', 4)">
-                                <input type="radio" name="situation4"> c) In hot water
+                                <input type="radio" name="situation4" value="c"> c) In hot water
                             </div>
                         </div>
                     </div>
@@ -1726,16 +1800,15 @@
                     return;
                 }
                 
-                // Allow some flexibility in answers
+                // Exact matching for grammar rules - NO partial matches
                 let isCorrect = false;
-                if (id.includes('grammar1') && !id.includes('1b') || id.includes('grammar2') && !id.includes('2b') || id.includes('grammar4') && !id.includes('4b')) {
-                    isCorrect = userAnswer.includes('noun');
-                } else if (id.includes('grammar3') && !id.includes('3b')) {
-                    isCorrect = userAnswer.includes('subject') && userAnswer.includes('verb');
+                if (id === 'grammar1' || id === 'grammar2' || id === 'grammar4') {
+                    isCorrect = userAnswer === 'noun phrase';
+                } else if (id === 'grammar3') {
+                    isCorrect = userAnswer === 'subject + verb' || userAnswer === 'subject and verb';
                 } else {
-                    isCorrect = userAnswer === correctAnswer || 
-                              userAnswer.includes(correctAnswer) ||
-                              (correctAnswer.includes(userAnswer) && userAnswer.length > 2);
+                    // For examples and rewrites, exact match
+                    isCorrect = userAnswer === correctAnswer;
                 }
                 
                 if (isCorrect) correctCount++;
@@ -1756,7 +1829,7 @@
                 
                 const questionLabel = id.replace('grammar', 'Grammar ').replace('rewrite', 'Rewrite ');
                 feedbackText += `<p><strong>${questionLabel}:</strong> ${isCorrect ? '✅' : '❌'} 
-                    ${explanations[id] || `Expected: "${grammarAnswers[id]}"`}</p>`;
+                    ${explanations[id]}</p>`;
             });
 
             const percentage = Math.round((correctCount / totalQuestions) * 100);
@@ -2077,7 +2150,7 @@
             for (let i = 1; i <= 4; i++) {
                 const selectedOption = document.querySelector(`input[name="situation${i}"]:checked`);
                 if (selectedOption) {
-                    const userAnswer = selectedOption.parentNode.textContent.trim().charAt(0).toLowerCase();
+                    const userAnswer = selectedOption.value; // Use proper value attribute
                     const correctAnswer = situationAnswers[i-1];
                     const isCorrect = userAnswer === correctAnswer;
                     
