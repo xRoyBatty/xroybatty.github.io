@@ -214,10 +214,25 @@
             background: #ffd93d;
         }
 
+        .clickable-phrase.selected {
+            background: #007bff;
+            border-color: #0056b3;
+            color: white;
+        }
+
         .clickable-phrase.found {
             background: #d4edda;
             border-color: #27ae60;
             color: #155724;
+        }
+
+        .category-btn:hover {
+            opacity: 0.8;
+        }
+
+        .category-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .task1-sidebar {
@@ -457,8 +472,8 @@
                 <div class="task-header">
                     <h2 class="task-title">🔍 Task 1: Language Discovery</h2>
                     <p class="task-instructions">
-                        <strong>Instructions:</strong> Read Emma's story and click on phrases that match each category. 
-                        Click on the highlighted phrases in the text to collect them in the categories below.
+                        <strong>Instructions:</strong> Read Emma's story, click on highlighted phrases, then click the correct category button to sort them. 
+                        First click a phrase, then click one of the category buttons below to place it correctly.
                     </p>
                 </div>
 
@@ -482,24 +497,35 @@
 
                     <div class="task1-sidebar">
                         <div class="phrase-categories">
+                            <div class="category-buttons" style="margin-bottom: 1rem;">
+                                <button class="category-btn" data-category="explanation" style="background: #3498db; color: white; margin: 0.2rem; padding: 0.5rem; border: none; border-radius: 4px; cursor: pointer;">📝 Explanation Starters</button>
+                                <button class="category-btn" data-category="regret" style="background: #e74c3c; color: white; margin: 0.2rem; padding: 0.5rem; border: none; border-radius: 4px; cursor: pointer;">😔 Regret/Apology</button>
+                                <button class="category-btn" data-category="problem" style="background: #f39c12; color: white; margin: 0.2rem; padding: 0.5rem; border: none; border-radius: 4px; cursor: pointer;">⚠️ Problems</button>
+                                <button class="category-btn" data-category="idiom" style="background: #9b59b6; color: white; margin: 0.2rem; padding: 0.5rem; border: none; border-radius: 4px; cursor: pointer;">🎭 Idioms</button>
+                            </div>
+                            
+                            <div id="selected-phrase" style="background: #fff3cd; padding: 0.5rem; border-radius: 4px; margin-bottom: 1rem; font-weight: bold; min-height: 20px; border: 2px dashed #ffc107;">
+                                <em>Select a phrase from the text above...</em>
+                            </div>
+
                             <h4>📝 Explanation Starters:</h4>
                             <div class="phrase-list" id="explanation-phrases">
-                                <em>Click phrases in the text that start explanations...</em>
+                                <em>Click phrases, then category buttons...</em>
                             </div>
 
                             <h4>😔 Regret/Apology Expressions:</h4>
                             <div class="phrase-list" id="regret-phrases">
-                                <em>Click phrases that show regret...</em>
+                                <em>Click phrases, then category buttons...</em>
                             </div>
 
                             <h4>⚠️ Problem/Difficulty Words:</h4>
                             <div class="phrase-list" id="problem-phrases">
-                                <em>Click words describing problems...</em>
+                                <em>Click phrases, then category buttons...</em>
                             </div>
 
                             <h4>🎭 Idioms:</h4>
                             <div class="phrase-list" id="idiom-phrases">
-                                <em>Click idiomatic expressions...</em>
+                                <em>Click phrases, then category buttons...</em>
                             </div>
                         </div>
                     </div>
@@ -638,45 +664,42 @@
 
                 <div class="question">
                     <h4>A. Complete the explanation patterns:</h4>
-                    <p>1. Due <input type="text" class="fill-blank" id="pattern1" placeholder="to"> ...</p>
-                    <p>2. You <input type="text" class="fill-blank" id="pattern2" placeholder="see">, ...</p>
-                    <p>3. What <input type="text" class="fill-blank" id="pattern3" placeholder="happened"> was...</p>
-                    <p>4. The <input type="text" class="fill-blank" id="pattern4" placeholder="problem"> was...</p>
-                    <p>5. The <input type="text" class="fill-blank" id="pattern5" placeholder="reason"> is...</p>
+                    <p><strong>Word bank:</strong> <em>happened, reason, to, see, issue</em></p>
+                    <p>1. Due <input type="text" class="fill-blank" id="pattern1"> ...</p>
+                    <p>2. You <input type="text" class="fill-blank" id="pattern2">, ...</p>
+                    <p>3. What <input type="text" class="fill-blank" id="pattern3"> was...</p>
+                    <p>4. The <input type="text" class="fill-blank" id="pattern4"> was...</p>
+                    <p>5. The <input type="text" class="fill-blank" id="pattern5"> for that was...</p>
                 </div>
 
                 <div class="question">
                     <h4>B. Match expressions with their formality level:</h4>
+                    <p><em>Think about tone: Would you use these with friends or in professional situations?</em></p>
                     <table class="vocab-table">
                         <tr>
                             <th>Expression</th>
-                            <th>Formal</th>
-                            <th>Informal</th>
-                            <th>Very Formal</th>
+                            <th>Professional/Polite</th>
+                            <th>Casual/Personal</th>
                         </tr>
                         <tr>
                             <td>I feel terrible about...</td>
                             <td><input type="radio" name="formal1" value="formal"></td>
                             <td><input type="radio" name="formal1" value="informal"></td>
-                            <td><input type="radio" name="formal1" value="very-formal"></td>
                         </tr>
                         <tr>
                             <td>I hate to say this...</td>
                             <td><input type="radio" name="formal2" value="formal"></td>
                             <td><input type="radio" name="formal2" value="informal"></td>
-                            <td><input type="radio" name="formal2" value="very-formal"></td>
                         </tr>
                         <tr>
                             <td>I'm so embarrassed!</td>
                             <td><input type="radio" name="formal3" value="formal"></td>
                             <td><input type="radio" name="formal3" value="informal"></td>
-                            <td><input type="radio" name="formal3" value="very-formal"></td>
                         </tr>
                         <tr>
                             <td>I feel so bad about...</td>
                             <td><input type="radio" name="formal4" value="formal"></td>
                             <td><input type="radio" name="formal4" value="informal"></td>
-                            <td><input type="radio" name="formal4" value="very-formal"></td>
                         </tr>
                     </table>
                 </div>
@@ -700,29 +723,30 @@
 
                 <div class="question">
                     <h4>A. Complete the grammar rules:</h4>
-                    <p>1. Because of + <input type="text" class="fill-blank" id="grammar1" placeholder="noun/noun phrase"></p>
-                    <p>Example: Because of the rain, the sidewalk was slippery.</p>
+                    <p><strong>Word bank:</strong> <em>subject + verb, was, track problems, noun phrase, subject + verb, crash, the rain, noun phrase</em></p>
+                    <p>1. Because of + <input type="text" class="fill-blank" id="grammar1"></p>
+                    <p>Example: Because of <input type="text" class="fill-blank" id="grammar1b">, the sidewalk was slippery.</p>
                     
-                    <p>2. Due to + <input type="text" class="fill-blank" id="grammar2" placeholder="noun/noun phrase"></p>
-                    <p>Example: Due to <input type="text" class="fill-blank" id="grammar2b" placeholder="signal"> problems, the train was delayed.</p>
+                    <p>2. Due to + <input type="text" class="fill-blank" id="grammar2"></p>
+                    <p>Example: Due to <input type="text" class="fill-blank" id="grammar2b">, the train was delayed.</p>
                     
-                    <p>3. Since + <input type="text" class="fill-blank" id="grammar3" placeholder="subject + verb"></p>
-                    <p>Example: Since my phone <input type="text" class="fill-blank" id="grammar3b" placeholder="was"> dead, the alarm didn't work.</p>
+                    <p>3. Since + <input type="text" class="fill-blank" id="grammar3"></p>
+                    <p>Example: Since my phone <input type="text" class="fill-blank" id="grammar3b"> dead, the alarm didn't work.</p>
                     
-                    <p>4. As a result of + <input type="text" class="fill-blank" id="grammar4" placeholder="noun/noun phrase"></p>
-                    <p>Example: As a result of the computer <input type="text" class="fill-blank" id="grammar4b" placeholder="crash">, I lost my work.</p>
+                    <p>4. As a result of + <input type="text" class="fill-blank" id="grammar4"></p>
+                    <p>Example: As a result of the computer <input type="text" class="fill-blank" id="grammar4b">, I lost my work.</p>
                 </div>
 
                 <div class="question">
                     <h4>B. Rewrite these sentences using different causal expressions:</h4>
                     <p><strong>1.</strong> Emma was late because her alarm didn't work.</p>
-                    <p>→ Due to <input type="text" class="fill-blank" id="rewrite1" placeholder="her alarm not working" style="min-width: 200px;"></p>
+                    <p>→ Due to <input type="text" class="fill-blank" id="rewrite1" style="min-width: 200px;"> (use not + gerund -ing)</p>
                     
                     <p><strong>2.</strong> She got lost because her GPS crashed.</p>
-                    <p>→ As a result of <input type="text" class="fill-blank" id="rewrite2" placeholder="her GPS crashing" style="min-width: 200px;"></p>
+                    <p>→ As a result of <input type="text" class="fill-blank" id="rewrite2" style="min-width: 200px;"> (use gerund -ing)</p>
                     
                     <p><strong>3.</strong> The dinner was cold because the train was delayed.</p>
-                    <p>→ Because of <input type="text" class="fill-blank" id="rewrite3" placeholder="the train delay" style="min-width: 200px;"></p>
+                    <p>→ Because of <input type="text" class="fill-blank" id="rewrite3" style="min-width: 200px;"> (use a noun phrase)</p>
                 </div>
 
                 <div class="task-controls">
@@ -744,7 +768,7 @@
 
                 <div class="question">
                     <h4>A. Sort these words into categories:</h4>
-                    <p><em>emergency, apologize, circumstances, explanation, embarrassing, malfunction, delay, regretful, complication, justify, unfortunate, clarify</em></p>
+                    <p><strong>Words to sort:</strong> <em>emergency, apologize, circumstances, explanation, embarrassing, malfunction, delay, regretful, complication, justify, unfortunate, clarify</em></p>
                     
                     <table class="vocab-table">
                         <tr>
@@ -755,24 +779,24 @@
                         </tr>
                         <tr>
                             <td>
-                                <input type="text" id="prob1" placeholder="malfunction" style="width: 100%; margin: 2px;">
-                                <input type="text" id="prob2" placeholder="delay" style="width: 100%; margin: 2px;">
-                                <input type="text" id="prob3" placeholder="complication" style="width: 100%; margin: 2px;">
+                                <input type="text" id="prob1" style="width: 100%; margin: 2px;">
+                                <input type="text" id="prob2" style="width: 100%; margin: 2px;">
+                                <input type="text" id="prob3" style="width: 100%; margin: 2px;">
                             </td>
                             <td>
-                                <input type="text" id="feel1" placeholder="embarrassing" style="width: 100%; margin: 2px;">
-                                <input type="text" id="feel2" placeholder="regretful" style="width: 100%; margin: 2px;">
-                                <input type="text" id="feel3" placeholder="unfortunate" style="width: 100%; margin: 2px;">
+                                <input type="text" id="feel1" style="width: 100%; margin: 2px;">
+                                <input type="text" id="feel2" style="width: 100%; margin: 2px;">
+                                <input type="text" id="feel3" style="width: 100%; margin: 2px;">
                             </td>
                             <td>
-                                <input type="text" id="act1" placeholder="apologize" style="width: 100%; margin: 2px;">
-                                <input type="text" id="act2" placeholder="justify" style="width: 100%; margin: 2px;">
-                                <input type="text" id="act3" placeholder="clarify" style="width: 100%; margin: 2px;">
+                                <input type="text" id="act1" style="width: 100%; margin: 2px;">
+                                <input type="text" id="act2" style="width: 100%; margin: 2px;">
+                                <input type="text" id="act3" style="width: 100%; margin: 2px;">
                             </td>
                             <td>
-                                <input type="text" id="sit1" placeholder="emergency" style="width: 100%; margin: 2px;">
-                                <input type="text" id="sit2" placeholder="circumstances" style="width: 100%; margin: 2px;">
-                                <input type="text" id="sit3" placeholder="explanation" style="width: 100%; margin: 2px;">
+                                <input type="text" id="sit1" style="width: 100%; margin: 2px;">
+                                <input type="text" id="sit2" style="width: 100%; margin: 2px;">
+                                <input type="text" id="sit3" style="width: 100%; margin: 2px;">
                             </td>
                         </tr>
                     </table>
@@ -783,10 +807,10 @@
                     
                     <div class="slider-container">
                         <label>I'm sorry:</label>
-                        <input type="range" class="slider" id="sorry" min="1" max="5" value="2">
+                        <input type="range" class="slider" id="sorry" min="1" max="5" value="3">
                         <div class="slider-labels">
                             <span>1 (Mild)</span>
-                            <span id="sorry-value">2</span>
+                            <span id="sorry-value">3</span>
                             <span>5 (Very Strong)</span>
                         </div>
                     </div>
@@ -813,20 +837,20 @@
                     
                     <div class="slider-container">
                         <label>I feel terrible:</label>
-                        <input type="range" class="slider" id="feel-terrible" min="1" max="5" value="4">
+                        <input type="range" class="slider" id="feel-terrible" min="1" max="5" value="3">
                         <div class="slider-labels">
                             <span>1 (Mild)</span>
-                            <span id="feel-terrible-value">4</span>
+                            <span id="feel-terrible-value">3</span>
                             <span>5 (Very Strong)</span>
                         </div>
                     </div>
                     
                     <div class="slider-container">
                         <label>I'm devastated:</label>
-                        <input type="range" class="slider" id="devastated" min="1" max="5" value="5">
+                        <input type="range" class="slider" id="devastated" min="1" max="5" value="3">
                         <div class="slider-labels">
                             <span>1 (Mild)</span>
-                            <span id="devastated-value">5</span>
+                            <span id="devastated-value">3</span>
                             <span>5 (Very Strong)</span>
                         </div>
                     </div>
@@ -905,13 +929,15 @@
                     <div style="background: #f8f9fa; padding: 1rem; border-radius: 5px; margin: 1rem 0;">
                         <p><strong>Scenario:</strong> You missed your cousin's wedding ceremony.</p>
                         <p><strong>Your explanation (include: regret + reason + details + taking responsibility):</strong></p>
-                        <textarea id="scenario1" rows="3" style="width: 100%; padding: 0.5rem;" placeholder="I feel terrible about missing your wedding ceremony..."></textarea>
+                        <textarea id="scenario1" rows="3" style="width: 100%; padding: 0.5rem;"></textarea>
+                        <p><small><strong>HINT:</strong> Use "terrible about" + explain what happened + take responsibility</small></p>
                     </div>
                     
                     <div style="background: #f8f9fa; padding: 1rem; border-radius: 5px; margin: 1rem 0;">
                         <p><strong>Scenario:</strong> You didn't finish reading the assigned chapter.</p>
                         <p><strong>Your explanation (include: apologetic start + circumstances + promise for future):</strong></p>
-                        <textarea id="scenario2" rows="3" style="width: 100%; padding: 0.5rem;" placeholder="I'm so sorry that I didn't finish the chapter..."></textarea>
+                        <textarea id="scenario2" rows="3" style="width: 100%; padding: 0.5rem;"></textarea>
+                        <p><small><strong>HINT:</strong> Use "sorry that" + explain circumstances + promise future action</small></p>
                     </div>
                 </div>
 
@@ -1368,27 +1394,66 @@
             problem: [],
             idiom: []
         };
+        let selectedPhrase = null;
 
         document.addEventListener('DOMContentLoaded', function() {
             // Add click handlers to clickable phrases
             document.querySelectorAll('.clickable-phrase').forEach(phrase => {
                 phrase.addEventListener('click', function() {
                     if (!this.classList.contains('found')) {
-                        const category = this.dataset.category;
-                        const phraseText = this.dataset.phrase;
+                        // Clear previous selection
+                        document.querySelectorAll('.clickable-phrase').forEach(p => p.classList.remove('selected'));
                         
-                        // Mark as found
-                        this.classList.add('found');
+                        // Select this phrase
+                        this.classList.add('selected');
+                        selectedPhrase = {
+                            element: this,
+                            text: this.dataset.phrase,
+                            correctCategory: this.dataset.category
+                        };
                         
-                        // Add to answers
-                        if (!task1Answers[category].includes(phraseText)) {
-                            task1Answers[category].push(phraseText);
+                        // Update selected phrase display
+                        document.getElementById('selected-phrase').innerHTML = `Selected: "${this.dataset.phrase}"`;
+                        
+                        // Enable category buttons
+                        document.querySelectorAll('.category-btn').forEach(btn => {
+                            btn.disabled = false;
+                        });
+                    }
+                });
+            });
+            
+            // Add click handlers to category buttons
+            document.querySelectorAll('.category-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (selectedPhrase) {
+                        const selectedCategory = this.dataset.category;
+                        
+                        // Mark phrase as found
+                        selectedPhrase.element.classList.add('found');
+                        selectedPhrase.element.classList.remove('selected');
+                        
+                        // Add to answers (even if wrong category for checking later)
+                        if (!task1Answers[selectedCategory].includes(selectedPhrase.text)) {
+                            task1Answers[selectedCategory].push(selectedPhrase.text);
                         }
                         
                         // Update display
-                        updateTask1Display(category, phraseText);
+                        updateTask1Display(selectedCategory, selectedPhrase.text);
+                        
+                        // Clear selection
+                        selectedPhrase = null;
+                        document.getElementById('selected-phrase').innerHTML = '<em>Select a phrase from the text above...</em>';
+                        
+                        // Disable category buttons
+                        document.querySelectorAll('.category-btn').forEach(btn => {
+                            btn.disabled = true;
+                        });
                     }
                 });
+                
+                // Initially disable category buttons
+                button.disabled = true;
             });
         });
 
@@ -1450,21 +1515,24 @@
 
         function resetTask1() {
             task1Answers = { explanation: [], regret: [], problem: [], idiom: [] };
+            selectedPhrase = null;
             
             // Reset phrases in text
             document.querySelectorAll('.clickable-phrase').forEach(phrase => {
-                phrase.classList.remove('found');
+                phrase.classList.remove('found', 'selected');
+            });
+            
+            // Reset selected phrase display
+            document.getElementById('selected-phrase').innerHTML = '<em>Select a phrase from the text above...</em>';
+            
+            // Disable category buttons
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.disabled = true;
             });
             
             // Reset display containers
             document.querySelectorAll('.phrase-list').forEach(container => {
-                const category = container.id.split('-')[0];
-                container.innerHTML = `<em>Click phrases that ${
-                    category === 'explanation' ? 'start explanations' :
-                    category === 'regret' ? 'show regret' :
-                    category === 'problem' ? 'describe problems' :
-                    'are idiomatic expressions'
-                }...</em>`;
+                container.innerHTML = '<em>Click phrases, then category buttons...</em>';
             });
             
             hideAllFeedback();
@@ -1555,8 +1623,16 @@
                 const isCorrect = userAnswer === correctAnswer;
                 if (isCorrect) correctCount++;
                 
+                const explanations = {
+                    pattern1: '"Due TO" - preposition needs "to"',
+                    pattern2: '"You SEE" - introduces explanation', 
+                    pattern3: '"What HAPPENED was" - past event explanation',
+                    pattern4: '"The PROBLEM was" - identifies specific issue',
+                    pattern5: '"The REASON for that was" - explains the cause'
+                };
+                
                 feedbackText += `<p><strong>${id.replace('pattern', 'Pattern ')}:</strong> ${isCorrect ? '✅' : '❌'} 
-                    ${isCorrect ? 'Correct!' : `Should be "${correctAnswer}"`}</p>`;
+                    ${explanations[id]}</p>`;
             });
 
             // Check formality levels
@@ -1573,8 +1649,14 @@
                         formal4: "I feel so bad about..."
                     };
                     
+                    const explanationText = {
+                        formal1: "Professional - sounds polite and appropriate for work",
+                        formal2: "Professional - diplomatic way to share bad news",
+                        formal3: "Personal - shows strong emotional reaction", 
+                        formal4: "Personal - casual way to express regret"
+                    };
                     feedbackText += `<p><strong>${expressions[name]}:</strong> ${isCorrect ? '✅' : '❌'} 
-                        ${isCorrect ? 'Correct!' : `Should be "${formalityAnswers[name]}"`}</p>`;
+                        ${explanationText[name]}</p>`;
                 } else {
                     feedbackText += `<p><strong>Formality question:</strong> ❌ No answer selected</p>`;
                 }
@@ -1598,7 +1680,7 @@
         }
 
         function resetTask3() {
-            // Reset pattern inputs
+            // Reset pattern inputs  
             ['pattern1', 'pattern2', 'pattern3', 'pattern4', 'pattern5'].forEach(id => {
                 document.getElementById(id).value = '';
             });
@@ -1616,12 +1698,13 @@
         // Task 4: Grammar Focus
         function checkTask4() {
             const grammarAnswers = {
-                grammar1: 'noun/noun phrase',
-                grammar2: 'noun/noun phrase',
-                grammar2b: 'signal',
+                grammar1: 'noun phrase',
+                grammar1b: 'the rain',
+                grammar2: 'noun phrase',
+                grammar2b: 'track problems',
                 grammar3: 'subject + verb',
                 grammar3b: 'was',
-                grammar4: 'noun/noun phrase',
+                grammar4: 'noun phrase',
                 grammar4b: 'crash',
                 rewrite1: 'her alarm not working',
                 rewrite2: 'her GPS crashing',
@@ -1636,23 +1719,44 @@
                 const userAnswer = document.getElementById(id).value.toLowerCase().trim();
                 const correctAnswer = grammarAnswers[id].toLowerCase();
                 
+                // Check if answer is empty first
+                if (userAnswer === '') {
+                    const questionLabel = id.replace('grammar', 'Grammar ').replace('rewrite', 'Rewrite ');
+                    feedbackText += `<p><strong>${questionLabel}:</strong> ❌ No answer provided</p>`;
+                    return;
+                }
+                
                 // Allow some flexibility in answers
                 let isCorrect = false;
-                if (id.includes('grammar1') || id.includes('grammar2') || id.includes('grammar4')) {
+                if (id.includes('grammar1') && !id.includes('1b') || id.includes('grammar2') && !id.includes('2b') || id.includes('grammar4') && !id.includes('4b')) {
                     isCorrect = userAnswer.includes('noun');
                 } else if (id.includes('grammar3') && !id.includes('3b')) {
                     isCorrect = userAnswer.includes('subject') && userAnswer.includes('verb');
                 } else {
                     isCorrect = userAnswer === correctAnswer || 
                               userAnswer.includes(correctAnswer) ||
-                              correctAnswer.includes(userAnswer);
+                              (correctAnswer.includes(userAnswer) && userAnswer.length > 2);
                 }
                 
                 if (isCorrect) correctCount++;
                 
+                const explanations = {
+                    grammar1: 'Rule: Because of + noun phrase',
+                    grammar1b: 'Example needs "the rain"',
+                    grammar2: 'Rule: Due to + noun phrase', 
+                    grammar2b: 'Example needs "track problems"',
+                    grammar3: 'Rule: Since + subject + verb',
+                    grammar3b: 'Example needs "was"',
+                    grammar4: 'Rule: As a result of + noun phrase',
+                    grammar4b: 'Example needs "crash"',
+                    rewrite1: 'Use "not + gerund": her alarm not working',
+                    rewrite2: 'Use gerund: her GPS crashing', 
+                    rewrite3: 'Use noun phrase: the train delay'
+                };
+                
                 const questionLabel = id.replace('grammar', 'Grammar ').replace('rewrite', 'Rewrite ');
                 feedbackText += `<p><strong>${questionLabel}:</strong> ${isCorrect ? '✅' : '❌'} 
-                    ${isCorrect ? 'Correct!' : `Expected: "${grammarAnswers[id]}"`}</p>`;
+                    ${explanations[id] || `Expected: "${grammarAnswers[id]}"`}</p>`;
             });
 
             const percentage = Math.round((correctCount / totalQuestions) * 100);
@@ -1673,7 +1777,7 @@
         }
 
         function resetTask4() {
-            ['grammar1', 'grammar2', 'grammar2b', 'grammar3', 'grammar3b', 'grammar4', 'grammar4b', 
+            ['grammar1', 'grammar1b', 'grammar2', 'grammar2b', 'grammar3', 'grammar3b', 'grammar4', 'grammar4b', 
              'rewrite1', 'rewrite2', 'rewrite3'].forEach(id => {
                 document.getElementById(id).value = '';
             });
@@ -1736,8 +1840,15 @@
                     devastated: "I'm devastated"
                 };
                 
+                const intensityExplanations = {
+                    sorry: "Basic politeness - mild regret",
+                    apologize: "More formal - shows proper responsibility", 
+                    'feel-bad': "Personal regret - shows you care",
+                    'feel-terrible': "Strong regret - deep concern",
+                    devastated: "Extreme reaction - overwhelming regret"
+                };
                 feedbackText += `<p><strong>${labels[id]} intensity:</strong> ${isCorrect ? '✅' : '❌'} 
-                    ${isCorrect ? 'Good assessment!' : `Expected around ${correctRating}, you chose ${userRating}`}</p>`;
+                    ${intensityExplanations[id]}</p>`;
             });
 
             const percentage = Math.round((correctCount / totalQuestions) * 100);
@@ -1764,13 +1875,13 @@
                 document.getElementById(id).value = '';
             });
             
-            // Reset sliders to default values
-            const defaults = { sorry: 2, apologize: 3, 'feel-bad': 3, 'feel-terrible': 4, devastated: 5 };
-            Object.keys(defaults).forEach(id => {
+            // Reset sliders to center (neutral) position
+            const neutralDefaults = { sorry: 3, apologize: 3, 'feel-bad': 3, 'feel-terrible': 3, devastated: 3 };
+            Object.keys(neutralDefaults).forEach(id => {
                 const slider = document.getElementById(id);
                 const valueSpan = document.getElementById(id + '-value');
-                slider.value = defaults[id];
-                if (valueSpan) valueSpan.textContent = defaults[id];
+                slider.value = neutralDefaults[id];
+                if (valueSpan) valueSpan.textContent = neutralDefaults[id];
             });
             
             hideAllFeedback();
