@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materiały Wspomagające: "Me, my work and I"</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .task-section {
+            background: #f8f9fa;
+            margin: 30px 0;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #4ecdc4;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .task-title {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .task-number {
+            background: #4ecdc4;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .instruction {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+            font-style: italic;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border-top: 3px solid #ff6b6b;
+        }
+
+        .card h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .card li {
+            background: #f1f2f6;
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border-left: 3px solid #4ecdc4;
+        }
+
+        .audio-section {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .audio-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .vocab-matching {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .vocab-column h4 {
+            background: #4ecdc4;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .vocab-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .vocab-item:hover {
+            background: #e9ecef;
+        }
+
+        .vocab-item.selected {
+            border-color: #4ecdc4;
+            background: #e8f4fd;
+        }
+
+        .vocab-item.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .vocab-item.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .vocab-item.matched {
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .vocab-item.matched:hover {
+            opacity: 0.8;
+        }
+
+        .check-button {
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 20px 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .check-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .reset-button {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 20px 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .reset-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .score {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+
+        .discussion-question {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #fd79a8;
+        }
+
+        .question-text {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .help-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .starters, .vocabulary {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .starters h5, .vocabulary h5 {
+            color: #4ecdc4;
+            margin-bottom: 10px;
+        }
+
+        .starters ul, .vocabulary ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .starters li, .vocabulary li {
+            background: white;
+            padding: 8px 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border-left: 3px solid #4ecdc4;
+        }
+
+        .polish-explanation {
+            font-size: 0.9em;
+            color: #666;
+            font-style: italic;
+            margin-top: 3px;
+        }
+
+        .example-text {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #74b9ff;
+        }
+
+        .help-note {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Materiały Wspomagające</h1>
+            <p>"Me, my work and I" - Dla Uczniów Na Niższym Poziomie</p>
+        </div>
+
+        <div class="content">
+            <div class="help-note">
+                <strong>Jak te materiały pomogą Ci z zadaniami z PDF:</strong><br>
+                • Zadanie 1: Przykłady pokażą Ci, co możesz powiedzieć o każdym temacie<br>
+                • Zadanie 2: Audio pomoże Ci usłyszeć, jak brzmią przyimki w naturalnym kontekście<br>
+                • Zadanie 3: Przykłady nauczą Cię, jak tworzyć pytania z różnymi czasami<br>
+                • Zadanie 5: Interaktywne ćwiczenie przygotuje Cię do słuchania wideo<br>
+                • Zadanie 6: Gotowe zwroty pomogą Ci pewnie wyrażać swoje opinie
+            </div>
+
+            <div class="task-section">
+                <div class="task-title">
+                    <div class="task-number">1</div>
+                    Karty do rozmowy - Przykłady odpowiedzi
+                </div>
+                <div class="instruction">
+                    Poniżej znajdziesz po 3 przykłady dla każdej karty. Użyj ich jako wzór, aby wiedzieć, co możesz powiedzieć na każdy temat.
+                </div>
+
+                <div class="card-grid">
+                    <div class="card">
+                        <h4>FAMILY</h4>
+                        <ul>
+                            <li>I have a small family - my parents and one sister.</li>
+                            <li>My family lives in the same city as me.</li>
+                            <li>We usually meet for dinner on Sundays.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>NEXT YEAR</h4>
+                        <ul>
+                            <li>Next year I want to find a better job.</li>
+                            <li>I'm planning to study English more seriously next year.</li>
+                            <li>I hope to travel somewhere new next year.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>BEST FRIEND</h4>
+                        <ul>
+                            <li>My best friend and I studied together at university.</li>
+                            <li>I've known my best friend for ten years.</li>
+                            <li>My best friend lives in another city now.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>JUST ENGLISH?</h4>
+                        <ul>
+                            <li>I speak Polish, English, and a little German.</li>
+                            <li>English is my second language after Polish.</li>
+                            <li>I started learning English when I was twelve.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>BAD HABIT</h4>
+                        <ul>
+                            <li>I often check my phone too much.</li>
+                            <li>I sometimes eat too much chocolate.</li>
+                            <li>I have a bad habit of being late for meetings.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>WORK EXPERIENCE</h4>
+                        <ul>
+                            <li>I worked in a shop during university.</li>
+                            <li>My first job was in customer service.</li>
+                            <li>I have five years of experience in marketing.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>EDUCATION</h4>
+                        <ul>
+                            <li>I studied economics at Warsaw University.</li>
+                            <li>I finished school in 2015.</li>
+                            <li>I'm thinking about doing an MBA course.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>WATCHING OR DOING SPORTS</h4>
+                        <ul>
+                            <li>I prefer watching football to playing it.</li>
+                            <li>I go swimming twice a week.</li>
+                            <li>I'm not very good at sports, but I like tennis.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>FOOD</h4>
+                        <ul>
+                            <li>I love Italian food, especially pasta.</li>
+                            <li>I can cook basic meals but nothing special.</li>
+                            <li>I try to eat healthy food during the week.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>MY WORST HOLIDAY</h4>
+                        <ul>
+                            <li>Last year it rained every day during my holiday.</li>
+                            <li>I once got food poisoning on holiday in Spain.</li>
+                            <li>My worst holiday was when I lost my passport.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>DREAM JOB</h4>
+                        <ul>
+                            <li>My dream job would be working for a travel company.</li>
+                            <li>I'd love to be a photographer for National Geographic.</li>
+                            <li>My dream is to have my own small business.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>NEXT WEEKEND I'M NOT GOING TO...</h4>
+                        <ul>
+                            <li>Next weekend I'm not going to work at all.</li>
+                            <li>I'm not going to stay at home - I want to go out.</li>
+                            <li>I'm not going to check my emails on Saturday.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>I HAVE NEVER...</h4>
+                        <ul>
+                            <li>I have never been to Asia.</li>
+                            <li>I have never tried sushi.</li>
+                            <li>I have never worked in a big corporation.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>??? (SURPRISE TOPIC)</h4>
+                        <ul>
+                            <li>That's an interesting question!</li>
+                            <li>I need a moment to think about that.</li>
+                            <li>Can you ask me something else first?</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>LAST MEETING</h4>
+                        <ul>
+                            <li>My last meeting was about our new project.</li>
+                            <li>I had a meeting with my boss yesterday.</li>
+                            <li>Last week I met with some new clients.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>CATS OR DOGS, OR FISH</h4>
+                        <ul>
+                            <li>I'm definitely a dog person - cats are too independent.</li>
+                            <li>I have a cat because I live in a small apartment.</li>
+                            <li>I prefer fish because they're easy to look after.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>HOMETOWN</h4>
+                        <ul>
+                            <li>I come from a small town near Kraków.</li>
+                            <li>My hometown is famous for its old castle.</li>
+                            <li>I moved away from my hometown when I was eighteen.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>FREE TIME</h4>
+                        <ul>
+                            <li>In my free time I like reading books.</li>
+                            <li>I usually watch Netflix in the evenings.</li>
+                            <li>I enjoy going for walks in the park.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>FILMS/BOOKS</h4>
+                        <ul>
+                            <li>I prefer action films to romantic comedies.</li>
+                            <li>I'm reading a really good book at the moment.</li>
+                            <li>I like books more than films because I can use my imagination.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>IF I WERE...</h4>
+                        <ul>
+                            <li>If I were rich, I would travel around the world.</li>
+                            <li>If I were the boss, I would give everyone more holidays.</li>
+                            <li>If I were younger, I would study abroad.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>PERSON I WON'T FORGET</h4>
+                        <ul>
+                            <li>I'll never forget my first English teacher.</li>
+                            <li>My grandmother was a very special person.</li>
+                            <li>There's a colleague who really helped me when I started work.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="task-section">
+                <div class="task-title">
+                    <div class="task-number">2</div>
+                    Tekst o karierze - Audio
+                </div>
+                <div class="audio-section">
+                    <div class="audio-icon">🎧</div>
+                    <h3>Posłuchaj pliku audio z załącznika e-mail</h3>
+                    <p>Audio zawiera naturalny tekst o karierze Sarah, który używa wszystkich przyimków z zadania 2.</p>
+                </div>
+            </div>
+
+            <div class="task-section">
+                <div class="task-title">
+                    <div class="task-number">3</div>
+                    Przykłady tworzenia pytań
+                </div>
+                <div class="instruction">
+                    Te przykłady pokażą Ci, jak tworzyć pytania używając różnych czasów i przyimków. Zwróć uwagę na strukturę każdego pytania.
+                </div>
+
+                <div class="example-text">
+                    <h4>Present Simple Questions (pytania w czasie teraźniejszym):</h4>
+                    <ul>
+                        <li><strong>Do you live</strong> with your parents?</li>
+                        <li><strong>Do you work</strong> on weekends?</li>
+                        <li><strong>Do you argue</strong> with your colleagues often?</li>
+                        <li><strong>Do you worry</strong> about your future?</li>
+                        <li><strong>Do you agree</strong> with your boss's decisions?</li>
+                    </ul>
+                </div>
+
+                <div class="example-text">
+                    <h4>Past Simple Questions (pytania w czasie przeszłym):</h4>
+                    <ul>
+                        <li><strong>Did you study</strong> at university?</li>
+                        <li><strong>Did you move</strong> to this city last year?</li>
+                        <li><strong>Did you talk</strong> to your manager yesterday?</li>
+                        <li><strong>Did you travel</strong> to work by car this morning?</li>
+                        <li><strong>Did you listen</strong> to music during lunch?</li>
+                    </ul>
+                </div>
+
+                <div class="example-text">
+                    <h4>Present Perfect Questions (pytania w czasie present perfect):</h4>
+                    <ul>
+                        <li><strong>Have you worked</strong> in this company for a long time?</li>
+                        <li><strong>Have you lived</strong> in this city since 2020?</li>
+                        <li><strong>Have you talked</strong> to your boss about the promotion?</li>
+                        <li><strong>Have you thought</strong> about changing jobs?</li>
+                        <li><strong>Have you learned</strong> from your mistakes at work?</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="task-section">
+                <div class="task-title">
+                    <div class="task-number">5</div>
+                    Interaktywne dopasowywanie słownictwa
+                </div>
+                <div class="instruction">
+                    <strong>Jak grać:</strong><br>
+                    • Kliknij angielskie słowo, a potem jego polskie znaczenie - para zostanie oznaczona tym samym kolorem<br>
+                    • Aby zmienić zdanie, kliknij ponownie na już sparowane słowo - para zostanie odznaczona<br>
+                    • Sprawdź swoje odpowiedzi na końcu przyciskiem "Sprawdź odpowiedzi"
+                </div>
+
+                <div class="vocab-matching">
+                    <div class="vocab-grid">
+                        <div>
+                            <h4>English Vocabulary</h4>
+                            <div id="english-words"></div>
+                        </div>
+                        <div>
+                            <h4>Polish Definitions</h4>
+                            <div id="polish-definitions"></div>
+                        </div>
+                    </div>
+                    <div style="text-align: center;">
+                        <button class="check-button" onclick="checkAnswers()">Sprawdź odpowiedzi</button>
+                        <button class="reset-button" onclick="resetGame()">Zresetuj</button>
+                    </div>
+                    <div id="score" class="score" style="display: none;"></div>
+                </div>
+            </div>
+
+            <div class="task-section">
+                <div class="task-title">
+                    <div class="task-number">6</div>
+                    Wsparcie do dyskusji - Gotowe zwroty
+                </div>
+                <div class="instruction">
+                    Dla każdego pytania znajdziesz 3 sposoby rozpoczęcia odpowiedzi i 5 przydatnych słów/wyrażeń.
+                </div>
+
+                <div class="discussion-question">
+                    <div class="question-text">Pytanie 1: Which of the tips from the video do you find useful? Why?</div>
+                    <div class="help-section">
+                        <div class="starters">
+                            <h5>3 sposoby rozpoczęcia:</h5>
+                            <ul>
+                                <li>"I find the tip about... very useful because..."
+                                    <div class="polish-explanation">Uważam, że rada o... jest bardzo przydatna, ponieważ...</div>
+                                </li>
+                                <li>"The most helpful tip for me is... because..."
+                                    <div class="polish-explanation">Najbardziej pomocną radą dla mnie jest... ponieważ...</div>
+                                </li>
+                                <li>"I think the idea of... works well because..."
+                                    <div class="polish-explanation">Myślę, że pomysł z... dobrze działa, ponieważ...</div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="vocabulary">
+                            <h5>5 kluczowych słów/wyrażeń:</h5>
+                            <ul>
+                                <li>"practical" - praktyczny</li>
+                                <li>"effective" - skuteczny</li>
+                                <li>"it makes sense" - to ma sens</li>
+                                <li>"reduce stress" - zmniejszyć stres</li>
+                                <li>"in my daily life" - w moim codziennym życiu</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="discussion-question">
+                    <div class="question-text">Pytanie 2: Which of the tips do you consider rather impractical? Why?</div>
+                    <div class="help-section">
+                        <div class="starters">
+                            <h5>3 sposoby rozpoczęcia:</h5>
+                            <ul>
+                                <li>"I think the tip about... is not very realistic because..."
+                                    <div class="polish-explanation">Myślę, że rada o... nie jest bardzo realistyczna, ponieważ...</div>
+                                </li>
+                                <li>"The idea of... seems difficult to do because..."
+                                    <div class="polish-explanation">Pomysł z... wydaje się trudny do wykonania, ponieważ...</div>
+                                </li>
+                                <li>"I don't think... would work in my situation because..."
+                                    <div class="polish-explanation">Nie sądzę, że... działałoby w mojej sytuacji, ponieważ...</div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="vocabulary">
+                            <h5>5 kluczowych słów/wyrażeń:</h5>
+                            <ul>
+                                <li>"unrealistic" - nierealistyczny</li>
+                                <li>"impossible" - niemożliwy</li>
+                                <li>"my boss wouldn't allow" - mój szef by nie pozwolił</li>
+                                <li>"too expensive" - zbyt drogie</li>
+                                <li>"in my workplace" - w moim miejscu pracy</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="discussion-question">
+                    <div class="question-text">Pytanie 3: Some countries have introduced a 35-hour working week. Do you think it is a good idea? How many hours a week do you have to work in your country?</div>
+                    <div class="help-section">
+                        <div class="starters">
+                            <h5>3 sposoby rozpoczęcia:</h5>
+                            <ul>
+                                <li>"I think a 35-hour week is... because in Poland we usually work..."
+                                    <div class="polish-explanation">Myślę, że 35-godzinny tydzień jest... ponieważ w Polsce zwykle pracujemy...</div>
+                                </li>
+                                <li>"In my opinion, shorter working hours would be... because..."
+                                    <div class="polish-explanation">Moim zdaniem krótsze godziny pracy byłyby... ponieważ...</div>
+                                </li>
+                                <li>"Compared to other countries, Poland has... and I think..."
+                                    <div class="polish-explanation">W porównaniu z innymi krajami, Polska ma... i myślę...</div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="vocabulary">
+                            <h5>5 kluczowych słów/wyrażeń:</h5>
+                            <ul>
+                                <li>"work-life balance" - równowaga między pracą a życiem</li>
+                                <li>"productivity" - produktywność</li>
+                                <li>"standard working hours" - standardowe godziny pracy</li>
+                                <li>"overtime" - nadgodziny</li>
+                                <li>"compared to" - w porównaniu z</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="discussion-question">
+                    <div class="question-text">Pytanie 4: Can you imagine working only 4 days a week?</div>
+                    <div class="help-section">
+                        <div class="starters">
+                            <h5>3 sposoby rozpoczęcia:</h5>
+                            <ul>
+                                <li>"Yes, I can definitely imagine... because..."
+                                    <div class="polish-explanation">Tak, zdecydowanie mogę sobie wyobrazić... ponieważ...</div>
+                                </li>
+                                <li>"Actually, working 4 days would be... because..."
+                                    <div class="polish-explanation">Właściwie, praca 4 dni byłaby... ponieważ...</div>
+                                </li>
+                                <li>"I'm not sure if 4 days would work because..."
+                                    <div class="polish-explanation">Nie jestem pewien, czy 4 dni by działało, ponieważ...</div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="vocabulary">
+                            <h5>5 kluczowych słów/wyrażeń:</h5>
+                            <ul>
+                                <li>"three-day weekend" - trzydniowy weekend</li>
+                                <li>"more time for" - więcej czasu na</li>
+                                <li>"financial concerns" - obawy finansowe</li>
+                                <li>"less money" - mniej pieniędzy</li>
+                                <li>"it depends on" - to zależy od</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="discussion-question">
+                    <div class="question-text">Pytanie 5: What are your own rules that you follow to reduce stress and feel good at work?</div>
+                    <div class="help-section">
+                        <div class="starters">
+                            <h5>3 sposoby rozpoczęcia:</h5>
+                            <ul>
+                                <li>"My personal rule is to... because it helps me..."
+                                    <div class="polish-explanation">Moją osobistą zasadą jest... ponieważ to mi pomaga...</div>
+                                </li>
+                                <li>"I always try to... and I never... because..."
+                                    <div class="polish-explanation">Zawsze staram się... i nigdy nie... ponieważ...</div>
+                                </li>
+                                <li>"One thing that really works for me is..."
+                                    <div class="polish-explanation">Jedna rzecz, która naprawdę u mnie działa, to...</div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="vocabulary">
+                            <h5>5 kluczowych słów/wyrażeń:</h5>
+                            <ul>
+                                <li>"personal strategy" - osobista strategia</li>
+                                <li>"set boundaries" - wyznaczyć granice</li>
+                                <li>"take regular breaks" - robić regularne przerwy</li>
+                                <li>"switch off" - odłączyć się</li>
+                                <li>"works for me" - działa u mnie</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const vocabulary = [
+            { english: "stress levels", polish: "poziom stresu" },
+            { english: "interruptions", polish: "przerwy, zakłócenia" },
+            { english: "creativity", polish: "kreatywność" },
+            { english: "achieve", polish: "osiągnąć" },
+            { english: "overwork", polish: "przepracowanie" },
+            { english: "re-energise", polish: "naładować baterie, odnowić siły" },
+            { english: "anxious", polish: "niespokojny, zaniepokojony" },
+            { english: "refreshment", polish: "odświeżenie, odpoczynek" },
+            { english: "al desco", polish: "jedzenie przy biurku" },
+            { english: "counter-intuitive", polish: "sprzeczny z intuicją" },
+            { english: "energised", polish: "pełen energii" },
+            { english: "commute", polish: "dojazd do pracy" },
+            { english: "renewal", polish: "odnowa" },
+            { english: "barriers", polish: "bariery, przeszkody" },
+            { english: "celebrate", polish: "świętować, gloryfikować" },
+            { english: "enormous", polish: "ogromny" },
+            { english: "evidence", polish: "dowody, doświadczenie" },
+            { english: "digital Sabbath", polish: "cyfrowy szabat (czas bez technologii)" }
+        ];
+
+        const pairColors = [
+            "#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7", "#DDA0DD", 
+            "#98D8C8", "#F7DC6F", "#BB8FCE", "#85C1E9", "#F8C471", "#82E0AA",
+            "#F1948A", "#85C1E9", "#D7BDE2", "#A3E4D7", "#FAD7A0", "#D5A6BD"
+        ];
+
+        const correctAnswers = {};
+        let selectedEnglish = null;
+        let selectedPolish = null;
+        let userAnswers = {};
+        let matchedPairs = {};
+        let englishElements = {};
+        let polishElements = {};
+
+        function initializeGame() {
+            const shuffledPolish = [...vocabulary.map(item => item.polish)].sort(() => Math.random() - 0.5);
+            
+            vocabulary.forEach((item, index) => {
+                correctAnswers[item.english] = item.polish;
+            });
+
+            const englishContainer = document.getElementById('english-words');
+            const polishContainer = document.getElementById('polish-definitions');
+
+            englishContainer.innerHTML = '';
+            polishContainer.innerHTML = '';
+            englishElements = {};
+            polishElements = {};
+
+            vocabulary.forEach((item, index) => {
+                const englishDiv = document.createElement('div');
+                englishDiv.className = 'vocab-item';
+                englishDiv.textContent = `${index + 1}. ${item.english}`;
+                englishDiv.onclick = () => handleEnglishClick(item.english, englishDiv);
+                englishContainer.appendChild(englishDiv);
+                englishElements[item.english] = englishDiv;
+            });
+
+            shuffledPolish.forEach((polish, index) => {
+                const polishDiv = document.createElement('div');
+                polishDiv.className = 'vocab-item';
+                polishDiv.textContent = `${String.fromCharCode(97 + index)}. ${polish}`;
+                polishDiv.onclick = () => handlePolishClick(polish, polishDiv);
+                polishContainer.appendChild(polishDiv);
+                polishElements[polish] = polishDiv;
+            });
+        }
+
+        function handleEnglishClick(word, element) {
+            // Jeśli słowo jest już sparowane, odznacz parę
+            if (userAnswers[word]) {
+                unmatchPair(word);
+                return;
+            }
+
+            // Jeśli było już wybrane inne angielskie słowo, odznacz je
+            if (selectedEnglish) {
+                selectedEnglish.element.classList.remove('selected');
+            }
+
+            selectedEnglish = { word, element };
+            element.classList.add('selected');
+            
+            if (selectedPolish) {
+                makeMatch();
+            }
+        }
+
+        function handlePolishClick(word, element) {
+            // Sprawdź czy to polskie słowo jest już sparowane
+            const englishKey = Object.keys(userAnswers).find(key => userAnswers[key] === word);
+            if (englishKey) {
+                unmatchPair(englishKey);
+                return;
+            }
+
+            // Jeśli było już wybrane inne polskie słowo, odznacz je
+            if (selectedPolish) {
+                selectedPolish.element.classList.remove('selected');
+            }
+
+            selectedPolish = { word, element };
+            element.classList.add('selected');
+            
+            if (selectedEnglish) {
+                makeMatch();
+            }
+        }
+
+        function makeMatch() {
+            const englishWord = selectedEnglish.word;
+            const polishWord = selectedPolish.word;
+            const colorIndex = Object.keys(userAnswers).length;
+            const pairColor = pairColors[colorIndex];
+
+            userAnswers[englishWord] = polishWord;
+            matchedPairs[englishWord] = pairColor;
+
+            // Usuń selekcję i dodaj kolor pary
+            selectedEnglish.element.classList.remove('selected');
+            selectedPolish.element.classList.remove('selected');
+            
+            selectedEnglish.element.classList.add('matched');
+            selectedPolish.element.classList.add('matched');
+            
+            selectedEnglish.element.style.backgroundColor = pairColor;
+            selectedPolish.element.style.backgroundColor = pairColor;
+            selectedEnglish.element.style.borderColor = pairColor;
+            selectedPolish.element.style.borderColor = pairColor;
+            
+            selectedEnglish = null;
+            selectedPolish = null;
+        }
+
+        function unmatchPair(englishWord) {
+            const polishWord = userAnswers[englishWord];
+            
+            if (polishWord) {
+                // Usuń z odpowiedzi
+                delete userAnswers[englishWord];
+                delete matchedPairs[englishWord];
+                
+                // Przywróć oryginalny wygląd
+                const englishElement = englishElements[englishWord];
+                const polishElement = polishElements[polishWord];
+                
+                englishElement.classList.remove('matched', 'correct', 'incorrect');
+                polishElement.classList.remove('matched', 'correct', 'incorrect');
+                
+                englishElement.style.backgroundColor = '';
+                polishElement.style.backgroundColor = '';
+                englishElement.style.borderColor = '';
+                polishElement.style.borderColor = '';
+                
+                // Usuń selekcję jeśli była
+                if (selectedEnglish && selectedEnglish.word === englishWord) {
+                    selectedEnglish.element.classList.remove('selected');
+                    selectedEnglish = null;
+                }
+                if (selectedPolish && selectedPolish.word === polishWord) {
+                    selectedPolish.element.classList.remove('selected');
+                    selectedPolish = null;
+                }
+            }
+        }
+
+        function checkAnswers() {
+            let correct = 0;
+            let total = vocabulary.length;
+
+            // Usuń poprzednie oznaczenia poprawności
+            document.querySelectorAll('.vocab-item').forEach(item => {
+                item.classList.remove('correct', 'incorrect');
+            });
+
+            for (let english in userAnswers) {
+                const userAnswer = userAnswers[english];
+                const correctAnswer = correctAnswers[english];
+                
+                const englishElement = englishElements[english];
+                const polishElement = polishElements[userAnswer];
+                
+                if (userAnswer === correctAnswer) {
+                    correct++;
+                    englishElement.classList.add('correct');
+                    polishElement.classList.add('correct');
+                } else {
+                    englishElement.classList.add('incorrect');
+                    polishElement.classList.add('incorrect');
+                }
+            }
+
+            const scoreElement = document.getElementById('score');
+            const percentage = Math.round((correct / total) * 100);
+            scoreElement.innerHTML = `Twój wynik: ${correct}/${total} (${percentage}%)`;
+            scoreElement.style.display = 'block';
+
+            if (percentage >= 80) {
+                scoreElement.style.background = '#d4edda';
+                scoreElement.style.color = '#155724';
+            } else if (percentage >= 60) {
+                scoreElement.style.background = '#fff3cd';
+                scoreElement.style.color = '#856404';
+            } else {
+                scoreElement.style.background = '#f8d7da';
+                scoreElement.style.color = '#721c24';
+            }
+        }
+
+        function resetGame() {
+            userAnswers = {};
+            matchedPairs = {};
+            selectedEnglish = null;
+            selectedPolish = null;
+            document.getElementById('score').style.display = 'none';
+            
+            document.querySelectorAll('.vocab-item').forEach(item => {
+                item.classList.remove('selected', 'correct', 'incorrect', 'matched');
+                item.style.backgroundColor = '';
+                item.style.borderColor = '';
+            });
+        }
+
+        // Initialize the game when page loads
+        document.addEventListener('DOMContentLoaded', initializeGame);
+    </script>
+</body>
+</html>
