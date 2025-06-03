@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 2: Making Excuses - Advanced Vocabulary & Application</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            background: #f8f9fa;
+            margin: 30px 0;
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 5px solid #4ecdc4;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        .section-title {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-number {
+            background: #4ecdc4;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .pattern-card {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border-left: 4px solid #ff6b6b;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .matching-item {
+            background: white;
+            padding: 15px;
+            margin: 8px 0;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .matching-item:hover {
+            border-color: #4ecdc4;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .fact-card, .definition-card {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 15px;
+            margin: 8px 0;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .definition-card {
+            background: linear-gradient(135deg, #00cec9, #00b894);
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: #4ecdc4;
+            box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
+        }
+
+        .gap-fill {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+        }
+
+        .word-bank {
+            background: #d1ecf1;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .word-bank-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .word-bank-item {
+            background: #17a2b8;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .dialogue-exercise {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 4px solid #6f42c1;
+        }
+
+        .ranking-section {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .ranking-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .criteria-scale {
+            background: rgba(255,255,255,0.15);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .labeling-sentence {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 4px solid #28a745;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .sentence-text {
+            font-style: italic;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .answer-input {
+            margin-top: 10px;
+        }
+
+        .instruction {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Making Excuses: Advanced Vocabulary</h1>
+            <p>Lesson 2: Professional Communication Patterns</p>
+        </div>
+
+        <div class="content">
+            <!-- Review Section -->
+            <div class="section fade-in">
+                <div class="section-title">
+                    <div class="section-number">1</div>
+                    Review: Excuse-Making Patterns
+                </div>
+                <div class="instruction">
+                    Review the six patterns we learned in the previous lesson:
+                </div>
+                <div class="grid-2">
+                    <div class="pattern-card">"I feel so bad!" + explanation</div>
+                    <div class="pattern-card">"I was going to, but..." + reason</div>
+                    <div class="pattern-card">"Oh no, I completely forgot!" + follow-up</div>
+                    <div class="pattern-card">"The thing is..." + explanation</div>
+                    <div class="pattern-card">"This is really unlike me, but..." + reason</div>
+                    <div class="pattern-card">"You see..." + explanation</div>
+                </div>
+            </div>
+
+            <!-- Video Facts Revision -->
+            <div class="section fade-in">
+                <div class="section-title">
+                    <div class="section-number">2</div>
+                    Video Facts Revision
+                </div>
+                <div class="instruction">
+                    Match each fact to the correct percentage or figure from the video:
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <h4 style="color: #2c3e50; margin-bottom: 15px;">Facts:</h4>
+                        <div class="fact-card">A. Employees who are late at least once a week</div>
+                        <div class="fact-card">B. Employers who expect perfect punctuality</div>
+                        <div class="fact-card">C. People who say they overslept</div>
+                        <div class="fact-card">D. People who blame traffic for being late</div>
+                        <div class="fact-card">E. Employers who have fired someone for lateness</div>
+                        <div class="fact-card">F. Employees who are late at least once a month</div>
+                    </div>
+                    <div>
+                        <h4 style="color: #2c3e50; margin-bottom: 15px;">Figures:</h4>
+                        <div class="definition-card">1. Four in ten</div>
+                        <div class="definition-card">2. More than half</div>
+                        <div class="definition-card">3. About 20%</div>
+                        <div class="definition-card">4. Almost 30%</div>
+                        <div class="definition-card">5. Over 30%</div>
+                        <div class="definition-card">6. Nearly 50%</div>
+                    </div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <input type="text" placeholder="Your answers: A-__, B-__, C-__, D-__, E-__, F-__" style="font-size: 18px; padding: 15px;">
+                </div>
+            </div>
+
+            <!-- Task 6 -->
+            <div class="section fade-in">
+                <div class="section-title">
+                    <div class="section-number">3</div>
+                    Task 6: Complete the Gaps
+                </div>
+                <div class="instruction">
+                    Complete the gaps with the words in the boxes. There is one word you do not need to use. Then, add some details about each situation.
+                </div>
+                
+                <div class="word-bank">
+                    <strong>Word Bank:</strong>
+                    <div class="word-bank-items">
+                        <span class="word-bank-item">but</span>
+                        <span class="word-bank-item">completely</span>
+                        <span class="word-bank-item">feel</span>
+                        <span class="word-bank-item">see</span>
+                        <span class="word-bank-item">thing</span>
+                        <span class="word-bank-item">to</span>
+                        <span class="word-bank-item">unlike</span>
+                    </div>
+                </div>
+
+                <div class="gap-fill">
+                    <p><strong>A.</strong> I was going <input type="text" style="width: 100px; display: inline-block; margin: 0 5px;">, but I thought you'd rather do it yourself.</p>
+                    <textarea placeholder="Add details about this situation..." style="margin-top: 10px; height: 60px;"></textarea>
+                </div>
+
+                <div class="gap-fill">
+                    <p><strong>B.</strong> I <input type="text" style="width: 100px; display: inline-block; margin: 0 5px;"> so bad! I thought the recipe said 250°C, not 150°C.</p>
+                    <textarea placeholder="Add details about this situation..." style="margin-top: 10px; height: 60px;"></textarea>
+                </div>
+
+                <div class="gap-fill">
+                    <p><strong>C.</strong> Oh no, I <input type="text" style="width: 120px; display: inline-block; margin: 0 5px;"> forgot! I even set a reminder on my phone but I missed it.</p>
+                    <textarea placeholder="Add details about this situation..." style="margin-top: 10px; height: 60px;"></textarea>
+                </div>
+
+                <div class="gap-fill">
+                    <p><strong>D.</strong> The <input type="text" style="width: 100px; display: inline-block; margin: 0 5px;"> is, I wasn't able to email it to you because the internet was down.</p>
+                    <textarea placeholder="Add details about this situation..." style="margin-top: 10px; height: 60px;"></textarea>
+                </div>
+
+                <div class="gap-fill">
+                    <p><strong>E.</strong> This is really <input type="text" style="width: 100px; display: inline-block; margin: 0 5px;"> me, but I forgot them, and now I can't get into the apartment.</p>
+                    <textarea placeholder="Add details about this situation..." style="margin-top: 10px; height: 60px;"></textarea>
+                </div>
+
+                <div class="gap-fill">
+                    <p><strong>F.</strong> You <input type="text" style="width: 100px; display: inline-block; margin: 0 5px;">, it's because I started doing something else and then I didn't have time to finish it.</p>
+                    <textarea placeholder="Add details about this situation..." style="margin-top: 10px; height: 60px;"></textarea>
+                </div>
+            </div>
+
+            <!-- Task 6 Ranking -->
+            <div class="section fade-in">
+                <div class="ranking-section">
+                    <h3 style="margin-bottom: 20px;">📊 Ranking Exercise: Task 6</h3>
+                    <p style="margin-bottom: 15px;">Rank the completed excuses (A-F) from 1-5 for: <strong>Most believable to least believable</strong></p>
+                    
+                    <div class="criteria-scale">
+                        <h4>Criteria:</h4>
+                        <p><strong>5</strong> - Completely believable, anyone would accept this</p>
+                        <p><strong>4</strong> - Very believable, most people would accept this</p>
+                        <p><strong>3</strong> - Somewhat believable, 50/50 chance of acceptance</p>
+                        <p><strong>2</strong> - Not very believable, most people would be suspicious</p>
+                        <p><strong>1</strong> - Totally unbelievable, no one would buy this excuse</p>
+                    </div>
+
+                    <div class="ranking-item">
+                        <input type="text" placeholder="Your ranking: A-__, B-__, C-__, D-__, E-__, F-__" style="font-size: 16px;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task 7 -->
+            <div class="section fade-in">
+                <div class="section-title">
+                    <div class="section-number">4</div>
+                    Task 7: Complete the Responses
+                </div>
+                <div class="instruction">
+                    Complete the responses in the dialogues using the beginnings provided.
+                </div>
+
+                <div style="background: #f0f8ff; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                    <strong>EXAMPLE:</strong><br>
+                    <strong>a:</strong> Why are my clothes still wet? I asked you to dry them.<br>
+                    <strong>b:</strong> I know, I'm so sorry! You see, I needed to dry my clothes for work, and I forgot to put yours back in the dryer.
+                </div>
+
+                <div class="dialogue-exercise">
+                    <p><strong>A. a:</strong> Why did it take you three hours to get here? It's an hour's drive!</p>
+                    <p><strong>b:</strong> You see, <input type="text" placeholder="complete the response..." style="width: 100%; margin-top: 5px;"></p>
+                </div>
+
+                <div class="dialogue-exercise">
+                    <p><strong>B. a:</strong> The house is a mess – didn't you have time to clean it?</p>
+                    <p><strong>b:</strong> I was going to, but <input type="text" placeholder="complete the response..." style="width: 100%; margin-top: 5px;"></p>
+                </div>
+
+                <div class="dialogue-exercise">
+                    <p><strong>C. a:</strong> Where are you? I've been waiting at the restaurant for 30 minutes.</p>
+                    <p><strong>b:</strong> This is really unlike me, <input type="text" placeholder="complete the response..." style="width: 100%; margin-top: 5px;"></p>
+                </div>
+
+                <div class="dialogue-exercise">
+                    <p><strong>D. a:</strong> Why didn't you call the plumber about the shower?</p>
+                    <p><strong>b:</strong> The thing is, <input type="text" placeholder="complete the response..." style="width: 100%; margin-top: 5px;"></p>
+                </div>
+
+                <div class="dialogue-exercise">
+                    <p><strong>E. a:</strong> Did you not buy anything for Mum's birthday?</p>
+                    <p><strong>b:</strong> I feel so bad, <input type="text" placeholder="complete the response..." style="width: 100%; margin-top: 5px;"></p>
+                </div>
+
+                <div class="dialogue-exercise">
+                    <p><strong>F. a:</strong> I thought you were cooking dinner tonight?</p>
+                    <p><strong>b:</strong> Oh no, I completely forgot! <input type="text" placeholder="complete the response..." style="width: 100%; margin-top: 5px;"></p>
+                </div>
+            </div>
+
+            <!-- Task 7 Ranking -->
+            <div class="section fade-in">
+                <div class="ranking-section">
+                    <h3 style="margin-bottom: 20px;">📊 Ranking Exercise: Task 7</h3>
+                    <p style="margin-bottom: 15px;">Rank each situation (A-F) from 1-5 based on <strong>how difficult it would be to forgive</strong></p>
+                    
+                    <div class="criteria-scale">
+                        <h4>Criteria:</h4>
+                        <p><strong>5</strong> - Totally unforgivable! Relationship seriously damaged</p>
+                        <p><strong>4</strong> - Very difficult to forgive, trust significantly affected</p>
+                        <p><strong>3</strong> - Moderately serious, some relationship impact</p>
+                        <p><strong>2</strong> - Somewhat annoying but easily forgiven</p>
+                        <p><strong>1</strong> - Minor inconvenience, immediately forgiven</p>
+                    </div>
+
+                    <div class="ranking-item">
+                        <input type="text" placeholder="Your ranking: A-__, B-__, C-__, D-__, E-__, F-__" style="font-size: 16px;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vocabulary Matching -->
+            <div class="section fade-in">
+                <div class="section-title">
+                    <div class="section-number">5</div>
+                    Vocabulary Matching
+                </div>
+                <div class="instruction">
+                    Match each term with its correct definition:
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <h4 style="color: #2c3e50; margin-bottom: 15px;">Terms:</h4>
+                        <div class="matching-item">1. rationalization</div>
+                        <div class="matching-item">2. explanation</div>
+                        <div class="matching-item">3. apology</div>
+                        <div class="matching-item">4. excuse</div>
+                        <div class="matching-item">5. mitigation</div>
+                        <div class="matching-item">6. pretext</div>
+                        <div class="matching-item">7. justification</div>
+                        <div class="matching-item">8. alibi</div>
+                    </div>
+                    <div>
+                        <h4 style="color: #2c3e50; margin-bottom: 15px;">Definitions:</h4>
+                        <div class="matching-item">a. Factors presented to reduce the severity of blame</div>
+                        <div class="matching-item">b. Factual account of what happened without emotional appeal</div>
+                        <div class="matching-item">c. Evidence proving innocence or absence from wrongdoing</div>
+                        <div class="matching-item">d. False reason that hides true motivation</div>
+                        <div class="matching-item">e. Reasoning that defends an action as correct or necessary</div>
+                        <div class="matching-item">f. Expression of regret that accepts full responsibility</div>
+                        <div class="matching-item">g. Reason given to avoid blame, often shifting responsibility</div>
+                        <div class="matching-item">h. Post-hoc reasoning that reframes negative as positive</div>
+                    </div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <input type="text" placeholder="Your answers: 1-__, 2-__, 3-__, 4-__, 5-__, 6-__, 7-__, 8-__" style="font-size: 18px; padding: 15px;">
+                </div>
+            </div>
+
+            <!-- Sentence Labeling -->
+            <div class="section fade-in">
+                <div class="section-title">
+                    <div class="section-number">6</div>
+                    Sentence Labeling Exercise
+                </div>
+                <div class="instruction">
+                    Label each workplace statement with the correct vocabulary term (explanation, justification, excuse, alibi, apology, rationalization, pretext, mitigation):
+                </div>
+
+                <div class="labeling-sentence">
+                    <div class="sentence-text">
+                        "Yes, I was late with the report, but I've delivered every other project this quarter ahead of schedule, and this delay was due to completely unexpected client changes."
+                    </div>
+                    <div class="answer-input">
+                        <input type="text" placeholder="This is a/an...">
+                    </div>
+                </div>
+
+                <div class="labeling-sentence">
+                    <div class="sentence-text">
+                        "I submitted the quarterly report two days late because I wanted to include the latest market data, which makes our projections more accurate."
+                    </div>
+                    <div class="answer-input">
+                        <input type="text" placeholder="This is a/an...">
+                    </div>
+                </div>
+
+                <div class="labeling-sentence">
+                    <div class="sentence-text">
+                        "I told them I had a family emergency and had to leave early, but honestly I just couldn't face another pointless budget meeting."
+                    </div>
+                    <div class="answer-input">
+                        <input type="text" placeholder="This is a/an...">
+                    </div>
+                </div>
+
+                <div class="labeling-sentence">
+                    <div class="sentence-text">
+                        "The client meeting ran 90 minutes over the scheduled time, which caused me to miss the 4 PM conference call."
+                    </div>
+                    <div class="answer-input">
+                        <input type="text" placeholder="This is a/an...">
+                    </div>
+                </div>
+
+                <div class="labeling-sentence">
+                    <div class="sentence-text">
+                        "Actually, missing that networking event worked out perfectly because I used the time to finish the Johnson proposal, which is worth much more to the company."
+                    </div>
+                    <div class="answer-input">
+                        <input type="text" placeholder="This is a/an...">
+                    </div>
+                </div>
+
+                <div class="labeling-sentence">
+                    <div class="sentence-text">
+                        "I accept full responsibility for the budget error. I miscalculated the exchange rates and will ensure this doesn't happen again."
+                    </div>
+                    <div class="answer-input">
+                        <input type="text" placeholder="This is a/an...">
+                    </div>
+                </div>
+
+                <div class="labeling-sentence">
+                    <div class="sentence-text">
+                        "The presentation isn't ready because the design team completely messed up the graphics and didn't meet their deadline."
+                    </div>
+                    <div class="answer-input">
+                        <input type="text" placeholder="This is a/an...">
+                    </div>
+                </div>
+
+                <div class="labeling-sentence">
+                    <div class="sentence-text">
+                        "I couldn't have sent that confidential email to competitors - I was presenting to the board all afternoon, and the IT logs confirm I wasn't at my computer."
+                    </div>
+                    <div class="answer-input">
+                        <input type="text" placeholder="This is a/an...">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add fade-in animation to sections as they appear
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Set initial state and observe sections
+        document.querySelectorAll('.section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(30px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
+        });
+
+        // Add interactive hover effects
+        document.querySelectorAll('.matching-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = '0 4px 15px rgba(0,0,0,0.15)';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+            });
+        });
+
+        // Auto-resize textareas
+        document.querySelectorAll('textarea').forEach(textarea => {
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = this.scrollHeight + 'px';
+            });
+        });
+
+        // Add focus effects to inputs
+        document.querySelectorAll('input[type="text"], textarea').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+                this.parentElement.style.transition = 'transform 0.2s ease';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>
