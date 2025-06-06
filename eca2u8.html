@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktywne Zadania - Unit 8.1</title>
+    <style>
+        :root {
+            --primary-color: #4a69bd;
+            --secondary-color: #f6f6f6;
+            --font-color: #333;
+            --correct-color: #2ecc71;
+            --incorrect-color: #e74c3c;
+            --border-color: #ddd;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --button-hover: #3b528f;
+            --tooltip-color: #c0392b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--secondary-color);
+            color: var(--font-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        .exercise-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .exercise-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .exercise-card h2 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 1.4em;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 15px;
+        }
+
+        .exercise-card p, .exercise-card li {
+            font-size: 1.1em;
+        }
+
+        .word-box {
+            background-color: #eef2f7;
+            border: 1px dashed var(--border-color);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        
+        .question-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .question-list li {
+            margin-bottom: 15px;
+        }
+        
+        .question-list li .number {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        input[type="text"], select {
+            padding: 8px 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1em;
+            margin: 0 5px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .cloze-input {
+            width: 120px;
+        }
+        
+        .gap-fill-input {
+            width: 60px;
+            text-align: center;
+        }
+
+        .button-container {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-left: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .check-btn {
+            background-color: var(--primary-color);
+        }
+        .check-btn:hover {
+            background-color: var(--button-hover);
+        }
+
+        .reset-btn {
+            background-color: #7f8c8d;
+        }
+        .reset-btn:hover {
+            background-color: #6c7a7b;
+        }
+        
+        .hidden {
+            display: none;
+        }
+
+        /* Tooltip trigger style */
+        .tooltip-trigger {
+            color: var(--tooltip-color);
+            font-weight: bold;
+            text-decoration: underline dashed;
+            cursor: help;
+        }
+
+        /* Task 5 layout */
+        .word-line {
+            margin-bottom: 10px;
+            padding-left: 20px;
+        }
+        .word-line:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Feedback styles */
+        .correct {
+            border-color: var(--correct-color) !important;
+            background-color: #f0fff4;
+        }
+
+        .incorrect {
+            border-color: var(--incorrect-color) !important;
+            background-color: #fff0f0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Unit 8.1 "A happy life" - Vocabulary</h1>
+
+        <!-- ZADANIE 1 -->
+        <div class="exercise-card" id="task1">
+            <h2>Zadanie 1: Dopasuj</h2>
+            <p>Dopasuj początki zdań 1-5 do zakończeń a-e.</p>
+            <ol class="question-list">
+                <li><span class="number">1.</span> I want to be <select data-answer="e"><option value="">...</option><option value="a">a. my own.</option><option value="b">b. a big family.</option><option value="c">c. drive when I'm 18.</option><option value="d">d. own business.</option><option value="e">e. rich.</option></select></li>
+                <li><span class="number">2.</span> I'd like to have my <select data-answer="d"><option value="">...</option><option value="a">a. my own.</option><option value="b">b. a big family.</option><option value="c">c. drive when I'm 18.</option><option value="d">d. own business.</option><option value="e">e. rich.</option></select></li>
+                <li><span class="number">3.</span> I don't want to live on <select data-answer="a"><option value="">...</option><option value="a">a. my own.</option><option value="b">b. a big family.</option><option value="c">c. drive when I'm 18.</option><option value="d">d. own business.</option><option value="e">e. rich.</option></select></li>
+                <li><span class="number">4.</span> I want to learn to <select data-answer="c"><option value="">...</option><option value="a">a. my own.</option><option value="b">b. a big family.</option><option value="c">c. drive when I'm 18.</option><option value="d">d. own business.</option><option value="e">e. rich.</option></select></li>
+                <li><span class="number">5.</span> I'd love to have <select data-answer="b"><option value="">...</option><option value="a">a. my own.</option><option value="b">b. a big family.</option><option value="c">c. drive when I'm 18.</option><option value="d">d. own business.</option><option value="e">e. rich.</option></select></li>
+            </ol>
+            <div class="button-container">
+                <button class="btn check-btn">Sprawdź</button>
+                <button class="btn reset-btn hidden">Resetuj</button>
+            </div>
+        </div>
+
+        <!-- ZADANIE 2 -->
+        <div class="exercise-card" id="task2">
+            <h2>Zadanie 2: Uzupełnij luki</h2>
+            <p>Popatrz na zdjęcia i uzupełnij zdania słowami z ramki.</p>
+            <div class="word-box">abroad, doctor, famous, foreign language, interesting job</div>
+            <ol class="question-list">
+                <li><span class="number">1.</span> When Gary's mum, Karen, was seventeen, she wanted to be <input type="text" data-answer="famous"> and sing in a band.</li>
+                <li><span class="number">2.</span> When his dad, Steve, was at school, he wanted to leave England one day and to live <input type="text" data-answer="abroad">. He went to the USA.</li>
+                <li><span class="number">3.</span> His little brother, Kenny, would like to be a <input type="text" data-answer="doctor">. He practises on his toys.</li>
+                <li><span class="number">4.</span> Gary's sister, Tracy, wants to have an <input type="text" data-answer="interesting job">. She'd love to be an astronaut.</li>
+                <li><span class="number">5.</span> Finally, his cousin, Nadia, would like to learn a <input type="text" data-answer="foreign language">, but she can't decide which to choose.</li>
+            </ol>
+            <div class="button-container">
+                <button class="btn check-btn">Sprawdź</button>
+                <button class="btn reset-btn hidden">Resetuj</button>
+            </div>
+        </div>
+        
+        <!-- ZADANIE 3 -->
+        <div class="exercise-card" id="task3">
+            <h2>Zadanie 3: Wybierz słowo</h2>
+            <p>Uzupełnij zdania, używając <strong>be, have, learn</strong> lub <strong>live</strong>. Kliknij na podświetlone słowo, aby zobaczyć tłumaczenie.</p>
+            <ol class="question-list">
+                <li><span class="number">1.</span> John likes flying and <span class="tooltip-trigger" data-translation="pewnego dnia">one day</span> he wants to <input type="text" data-answer="be"> a pilot.</li>
+                <li><span class="number">2.</span> It's important to <input type="text" data-answer="have"> good <span class="tooltip-trigger" data-translation="zdrowie">health</span> all your life.</li>
+                <li><span class="number">3.</span> Sara likes her <span class="tooltip-trigger" data-translation="wioska">village</span>, so she <span class="tooltip-trigger" data-translation="nie chciał(a)by">wouldn't like to</span> <input type="text" data-answer="live"> in a big city.</li>
+                <li><span class="number">4.</span> Jack wants to <input type="text" data-answer="learn"> <span class="tooltip-trigger" data-translation="język chiński">Chinese</span>, so he can work in China one day.</li>
+            </ol>
+            <div class="button-container">
+                <button class="btn check-btn">Sprawdź</button>
+                <button class="btn reset-btn hidden">Resetuj</button>
+            </div>
+        </div>
+
+        <!-- ZADANIE 4 -->
+        <div class="exercise-card" id="task4">
+            <h2>Zadanie 4: Uzupełnij tekst</h2>
+            <p>Uzupełnij tekst, wpisując jedno słowo w każdą lukę. Kliknij na podświetlone słowo, aby zobaczyć tłumaczenie.</p>
+            <p>
+                When Funny Fred <span class="tooltip-trigger" data-translation="skończył (szkołę)">left</span> school, he wanted to ¹<input type="text" class="cloze-input" data-answer="be"> a clown and to have his ²<input type="text" class="cloze-input" data-answer="own"> business. He decided to <span class="tooltip-trigger" data-translation="opuścić, wyjechać">leave</span> the UK and to live ³<input type="text" class="cloze-input" data-answer="abroad"> - he <span class="tooltip-trigger" data-translation="przeprowadził się do">moved to</span> the USA. What did he do there? He went to circus school to ⁴<input type="text" class="cloze-input" data-answer="learn"> about acrobatics and magic tricks. He also <span class="tooltip-trigger" data-translation="nauczył się">learned</span> to play ⁵<input type="text" class="cloze-input" data-answer="the"> drums. When he finished school, he learned two ⁶<input type="text" class="cloze-input" data-answer="foreign"> languages - French and Italian. Then he opened his <span class="tooltip-trigger" data-translation="własny">own</span> circus schools in the UK, France and Italy. Now he has a big business. Funny Fred often <span class="tooltip-trigger" data-translation="odwiedza">visits</span> children's hospitals too. He <span class="tooltip-trigger" data-translation="nosi, zakłada (ubranie)">wears</span> his clown clothes because he wants the <span class="tooltip-trigger" data-translation="dzieci">children</span> to ⁷<input type="text" class="cloze-input" data-answer="have"> fun and <span class="tooltip-trigger" data-translation="poczuć się lepiej, wyzdrowieć">get better</span> <span class="tooltip-trigger" data-translation="szybko">quickly</span>!
+            </p>
+            <div class="button-container">
+                <button class="btn check-btn">Sprawdź</button>
+                <button class="btn reset-btn hidden">Resetuj</button>
+            </div>
+        </div>
+
+        <!-- ZADANIE 5 -->
+        <div class="exercise-card" id="task5">
+            <h2>Zadanie 5: Uzupełnij i dodaj</h2>
+            <p>Uzupełnij słowa. Następnie dodaj po jednym wyrażeniu do każdej grupy (ostatnie pole nie jest sprawdzane automatycznie).</p>
+            <ul class="question-list">
+                <li><strong>BE:</strong>
+                    <div class="word-line">r<input type="text" class="gap-fill-input" data-answer="i" maxlength="1">ch</div>
+                    <div class="word-line">f<input type="text" class="gap-fill-input" data-answer="a" maxlength="1">m<input type="text" class="gap-fill-input" data-answer="ou" maxlength="2">s</div>
+                    <div class="word-line">a d<input type="text" class="gap-fill-input" data-answer="o" maxlength="1">ct<input type="text" class="gap-fill-input" data-answer="o" maxlength="1">r</div>
+                    <div class="word-line"><input type="text" class="cloze-input" placeholder="Twoja propozycja..."></div>
+                </li>
+                <li><strong>HAVE:</strong>
+                    <div class="word-line">my <input type="text" class="gap-fill-input" data-answer="o" maxlength="1">wn b<input type="text" class="gap-fill-input" data-answer="u" maxlength="1">s<input type="text" class="gap-fill-input" data-answer="i" maxlength="1">n<input type="text" class="gap-fill-input" data-answer="e" maxlength="1">ss</div>
+                    <div class="word-line"><input type="text" class="gap-fill-input" data-answer="a" maxlength="1">n <input type="text" class="gap-fill-input" data-answer="i" maxlength="1">nt<input type="text" class="gap-fill-input" data-answer="e" maxlength="1">r<input type="text" class="gap-fill-input" data-answer="e" maxlength="1">st<input type="text" class="gap-fill-input" data-answer="i" maxlength="1">ng j<input type="text" class="gap-fill-input" data-answer="o" maxlength="1">b</div>
+                    <div class="word-line">a b<input type="text" class="gap-fill-input" data-answer="i" maxlength="1">g f<input type="text" class="gap-fill-input" data-answer="a" maxlength="1">m<input type="text" class="gap-fill-input" data-answer="i" maxlength="1">ly</div>
+                    <div class="word-line"><input type="text" class="cloze-input" placeholder="Twoja propozycja..."></div>
+                </li>
+                <li><strong>LEARN:</strong>
+                    <div class="word-line">a f<input type="text" class="gap-fill-input" data-answer="o" maxlength="1">r<input type="text" class="gap-fill-input" data-answer="ei" maxlength="2">gn l<input type="text" class="gap-fill-input" data-answer="a" maxlength="1">ng<input type="text" class="gap-fill-input" data-answer="ua" maxlength="2">ge</div>
+                    <div class="word-line">t<input type="text" class="gap-fill-input" data-answer="o" maxlength="1"> dr<input type="text" class="gap-fill-input" data-answer="i" maxlength="1">v<input type="text" class="gap-fill-input" data-answer="e" maxlength="1"></div>
+                    <div class="word-line"><input type="text" class="cloze-input" placeholder="Twoja propozycja..."></div>
+                </li>
+                <li><strong>LIVE:</strong>
+                    <div class="word-line"><input type="text" class="gap-fill-input" data-answer="a" maxlength="1">br<input type="text" class="gap-fill-input" data-answer="oa" maxlength="2">d</div>
+                    <div class="word-line"><input type="text" class="gap-fill-input" data-answer="o" maxlength="1">n my <input type="text" class="gap-fill-input" data-answer="o" maxlength="1">wn</div>
+                    <div class="word-line"><input type="text" class="cloze-input" placeholder="Twoja propozycja..."></div>
+                </li>
+            </ul>
+             <div class="button-container">
+                <button class="btn check-btn">Sprawdź</button>
+                <button class="btn reset-btn hidden">Resetuj</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Logic for checking and resetting exercises ---
+            const exerciseCards = document.querySelectorAll('.exercise-card');
+
+            exerciseCards.forEach(card => {
+                const checkBtn = card.querySelector('.check-btn');
+                const resetBtn = card.querySelector('.reset-btn');
+                const inputs = card.querySelectorAll('input[type="text"], select');
+
+                checkBtn.addEventListener('click', () => {
+                    inputs.forEach(input => {
+                        if (input.hasAttribute('data-answer')) {
+                            const userAnswer = input.value.trim().toLowerCase();
+                            const correctAnswer = input.dataset.answer.toLowerCase();
+                            
+                            if (userAnswer === correctAnswer) {
+                                input.classList.add('correct');
+                            } else {
+                                input.classList.add('incorrect');
+                            }
+                        }
+                        input.disabled = true;
+                    });
+                    
+                    checkBtn.classList.add('hidden');
+                    resetBtn.classList.remove('hidden');
+                });
+
+                resetBtn.addEventListener('click', () => {
+                    inputs.forEach(input => {
+                        if (input.tagName.toLowerCase() === 'select') {
+                            input.selectedIndex = 0;
+                        } else {
+                            input.value = '';
+                        }
+                        input.classList.remove('correct', 'incorrect');
+                        input.disabled = false;
+                    });
+                    
+                    resetBtn.classList.add('hidden');
+                    checkBtn.classList.remove('hidden');
+                });
+            });
+
+            // --- Logic for tooltips ---
+            const tooltips = document.querySelectorAll('.tooltip-trigger');
+            tooltips.forEach(tooltip => {
+                tooltip.addEventListener('click', (event) => {
+                    // Prevents any default browser action for the clicked element
+                    event.preventDefault(); 
+                    const translation = tooltip.dataset.translation;
+                    if (translation) {
+                        alert(translation);
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
