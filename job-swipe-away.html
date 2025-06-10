@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English-Polish Job Phrases Matching Exercise</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+
+        .exercise-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .column {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .column h3 {
+            color: #2c3e50;
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .phrase-item {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .phrase-item:hover {
+            border-color: #3498db;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15);
+        }
+
+        .phrase-item.selected {
+            border-color: #3498db;
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .phrase-item.matched {
+            border-color: #27ae60;
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .phrase-item.correct {
+            border-color: #27ae60;
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .phrase-item.incorrect {
+            border-color: #e74c3c;
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .phrase-item.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .status {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .status.success {
+            color: #27ae60;
+        }
+
+        .status.error {
+            color: #e74c3c;
+        }
+
+        .match-line {
+            position: absolute;
+            background: #3498db;
+            height: 2px;
+            z-index: 10;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .exercise-area {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Job-Related English Phrases</h1>
+            <p>Match the English phrases with their Polish translations</p>
+        </div>
+        
+        <div class="exercise-area">
+            <div class="column">
+                <h3>English Phrases</h3>
+                <div id="english-column"></div>
+            </div>
+            
+            <div class="column">
+                <h3>Polish Translations</h3>
+                <div id="polish-column"></div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="check-btn" class="btn btn-primary">Check Answers</button>
+            <button id="reset-btn" class="btn btn-secondary">Start Over</button>
+        </div>
+        
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        // Data from the shuffled analysis
+        const englishPhrases = [
+            { id: 3, text: "job hunt" },
+            { id: 7, text: "get your foot in the door" },
+            { id: 1, text: "land a job" },
+            { id: 5, text: "job hopping" },
+            { id: 2, text: "finding my next gig" },
+            { id: 6, text: "good fit for a job" },
+            { id: 8, text: "jazz up your résumé" },
+            { id: 4, text: "sift through applications" }
+        ];
+
+        const polishTranslations = [
+            { id: 1, text: "zdobyć pracę" },
+            { id: 4, text: "przesiewać podania o pracę" },
+            { id: 8, text: "uatrakcyjnić swoje CV" },
+            { id: 6, text: "dobry kandydat na stanowisko" },
+            { id: 7, text: "dostać się do firmy" },
+            { id: 3, text: "poszukiwanie pracy" },
+            { id: 5, text: "częste zmienianie pracy" },
+            { id: 2, text: "znalezienie następnego zlecenia" }
+        ];
+
+        const correctAnswers = {
+            1: { english: "land a job", polish: "zdobyć pracę" },
+            2: { english: "finding my next gig", polish: "znalezienie następnego zlecenia" },
+            3: { english: "job hunt", polish: "poszukiwanie pracy" },
+            4: { english: "sift through applications", polish: "przesiewać podania o pracę" },
+            5: { english: "job hopping", polish: "częste zmienianie pracy" },
+            6: { english: "good fit for a job", polish: "dobry kandydat na stanowisko" },
+            7: { english: "get your foot in the door", polish: "dostać się do firmy" },
+            8: { english: "jazz up your résumé", polish: "uatrakcyjnić swoje CV" }
+        };
+
+        // Game state
+        let gameState = {
+            selectedEnglish: null,
+            matches: {},
+            isLocked: false,
+            isChecked: false
+        };
+
+        // Initialize the game
+        function initGame() {
+            renderPhrases();
+            setupEventListeners();
+            updateStatus("");
+        }
+
+        function renderPhrases() {
+            const englishColumn = document.getElementById('english-column');
+            const polishColumn = document.getElementById('polish-column');
+
+            englishColumn.innerHTML = '';
+            polishColumn.innerHTML = '';
+
+            // Render English phrases
+            englishPhrases.forEach(phrase => {
+                const div = document.createElement('div');
+                div.className = 'phrase-item';
+                div.dataset.id = phrase.id;
+                div.dataset.type = 'english';
+                div.textContent = phrase.text;
+                englishColumn.appendChild(div);
+            });
+
+            // Render Polish translations
+            polishTranslations.forEach(phrase => {
+                const div = document.createElement('div');
+                div.className = 'phrase-item';
+                div.dataset.id = phrase.id;
+                div.dataset.type = 'polish';
+                div.textContent = phrase.text;
+                polishColumn.appendChild(div);
+            });
+        }
+
+        function setupEventListeners() {
+            // Phrase click handlers
+            document.addEventListener('click', handlePhraseClick);
+            
+            // Button handlers
+            document.getElementById('check-btn').addEventListener('click', checkAnswers);
+            document.getElementById('reset-btn').addEventListener('click', resetGame);
+        }
+
+        function handlePhraseClick(e) {
+            if (!e.target.classList.contains('phrase-item') || gameState.isLocked) return;
+
+            const element = e.target;
+            const id = parseInt(element.dataset.id);
+            const type = element.dataset.type;
+
+            if (type === 'english') {
+                // Handle English phrase selection
+                if (gameState.selectedEnglish === id) {
+                    // Deselect if clicking the same phrase
+                    gameState.selectedEnglish = null;
+                    element.classList.remove('selected');
+                } else {
+                    // Clear previous selection
+                    document.querySelectorAll('.phrase-item[data-type="english"]').forEach(el => {
+                        el.classList.remove('selected');
+                    });
+                    
+                    // Select new phrase
+                    gameState.selectedEnglish = id;
+                    element.classList.add('selected');
+                }
+            } else if (type === 'polish') {
+                // Handle Polish translation selection
+                if (gameState.selectedEnglish !== null) {
+                    // Check if there's already a match for this Polish phrase
+                    const existingMatch = Object.entries(gameState.matches).find(([_, polishId]) => polishId === id);
+                    if (existingMatch) {
+                        // Unmatch existing pair
+                        const englishId = parseInt(existingMatch[0]);
+                        delete gameState.matches[englishId];
+                        
+                        // Remove visual indicators
+                        document.querySelector(`.phrase-item[data-id="${englishId}"][data-type="english"]`).classList.remove('matched');
+                        element.classList.remove('matched');
+                    }
+
+                    // Check if the selected English phrase already has a match
+                    if (gameState.matches[gameState.selectedEnglish]) {
+                        const oldPolishId = gameState.matches[gameState.selectedEnglish];
+                        document.querySelector(`.phrase-item[data-id="${oldPolishId}"][data-type="polish"]`).classList.remove('matched');
+                    }
+
+                    // Create new match
+                    gameState.matches[gameState.selectedEnglish] = id;
+                    
+                    // Update visual indicators
+                    document.querySelector(`.phrase-item[data-id="${gameState.selectedEnglish}"][data-type="english"]`).classList.remove('selected');
+                    document.querySelector(`.phrase-item[data-id="${gameState.selectedEnglish}"][data-type="english"]`).classList.add('matched');
+                    element.classList.add('matched');
+                    
+                    // Clear selection
+                    gameState.selectedEnglish = null;
+                } else if (element.classList.contains('matched')) {
+                    // Unmatch if clicking on a matched Polish phrase without English selection
+                    const matchEntry = Object.entries(gameState.matches).find(([_, polishId]) => polishId === id);
+                    if (matchEntry) {
+                        const englishId = parseInt(matchEntry[0]);
+                        delete gameState.matches[englishId];
+                        
+                        document.querySelector(`.phrase-item[data-id="${englishId}"][data-type="english"]`).classList.remove('matched');
+                        element.classList.remove('matched');
+                    }
+                }
+            }
+
+            updateStatus(`Matched: ${Object.keys(gameState.matches).length}/8`);
+        }
+
+        function checkAnswers() {
+            if (Object.keys(gameState.matches).length === 0) {
+                updateStatus("Please make some matches first!", "error");
+                return;
+            }
+
+            gameState.isLocked = true;
+            gameState.isChecked = true;
+
+            let correct = 0;
+            let total = Object.keys(correctAnswers).length;
+
+            // Check each match
+            Object.entries(gameState.matches).forEach(([englishId, polishId]) => {
+                const englishElement = document.querySelector(`.phrase-item[data-id="${englishId}"][data-type="english"]`);
+                const polishElement = document.querySelector(`.phrase-item[data-id="${polishId}"][data-type="polish"]`);
+                
+                englishElement.classList.remove('matched');
+                polishElement.classList.remove('matched');
+
+                if (parseInt(englishId) === parseInt(polishId)) {
+                    englishElement.classList.add('correct');
+                    polishElement.classList.add('correct');
+                    correct++;
+                } else {
+                    englishElement.classList.add('incorrect');
+                    polishElement.classList.add('incorrect');
+                }
+            });
+
+            // Mark unmatched items
+            document.querySelectorAll('.phrase-item').forEach(el => {
+                if (!el.classList.contains('correct') && !el.classList.contains('incorrect')) {
+                    el.classList.add('disabled');
+                }
+            });
+
+            // Update status
+            const percentage = Math.round((correct / total) * 100);
+            if (correct === total) {
+                updateStatus(`Perfect! ${correct}/${total} correct (${percentage}%)`, "success");
+            } else {
+                updateStatus(`${correct}/${total} correct (${percentage}%). Try again!`, "error");
+            }
+
+            // Disable check button
+            document.getElementById('check-btn').disabled = true;
+        }
+
+        function resetGame() {
+            // Reset game state
+            gameState = {
+                selectedEnglish: null,
+                matches: {},
+                isLocked: false,
+                isChecked: false
+            };
+
+            // Reset visual state
+            document.querySelectorAll('.phrase-item').forEach(el => {
+                el.className = 'phrase-item';
+            });
+
+            // Re-enable check button
+            document.getElementById('check-btn').disabled = false;
+
+            updateStatus("");
+        }
+
+        function updateStatus(message, type = "") {
+            const statusElement = document.getElementById('status');
+            statusElement.textContent = message;
+            statusElement.className = `status ${type}`;
+        }
+
+        // Shuffle function for future use
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Initialize the game when page loads
+        initGame();
+    </script>
+</body>
+</html>
