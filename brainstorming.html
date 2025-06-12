@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brainstorming Video Vocabulary - Two Parts</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border-radius: 10px;
+            color: white;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.2em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .part-indicator {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .part-indicator.part1 {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .part-indicator.part2 {
+            background: linear-gradient(45deg, #ffc107, #fd7e14);
+            color: white;
+        }
+
+        .game-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .column {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+        }
+
+        .column h3 {
+            margin: 0 0 20px 0;
+            color: #495057;
+            text-align: center;
+            font-size: 1.3em;
+            padding: 10px;
+            background: #343a40;
+            color: white;
+            border-radius: 8px;
+        }
+
+        .term-item {
+            background: white;
+            margin: 8px 0;
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid #dee2e6;
+            transition: all 0.3s ease;
+            user-select: none;
+            position: relative;
+        }
+
+        .term-item:hover {
+            border-color: #007bff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .term-item.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .term-item.matched {
+            border-color: #17a2b8;
+            background: #d1ecf1;
+            opacity: 0.7;
+            cursor: default;
+        }
+
+        .term-item.error {
+            border-color: #dc3545;
+            background: #f8d7da;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .number {
+            display: inline-block;
+            background: #6c757d;
+            color: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            text-align: center;
+            line-height: 25px;
+            font-size: 0.9em;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn.next-part {
+            background: linear-gradient(45deg, #ffc107, #fd7e14);
+        }
+
+        .score {
+            text-align: center;
+            font-size: 1.2em;
+            margin: 20px 0;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .score.perfect {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .instructions {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #856404;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .celebration {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.3em;
+            display: none;
+        }
+
+        .celebration.show {
+            display: block;
+            animation: celebration-bounce 0.6s ease;
+        }
+
+        @keyframes celebration-bounce {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .overall-progress {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .game-area {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .term-item {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Brainstorming Video Vocabulary</h1>
+            <p>Two-Part Vocabulary Challenge</p>
+        </div>
+
+        <div class="overall-progress" id="overallProgress">
+            Overall Progress: Part 1 in progress
+        </div>
+
+        <div class="part-indicator part1" id="partIndicator">
+            🎯 PART 1: Foundational Terms (11 words)
+        </div>
+
+        <div class="instructions">
+            <strong>Instructions:</strong> Complete Part 1 perfectly to unlock Part 2! Click on an English term, then click on its Polish translation to make a match.
+        </div>
+
+        <div class="score" id="scoreDisplay">
+            Score: 0/11 correct matches
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="celebration" id="celebrationMessage">
+            🎉 Excellent! Part 1 Complete! 🎉<br>
+            Ready for Part 2 Challenge?
+        </div>
+
+        <div class="game-area">
+            <div class="column">
+                <h3>🇬🇧 English Terms</h3>
+                <div id="englishTerms"></div>
+            </div>
+            <div class="column">
+                <h3>🇵🇱 Polish Translations</h3>
+                <div id="polishTerms"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" onclick="resetCurrentPart()">🔄 Reset Part</button>
+            <button class="btn" onclick="showAnswers()">👁️ Show Answers</button>
+            <button class="btn" onclick="shufflePolish()">🔀 Shuffle Polish</button>
+            <button class="btn next-part" id="nextPartBtn" onclick="startPart2()" disabled>🚀 Start Part 2</button>
+        </div>
+    </div>
+
+    <script>
+        const part1Vocabulary = [
+            { english: "groupthink", polish: "myślenie grupowe" },
+            { english: "approach", polish: "podejście / sposób" },
+            { english: "share ideas", polish: "dzielić się pomysłami" },
+            { english: "judge", polish: "osądzać" },
+            { english: "judgment", polish: "osądzanie" },
+            { english: "commentary", polish: "komentarze" },
+            { english: "evaluate", polish: "oceniać" },
+            { english: "decide on", polish: "zdecydować się na" },
+            { english: "deal with problems", polish: "radzić sobie z problemami" },
+            { english: "have in common", polish: "mieć wspólnego" },
+            { english: "take into consideration", polish: "brać pod uwagę" }
+        ];
+
+        const part2Vocabulary = [
+            { english: "fixated on", polish: "skupiony na / zacyklony na" },
+            { english: "web (mind map)", polish: "mapa myśli / schemat" },
+            { english: "reduce fear", polish: "zmniejszyć strach" },
+            { english: "unrelated fields", polish: "niepowiązane dziedziny" },
+            { english: "narrow down", polish: "zawęzić / ograniczyć" },
+            { english: "coherent concept", polish: "spójny koncept" },
+            { english: "voice is heard", polish: "głos jest słyszany" },
+            { english: "jump to solution", polish: "skoczyć do rozwiązania" },
+            { english: "shy away from sharing", polish: "unikać dzielenia się" },
+            { english: "put heads together", polish: "współpracować / kombinować razem" },
+            { english: "appreciation", polish: "uznanie" }
+        ];
+
+        let currentPart = 1;
+        let currentVocabulary = part1Vocabulary;
+        let selectedEnglish = null;
+        let selectedPolish = null;
+        let correctMatches = 0;
+        let shuffledPolish = [];
+        let part1Completed = false;
+        let part2Completed = false;
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function initGame() {
+            currentVocabulary = currentPart === 1 ? part1Vocabulary : part2Vocabulary;
+            shuffledPolish = shuffleArray(currentVocabulary.map(pair => pair.polish));
+            correctMatches = 0;
+            renderTerms();
+            updateScore();
+            updateUI();
+        }
+
+        function renderTerms() {
+            const englishContainer = document.getElementById('englishTerms');
+            const polishContainer = document.getElementById('polishTerms');
+
+            englishContainer.innerHTML = '';
+            polishContainer.innerHTML = '';
+
+            currentVocabulary.forEach((pair, index) => {
+                const englishDiv = document.createElement('div');
+                englishDiv.className = 'term-item';
+                englishDiv.innerHTML = `<span class="number">${index + 1}</span>${pair.english}`;
+                englishDiv.onclick = () => selectEnglish(index, englishDiv);
+                englishContainer.appendChild(englishDiv);
+            });
+
+            shuffledPolish.forEach((polish, index) => {
+                const polishDiv = document.createElement('div');
+                polishDiv.className = 'term-item';
+                polishDiv.innerHTML = `<span class="number">${String.fromCharCode(65 + index)}</span>${polish}`;
+                polishDiv.onclick = () => selectPolish(polish, polishDiv);
+                polishContainer.appendChild(polishDiv);
+            });
+        }
+
+        function selectEnglish(index, element) {
+            if (element.classList.contains('matched')) return;
+            
+            document.querySelectorAll('#englishTerms .term-item').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            selectedEnglish = index;
+            element.classList.add('selected');
+        }
+
+        function selectPolish(polish, element) {
+            if (element.classList.contains('matched')) return;
+            
+            selectedPolish = polish;
+            
+            if (selectedEnglish !== null) {
+                checkMatch(element);
+            }
+        }
+
+        function checkMatch(polishElement) {
+            const correctPolish = currentVocabulary[selectedEnglish].polish;
+            
+            if (selectedPolish === correctPolish) {
+                // Correct match
+                const englishElement = document.querySelectorAll('#englishTerms .term-item')[selectedEnglish];
+                englishElement.classList.remove('selected');
+                englishElement.classList.add('matched');
+                polishElement.classList.add('matched');
+                
+                correctMatches++;
+                updateScore();
+                
+                if (correctMatches === currentVocabulary.length) {
+                    setTimeout(() => {
+                        onPartComplete();
+                    }, 500);
+                }
+            } else {
+                // Wrong match
+                polishElement.classList.add('error');
+                setTimeout(() => {
+                    polishElement.classList.remove('error');
+                }, 500);
+            }
+            
+            selectedEnglish = null;
+            selectedPolish = null;
+            
+            document.querySelectorAll('.term-item.selected').forEach(el => {
+                el.classList.remove('selected');
+            });
+        }
+
+        function onPartComplete() {
+            if (currentPart === 1) {
+                part1Completed = true;
+                document.getElementById('celebrationMessage').classList.add('show');
+                document.getElementById('nextPartBtn').disabled = false;
+                updateOverallProgress();
+            } else {
+                part2Completed = true;
+                alert('🎉 Congratulations! You completed both parts perfectly!\n\nYou have mastered all 22 vocabulary terms!');
+                updateOverallProgress();
+            }
+        }
+
+        function startPart2() {
+            currentPart = 2;
+            document.getElementById('celebrationMessage').classList.remove('show');
+            initGame();
+        }
+
+        function updateScore() {
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const progressFill = document.getElementById('progressFill');
+            
+            scoreDisplay.textContent = `Score: ${correctMatches}/${currentVocabulary.length} correct matches`;
+            
+            const percentage = (correctMatches / currentVocabulary.length) * 100;
+            progressFill.style.width = `${percentage}%`;
+            
+            if (correctMatches === currentVocabulary.length) {
+                scoreDisplay.classList.add('perfect');
+            } else {
+                scoreDisplay.classList.remove('perfect');
+            }
+        }
+
+        function updateUI() {
+            const partIndicator = document.getElementById('partIndicator');
+            
+            if (currentPart === 1) {
+                partIndicator.textContent = '🎯 PART 1: Foundational Terms (11 words)';
+                partIndicator.className = 'part-indicator part1';
+            } else {
+                partIndicator.textContent = '🚀 PART 2: Advanced Terms (11 words)';
+                partIndicator.className = 'part-indicator part2';
+            }
+        }
+
+        function updateOverallProgress() {
+            const overallProgress = document.getElementById('overallProgress');
+            
+            if (part1Completed && part2Completed) {
+                overallProgress.textContent = 'Overall Progress: Both Parts Complete! 🎉';
+                overallProgress.style.background = '#d4edda';
+                overallProgress.style.color = '#155724';
+            } else if (part1Completed) {
+                overallProgress.textContent = 'Overall Progress: Part 1 ✅ | Part 2 in progress';
+            } else {
+                overallProgress.textContent = 'Overall Progress: Part 1 in progress';
+            }
+        }
+
+        function resetCurrentPart() {
+            selectedEnglish = null;
+            selectedPolish = null;
+            correctMatches = 0;
+            document.getElementById('scoreDisplay').classList.remove('perfect');
+            document.querySelectorAll('.term-item').forEach(el => {
+                el.classList.remove('selected', 'matched', 'error');
+            });
+            shuffledPolish = shuffleArray(currentVocabulary.map(pair => pair.polish));
+            renderTerms();
+            updateScore();
+        }
+
+        function shufflePolish() {
+            if (correctMatches > 0) {
+                if (!confirm('This will reset your current part progress. Continue?')) return;
+            }
+            resetCurrentPart();
+        }
+
+        function showAnswers() {
+            let answerText = `ANSWER KEY - PART ${currentPart}:\n\n`;
+            currentVocabulary.forEach((pair, index) => {
+                const polishIndex = shuffledPolish.indexOf(pair.polish);
+                const letter = String.fromCharCode(65 + polishIndex);
+                answerText += `${index + 1} - ${letter}: ${pair.english} = ${pair.polish}\n`;
+            });
+            alert(answerText);
+        }
+
+        // Initialize the game when page loads
+        initGame();
+    </script>
+</body>
+</html>
