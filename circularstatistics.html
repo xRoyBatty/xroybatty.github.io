@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poland's Circular Economy: Strategic Assessment</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.2em;
+            font-weight: 600;
+        }
+        
+        .header p {
+            margin: 0;
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 50px;
+        }
+        
+        .section-title {
+            font-size: 1.8em;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .metric-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #e74c3c;
+            margin-bottom: 5px;
+        }
+        
+        .metric-label {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+        
+        .metric-context {
+            font-size: 0.8em;
+            color: #95a5a6;
+            margin-top: 8px;
+        }
+        
+        .chart-container {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            position: relative;
+            height: 400px;
+        }
+        
+        .chart-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            text-align: center;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .data-table th {
+            background: #34495e;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .data-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .risk-indicator {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+        
+        .risk-high {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .risk-medium {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+        
+        .risk-low {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .comparison-panel {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 25px;
+        }
+        
+        .panel-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .funding-breakdown {
+            background: #e8f4fd;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .discussion-questions {
+            background: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        
+        .discussion-questions h3 {
+            margin: 0 0 15px 0;
+            color: #f57c00;
+        }
+        
+        .discussion-questions ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .discussion-questions li {
+            margin-bottom: 10px;
+        }
+        
+        .scenario-analysis {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .scenario-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .scenario-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        
+        .scenario-optimistic {
+            border-left: 4px solid #27ae60;
+        }
+        
+        .scenario-realistic {
+            border-left: 4px solid #f39c12;
+        }
+        
+        .scenario-pessimistic {
+            border-left: 4px solid #e74c3c;
+        }
+        
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Poland's Circular Economy Transition</h1>
+            <p>Evidence-Based Assessment for Strategic Policy Discussion</p>
+        </div>
+        
+        <div class="content">
+            <!-- Current State Analysis -->
+            <div class="section">
+                <h2 class="section-title">Current Performance Metrics</h2>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">10.2%</div>
+                        <div class="metric-label">Material Circularity Rate</div>
+                        <div class="metric-context">89.8% virgin materials dependency</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">40.3%</div>
+                        <div class="metric-label">Recycling Rate</div>
+                        <div class="metric-context">236% increase since 2012</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">13.8t</div>
+                        <div class="metric-label">Material Consumption per Capita</div>
+                        <div class="metric-context">Above global average</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">27%</div>
+                        <div class="metric-label">EU Target Risk</div>
+                        <div class="metric-context">Probability of missing 2025 goals</div>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-title">Poland vs EU Circular Economy Performance</div>
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Economic Framework -->
+            <div class="section">
+                <h2 class="section-title">Economic Framework Analysis</h2>
+                
+                <div class="funding-breakdown">
+                    <h3>Available EU Funding (2021-2027)</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Funding Source</th>
+                                <th>Amount (EUR billion)</th>
+                                <th>Allocation Focus</th>
+                                <th>Accessibility</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>National Recovery Plan</td>
+                                <td>60.0</td>
+                                <td>Green transition, digitalization</td>
+                                <td><span class="risk-indicator risk-medium">Conditional</span></td>
+                            </tr>
+                            <tr>
+                                <td>Cohesion Policy</td>
+                                <td>76.5</td>
+                                <td>Regional development, environment</td>
+                                <td><span class="risk-indicator risk-low">Direct</span></td>
+                            </tr>
+                            <tr>
+                                <td>FEnIKS Program</td>
+                                <td>24.0</td>
+                                <td>Infrastructure, climate, environment</td>
+                                <td><span class="risk-indicator risk-low">Operational</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-title">Implementation Cost-Benefit Analysis (2025-2040)</div>
+                    <canvas id="costBenefitChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Risk Assessment -->
+            <div class="section">
+                <h2 class="section-title">Implementation Risk Analysis</h2>
+                
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Risk Category</th>
+                            <th>Specific Challenge</th>
+                            <th>Impact Level</th>
+                            <th>Current Evidence</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Fraud & Crime</td>
+                            <td>Illegal waste exports</td>
+                            <td><span class="risk-indicator risk-high">High</span></td>
+                            <td>1,000+ tonnes illegal waste intercepted</td>
+                        </tr>
+                        <tr>
+                            <td>Institutional Capacity</td>
+                            <td>Monitoring workforce</td>
+                            <td><span class="risk-indicator risk-high">High</span></td>
+                            <td>22 staff for cross-border waste monitoring</td>
+                        </tr>
+                        <tr>
+                            <td>Market Fragmentation</td>
+                            <td>EPR system coordination</td>
+                            <td><span class="risk-indicator risk-medium">Medium</span></td>
+                            <td>15 competing EPR organizations</td>
+                        </tr>
+                        <tr>
+                            <td>Consumer Behavior</td>
+                            <td>Price sensitivity</td>
+                            <td><span class="risk-indicator risk-medium">Medium</span></td>
+                            <td>93% prioritize cost over environment</td>
+                        </tr>
+                        <tr>
+                            <td>Infrastructure Gaps</td>
+                            <td>Processing capacity</td>
+                            <td><span class="risk-indicator risk-medium">Medium</span></td>
+                            <td>60% waste still landfilled</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="chart-container">
+                    <div class="chart-title">Fraud Risk Indicators in European Recycling Systems</div>
+                    <canvas id="fraudChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Comparative Analysis -->
+            <div class="section">
+                <h2 class="section-title">International Comparative Performance</h2>
+                
+                <div class="comparison-grid">
+                    <div class="comparison-panel">
+                        <div class="panel-title">Leading EU Countries</div>
+                        <table class="data-table">
+                            <tr>
+                                <td><strong>Netherlands</strong></td>
+                                <td>24.5% circularity</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Germany</strong></td>
+                                <td>67% recycling rate</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Belgium</strong></td>
+                                <td>17.2% circularity</td>
+                            </tr>
+                        </table>
+                        <p><strong>Key Insight:</strong> Even leaders face implementation challenges and export waste abroad.</p>
+                    </div>
+                    
+                    <div class="comparison-panel">
+                        <div class="panel-title">Similar EU Countries</div>
+                        <table class="data-table">
+                            <tr>
+                                <td><strong>Slovakia</strong></td>
+                                <td>265% recycling growth</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Czech Republic</strong></td>
+                                <td>8.1% circularity</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Hungary</strong></td>
+                                <td>7.4% circularity</td>
+                            </tr>
+                        </table>
+                        <p><strong>Key Insight:</strong> Regional peers show similar performance patterns and challenges.</p>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-title">EU Circular Economy Performance Ranking</div>
+                    <canvas id="comparisonChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Future Scenarios -->
+            <div class="section">
+                <h2 class="section-title">2040 Projection Scenarios</h2>
+                
+                <div class="scenario-analysis">
+                    <div class="scenario-card scenario-optimistic">
+                        <div class="scenario-title">Optimistic Scenario</div>
+                        <ul>
+                            <li>Circularity rate: 20-25%</li>
+                            <li>Job creation: 250,000 positions</li>
+                            <li>GHG reduction: 50%</li>
+                            <li>EU funding: Fully utilized</li>
+                            <li>Prerequisites: Strong governance, fraud control</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="scenario-card scenario-realistic">
+                        <div class="scenario-title">Realistic Scenario</div>
+                        <ul>
+                            <li>Circularity rate: 15-18%</li>
+                            <li>Job creation: 120,000 positions</li>
+                            <li>GHG reduction: 30%</li>
+                            <li>EU funding: 70% utilized</li>
+                            <li>Prerequisites: Gradual improvement, mixed results</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="scenario-card scenario-pessimistic">
+                        <div class="scenario-title">Pessimistic Scenario</div>
+                        <ul>
+                            <li>Circularity rate: 12-14%</li>
+                            <li>Job creation: 80,000 positions</li>
+                            <li>GHG reduction: 15%</li>
+                            <li>EU funding: 40% utilized</li>
+                            <li>Prerequisites: Implementation failures, fraud issues</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-title">Projected Material Flow Scenarios (2025-2040)</div>
+                    <canvas id="scenarioChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Alternative Models -->
+            <div class="section">
+                <h2 class="section-title">Alternative Economic Models Comparison</h2>
+                
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Primary Focus</th>
+                            <th>Implementation Complexity</th>
+                            <th>Environmental Impact</th>
+                            <th>Economic Viability</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Circular Economy</strong></td>
+                            <td>Resource efficiency</td>
+                            <td><span class="risk-indicator risk-high">High</span></td>
+                            <td><span class="risk-indicator risk-medium">Moderate</span></td>
+                            <td><span class="risk-indicator risk-medium">Moderate</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Green Economy</strong></td>
+                            <td>Social inclusion + environment</td>
+                            <td><span class="risk-indicator risk-medium">Medium</span></td>
+                            <td><span class="risk-indicator risk-medium">Moderate</span></td>
+                            <td><span class="risk-indicator risk-low">Low</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Regenerative Economics</strong></td>
+                            <td>Ecosystem restoration</td>
+                            <td><span class="risk-indicator risk-medium">Medium</span></td>
+                            <td><span class="risk-indicator risk-low">High</span></td>
+                            <td><span class="risk-indicator risk-high">Uncertain</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hybrid Approach</strong></td>
+                            <td>Combined strategies</td>
+                            <td><span class="risk-indicator risk-high">High</span></td>
+                            <td><span class="risk-indicator risk-low">High</span></td>
+                            <td><span class="risk-indicator risk-medium">Moderate</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Discussion Framework -->
+            <div class="discussion-questions">
+                <h3>Strategic Discussion Questions</h3>
+                <ul>
+                    <li>Given Poland's 27% risk of missing EU targets, should the country prioritize incremental improvements in traditional recycling or pursue comprehensive circular economy transformation?</li>
+                    <li>How should Poland balance the €136+ billion EU funding opportunity against documented implementation challenges and fraud risks?</li>
+                    <li>Is the Netherlands' 24.5% circularity rate with remaining challenges a realistic benchmark for Poland, or should alternative models be considered?</li>
+                    <li>Should Poland's approach prioritize economic efficiency (circular economy) or environmental restoration (regenerative economics) given limited resources?</li>
+                    <li>How can Poland address the fundamental tension between consumer price sensitivity (93% prioritize cost) and higher costs of circular products?</li>
+                    <li>Given only 22 staff monitor cross-border waste shipments, should investment focus on fraud prevention or system expansion?</li>
+                    <li>Would a hybrid approach combining circular economy tools with green economy social measures deliver superior outcomes for Poland?</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Performance Comparison Chart
+        const ctx1 = document.getElementById('performanceChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'radar',
+            data: {
+                labels: [
+                    'Material Circularity',
+                    'Recycling Rate',
+                    'Waste Reduction',
+                    'Resource Efficiency',
+                    'Innovation Index',
+                    'Policy Framework'
+                ],
+                datasets: [{
+                    label: 'Poland Current',
+                    data: [10.2, 40.3, 35, 42, 38, 45],
+                    backgroundColor: 'rgba(231, 76, 60, 0.2)',
+                    borderColor: 'rgba(231, 76, 60, 1)',
+                    borderWidth: 2
+                }, {
+                    label: 'EU Average',
+                    data: [11.7, 49.6, 48, 55, 52, 58],
+                    backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                    borderColor: 'rgba(52, 152, 219, 1)',
+                    borderWidth: 2
+                }, {
+                    label: 'Leading Countries',
+                    data: [24.5, 67, 65, 75, 72, 78],
+                    backgroundColor: 'rgba(46, 204, 113, 0.2)',
+                    borderColor: 'rgba(46, 204, 113, 1)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 80
+                    }
+                }
+            }
+        });
+
+        // Cost-Benefit Analysis
+        const ctx2 = document.getElementById('costBenefitChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: ['2025', '2027', '2030', '2035', '2040'],
+                datasets: [{
+                    label: 'Implementation Costs (EUR billion)',
+                    data: [15, 32, 48, 52, 55],
+                    backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                    borderColor: 'rgba(231, 76, 60, 1)',
+                    borderWidth: 3,
+                    tension: 0.4
+                }, {
+                    label: 'Economic Benefits (EUR billion)',
+                    data: [5, 18, 35, 58, 85],
+                    backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                    borderColor: 'rgba(46, 204, 113, 1)',
+                    borderWidth: 3,
+                    tension: 0.4
+                }, {
+                    label: 'Break-even Projection',
+                    data: [15, 32, 48, 48, 48],
+                    backgroundColor: 'rgba(149, 165, 166, 0.1)',
+                    borderColor: 'rgba(149, 165, 166, 1)',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'EUR Billion'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Fraud Risk Chart
+        const ctx3 = document.getElementById('fraudChart').getContext('2d');
+        new Chart(ctx3, {
+            type: 'bar',
+            data: {
+                labels: ['Illegal Waste Exports', 'Fraudulent Recycling Claims', 'EPR Fee Evasion', 'Documentation Fraud', 'Cross-border Violations'],
+                datasets: [{
+                    label: 'Reported Cases (2022-2024)',
+                    data: [45, 23, 67, 34, 89],
+                    backgroundColor: 'rgba(231, 76, 60, 0.8)',
+                    borderColor: 'rgba(231, 76, 60, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Estimated Unreported Cases',
+                    data: [180, 92, 268, 136, 356],
+                    backgroundColor: 'rgba(149, 165, 166, 0.6)',
+                    borderColor: 'rgba(149, 165, 166, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Cases'
+                        }
+                    }
+                }
+            }
+        });
+
+        // EU Comparison Chart
+        const ctx4 = document.getElementById('comparisonChart').getContext('2d');
+        new Chart(ctx4, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'EU Countries',
+                    data: [
+                        {x: 24.5, y: 8.2, label: 'Netherlands'},
+                        {x: 17.2, y: 7.8, label: 'Belgium'},
+                        {x: 13.4, y: 7.1, label: 'France'},
+                        {x: 12.9, y: 6.9, label: 'Germany'},
+                        {x: 10.2, y: 6.1, label: 'Poland'},
+                        {x: 8.1, y: 5.8, label: 'Czech Republic'},
+                        {x: 7.4, y: 5.4, label: 'Hungary'},
+                        {x: 4.1, y: 4.2, label: 'Bulgaria'}
+                    ],
+                    backgroundColor: function(context) {
+                        const label = context.parsed.label;
+                        if (label === 'Poland') return 'rgba(231, 76, 60, 0.8)';
+                        return 'rgba(52, 152, 219, 0.6)';
+                    },
+                    borderColor: function(context) {
+                        const label = context.parsed.label;
+                        if (label === 'Poland') return 'rgba(231, 76, 60, 1)';
+                        return 'rgba(52, 152, 219, 1)';
+                    },
+                    pointRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Circularity Rate (%)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Resource Productivity (EUR/kg)'
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.label + ': ' + context.parsed.x + '% circularity, ' + context.parsed.y + ' EUR/kg productivity';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Scenario Projections
+        const ctx5 = document.getElementById('scenarioChart').getContext('2d');
+        new Chart(ctx5, {
+            type: 'line',
+            data: {
+                labels: ['2025', '2030', '2035', '2040'],
+                datasets: [{
+                    label: 'Optimistic Scenario',
+                    data: [12, 18, 22, 25],
+                    backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                    borderColor: 'rgba(46, 204, 113, 1)',
+                    borderWidth: 3,
+                    tension: 0.4
+                }, {
+                    label: 'Realistic Scenario',
+                    data: [11, 14, 16, 18],
+                    backgroundColor: 'rgba(243, 156, 18, 0.1)',
+                    borderColor: 'rgba(243, 156, 18, 1)',
+                    borderWidth: 3,
+                    tension: 0.4
+                }, {
+                    label: 'Pessimistic Scenario',
+                    data: [10.5, 12, 13, 14],
+                    backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                    borderColor: 'rgba(231, 76, 60, 1)',
+                    borderWidth: 3,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 30,
+                        title: {
+                            display: true,
+                            text: 'Circularity Rate (%)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
