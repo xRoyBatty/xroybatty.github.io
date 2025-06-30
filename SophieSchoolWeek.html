@@ -554,14 +554,36 @@
         }
 
         function nextTask(taskNum) {
-            document.getElementById(`task${currentTask}`).classList.remove('active');
-            currentTask = taskNum;
-            document.getElementById(`task${currentTask}`).classList.add('active');
-            const timerDurations = { 2: 300, 3: 300, 4: 420, 5: 480, 6: 600 };
-            if (timerDurations[taskNum] && lessonStarted) {
-                startTimer(taskNum, timerDurations[taskNum]);
+            // Hasła dla każdego zadania. Nauczyciel podaje je uczniowi.
+            // Hasło do zadania 2: dzień
+            // Hasło do zadania 3: lekcja
+            // Hasło do zadania 4: piórnik
+            // Hasło do zadania 5: plan
+            // Hasło do zadania 6: brawo
+            const passwords = {
+                2: 'dzień',
+                3: 'lekcja',
+                4: 'piórnik',
+                5: 'plan',
+                6: 'brawo'
+            };
+
+            const requiredPassword = passwords[taskNum];
+            if (requiredPassword) {
+                const userAnswer = prompt('Podaj hasło od nauczyciela, aby przejść dalej:');
+                if (userAnswer && userAnswer.toLowerCase().trim() === requiredPassword) {
+                    document.getElementById(`task${currentTask}`).classList.remove('active');
+                    currentTask = taskNum;
+                    document.getElementById(`task${currentTask}`).classList.add('active');
+                    const timerDurations = { 2: 300, 3: 300, 4: 420, 5: 480, 6: 600 };
+                    if (timerDurations[taskNum] && lessonStarted) {
+                        startTimer(taskNum, timerDurations[taskNum]);
+                    }
+                    updateProgress();
+                } else {
+                    alert('Nieprawidłowe hasło. Spróbuj ponownie.');
+                }
             }
-            updateProgress();
         }
 
         function updateProgress() {
