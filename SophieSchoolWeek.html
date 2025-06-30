@@ -317,16 +317,35 @@
             font-family: inherit;
             width: 160px;
         }
+        
+        /* Styles for the new tooltip feature */
+        .tooltip-trigger {
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            color: #2196f3;
+            cursor: help;
+            font-weight: bold;
+        }
+
+        .custom-tooltip {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
 
         @media (max-width: 768px) {
             .container {
                 grid-template-columns: 1fr;
             }
-            
             .drag-container {
                 grid-template-columns: 1fr;
             }
-            
             .schedule-grid {
                 grid-template-columns: 1fr;
             }
@@ -334,6 +353,7 @@
     </style>
 </head>
 <body>
+    <div id="customTooltip" class="custom-tooltip"></div>
     <div class="container">
         <div class="main-content">
             <h1>📚 Sophie's School Week</h1>
@@ -357,7 +377,7 @@
                 </div>
             </div>
 
-            <!-- Task 1: Days of the Week -->
+            <!-- Task 1 to 5 are unchanged -->
             <div class="task-section active" id="task1">
                 <div class="task-header">
                     <h3 class="task-title">🗓️ Zadanie 1: Znajdź dni tygodnia</h3>
@@ -370,8 +390,6 @@
                     <button class="btn btn-next" onclick="nextTask(2)">Następne zadanie</button>
                 </div>
             </div>
-
-            <!-- Task 2: School Subjects -->
             <div class="task-section" id="task2">
                 <div class="task-header">
                     <h3 class="task-title">📚 Zadanie 2: Znajdź przedmioty szkolne</h3>
@@ -384,8 +402,6 @@
                     <button class="btn btn-next" onclick="nextTask(3)">Następne zadanie</button>
                 </div>
             </div>
-
-            <!-- Task 3: School Supplies -->
             <div class="task-section" id="task3">
                 <div class="task-header">
                     <h3 class="task-title">✏️ Zadanie 3: Znajdź przybory szkolne</h3>
@@ -398,15 +414,12 @@
                     <button class="btn btn-next" onclick="nextTask(4)">Następne zadanie</button>
                 </div>
             </div>
-
-            <!-- Task 4: Drag and Drop -->
             <div class="task-section" id="task4">
                 <div class="task-header">
                     <h3 class="task-title">🎯 Zadanie 4: Posegreguj przybory</h3>
                     <div class="timer" id="timer4">7:00</div>
                 </div>
                 <p><strong>Instrukcja:</strong> Przeciągnij przybory szkolne do odpowiednich grup. <br><strong>Wskazówka:</strong> Niektóre przedmioty, jak 'pencil', mogą pasować do więcej niż jednej grupy!</p>
-                
                 <div class="drag-container">
                     <div class="drag-source">
                         <h4>Przybory szkolne:</h4>
@@ -421,61 +434,32 @@
                             <div class="draggable-item" draggable="true" id="drag-pencilcase">pencil case</div>
                         </div>
                     </div>
-                    
                     <div class="drag-targets">
-                        <div class="drop-zone" data-category="writing">
-                            <h4>Do pisania (For Writing):</h4>
-                        </div>
-                        <div class="drop-zone" data-category="drawing">
-                            <h4>Do rysowania (For Drawing):</h4>
-                        </div>
-                        <div class="drop-zone" data-category="storage">
-                            <h4>Do przechowywania (For Storage):</h4>
-                        </div>
+                        <div class="drop-zone" data-category="writing"><h4>Do pisania (For Writing):</h4></div>
+                        <div class="drop-zone" data-category="drawing"><h4>Do rysowania (For Drawing):</h4></div>
+                        <div class="drop-zone" data-category="storage"><h4>Do przechowywania (For Storage):</h4></div>
                     </div>
                 </div>
-                
                 <div class="feedback" id="feedback4"></div>
                 <div style="text-align: center; margin-top: 20px;">
                     <button class="btn btn-check" onclick="checkTask4()">Sprawdź</button>
                     <button class="btn btn-next" onclick="nextTask(5)">Następne zadanie</button>
                 </div>
             </div>
-
-            <!-- Task 5: Weekly Schedule -->
             <div class="task-section" id="task5">
                 <div class="task-header">
                     <h3 class="task-title">📅 Zadanie 5: Uzupełnij plan lekcji Sophie</h3>
                     <div class="timer" id="timer5">8:00</div>
                 </div>
                 <p><strong>Instrukcja:</strong> Uzupełnij plan lekcji Sophie na podstawie informacji z opowiadania.</p>
-                
                 <div class="schedule-grid">
-                    <div class="schedule-header">Day</div>
-                    <div class="schedule-header">Subject 1</div>
-                    <div class="schedule-header">Subject 2</div>
-                    
-                    <div class="schedule-day">Monday</div>
-                    <input type="text" class="schedule-input" id="mon1" placeholder="Pierwszy przedmiot">
-                    <input type="text" class="schedule-input" id="mon2" placeholder="Drugi przedmiot">
-                    
-                    <div class="schedule-day">Tuesday</div>
-                    <input type="text" class="schedule-input" id="tue1" placeholder="Pierwszy przedmiot">
-                    <input type="text" class="schedule-input" id="tue2" placeholder="Drugi przedmiot">
-                    
-                    <div class="schedule-day">Wednesday</div>
-                    <input type="text" class="schedule-input" id="wed1" placeholder="Przedmiot">
-                    <input type="text" class="schedule-input" id="wed2" placeholder="Zostaw puste">
-                    
-                    <div class="schedule-day">Thursday</div>
-                    <input type="text" class="schedule-input" id="thu1" placeholder="Pierwszy przedmiot">
-                    <input type="text" class="schedule-input" id="thu2" placeholder="Drugi przedmiot">
-                    
-                    <div class="schedule-day">Friday</div>
-                    <input type="text" class="schedule-input" id="fri1" placeholder="Pierwszy przedmiot">
-                    <input type="text" class="schedule-input" id="fri2" placeholder="Drugi przedmiot">
+                    <div class="schedule-header">Day</div><div class="schedule-header">Subject 1</div><div class="schedule-header">Subject 2</div>
+                    <div class="schedule-day">Monday</div><input type="text" class="schedule-input" id="mon1" placeholder="Pierwszy przedmiot"><input type="text" class="schedule-input" id="mon2" placeholder="Drugi przedmiot">
+                    <div class="schedule-day">Tuesday</div><input type="text" class="schedule-input" id="tue1" placeholder="Pierwszy przedmiot"><input type="text" class="schedule-input" id="tue2" placeholder="Drugi przedmiot">
+                    <div class="schedule-day">Wednesday</div><input type="text" class="schedule-input" id="wed1" placeholder="Przedmiot"><input type="text" class="schedule-input" id="wed2" placeholder="Zostaw puste">
+                    <div class="schedule-day">Thursday</div><input type="text" class="schedule-input" id="thu1" placeholder="Pierwszy przedmiot"><input type="text" class="schedule-input" id="thu2" placeholder="Drugi przedmiot">
+                    <div class="schedule-day">Friday</div><input type="text" class="schedule-input" id="fri1" placeholder="Pierwszy przedmiot"><input type="text" class="schedule-input" id="fri2" placeholder="Drugi przedmiot">
                 </div>
-                
                 <div class="feedback" id="feedback5"></div>
                 <div style="text-align: center; margin-top: 20px;">
                     <button class="btn btn-check" onclick="checkTask5()">Sprawdź</button>
@@ -483,25 +467,25 @@
                 </div>
             </div>
 
-            <!-- Task 6: Fill in the Blanks -->
+            <!-- Task 6: NEW VERSION -->
             <div class="task-section" id="task6">
                 <div class="task-header">
-                    <h3 class="task-title">✍️ Zadanie 6: Uzupełnij luki</h3>
+                    <h3 class="task-title">✍️ Zadanie 6: O Tobie!</h3>
                     <div class="timer" id="timer6">10:00</div>
                 </div>
-                <p><strong>Instrukcja:</strong> Użyj słów z opowiadania, aby uzupełnić poniższe zdania.</p>
+                <p><strong>Instrukcja:</strong> Uzupełnij zdania o sobie, używając słów z lekcji. Kliknij na <span class="tooltip-trigger">podkreślone słowa</span>, aby zobaczyć ich polskie znaczenie.</p>
                 
                 <div class="gap-fill-container">
-                    <p>1. On <input type="text" class="gap-fill-input" id="blank1" placeholder="dzień tygodnia">, Sophie has History and Music class.</p>
-                    <p>2. She puts her pencils and eraser in her <input type="text" class="gap-fill-input" id="blank2" placeholder="przybór szkolny">.</p>
-                    <p>3. In <input type="text" class="gap-fill-input" id="blank3" placeholder="przedmiot szkolny"> class, she learns about mountains and rivers.</p>
-                    <p>4. Sophie is <input type="text" class="gap-fill-input" id="blank4" placeholder="liczba"> years old.</p>
-                    <p>5. To draw beautiful pictures, she uses her <input type="text" class="gap-fill-input" id="blank5" placeholder="przybór szkolny">.</p>
+                    <p>1. I <span class="tooltip-trigger" data-translation="pisać">write</span> with my <input type="text" class="gap-fill-input" id="self_blank1" placeholder="przybór szkolny"> in my notebook.</p>
+                    <p>2. My favorite <span class="tooltip-trigger" data-translation="przedmiot">subject</span> is <input type="text" class="gap-fill-input" id="self_blank2" placeholder="przedmiot szkolny">.</p>
+                    <p>3. On <input type="text" class="gap-fill-input" id="self_blank3" placeholder="dzień tygodnia">, I have my favorite class.</p>
+                    <p>4. I <span class="tooltip-trigger" data-translation="trzymać, przechowywać">keep</span> my school supplies in my <input type="text" class="gap-fill-input" id="self_blank4" placeholder="przybór do przechowywania">.</p>
+                    <p>5. I use an <input type="text" class="gap-fill-input" id="self_blank5" placeholder="przybór szkolny"> to <span class="tooltip-trigger" data-translation="poprawiać, naprawiać">fix</span> mistakes.</p>
                 </div>
                 
                 <div class="feedback" id="feedback6"></div>
                 <div style="text-align: center; margin-top: 20px;">
-                    <button class="btn btn-check" onclick="checkTask6()">Sprawdź</button>
+                    <button class="btn btn-check" onclick="checkTask6_self()">Sprawdź</button>
                     <button class="btn" onclick="finishLesson()">🎉 Zakończ lekcję</button>
                 </div>
             </div>
@@ -514,27 +498,22 @@
                 <button class="btn" onclick="pauseAllTimers()" style="background: #ff9800; width: 100%;">⏸️ Zatrzymaj wszystko</button>
                 <button class="btn" onclick="showAnswers()" style="background: #2196f3; width: 100%;">👁️ Pokaż odpowiedzi</button>
             </div>
-
             <h3>📊 Postęp</h3>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressBar"></div>
-            </div>
+            <div class="progress-bar"><div class="progress-fill" id="progressBar"></div></div>
             <p id="progressText">Zadanie 1 z 6</p>
-
             <h3 style="margin-top: 20px;">🎯 Lista słówek (Vocabulary)</h3>
             <div style="background: white; padding: 15px; border-radius: 10px; font-size: 0.9em;">
                 <strong>Days:</strong> Monday, Tuesday, Wednesday, Thursday, Friday<br><br>
                 <strong>Subjects:</strong> Math, English, Art, History, Music, Geography, Physical Education (PE)<br><br>
                 <strong>Supplies:</strong> pencil, pen, eraser, ruler, notebook, colored pencils, backpack, pencil case
             </div>
-
             <div style="margin-top: 20px; background: #e3f2fd; padding: 15px; border-radius: 10px;">
                 <h4>💡 Wskazówki:</h4>
                 <ul style="margin-left: 20px;">
                     <li>Czytaj uważnie</li>
                     <li>Nie spiesz się</li>
                     <li>Sprawdzaj swoją pracę</li>
-                    <li>Poproś o pomoc, jeśli jej potrzebujesz</li>
+                    <li>Poproś o pomoc</li>
                 </ul>
             </div>
         </div>
@@ -594,6 +573,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+            // Highlighting words logic
             document.querySelectorAll('.highlight-word').forEach(word => {
                 word.addEventListener('click', function() {
                     const type = this.dataset.type;
@@ -604,6 +584,19 @@
                 });
             });
             setupDragAndDrop();
+
+            // Tooltip logic
+            const tooltip = document.getElementById('customTooltip');
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('tooltip-trigger')) {
+                    tooltip.innerHTML = e.target.dataset.translation;
+                    tooltip.style.left = e.pageX + 10 + 'px';
+                    tooltip.style.top = e.pageY + 10 + 'px';
+                    tooltip.style.display = 'block';
+                } else {
+                    tooltip.style.display = 'none';
+                }
+            });
         });
 
         function checkTask1() {
@@ -709,30 +702,32 @@
             }
         }
 
-        function checkTask6() {
-            const answers = {
-                blank1: ['tuesday'],
-                blank2: ['pencil case'],
-                blank3: ['geography'],
-                blank4: ['8', 'eight'],
-                blank5: ['colored pencils']
+        function checkTask6_self() {
+            const validAnswers = {
+                self_blank1: ['pen', 'pencil'],
+                self_blank2: ['math', 'english', 'art', 'history', 'music', 'geography', 'physical education', 'pe'],
+                self_blank3: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
+                self_blank4: ['backpack', 'pencil case'],
+                self_blank5: ['eraser']
             };
             let correctCount = 0;
-            const totalQuestions = Object.keys(answers).length;
-            Object.keys(answers).forEach(id => {
+            const totalQuestions = Object.keys(validAnswers).length;
+
+            Object.keys(validAnswers).forEach(id => {
                 const inputElement = document.getElementById(id);
                 const userAnswer = inputElement.value.toLowerCase().trim();
-                if (answers[id].includes(userAnswer)) {
+                if (validAnswers[id].includes(userAnswer)) {
                     correctCount++;
                     inputElement.style.border = '2px solid #4caf50';
                 } else {
                     inputElement.style.border = '2px solid #f44336';
                 }
             });
+
             if (correctCount === totalQuestions) {
-                showFeedback('feedback6', `Idealnie! Masz wszystkie ${totalQuestions} poprawne odpowiedzi! ✍️`, 'success');
+                showFeedback('feedback6', `Idealnie! Wszystkie odpowiedzi są poprawne! ✍️`, 'success');
             } else {
-                showFeedback('feedback6', `Masz ${correctCount} z ${totalQuestions} poprawnych odpowiedzi. Spróbuj jeszcze raz!`, 'error');
+                showFeedback('feedback6', `Masz ${correctCount} z ${totalQuestions} poprawnych odpowiedzi. Upewnij się, że używasz słów z listy słówek!`, 'error');
             }
         }
 
@@ -744,12 +739,12 @@
         }
 
         function showAnswers() {
-            alert('Odpowiedzi:\nTask 1: Monday, Tuesday, Wednesday, Thursday, Friday\nTask 2: Math, English, Art, History, Music, Geography, PE\nTask 3: backpack, pencil, eraser, ruler, colored pencils, pencil case, notebook, pen\nTask 4: Writing(pen, pencil, notebook), Drawing(pencil, ruler, colored pencils), Storage(backpack, pencil case)\nTask 5: Check story for schedule\nTask 6: 1.tuesday, 2.pencil case, 3.geography, 4.8, 5.colored pencils');
+            alert('Przykładowe odpowiedzi:\nTask 1-5: Odpowiedzi znajdują się w tekście.\nTask 6: 1.pen/pencil, 2.dowolny przedmiot, 3.dowolny dzień, 4.backpack/pencil case, 5.eraser');
         }
 
         function finishLesson() {
             pauseAllTimers();
-            alert('🎉 Gratulacje! Ukończyłeś lekcję!\n\nNauczyłeś się:\n✅ Days of the week\n✅ School subjects\n✅ School supplies\n✅ Reading for details\n✅ Using new vocabulary\n\nŚwietna robota!');
+            alert('🎉 Gratulacje! Ukończyłeś lekcję!\n\nNauczyłeś się:\n✅ Days of the week\n✅ School subjects\n✅ School supplies\n✅ Czytania ze zrozumieniem\n✅ Używania nowych słówek w praktyce\n\nŚwietna robota!');
         }
     </script>
 </body>
