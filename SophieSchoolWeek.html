@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sophie's School Week - Interaktywna Lekcja</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .sidebar {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a90e2;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .lesson-info {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 10px;
+            border: 2px solid #4a90e2;
+        }
+
+        .story-section {
+            background: #fff3e0;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 5px solid #ff9800;
+        }
+
+        .story-text {
+            font-size: 1.2em;
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        .task-section {
+            background: #f1f8e9;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border: 2px solid #4caf50;
+            display: none;
+        }
+
+        .task-section.active {
+            display: block;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .task-title {
+            color: #2e7d32;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .timer {
+            background: #ff5722;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .highlight-word {
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+
+        .highlight-word:hover {
+            background: #ffeb3b;
+        }
+
+        .highlight-word.highlighted-day {
+            background: #4caf50;
+            color: white;
+        }
+
+        .highlight-word.highlighted-subject {
+            background: #2196f3;
+            color: white;
+        }
+
+        .highlight-word.highlighted-supply {
+            background: #ff9800;
+            color: white;
+        }
+
+        .drag-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .drag-source {
+            background: #e1f5fe;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px dashed #0288d1;
+            min-height: 150px;
+        }
+
+        .drag-targets {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .drop-zone {
+            background: #f3e5f5;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px dashed #7b1fa2;
+            min-height: 60px;
+            transition: all 0.3s;
+        }
+
+        .drop-zone.drag-over {
+            background: #e8f5e8;
+            border-color: #4caf50;
+        }
+
+        .draggable-item {
+            background: #42a5f5;
+            color: white;
+            padding: 8px 12px;
+            margin: 5px;
+            border-radius: 20px;
+            cursor: move;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .draggable-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: auto 1fr 1fr;
+            gap: 10px;
+            margin: 20px 0;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #4caf50;
+        }
+
+        .schedule-header {
+            background: #4caf50;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+
+        .schedule-day {
+            background: #e8f5e8;
+            padding: 10px;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        .schedule-input {
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-check {
+            background: #2196f3;
+        }
+
+        .btn-check:hover {
+            background: #1976d2;
+        }
+
+        .btn-next {
+            background: #ff9800;
+        }
+
+        .btn-next:hover {
+            background: #f57c00;
+        }
+
+        .feedback {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: bold;
+            text-align: center;
+            display: none;
+        }
+
+        .feedback.success {
+            background: #c8e6c9;
+            color: #2e7d32;
+            border: 2px solid #4caf50;
+        }
+
+        .feedback.error {
+            background: #ffcdd2;
+            color: #c62828;
+            border: 2px solid #f44336;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            height: 20px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .teacher-controls {
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #ff5722;
+        }
+        
+        .gap-fill-container {
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        .gap-fill-container p {
+            margin-bottom: 15px;
+            line-height: 2;
+        }
+
+        .gap-fill-input {
+            padding: 5px 8px;
+            border: 2px solid #4caf50;
+            border-radius: 5px;
+            font-size: 1em;
+            font-family: inherit;
+            width: 160px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .drag-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .schedule-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-content">
+            <h1>📚 Sophie's School Week</h1>
+            
+            <div class="lesson-info">
+                <h3>🎯 Dzisiejsze cele:</h3>
+                <p>Poznaj i naucz się angielskich słów o dniach tygodnia, przedmiotach i przyborach szkolnych!</p>
+                <p><strong>Czas:</strong> 45 minut | <strong>Poziom:</strong> Podstawowy</p>
+            </div>
+
+            <div class="story-section">
+                <h3>📖 Przeczytaj opowiadanie o Sophie:</h3>
+                <div class="story-text" id="storyText">
+                    Sophie is an 8-year-old student who loves going to school. On <span class="highlight-word" data-type="day">Monday</span> morning, she packs her pink <span class="highlight-word" data-type="supply">backpack</span>. She puts new <span class="highlight-word" data-type="supply">pencils</span>, an <span class="highlight-word" data-type="supply">eraser</span>, a <span class="highlight-word" data-type="supply">ruler</span>, and <span class="highlight-word" data-type="supply">colored pencils</span> in her <span class="highlight-word" data-type="supply">pencil case</span>. She also remembers to pack her <span class="highlight-word" data-type="supply">notebooks</span> and a <span class="highlight-word" data-type="supply">pen</span>.
+
+                    On <span class="highlight-word" data-type="day">Monday</span>, Sophie has <span class="highlight-word" data-type="subject">Math</span>, <span class="highlight-word" data-type="subject">English</span>, and <span class="highlight-word" data-type="subject">Art</span>. In <span class="highlight-word" data-type="subject">Math</span> class, she uses her <span class="highlight-word" data-type="supply">pencil</span> to solve problems in her <span class="highlight-word" data-type="supply">notebook</span>. In <span class="highlight-word" data-type="subject">Art</span> class, she creates beautiful pictures with her <span class="highlight-word" data-type="supply">colored pencils</span>. <span class="highlight-word" data-type="day">Tuesday</span> brings <span class="highlight-word" data-type="subject">History</span> and <span class="highlight-word" data-type="subject">Music</span> classes. Sophie loves to sing! On <span class="highlight-word" data-type="day">Wednesday</span>, she studies <span class="highlight-word" data-type="subject">Geography</span> and learns about mountains and rivers. She always marks important places with her colorful <span class="highlight-word" data-type="supply">pen</span>.
+
+                    <span class="highlight-word" data-type="day">Thursday</span> is <span class="highlight-word" data-type="subject">Physical Education</span> day. Sophie packs her sports clothes and a water bottle in her <span class="highlight-word" data-type="supply">backpack</span>. After PE, she has <span class="highlight-word" data-type="subject">English</span> class where she writes neat sentences in her <span class="highlight-word" data-type="supply">notebook</span>, using her favorite <span class="highlight-word" data-type="supply">eraser</span> to fix any mistakes. <span class="highlight-word" data-type="day">Friday</span> ends the week with <span class="highlight-word" data-type="subject">Math</span> and <span class="highlight-word" data-type="subject">Music</span> again.
+
+                    Every day, Sophie checks that she has all her school supplies: <span class="highlight-word" data-type="supply">pencils</span>, <span class="highlight-word" data-type="supply">eraser</span>, <span class="highlight-word" data-type="supply">ruler</span>, <span class="highlight-word" data-type="supply">colored pencils</span>, <span class="highlight-word" data-type="supply">pen</span>, and <span class="highlight-word" data-type="supply">notebooks</span>. This way, she's always ready for her lessons!
+                </div>
+            </div>
+
+            <!-- Task 1: Days of the Week -->
+            <div class="task-section active" id="task1">
+                <div class="task-header">
+                    <h3 class="task-title">🗓️ Zadanie 1: Znajdź dni tygodnia</h3>
+                    <div class="timer" id="timer1">5:00</div>
+                </div>
+                <p><strong>Instrukcja:</strong> Kliknij wszystkie dni tygodnia w opowiadaniu. Kiedy je znajdziesz, zmienią kolor na zielony!</p>
+                <div class="feedback" id="feedback1"></div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn btn-check" onclick="checkTask1()">Sprawdź</button>
+                    <button class="btn btn-next" onclick="nextTask(2)">Następne zadanie</button>
+                </div>
+            </div>
+
+            <!-- Task 2: School Subjects -->
+            <div class="task-section" id="task2">
+                <div class="task-header">
+                    <h3 class="task-title">📚 Zadanie 2: Znajdź przedmioty szkolne</h3>
+                    <div class="timer" id="timer2">5:00</div>
+                </div>
+                <p><strong>Instrukcja:</strong> Teraz kliknij wszystkie przedmioty szkolne w opowiadaniu. Zmienią kolor na niebieski!</p>
+                <div class="feedback" id="feedback2"></div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn btn-check" onclick="checkTask2()">Sprawdź</button>
+                    <button class="btn btn-next" onclick="nextTask(3)">Następne zadanie</button>
+                </div>
+            </div>
+
+            <!-- Task 3: School Supplies -->
+            <div class="task-section" id="task3">
+                <div class="task-header">
+                    <h3 class="task-title">✏️ Zadanie 3: Znajdź przybory szkolne</h3>
+                    <div class="timer" id="timer3">5:00</div>
+                </div>
+                <p><strong>Instrukcja:</strong> Kliknij wszystkie przybory szkolne w opowiadaniu. Zmienią kolor na pomarańczowy!</p>
+                <div class="feedback" id="feedback3"></div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn btn-check" onclick="checkTask3()">Sprawdź</button>
+                    <button class="btn btn-next" onclick="nextTask(4)">Następne zadanie</button>
+                </div>
+            </div>
+
+            <!-- Task 4: Drag and Drop -->
+            <div class="task-section" id="task4">
+                <div class="task-header">
+                    <h3 class="task-title">🎯 Zadanie 4: Posegreguj przybory</h3>
+                    <div class="timer" id="timer4">7:00</div>
+                </div>
+                <p><strong>Instrukcja:</strong> Przeciągnij przybory szkolne do odpowiednich grup. <br><strong>Wskazówka:</strong> Niektóre przedmioty, jak 'pencil', mogą pasować do więcej niż jednej grupy!</p>
+                
+                <div class="drag-container">
+                    <div class="drag-source">
+                        <h4>Przybory szkolne:</h4>
+                        <div id="dragItems">
+                            <div class="draggable-item" draggable="true" id="drag-pencil">pencil</div>
+                            <div class="draggable-item" draggable="true" id="drag-backpack">backpack</div>
+                            <div class="draggable-item" draggable="true" id="drag-eraser">eraser</div>
+                            <div class="draggable-item" draggable="true" id="drag-crayons">colored pencils</div>
+                            <div class="draggable-item" draggable="true" id="drag-notebook">notebook</div>
+                            <div class="draggable-item" draggable="true" id="drag-ruler">ruler</div>
+                            <div class="draggable-item" draggable="true" id="drag-pen">pen</div>
+                            <div class="draggable-item" draggable="true" id="drag-pencilcase">pencil case</div>
+                        </div>
+                    </div>
+                    
+                    <div class="drag-targets">
+                        <div class="drop-zone" data-category="writing">
+                            <h4>Do pisania (For Writing):</h4>
+                        </div>
+                        <div class="drop-zone" data-category="drawing">
+                            <h4>Do rysowania (For Drawing):</h4>
+                        </div>
+                        <div class="drop-zone" data-category="storage">
+                            <h4>Do przechowywania (For Storage):</h4>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="feedback" id="feedback4"></div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn btn-check" onclick="checkTask4()">Sprawdź</button>
+                    <button class="btn btn-next" onclick="nextTask(5)">Następne zadanie</button>
+                </div>
+            </div>
+
+            <!-- Task 5: Weekly Schedule -->
+            <div class="task-section" id="task5">
+                <div class="task-header">
+                    <h3 class="task-title">📅 Zadanie 5: Uzupełnij plan lekcji Sophie</h3>
+                    <div class="timer" id="timer5">8:00</div>
+                </div>
+                <p><strong>Instrukcja:</strong> Uzupełnij plan lekcji Sophie na podstawie informacji z opowiadania.</p>
+                
+                <div class="schedule-grid">
+                    <div class="schedule-header">Day</div>
+                    <div class="schedule-header">Subject 1</div>
+                    <div class="schedule-header">Subject 2</div>
+                    
+                    <div class="schedule-day">Monday</div>
+                    <input type="text" class="schedule-input" id="mon1" placeholder="Pierwszy przedmiot">
+                    <input type="text" class="schedule-input" id="mon2" placeholder="Drugi przedmiot">
+                    
+                    <div class="schedule-day">Tuesday</div>
+                    <input type="text" class="schedule-input" id="tue1" placeholder="Pierwszy przedmiot">
+                    <input type="text" class="schedule-input" id="tue2" placeholder="Drugi przedmiot">
+                    
+                    <div class="schedule-day">Wednesday</div>
+                    <input type="text" class="schedule-input" id="wed1" placeholder="Przedmiot">
+                    <input type="text" class="schedule-input" id="wed2" placeholder="Zostaw puste">
+                    
+                    <div class="schedule-day">Thursday</div>
+                    <input type="text" class="schedule-input" id="thu1" placeholder="Pierwszy przedmiot">
+                    <input type="text" class="schedule-input" id="thu2" placeholder="Drugi przedmiot">
+                    
+                    <div class="schedule-day">Friday</div>
+                    <input type="text" class="schedule-input" id="fri1" placeholder="Pierwszy przedmiot">
+                    <input type="text" class="schedule-input" id="fri2" placeholder="Drugi przedmiot">
+                </div>
+                
+                <div class="feedback" id="feedback5"></div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn btn-check" onclick="checkTask5()">Sprawdź</button>
+                    <button class="btn btn-next" onclick="nextTask(6)">Następne zadanie</button>
+                </div>
+            </div>
+
+            <!-- Task 6: Fill in the Blanks -->
+            <div class="task-section" id="task6">
+                <div class="task-header">
+                    <h3 class="task-title">✍️ Zadanie 6: Uzupełnij luki</h3>
+                    <div class="timer" id="timer6">10:00</div>
+                </div>
+                <p><strong>Instrukcja:</strong> Użyj słów z opowiadania, aby uzupełnić poniższe zdania.</p>
+                
+                <div class="gap-fill-container">
+                    <p>1. On <input type="text" class="gap-fill-input" id="blank1" placeholder="dzień tygodnia">, Sophie has History and Music class.</p>
+                    <p>2. She puts her pencils and eraser in her <input type="text" class="gap-fill-input" id="blank2" placeholder="przybór szkolny">.</p>
+                    <p>3. In <input type="text" class="gap-fill-input" id="blank3" placeholder="przedmiot szkolny"> class, she learns about mountains and rivers.</p>
+                    <p>4. Sophie is <input type="text" class="gap-fill-input" id="blank4" placeholder="liczba"> years old.</p>
+                    <p>5. To draw beautiful pictures, she uses her <input type="text" class="gap-fill-input" id="blank5" placeholder="przybór szkolny">.</p>
+                </div>
+                
+                <div class="feedback" id="feedback6"></div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn btn-check" onclick="checkTask6()">Sprawdź</button>
+                    <button class="btn" onclick="finishLesson()">🎉 Zakończ lekcję</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="teacher-controls">
+                <h3 style="color: #ff5722; margin-bottom: 15px;">👩‍🏫 Panel Nauczyciela</h3>
+                <button class="btn" onclick="startLesson()" style="background: #4caf50; width: 100%;">▶️ Rozpocznij lekcję</button>
+                <button class="btn" onclick="pauseAllTimers()" style="background: #ff9800; width: 100%;">⏸️ Zatrzymaj wszystko</button>
+                <button class="btn" onclick="showAnswers()" style="background: #2196f3; width: 100%;">👁️ Pokaż odpowiedzi</button>
+            </div>
+
+            <h3>📊 Postęp</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+            <p id="progressText">Zadanie 1 z 6</p>
+
+            <h3 style="margin-top: 20px;">🎯 Lista słówek (Vocabulary)</h3>
+            <div style="background: white; padding: 15px; border-radius: 10px; font-size: 0.9em;">
+                <strong>Days:</strong> Monday, Tuesday, Wednesday, Thursday, Friday<br><br>
+                <strong>Subjects:</strong> Math, English, Art, History, Music, Geography, Physical Education (PE)<br><br>
+                <strong>Supplies:</strong> pencil, pen, eraser, ruler, notebook, colored pencils, backpack, pencil case
+            </div>
+
+            <div style="margin-top: 20px; background: #e3f2fd; padding: 15px; border-radius: 10px;">
+                <h4>💡 Wskazówki:</h4>
+                <ul style="margin-left: 20px;">
+                    <li>Czytaj uważnie</li>
+                    <li>Nie spiesz się</li>
+                    <li>Sprawdzaj swoją pracę</li>
+                    <li>Poproś o pomoc, jeśli jej potrzebujesz</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTask = 1;
+        let timers = {};
+        let lessonStarted = false;
+
+        function startLesson() {
+            if (!lessonStarted) {
+                lessonStarted = true;
+                startTimer(1, 300);
+                updateProgress();
+            }
+        }
+
+        function startTimer(taskNum, seconds) {
+            if (timers[taskNum]) clearInterval(timers[taskNum]);
+            const timerElement = document.getElementById(`timer${taskNum}`);
+            let timeLeft = seconds;
+            timers[taskNum] = setInterval(() => {
+                const minutes = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+                timerElement.textContent = `${minutes}:${secs.toString().padStart(2, '0')}`;
+                if (timeLeft <= 0) {
+                    clearInterval(timers[taskNum]);
+                    timerElement.textContent = "Koniec czasu!";
+                    timerElement.style.background = '#f44336';
+                }
+                timeLeft--;
+            }, 1000);
+        }
+
+        function pauseAllTimers() {
+            Object.keys(timers).forEach(key => clearInterval(timers[key]));
+        }
+
+        function nextTask(taskNum) {
+            document.getElementById(`task${currentTask}`).classList.remove('active');
+            currentTask = taskNum;
+            document.getElementById(`task${currentTask}`).classList.add('active');
+            const timerDurations = { 2: 300, 3: 300, 4: 420, 5: 480, 6: 600 };
+            if (timerDurations[taskNum] && lessonStarted) {
+                startTimer(taskNum, timerDurations[taskNum]);
+            }
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const progress = (currentTask / 6) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = `Zadanie ${currentTask} z 6`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.highlight-word').forEach(word => {
+                word.addEventListener('click', function() {
+                    const type = this.dataset.type;
+                    if (this.classList.contains('highlighted-day') || this.classList.contains('highlighted-subject') || this.classList.contains('highlighted-supply')) return;
+                    if (type === 'day' && currentTask === 1) this.classList.add('highlighted-day');
+                    else if (type === 'subject' && currentTask === 2) this.classList.add('highlighted-subject');
+                    else if (type === 'supply' && currentTask === 3) this.classList.add('highlighted-supply');
+                });
+            });
+            setupDragAndDrop();
+        });
+
+        function checkTask1() {
+            const highlighted = document.querySelectorAll('.highlighted-day').length;
+            const total = document.querySelectorAll('.highlight-word[data-type="day"]').length;
+            if (highlighted === total) {
+                showFeedback('feedback1', `Świetnie! Znalazłeś wszystkie ${total} dni! 🎉`, 'success');
+            } else {
+                showFeedback('feedback1', `Znalazłeś ${highlighted} z ${total} dni. Szukaj dalej! 🔍`, 'error');
+            }
+        }
+
+        function checkTask2() {
+            const highlighted = document.querySelectorAll('.highlighted-subject').length;
+            const total = document.querySelectorAll('.highlight-word[data-type="subject"]').length;
+            if (highlighted === total) {
+                showFeedback('feedback2', `Doskonale! Znalazłeś wszystkie ${total} przedmiotów! 📚`, 'success');
+            } else {
+                showFeedback('feedback2', `Znalazłeś ${highlighted} z ${total} przedmiotów. Spróbuj jeszcze raz! 🎯`, 'error');
+            }
+        }
+
+        function checkTask3() {
+            const highlighted = document.querySelectorAll('.highlighted-supply').length;
+            const total = document.querySelectorAll('.highlight-word[data-type="supply"]').length;
+            if (highlighted === total) {
+                showFeedback('feedback3', `Idealnie! Znalazłeś wszystkie ${total} przyborów! ✏️`, 'success');
+            } else {
+                showFeedback('feedback3', `Znalazłeś ${highlighted} z ${total} przyborów. Szukaj dalej! 🔍`, 'error');
+            }
+        }
+
+        function setupDragAndDrop() {
+            document.querySelectorAll('.draggable-item').forEach(item => {
+                item.addEventListener('dragstart', e => e.dataTransfer.setData('text/plain', e.target.id));
+            });
+            document.querySelectorAll('.drag-source, .drop-zone').forEach(zone => {
+                zone.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    if(zone.classList.contains('drop-zone')) zone.classList.add('drag-over');
+                });
+                zone.addEventListener('dragleave', e => {
+                    if(zone.classList.contains('drop-zone')) zone.classList.remove('drag-over');
+                });
+                zone.addEventListener('drop', e => {
+                    e.preventDefault();
+                    if(zone.classList.contains('drop-zone')) zone.classList.remove('drag-over');
+                    const itemId = e.dataTransfer.getData('text/plain');
+                    const item = document.getElementById(itemId);
+                    if (item) zone.appendChild(item);
+                });
+            });
+        }
+
+        function checkTask4() {
+            const correctCategories = {
+                writing: ['pen', 'pencil', 'notebook'],
+                drawing: ['pencil', 'ruler', 'colored pencils'],
+                storage: ['backpack', 'pencil case']
+            };
+            let misplaced = false;
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                const category = zone.dataset.category;
+                zone.querySelectorAll('.draggable-item').forEach(item => {
+                    const itemText = item.textContent.trim();
+                    if (!correctCategories[category] || !correctCategories[category].includes(itemText)) {
+                        misplaced = true;
+                    }
+                });
+            });
+            const itemsLeft = document.querySelectorAll('#dragItems .draggable-item').length;
+            if (itemsLeft === 0 && !misplaced) {
+                showFeedback('feedback4', 'Świetne sortowanie! Wszystko na swoim miejscu! 🎯', 'success');
+            } else {
+                showFeedback('feedback4', 'Niektóre przedmioty są w złych grupach. Pomyśl, do czego służą i spróbuj ponownie! 🤔', 'error');
+            }
+        }
+
+        function checkTask5() {
+            const schedule = {
+                mon1: ['math'], mon2: ['english'],
+                tue1: ['history'], tue2: ['music'],
+                wed1: ['geography'], wed2: [''],
+                thu1: ['physical education', 'pe'], thu2: ['english'],
+                fri1: ['math'], fri2: ['music']
+            };
+            let correct = 0;
+            const total = 9;
+            Object.keys(schedule).forEach(id => {
+                const input = document.getElementById(id);
+                const value = input.value.toLowerCase().trim();
+                if (schedule[id].includes(value)) {
+                    correct++;
+                    input.style.borderColor = '#4caf50';
+                } else {
+                    input.style.borderColor = '#f44336';
+                }
+            });
+            if (correct >= 7) {
+                showFeedback('feedback5', `Świetna robota! ${correct}/${total} poprawnie! 📅`, 'success');
+            } else {
+                showFeedback('feedback5', `Dobra próba! ${correct}/${total} poprawnie. Sprawdź opowiadanie jeszcze raz! 📖`, 'error');
+            }
+        }
+
+        function checkTask6() {
+            const answers = {
+                blank1: ['tuesday'],
+                blank2: ['pencil case'],
+                blank3: ['geography'],
+                blank4: ['8', 'eight'],
+                blank5: ['colored pencils']
+            };
+            let correctCount = 0;
+            const totalQuestions = Object.keys(answers).length;
+            Object.keys(answers).forEach(id => {
+                const inputElement = document.getElementById(id);
+                const userAnswer = inputElement.value.toLowerCase().trim();
+                if (answers[id].includes(userAnswer)) {
+                    correctCount++;
+                    inputElement.style.border = '2px solid #4caf50';
+                } else {
+                    inputElement.style.border = '2px solid #f44336';
+                }
+            });
+            if (correctCount === totalQuestions) {
+                showFeedback('feedback6', `Idealnie! Masz wszystkie ${totalQuestions} poprawne odpowiedzi! ✍️`, 'success');
+            } else {
+                showFeedback('feedback6', `Masz ${correctCount} z ${totalQuestions} poprawnych odpowiedzi. Spróbuj jeszcze raz!`, 'error');
+            }
+        }
+
+        function showFeedback(elementId, message, type) {
+            const feedback = document.getElementById(elementId);
+            feedback.textContent = message;
+            feedback.className = `feedback ${type}`;
+            feedback.style.display = 'block';
+        }
+
+        function showAnswers() {
+            alert('Odpowiedzi:\nTask 1: Monday, Tuesday, Wednesday, Thursday, Friday\nTask 2: Math, English, Art, History, Music, Geography, PE\nTask 3: backpack, pencil, eraser, ruler, colored pencils, pencil case, notebook, pen\nTask 4: Writing(pen, pencil, notebook), Drawing(pencil, ruler, colored pencils), Storage(backpack, pencil case)\nTask 5: Check story for schedule\nTask 6: 1.tuesday, 2.pencil case, 3.geography, 4.8, 5.colored pencils');
+        }
+
+        function finishLesson() {
+            pauseAllTimers();
+            alert('🎉 Gratulacje! Ukończyłeś lekcję!\n\nNauczyłeś się:\n✅ Days of the week\n✅ School subjects\n✅ School supplies\n✅ Reading for details\n✅ Using new vocabulary\n\nŚwietna robota!');
+        }
+    </script>
+</body>
+</html>
