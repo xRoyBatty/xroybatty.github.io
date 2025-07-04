@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Making of an Astronaut - Interactive Exercise</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f7f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 25px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2, h3 {
+            color: #0d2c4e;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .task {
+            margin-bottom: 40px;
+        }
+        .button-group {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .feedback {
+            margin-top: 15px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 6px;
+            display: none;
+        }
+        .feedback.correct {
+            color: #155724;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        .feedback.incorrect {
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* --- Task 1: Vocabulary Matching Styles --- */
+        #vocab-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            align-items: start;
+        }
+        #word-bank {
+            border: 2px dashed #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            min-height: 300px;
+        }
+        .draggable-word {
+            background-color: #e9f5ff;
+            border: 1px solid #bde0fe;
+            padding: 8px 12px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            cursor: grab;
+            user-select: none;
+            font-weight: bold;
+        }
+        .draggable-word:active { cursor: grabbing; }
+        #definitions-list { list-style: none; padding: 0; margin: 0; }
+        .drop-zone {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            min-height: 40px;
+            transition: background-color 0.2s;
+        }
+        .drop-zone.drag-over { background-color: #d4edda; border-color: #28a745; }
+        .drop-zone .placeholder {
+            min-width: 150px;
+            height: 38px;
+            border: 2px dotted #007bff;
+            border-radius: 6px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.3s;
+        }
+        .drop-zone .placeholder .draggable-word { margin-bottom: 0; }
+        .placeholder.correct-match { border: 2px solid #28a745; }
+        .placeholder.incorrect-match { border: 2px solid #dc3545; }
+
+        /* --- Task 2: Gap-Fill Styles --- */
+        .news-context {
+            background-color: #f0f0f0;
+            border-left: 5px solid #007bff;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        .gap-fill-text p { font-size: 1.1em; }
+        .gap-fill-input {
+            width: 120px;
+            border: none;
+            border-bottom: 2px solid #0d2c4e;
+            font-size: 1em;
+            text-align: center;
+            background-color: transparent;
+            margin: 0 5px;
+            padding: 2px 0;
+            transition: border-color 0.3s;
+        }
+        .gap-fill-input:focus { outline: none; border-bottom-color: #007bff; }
+        .gap-fill-input.correct-answer { border-bottom-color: #28a745; }
+        .gap-fill-input.incorrect-answer { border-bottom-color: #dc3545; }
+        
+        /* --- Task 3: Discussion Questions --- */
+        #discussion-questions ol { padding-left: 20px; }
+        #discussion-questions li { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>The Making of an Astronaut</h1>
+
+        <!-- ==================== TASK 1: VOCABULARY MATCHING ==================== -->
+        <div class="task" id="task1">
+            <h2>Task 1: Pre-Reading Vocabulary - Building Success</h2>
+            <p>Instructions: Drag the "success-building" words from the Word Bank and drop them next to their correct definitions.</p>
+            
+            <div id="vocab-container">
+                <div id="word-bank"></div>
+                <ol id="definitions-list" type="a"></ol>
+            </div>
+
+            <div class="button-group">
+                <button onclick="checkTask1()">Check Answers</button>
+                <button class="btn-secondary" onclick="setupTask1()">Restart Task</button>
+            </div>
+            <div id="feedback1" class="feedback"></div>
+        </div>
+
+        <!-- ==================== TASK 2: READING & GAP-FILL ==================== -->
+        <div class="task" id="task2">
+            <h2>Task 2: The Making of an Astronaut</h2>
+            <div class="news-context">
+                <strong>Breaking News Context:</strong> Today, June 25th, 2025, Poland made history when Sławosz Uznański-Wiśniewski launched to the International Space Station - making him the second Pole ever to travel to space in 47 years! This mission is called "Ignis" (meaning "fire" in Latin) and the crew will spend 14 days conducting scientific experiments.
+            </div>
+            
+            <h3>Part A: Reading and Gap-Fill</h3>
+            <p>Instructions: Read about Sławosz's journey and fill in the gaps with words from Task 1.</p>
+
+            <div class="gap-fill-text">
+                <h4>From Birthday Wishes to Space Station</h4>
+                <p> Sławosz Uznański-Wiśniewski was born on April 12, 1984, in Łódź, Poland. This date was special for an unusual reason: it was exactly 23 years after Yuri Gagarin became the first human to travel to space. Nobody knew that this amazing (1)<input type="text" id="gap1" class="gap-fill-input"> would change his future. </p>
+                <p> Growing up in Poland in the 1980s, Sławosz had a childhood full of space stories. His mother created a special family (2)<input type="text" id="gap2" class="gap-fill-input">- every birthday, she wished him "Happy Cosmonaut Day" because of his birth date. This (3)<input type="text" id="gap3" class="gap-fill-input"> encouragement continued every year during his childhood. </p>
+                <p> Sławosz's education began with strong (4)<input type="text" id="gap4" class="gap-fill-input"> to learning. He completed engineering studies at Łódź University of Technology and the University of Nantes in France, building solid study (5)<input type="text" id="gap5" class="gap-fill-input">. Later, he earned a PhD in space technology and developed deep (6)<input type="text" id="gap6" class="gap-fill-input"> in designs for space equipment. </p>
+                <p> His work led him to CERN in Geneva, where he achieved a major (7)<input type="text" id="gap7" class="gap-fill-input"> in science. From 2018 to 2020, he was head engineer of the Large Hadron Collider. This job required perfect (8)<input type="text" id="gap8" class="gap-fill-input"> in controlling the world's most powerful scientific machine. </p>
+                <p> In 2022, Sławosz showed amazing (9)<input type="text" id="gap9" class="gap-fill-input"> when he was chosen from over 22,500 people to join the European Space Agency's Astronaut Reserve. Today, as he travels around Earth doing scientific experiments, he has created a motivating (10)<input type="text" id="gap10" class="gap-fill-input"> that connects childhood dreams to real achievements. </p>
+            </div>
+
+            <div class="button-group">
+                <button onclick="checkTask2()">Check Answers</button>
+                <button class="btn-secondary" onclick="resetTask2()">Restart Task</button>
+            </div>
+            <div id="feedback2" class="feedback"></div>
+        </div>
+
+        <!-- ==================== TASK 3: DISCUSSION QUESTIONS ==================== -->
+        <div class="task" id="task3">
+            <h2>Task 3: Discussion Questions</h2>
+            <p>Instructions: Discuss these questions with your partner or teacher.</p>
+            <div id="discussion-questions">
+                <ol>
+                    <li>Do you think Sławosz's mother knew her birthday wishes would become reality? Why or why not?</li>
+                    <li>What role did education play in Sławosz's success? Give specific examples from the text.</li>
+                    <li>How important do you think family encouragement is for achieving big dreams?</li>
+                    <li>If you could choose any career path that requires many years of education, what would it be and why?</li>
+                    <li>What does Sławosz's story teach us about the connection between childhood dreams and adult achievements?</li>
+                    <li>How do you think this space mission will inspire other Polish children and students?</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA ---
+        const vocabData = [
+            { key: 'coincidence', word: 'coincidence (n.)', definition: 'an unexpected situation where things happen by chance' },
+            { key: 'tradition', word: 'tradition (n.)', definition: 'a custom or practice passed down through generations' },
+            { key: 'consistent', word: 'consistent (adj.)', definition: 'happening regularly without stopping or changing' },
+            { key: 'dedication', word: 'dedication (n.)', definition: 'commitment and hard work toward achieving goals' },
+            { key: 'foundations', word: 'foundations (n.)', definition: 'the basic principles on which something is built' },
+            { key: 'expertise', word: 'expertise (n.)', definition: 'deep knowledge and skill in a particular area' },
+            { key: 'breakthrough', word: 'breakthrough (n.)', definition: 'an important discovery or significant achievement' },
+            { key: 'precision', word: 'precision (n.)', definition: 'exactness and accuracy in actions or work' },
+            { key: 'excellence', word: 'excellence (n.)', definition: 'the quality of being extremely good at something' },
+            { key: 'legacy', word: 'legacy (n.)', definition: 'something important left for future generations' }
+        ];
+        const gapFillAnswers = ['coincidence', 'tradition', 'consistent', 'dedication', 'foundations', 'expertise', 'breakthrough', 'precision', 'excellence', 'legacy'];
+
+        // --- GENERAL UTILITY ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // --- TASK 1: VOCABULARY MATCHING LOGIC ---
+        const wordBank = document.getElementById('word-bank');
+        const definitionsList = document.getElementById('definitions-list');
+        const feedback1 = document.getElementById('feedback1');
+
+        function setupTask1() {
+            wordBank.innerHTML = '';
+            definitionsList.innerHTML = '';
+            feedback1.style.display = 'none';
+            feedback1.classList.remove('correct', 'incorrect');
+
+            const shuffledWords = [...vocabData];
+            shuffleArray(shuffledWords);
+
+            shuffledWords.forEach(item => {
+                const wordEl = document.createElement('div');
+                wordEl.className = 'draggable-word';
+                wordEl.draggable = true;
+                wordEl.textContent = item.word;
+                wordEl.dataset.key = item.key;
+                wordEl.id = `word-${item.key}`;
+                wordBank.appendChild(wordEl);
+            });
+
+            vocabData.forEach((item, index) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'drop-zone';
+                listItem.dataset.key = item.key;
+                listItem.innerHTML = `<div class="placeholder"></div><span>${String.fromCharCode(97 + index)}) ${item.definition}</span>`;
+                definitionsList.appendChild(listItem);
+            });
+            
+            addDragAndDropListeners();
+        }
+
+        function addDragAndDropListeners() {
+            const draggables = document.querySelectorAll('.draggable-word');
+            const dropZones = document.querySelectorAll('.drop-zone');
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', e => {
+                    e.dataTransfer.setData('text/plain', e.target.id);
+                    setTimeout(() => draggable.style.opacity = '0.5', 0);
+                });
+                draggable.addEventListener('dragend', e => e.target.style.opacity = '1');
+            });
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+                zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+                zone.addEventListener('drop', e => {
+                    e.preventDefault();
+                    zone.classList.remove('drag-over');
+                    const id = e.dataTransfer.getData('text/plain');
+                    const draggableElement = document.getElementById(id);
+                    const placeholder = zone.querySelector('.placeholder');
+                    if (placeholder.children.length === 0) placeholder.appendChild(draggableElement);
+                });
+            });
+            wordBank.addEventListener('dragover', e => e.preventDefault());
+            wordBank.addEventListener('drop', e => {
+                const id = e.dataTransfer.getData('text/plain');
+                wordBank.appendChild(document.getElementById(id));
+            });
+        }
+        
+        function checkTask1() {
+            const dropZones = document.querySelectorAll('.drop-zone');
+            let correctCount = 0;
+            dropZones.forEach(zone => {
+                const placeholder = zone.querySelector('.placeholder');
+                placeholder.classList.remove('correct-match', 'incorrect-match');
+                const correctKey = zone.dataset.key;
+                const droppedWord = placeholder.firstElementChild;
+
+                if (droppedWord && droppedWord.dataset.key === correctKey) {
+                    placeholder.classList.add('correct-match');
+                    correctCount++;
+                } else {
+                    placeholder.classList.add('incorrect-match');
+                }
+            });
+            
+            feedback1.style.display = 'block';
+            feedback1.classList.remove('correct', 'incorrect');
+            if (correctCount === vocabData.length) {
+                feedback1.textContent = 'Excellent! All matches are correct.';
+                feedback1.classList.add('correct');
+            } else {
+                feedback1.textContent = `You have ${correctCount} out of ${vocabData.length} correct. Review the highlighted answers and press "Restart Task" to try again.`;
+                feedback1.classList.add('incorrect');
+            }
+        }
+
+        // --- TASK 2: GAP-FILL LOGIC ---
+        const feedback2 = document.getElementById('feedback2');
+        
+        function resetTask2() {
+            for (let i = 1; i <= 10; i++) {
+                const input = document.getElementById(`gap${i}`);
+                input.value = '';
+                input.classList.remove('correct-answer', 'incorrect-answer');
+            }
+            feedback2.style.display = 'none';
+            feedback2.classList.remove('correct', 'incorrect');
+        }
+
+        function checkTask2() {
+            let correctCount = 0;
+            for (let i = 0; i < gapFillAnswers.length; i++) {
+                const inputEl = document.getElementById(`gap${i + 1}`);
+                inputEl.classList.remove('correct-answer', 'incorrect-answer');
+                const userAnswer = inputEl.value.trim().toLowerCase();
+                const correctAnswer = gapFillAnswers[i];
+
+                if (userAnswer === correctAnswer) {
+                    inputEl.classList.add('correct-answer');
+                    correctCount++;
+                } else {
+                    inputEl.classList.add('incorrect-answer');
+                }
+            }
+            
+            feedback2.style.display = 'block';
+            feedback2.classList.remove('correct', 'incorrect');
+            if (correctCount === gapFillAnswers.length) {
+                feedback2.textContent = 'Perfect! All gaps are filled correctly.';
+                feedback2.classList.add('correct');
+            } else {
+                feedback2.textContent = `You have ${correctCount} out of ${gapFillAnswers.length} correct. Review the highlighted answers and press "Restart Task" to try again.`;
+                feedback2.classList.add('incorrect');
+            }
+        }
+
+        // --- INITIALIZE PAGE ---
+        window.onload = () => {
+            setupTask1();
+            resetTask2(); // Ensure Task 2 is clean on load
+        };
+    </script>
+
+</body>
+</html>
