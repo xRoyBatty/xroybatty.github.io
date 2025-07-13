@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cybersecurity Vocabulary - Set 1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            overflow: hidden;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            width: 90vw;
+            height: 80vh;
+            text-align: center;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .vocab-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        
+        .vocab-word {
+            font-size: 4em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideIn 0.6s ease-out forwards;
+        }
+        
+        .vocab-definition {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .vocab-definition.visible {
+            opacity: 1;
+            transform: translateY(0);
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .definition-text {
+            font-size: 1.4em;
+            color: #333;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8f9ff;
+            border-radius: 15px;
+            border-left: 6px solid #4dabf7;
+        }
+        
+        .example-text {
+            font-size: 1.2em;
+            color: #2d5aa0;
+            font-style: italic;
+            padding: 25px;
+            background: #e8f4fd;
+            border-radius: 15px;
+            border-left: 6px solid #51cf66;
+        }
+        
+        .quiz-screen {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+        
+        .quiz-title {
+            font-size: 3em;
+            color: #ffc107;
+            margin-bottom: 50px;
+            animation: pulse 2s infinite;
+        }
+        
+        .question-container {
+            margin: 40px 0;
+        }
+        
+        .question-number {
+            background: #4dabf7;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        .question-text {
+            font-size: 1.6em;
+            color: #333;
+            margin-bottom: 40px;
+            line-height: 1.4;
+        }
+        
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .option {
+            background: white;
+            border: 4px solid #ddd;
+            padding: 25px;
+            border-radius: 15px;
+            font-size: 1.3em;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .option:hover {
+            border-color: #4dabf7;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(77, 171, 247, 0.3);
+        }
+        
+        .option.correct {
+            border-color: #51cf66;
+            background: #e8f5e8;
+            animation: correctPulse 0.8s ease-out;
+        }
+        
+        .option.incorrect {
+            border-color: #ff6b6b;
+            background: #ffe8e8;
+            animation: incorrectShake 0.6s ease-out;
+        }
+        
+        .option-letter {
+            background: #4dabf7;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            font-size: 1.1em;
+        }
+        
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .progress {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .click-hint {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #999;
+            font-size: 1.1em;
+        }
+        
+        .completion-screen {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        
+        .completion-title {
+            font-size: 3em;
+            color: #51cf66;
+            margin-bottom: 30px;
+        }
+        
+        .completion-text {
+            font-size: 1.4em;
+            color: #333;
+            text-align: center;
+            line-height: 1.6;
+        }
+        
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="progress" id="progress">1 / 5</div>
+        
+        <!-- Vocabulary Screen -->
+        <div class="vocab-screen" id="vocab-screen">
+            <div class="vocab-word" id="vocab-word">PASSWORD</div>
+            <div class="vocab-definition" id="vocab-definition">
+                <div class="definition-text" id="definition-text">
+                    A secret combination of letters, numbers, and symbols
+                </div>
+                <div class="example-text" id="example-text">
+                    "Create a strong password with at least 12 characters"
+                </div>
+            </div>
+            <div class="click-hint">Click anywhere to reveal definition</div>
+        </div>
+        
+        <!-- Quiz Screen -->
+        <div class="quiz-screen" id="quiz-screen">
+            <div class="quiz-title">🎯 QUIZ TIME</div>
+            
+            <div class="question-container">
+                <div class="question-number" id="question-number">Question 1</div>
+                <div class="question-text" id="question-text">Loading question...</div>
+                
+                <div class="options-grid">
+                    <div class="option" onclick="selectOption(this, 0)">
+                        <div class="option-letter">A</div>
+                        <span id="option-0">Option A</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 1)">
+                        <div class="option-letter">B</div>
+                        <span id="option-1">Option B</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 2)">
+                        <div class="option-letter">C</div>
+                        <span id="option-2">Option C</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 3)">
+                        <div class="option-letter">D</div>
+                        <span id="option-3">Option D</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Completion Screen -->
+        <div class="completion-screen" id="completion-screen">
+            <div class="completion-title">✅ COMPLETE!</div>
+            <div class="completion-text">
+                All vocabulary reviewed successfully.<br>
+                Ready for group activities.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const vocabulary = [
+            {
+                word: "PASSWORD",
+                definition: "A secret combination of letters, numbers, and symbols",
+                example: '"Create a strong password with at least 12 characters"'
+            },
+            {
+                word: "AUTHENTICATION",
+                definition: "The process of verifying who you are",
+                example: '"The system requires authentication before access"'
+            },
+            {
+                word: "BREACH",
+                definition: "When unauthorized people access your system",
+                example: '"The company suffered a data breach last year"'
+            },
+            {
+                word: "ENCRYPT",
+                definition: "To convert information into secret code",
+                example: '"We encrypt all sensitive customer data"'
+            },
+            {
+                word: "VULNERABILITY",
+                definition: "A weakness that hackers can exploit",
+                example: '"The software had a critical vulnerability"'
+            }
+        ];
+        
+        const questions = [
+            {
+                question: "What do we call a weakness that hackers can exploit?",
+                options: ["Password", "Encryption", "Vulnerability", "Authentication"],
+                correct: 2
+            },
+            {
+                question: "What is the process of verifying who you are?",
+                options: ["Encryption", "Authentication", "Breach", "Vulnerability"],
+                correct: 1
+            },
+            {
+                question: "What happens when unauthorized people access data?",
+                options: ["Patch", "Breach", "Password", "Firewall"],
+                correct: 1
+            },
+            {
+                question: "What does it mean to convert information into secret code?",
+                options: ["Authenticate", "Breach", "Encrypt", "Patch"],
+                correct: 2
+            },
+            {
+                question: "What is a secret combination used for access?",
+                options: ["Password", "Vulnerability", "Breach", "Encryption"],
+                correct: 0
+            }
+        ];
+        
+        let currentVocab = 0;
+        let currentQuestion = 0;
+        let vocabRevealed = false;
+        let quizMode = false;
+        let quizAnswered = false;
+        
+        function updateProgress() {
+            if (!quizMode) {
+                document.getElementById('progress').textContent = `${currentVocab + 1} / 5`;
+            } else {
+                document.getElementById('progress').textContent = `Quiz ${currentQuestion + 1} / 5`;
+            }
+        }
+        
+        function showCurrentVocab() {
+            const vocab = vocabulary[currentVocab];
+            document.getElementById('vocab-word').textContent = vocab.word;
+            document.getElementById('definition-text').textContent = vocab.definition;
+            document.getElementById('example-text').textContent = vocab.example;
+            
+            // Reset animation
+            const wordElement = document.getElementById('vocab-word');
+            wordElement.style.animation = 'none';
+            setTimeout(() => {
+                wordElement.style.animation = 'slideIn 0.6s ease-out forwards';
+            }, 10);
+            
+            document.getElementById('vocab-definition').classList.remove('visible');
+            vocabRevealed = false;
+            updateProgress();
+        }
+        
+        function revealDefinition() {
+            if (!vocabRevealed && !quizMode) {
+                document.getElementById('vocab-definition').classList.add('visible');
+                vocabRevealed = true;
+            }
+        }
+        
+        function nextVocab() {
+            if (vocabRevealed) {
+                currentVocab++;
+                if (currentVocab >= vocabulary.length) {
+                    startQuiz();
+                } else {
+                    showCurrentVocab();
+                }
+            }
+        }
+        
+        function startQuiz() {
+            quizMode = true;
+            document.getElementById('vocab-screen').style.display = 'none';
+            document.getElementById('quiz-screen').style.display = 'flex';
+            currentQuestion = 0;
+            loadQuestion();
+        }
+        
+        function loadQuestion() {
+            const q = questions[currentQuestion];
+            
+            document.getElementById('question-number').textContent = `Question ${currentQuestion + 1}`;
+            document.getElementById('question-text').textContent = q.question;
+            
+            for (let i = 0; i < 4; i++) {
+                document.getElementById(`option-${i}`).textContent = q.options[i];
+            }
+            
+            // Reset options
+            document.querySelectorAll('.option').forEach(option => {
+                option.className = 'option';
+            });
+            
+            quizAnswered = false;
+            updateProgress();
+        }
+        
+        function selectOption(element, index) {
+            if (quizAnswered) return;
+            
+            const q = questions[currentQuestion];
+            const allOptions = document.querySelectorAll('.option');
+            
+            // Show correct/incorrect
+            allOptions[q.correct].classList.add('correct');
+            if (index !== q.correct) {
+                element.classList.add('incorrect');
+            }
+            
+            quizAnswered = true;
+            
+            // Auto advance after 2 seconds
+            setTimeout(() => {
+                nextQuestion();
+            }, 2000);
+        }
+        
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion >= questions.length) {
+                showCompletion();
+            } else {
+                loadQuestion();
+            }
+        }
+        
+        function showCompletion() {
+            document.getElementById('quiz-screen').style.display = 'none';
+            document.getElementById('completion-screen').style.display = 'flex';
+            document.getElementById('progress').style.display = 'none';
+        }
+        
+        // Event listeners
+        document.addEventListener('click', function(e) {
+            if (!quizMode) {
+                if (!vocabRevealed) {
+                    revealDefinition();
+                } else {
+                    nextVocab();
+                }
+            }
+        });
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowRight') {
+                e.preventDefault();
+                if (!quizMode) {
+                    if (!vocabRevealed) {
+                        revealDefinition();
+                    } else {
+                        nextVocab();
+                    }
+                }
+            }
+        });
+        
+        // Initialize
+        showCurrentVocab();
+    </script>
+</body>
+</html>
