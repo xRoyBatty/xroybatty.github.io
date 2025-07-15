@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interaktywny Quiz: Past Simple vs Present Perfect & Strona Czynna vs Bierna</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+--primary-color: #1a73e8; /* Nowoczesny niebieski */
+--secondary-color: #e8710a; /* Energiczny pomarańczowy */
+--bg-color: #f0f2f5;
+--container-bg: #ffffff;
+--text-color: #3c4043;
+--correct-color: #0d652d;
+--incorrect-color: #c5221f;
+--font-family: 'Poppins', sans-serif;
+}
+body {
+font-family: var(--font-family);
+background-color: var(--bg-color);
+color: var(--text-color);
+margin: 0;
+padding: 20px;
+display: flex;
+justify-content: center;
+align-items: center;
+min-height: 100vh;
+}
+#quiz-container {
+background: var(--container-bg);
+border-radius: 16px;
+box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+padding: 40px;
+max-width: 850px;
+width: 100%;
+transition: all 0.3s ease;
+}
+h1 {
+color: var(--primary-color);
+text-align: center;
+font-weight: 700;
+margin-bottom: 10px;
+}
+h2 {
+color: var(--secondary-color);
+border-bottom: 2px solid #e0e0e0;
+padding-bottom: 10px;
+margin-top: 30px;
+font-weight: 600;
+}
+.rules {
+margin-bottom: 30px;
+line-height: 1.7;
+}
+.question {
+margin-bottom: 25px;
+padding: 20px;
+border: 1px solid #ddd;
+border-radius: 12px;
+background: #f9f9f9;
+transition: transform 0.2s, box-shadow 0.2s;
+}
+.question:hover {
+transform: translateY(-5px);
+box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+}
+.options {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 10px;
+margin-top: 15px;
+}
+label {
+cursor: pointer;
+padding: 12px;
+border: 2px solid #ccc;
+border-radius: 8px;
+transition: all 0.3s;
+display: block;
+text-align: center;
+}
+label:hover {
+border-color: var(--primary-color);
+background: #e9f1ff;
+}
+input[type="radio"] {
+display: none;
+}
+input[type="radio"]:checked + label {
+background: var(--primary-color);
+color: white;
+border-color: var(--primary-color);
+font-weight: 600;
+}
+#submit {
+background: var(--secondary-color);
+color: white;
+border: none;
+padding: 15px 30px;
+border-radius: 8px;
+cursor: pointer;
+margin-top: 20px;
+transition: background 0.3s, transform 0.2s;
+display: block;
+width: 100%;
+font-size: 1.1em;
+font-weight: 600;
+}
+#submit:hover {
+background: #d96809;
+transform: scale(1.02);
+}
+.feedback {
+margin-top: 15px;
+padding: 10px;
+border-radius: 8px;
+font-weight: bold;
+animation: fadeIn 0.5s;
+}
+.feedback.correct {
+background-color: #e6f4ea;
+color: var(--correct-color);
+border-left: 5px solid var(--correct-color);
+}
+.feedback.incorrect {
+background-color: #fce8e6;
+color: var(--incorrect-color);
+border-left: 5px solid var(--incorrect-color);
+}
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(-10px); }
+to { opacity: 1; transform: translateY(0); }
+}
+#score {
+text-align: center;
+font-size: 1.4em;
+font-weight: 700;
+margin-top: 30px;
+}
+</style>
+</head>
+<body>
+<div id="quiz-container">
+<h1>Quiz: Past Simple vs. Present Perfect</h1>
+
+<div class="rules">
+        <h2>Zasady Gry (Wyjaśnione prosto i klarownie)</h2>
+        
+        <h3>Past Simple</h3>
+        <p>Używamy go do mówienia o czynnościach, które <strong>zaczęły się i zakończyły w określonym momencie w przeszłości</strong>. Myślimy o nich jak o zamkniętym rozdziale.</p>
+        <p><strong>Forma zdania twierdzącego:</strong> Podmiot + czasownik z końcówką <strong>-ed</strong> (np. <i>I visit<b>ed</b></i>) lub <strong>II forma</strong> dla czasowników nieregularnych (np. <i>I <b>saw</b></i>).</p>
+        <p><strong>Strona bierna:</strong> <i>was/were + past participle (III forma)</i> (np. The book <b>was read</b>).</p>
+        <p><strong>Typowe określenia czasu (słowa-klucze):</strong></p>
+        <ul>
+            <li><b>yesterday</b> (wczoraj) - np. <i>I saw him yesterday.</i></li>
+            <li><b>last</b> week/month/year (w zeszłym tygodniu/miesiącu/roku) - np. <i>She visited us last month.</i></li>
+            <li>... <b>ago</b> (temu) - np. <i>They left two hours ago.</i></li>
+            <li><b>in</b> + [rok] (w roku...) - np. <i>The factory opened in 1990.</i></li>
+            <li><b>when I was a child</b> (kiedy byłem dzieckiem) - np. <i>I played a lot of football when I was a child.</i></li>
+        </ul>
+
+        <h3>Present Perfect</h3>
+        <p>Używamy go do mówienia o czynnościach, które mają **związek z teraźniejszością**. Mogą to być:</p>
+        <ol>
+            <li>Doświadczenia życiowe (coś, co się kiedyś wydarzyło i ma wpływ na to, kim jesteśmy teraz).</li>
+            <li>Czynności, które zaczęły się w przeszłości i trwają do teraz.</li>
+            <li>Czynności z niedalekiej przeszłości, których skutki są widoczne teraz.</li>
+        </ol>
+        <p><strong>Forma:</strong> <i>have/has + past participle (III forma)</i> (np. <i>I <b>have seen</b> that movie</i>).</p>
+        <p><strong>Strona bierna:</strong> <i>have/has been + past participle (III forma)</i> (np. The book <b>has been read</b>).</p>
+        <p><strong>Typowe określenia czasu (słowa-klucze):</strong></p>
+        <ul>
+            <li><b>ever</b> (kiedykolwiek), <b>never</b> (nigdy) - np. <i>Have you ever been to Spain?</i></li>
+            <li><b>already</b> (już), <b>just</b> (właśnie), <b>yet</b> (jeszcze nie) - np. <i>I have just finished my homework.</i></li>
+            <li><b>so far</b> (jak dotąd), <b>lately</b> (ostatnio), <b>recently</b> (niedawno) - np. <i>I have been very busy lately.</i></li>
+            <li><b>for</b> (przez - okres czasu), <b>since</b> (od - punkt w czasie) - np. <i>She has lived here for three years. She has lived here since 2021.</i></li>
+        </ul>
+    </div>
+    
+    <div id="questions"></div>
+    <button id="submit">Sprawdź odpowiedzi</button>
+    <div id="score"></div>
+</div>
+
+<script>
+    'use strict';
+
+    const questions = [
+        // Poziom łatwy (1-5): Podstawowe Past Simple vs Present Perfect, active.
+        { id: 1, text: "I _____ (visit) Paris last summer.", options: ["visited", "have visited", "was visited", "has been visited"], correct: "visited", explanation: "Używamy <b>Past Simple ('visited')</b>, ponieważ czynność wydarzyła się i zakończyła w konkretnym momencie w przeszłości (<b>'last summer'</b>). Jest to strona czynna, bo 'ja' wykonałem czynność." },
+        { id: 2, text: "She _____ (live) in Poland all her life.", options: ["lived", "has lived", "was lived", "have lived"], correct: "has lived", explanation: "Używamy <b>Present Perfect ('has lived')</b>, ponieważ mówimy o czynności, która zaczęła się w przeszłości i trwa do teraz (ona nadal mieszka w Polsce). Jest to strona czynna." },
+        { id: 3, text: "They _____ (finish) the project yesterday.", options: ["finished", "have finished", "was finished", "has finished"], correct: "finished", explanation: "Słowo <b>'yesterday'</b> jasno wskazuje na zakończoną czynność w przeszłości, dlatego poprawną formą jest <b>Past Simple ('finished')</b>. Strona czynna." },
+        { id: 4, text: "We _____ (see) that movie before.", options: ["saw", "have seen", "was seen", "has seen"], correct: "have seen", explanation: "Mówimy tu o doświadczeniu życiowym bez podawania konkretnego czasu. Liczy się fakt, że widzieliśmy ten film. Dlatego używamy <b>Present Perfect ('have seen')</b>. Strona czynna." },
+        { id: 5, text: "He _____ (break) his leg in 2020.", options: ["broke", "has broken", "was broken", "have broken"], correct: "broke", explanation: "Podanie konkretnego roku <b>(in 2020)</b> oznacza, że czynność jest zamknięta w przeszłości. Wymaga to użycia <b>Past Simple ('broke')</b>. Strona czynna." },
+
+        // Poziom średni (6-10): Wprowadzenie passive.
+        { id: 6, text: "The letter _____ (write) by him yesterday.", options: ["wrote", "has written", "was written", "have written"], correct: "was written", explanation: "Określenie czasu <b>'yesterday'</b> wskazuje na Past Simple. Podmiot ('list') jest odbiorcą czynności (został napisany), więc musimy użyć strony biernej: <b>Past Simple Passive ('was written')</b>." },
+        { id: 7, text: "The cake _____ (eat) by the children already.", options: ["ate", "has been eaten", "was eaten", "have eaten"], correct: "has been eaten", explanation: "Słowo <b>'already'</b> jest typowe dla Present Perfect. Skupiamy się na rezultacie (nie ma ciasta), a ciasto jest odbiorcą czynności. Dlatego używamy <b>Present Perfect Passive ('has been eaten')</b>." },
+        { id: 8, text: "I _____ (send) the email last week.", options: ["sent", "have sent", "was sent", "has sent"], correct: "sent", explanation: "Określenie <b>'last week'</b> wskazuje na zakończoną czynność w przeszłości, więc używamy <b>Past Simple ('sent')</b>. 'Ja' wykonałem czynność, więc jest to strona czynna." },
+        { id: 9, text: "Many books _____ (publish) this year.", options: ["published", "have been published", "was published", "has published"], correct: "have been published", explanation: "Okres <b>'this year'</b> jeszcze się nie skończył, więc czynność trwa do teraz. Książki są odbiorcami czynności (są publikowane), więc używamy <b>Present Perfect Passive ('have been published')</b>." },
+        { id: 10, text: "She _____ (meet) him in 2010.", options: ["met", "has met", "was met", "have met"], correct: "met", explanation: "Podanie konkretnego roku <b>(in 2010)</b> wymaga użycia <b>Past Simple ('met')</b>. Strona czynna, bo 'ona' go spotkała." },
+
+        // Poziom trudny (11-15): Mieszane, z kontekstem.
+        { id: 11, text: "The house _____ (build) in 1990, but it _____ (renovate) recently.", options: ["built / has been renovated", "was built / renovated", "was built / has been renovated", "built / renovated"], correct: "was built / has been renovated", explanation: "Pierwsza część zdania: budowa w <b>1990</b> (zakończona przeszłość) i dom był odbiorcą czynności, więc <b>Past Simple Passive ('was built')</b>. Druga część: renowacja <b>'recently'</b> (niedawno, związek z teraz), więc <b>Present Perfect Passive ('has been renovated')</b>." },
+        { id: 12, text: "He _____ (not finish) the book yet.", options: ["did not finish", "has not finished", "was not finished", "have not finished"], correct: "has not finished", explanation: "Słowo <b>'yet'</b> jest charakterystyczne dla <b>Present Perfect</b> i używane w przeczeniach. Mówimy o czynności, która do teraz nie została ukończona. Poprawna forma: <b>'has not finished'</b> (strona czynna)." },
+        { id: 13, text: "The decision _____ (make) by the team last month.", options: ["made", "has made", "was made", "have made"], correct: "was made", explanation: "Czas <b>'last month'</b> wskazuje na Past Simple. 'Decyzja' była odbiorcą czynności (została podjęta), więc potrzebujemy strony biernej: <b>Past Simple Passive ('was made')</b>." },
+        { id: 14, text: "I _____ (travel) to many countries so far.", options: ["traveled", "have traveled", "was traveled", "has traveled"], correct: "have traveled", explanation: "Wyrażenie <b>'so far'</b> (jak dotąd) oznacza, że mówimy o doświadczeniach zebranych do chwili obecnej. To jest klasyczne użycie <b>Present Perfect ('have traveled')</b>. Strona czynna." },
+        { id: 15, text: "The painting _____ (steal) from the museum in 2005.", options: ["stole", "has stolen", "was stolen", "have stolen"], correct: "was stolen", explanation: "Data <b>'in 2005'</b> umiejscawia kradzież w zamkniętej przeszłości (Past Simple). 'Obraz' jest odbiorcą czynności (został skradziony), więc używamy strony biernej: <b>Past Simple Passive ('was stolen')</b>." },
+        
+        // Poziom zaawansowany (16-20): Złożone zdania
+        { id: 16, text: "I _____ (not see) him since he _____ (move) to another city last year.", options: ["did not see / moved", "have not seen / moved", "have not seen / has moved", "did not see / has moved"], correct: "have not seen / moved", explanation: "To zdanie łączy oba czasy. Główna część wymaga <b>Present Perfect ('have not seen')</b>, ponieważ 'since' opisuje stan trwający od przeszłości do teraz. Czynność po 'since' jest w <b>Past Simple ('moved')</b>, bo opisuje konkretne, zakończone wydarzenie ('last year'), które rozpoczęło ten stan." },
+        { id: 17, text: "The report _____ (complete) last week, but it _____ (not submit) yet.", options: ["was completed / has not been submitted", "completed / not submitted", "was completed / was not submitted", "has completed / has not submitted"], correct: "was completed / has not been submitted", explanation: "Pierwsza część: <b>'last week'</b> -> Past Simple. 'Raport' jest odbiorcą -> strona bierna, czyli <b>'was completed'</b>. Druga część: <b>'yet'</b> -> Present Perfect. 'Raport' jest odbiorcą -> strona bierna, czyli <b>'has not been submitted'</b>." },
+        { id: 18, text: "She _____ (learn) English for many years, and she still does.", options: ["learned", "has learned", "was learned", "have learned"], correct: "has learned", explanation: "Wyrażenie <b>'for many years'</b> w połączeniu z informacją, że ona nadal się uczy, oznacza czynność trwającą od przeszłości do teraz. Używamy <b>Present Perfect ('has learned')</b>. Strona czynna." },
+        { id: 19, text: "The keys _____ (lose) yesterday, so we _____ (not find) them yet.", options: ["lost / haven't found", "were lost / haven't found", "was lost / have found", "lost / have found"], correct: "were lost / haven't found", explanation: "Pierwsza część: <b>'yesterday'</b> -> Past Simple. 'Klucze' są odbiorcą -> strona bierna, czyli <b>'were lost'</b> (liczba mnoga). Druga część: <b>'yet'</b> -> Present Perfect. 'My' jesteśmy wykonawcą -> strona czynna, czyli <b>'haven't found'</b>." },
+        { id: 20, text: "This problem _____ (solve) many times before, but it _____ (appear) again recently.", options: ["solved / appeared", "has been solved / has appeared", "was solved / appeared", "has solved / has appeared"], correct: "has been solved / has appeared", explanation: "Pierwsza część: 'wiele razy w przeszłości' to doświadczenie, więc <b>Present Perfect</b>. 'Problem' jest odbiorcą -> strona bierna, czyli <b>'has been solved'</b>. Druga część: <b>'recently'</b> -> Present Perfect. 'Problem' jest wykonawcą (pojawił się) -> strona czynna, czyli <b>'has appeared'</b>." }
+    ];
+
+    const questionsDiv = document.getElementById('questions');
+    const submitBtn = document.getElementById('submit');
+    const scoreDiv = document.getElementById('score');
+
+    function renderQuestions() {
+        questions.forEach(q => {
+            const questionDiv = document.createElement('div');
+            questionDiv.classList.add('question');
+            questionDiv.innerHTML = `
+                <p><strong>Pytanie ${q.id}:</strong> ${q.text.replace(/_____ \((.*?)\)/g, '_____ (<span style="color: var(--secondary-color); font-style: italic;">$1</span>)')}</p>
+                <div class="options">
+                    ${q.options.map((opt, index) => `
+                        <div>
+                            <input type="radio" id="q${q.id}_${index}" name="q${q.id}" value="${opt}">
+                            <label for="q${q.id}_${index}">${opt}</label>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="feedback" id="feedback${q.id}" style="display: none;"></div>
+            `;
+            questionsDiv.appendChild(questionDiv);
+        });
+    }
+
+    function checkAnswers() {
+        let score = 0;
+        questions.forEach(q => {
+            const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
+            const feedback = document.getElementById(`feedback${q.id}`);
+            feedback.style.display = 'block';
+
+            if (selected) {
+                if (selected.value === q.correct) {
+                    feedback.innerHTML = `✅ <strong>Poprawnie!</strong><br>${q.explanation}`;
+                    feedback.className = 'feedback correct';
+                    score++;
+                } else {
+                    feedback.innerHTML = `❌ <strong>Błąd.</strong> Poprawna odpowiedź to: <strong>"${q.correct}"</strong>.<br>${q.explanation}`;
+                    feedback.className = 'feedback incorrect';
+                }
+            } else {
+                feedback.innerHTML = `🤔 <strong>Brak odpowiedzi.</strong> Poprawna odpowiedź to: <strong>"${q.correct}"</strong>.<br>${q.explanation}`;
+                feedback.className = 'feedback incorrect';
+            }
+        });
+        scoreDiv.textContent = `Twój wynik: ${score} / ${questions.length}`;
+        scoreDiv.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    renderQuestions();
+    submitBtn.addEventListener('click', checkAnswers);
+</script>
+
+</body>
+</html>
