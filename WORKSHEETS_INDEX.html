@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educational Worksheets & Apps Index</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+
+        .highlight-box h2 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .highlight-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .highlight-box li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .highlight-box li:last-child {
+            border-bottom: none;
+        }
+
+        .highlight-box a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .highlight-box a:hover {
+            text-decoration: underline;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+        }
+
+        .category {
+            margin-bottom: 40px;
+        }
+
+        .category h2 {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .app-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .app-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        .app-card h3 {
+            color: #495057;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .app-card p {
+            color: #6c757d;
+            font-size: 0.95em;
+            margin-bottom: 15px;
+        }
+
+        .app-card a {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .app-card a:hover {
+            background: #5568d3;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-box {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-box .number {
+            font-size: 3em;
+            font-weight: 700;
+            color: #667eea;
+            display: block;
+        }
+
+        .stat-box .label {
+            color: #6c757d;
+            font-size: 1.1em;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Educational Worksheets & Apps Index</h1>
+            <p>Interactive English language learning tools and educational resources</p>
+        </header>
+
+        <div class="content">
+            <!-- Statistics Section -->
+            <div class="stats">
+                <div class="stat-box">
+                    <span class="number">110+</span>
+                    <span class="label">Total Apps</span>
+                </div>
+                <div class="stat-box">
+                    <span class="number">10</span>
+                    <span class="label">Categories</span>
+                </div>
+                <div class="stat-box">
+                    <span class="number">3</span>
+                    <span class="label">AI-Powered</span>
+                </div>
+            </div>
+
+            <!-- Highlighted Apps Section -->
+            <div class="highlight-box">
+                <h2>⭐ Must-Try Apps (Highly Recommended)</h2>
+                <ul>
+                    <li>
+                        <a href="pronunciationChecker.html">
+                            <span><strong>Pronunciation Evaluator</strong> - AI-powered pronunciation assessment using Gemini API with detailed CEFR scoring</span>
+                            <span class="badge">AI</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="flashmasta.html">
+                            <span><strong>Flashmasta</strong> - Comprehensive vocabulary learning with 3 exercise types (True/False, Matching, Writing)</span>
+                            <span class="badge">Advanced</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="shoppingsim.html">
+                            <span><strong>Shopping Simulator</strong> - Interactive dialogue simulator with speech synthesis and multiple scenes</span>
+                            <span class="badge">Speech</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="circularstatistics.html">
+                            <span><strong>Circular Statistics</strong> - Poland's circular economy data visualization with Chart.js</span>
+                            <span class="badge">Data Viz</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="micromanage.html">
+                            <span><strong>Micromanagement Analysis</strong> - Professional workplace red flags analysis with collapsible sections</span>
+                            <span class="badge">Professional</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="hangman_irregular.html">
+                            <span><strong>Irregular Verbs Hangman</strong> - Multi-phase hangman with configurable difficulty and attempts</span>
+                            <span class="badge">Game</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Category 1: AI-Powered Tools -->
+            <div class="category">
+                <h2>🤖 AI-Powered Tools</h2>
+                <div class="category-grid">
+                    <div class="app-card">
+                        <h3>Pronunciation Evaluator</h3>
+                        <p>Advanced pronunciation assessment using Google's Gemini API. Provides CEFR level evaluation, detailed scoring across 5 criteria, and improvement suggestions. Includes PDF export.</p>
+                        <a href="pronunciationChecker.html">Launch App</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category 2: Flashcard & Vocabulary Apps -->
+            <div class="category">
+                <h2>📚 Flashcard & Vocabulary Learning</h2>
+                <div class="category-grid">
+                    <div class="app-card">
+                        <h3>Flashmasta</h3>
+                        <p>Comprehensive vocabulary trainer with True/False, Matching, and Writing exercises. Includes scoring system and file import/export.</p>
+                        <a href="flashmasta.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Flashmasta V2-V10</h3>
+                        <p>Various iterations of the flashcard system with different features and improvements.</p>
+                        <a href="flashmasta_v2.html">Launch V2</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Brainy Unit 4 Words</h3>
+                        <p>Unit-specific vocabulary practice for Brainy series textbooks.</p>
+                        <a href="brainy6unit4words.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Brainy Unit 7 Vocabulary</h3>
+                        <p>Advanced vocabulary exercises for Unit 7.</p>
+                        <a href="brainy6unit7voc.html">Launch App</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category 3: Interactive Games -->
+            <div class="category">
+                <h2>🎮 Interactive Games</h2>
+                <div class="category-grid">
+                    <div class="app-card">
+                        <h3>Irregular Verbs Hangman</h3>
+                        <p>Multi-phase hangman game for learning irregular verb forms. Features configurable difficulty and attempts (1-6), three forms to complete per verb.</p>
+                        <a href="hangman_irregular.html">Launch Game</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Food Hangman</h3>
+                        <p>Hangman game focused on food vocabulary.</p>
+                        <a href="hangmanfood.html">Launch Game</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Blotko 4</h3>
+                        <p>Interactive word game (bingo variant).</p>
+                        <a href="blotko4.html">Launch Game</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Scratch Quiz</h3>
+                        <p>Interactive quiz with scratch-off functionality.</p>
+                        <a href="scratchquiz.html">Launch Quiz</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category 4: Matching & Pairing Exercises -->
+            <div class="category">
+                <h2>🔄 Matching & Pairing Exercises</h2>
+                <div class="category-grid">
+                    <div class="app-card">
+                        <h3>Job Phrases Matcher</h3>
+                        <p>Match English job-related phrases with Polish translations. Clean UI with visual feedback.</p>
+                        <a href="job-swipe-away.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Cybersecurity Vocabulary</h3>
+                        <p>Match English cybersecurity terms with Polish equivalents. Includes sentence completion exercises.</p>
+                        <a href="cybersec.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Hotel Italy</h3>
+                        <p>Hotel room photo gallery with Slick Carousel integration. Interactive image viewer with thumbnails.</p>
+                        <a href="hotelitaly.html">Launch App</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category 5: Dialogue & Role-Play -->
+            <div class="category">
+                <h2>💬 Dialogue & Role-Play Simulators</h2>
+                <div class="category-grid">
+                    <div class="app-card">
+                        <h3>Shopping Simulator</h3>
+                        <p>Advanced dialogue animator with speech synthesis. Three scenes (shop, restaurant, park), voice selection, save/load functionality.</p>
+                        <a href="shoppingsim.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Dialogue Invitation</h3>
+                        <p>Practice invitation dialogues.</p>
+                        <a href="dialogueinv.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Pre-Complaints</h3>
+                        <p>Practice complaint dialogues before formal complaints.</p>
+                        <a href="pre-complains.html">Launch App</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category 6: Grammar Exercises -->
+            <div class="category">
+                <h2>📝 Grammar & Sentence Completion</h2>
+                <div class="category-grid">
+                    <div class="app-card">
+                        <h3>Quantifiers Exercise</h3>
+                        <p>Interactive gap-fill exercise using real-world tariff crisis scenario. 20 sentences with instant feedback.</p>
+                        <a href="quantifiers.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Present Perfect Class 6</h3>
+                        <p>Present Perfect tense exercises for grade 6.</p>
+                        <a href="PresentPerfectklasa6.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Present Simple 3rd Person</h3>
+                        <p>Practice third-person singular forms.</p>
+                        <a href="presentsimple3osoba.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Should/Have To</h3>
+                        <p>Modal verbs practice exercises.</p>
+                        <a href="shouldHaveTo.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>All Grammar</h3>
+                        <p>Comprehensive grammar exercises covering multiple topics.</p>
+                        <a href="allgrammar.html">Launch App</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category 7: Quizzes & Tests -->
+            <div class="category">
+                <h2>✅ Quizzes & Tests</h2>
+                <div class="category-grid">
+                    <div class="app-card">
+                        <h3>Python Easy Quiz</h3>
+                        <p>Python programming quiz with restart-on-error mechanism. 10 questions about basic Python concepts.</p>
+                        <a href="python_easy1.html">Launch Quiz</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Quiz Maja 1</h3>
+                        <p>Personalized quiz for student practice.</p>
+                        <a href="quizmaja1.html">Launch Quiz</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>ECA1 Unit 6 Quiz</h3>
+                        <p>End-of-unit assessment quiz.</p>
+                        <a href="quizecA1u62.html">Launch Quiz</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Final Review</h3>
+                        <p>Comprehensive review quiz for final assessments.</p>
+                        <a href="finalreview.html">Launch Quiz</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category 8: Data Visualization & Analysis -->
+            <div class="category">
+                <h2>📊 Data Visualization & Analysis</h2>
+                <div class="category-grid">
+                    <div class="app-card">
+                        <h3>Circular Statistics</h3>
+                        <p>Interactive data visualization of Poland's circular economy. Features radar charts, line graphs, scatter plots using Chart.js.</p>
+                        <a href="circularstatistics.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Micromanagement Analysis</h3>
+                        <p>Comprehensive workplace red flags analysis. 10 categories with detailed employer/employee perspectives and collapsible sections.</p>
+                        <a href="micromanage.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Text Analysis</h3>
+                        <p>Analyze text content for various metrics.</p>
+                        <a href="text_analysis.html">Launch App</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category 9: Writing & Email Practice -->
+            <div class="category">
+                <h2>✍️ Writing & Email Practice</h2>
+                <div class="category-grid">
+                    <div class="app-card">
+                        <h3>Blog Checklist</h3>
+                        <p>Checklist for blog post writing.</p>
+                        <a href="blog_checklist.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Matura Blog Checklist</h3>
+                        <p>Checklist specifically for Polish matura exam blog writing.</p>
+                        <a href="matura_blog_checklist.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Email Checklist</h3>
+                        <p>Email writing guidelines and checklist.</p>
+                        <a href="checklistmail.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Email Revision</h3>
+                        <p>Practice revising and improving email drafts.</p>
+                        <a href="emailrevision.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Recipe Checklist</h3>
+                        <p>Checklist for recipe writing exercises.</p>
+                        <a href="receipeChecklist.html">Launch App</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category 10: Verb Practice -->
+            <div class="category">
+                <h2>🔤 Verb Practice & Conjugation</h2>
+                <div class="category-grid">
+                    <div class="app-card">
+                        <h3>Irregular 3 Forms (Class 8)</h3>
+                        <p>Practice irregular verb forms for grade 8.</p>
+                        <a href="irregular3forms8klasa.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Regular Verbs Easy</h3>
+                        <p>Beginner-friendly regular verb exercises.</p>
+                        <a href="regularVerbsEasy.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Table Verbs</h3>
+                        <p>Verb conjugation tables and exercises.</p>
+                        <a href="tableverbs.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Verbs All (3 Same, 2 Same)</h3>
+                        <p>Classification of irregular verbs by pattern.</p>
+                        <a href="verbsall3same23same.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>20 Verbs Zosia</h3>
+                        <p>Personalized verb practice (Polish instructions).</p>
+                        <a href="nauka20czasownikowZosia.html">Launch App</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Resources Section -->
+            <div class="category">
+                <h2>📖 Additional Resources</h2>
+                <div class="category-grid">
+                    <div class="app-card">
+                        <h3>Seasons Practice</h3>
+                        <p>Vocabulary and exercises about seasons.</p>
+                        <a href="Seasons2.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Collections Class 3</h3>
+                        <p>Vocabulary collections for grade 3.</p>
+                        <a href="collections3klasa.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Elections v3</h3>
+                        <p>Election-related vocabulary and exercises.</p>
+                        <a href="electionsv3.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Technology 2</h3>
+                        <p>Technology vocabulary exercises.</p>
+                        <a href="technology_2.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Culture</h3>
+                        <p>Cultural topics and vocabulary.</p>
+                        <a href="culture.html">Launch App</a>
+                    </div>
+                    <div class="app-card">
+                        <h3>Schedule Trainer Table</h3>
+                        <p>Practice reading and creating schedules.</p>
+                        <a href="scheduleTrainerTable.html">Launch App</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Educational Worksheets Collection | 110+ Interactive Learning Tools</p>
+        </footer>
+    </div>
+</body>
+</html>
