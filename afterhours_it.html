@@ -1,0 +1,1356 @@
+Put your HTML text here<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESL IT: Right to Disconnect (B1)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Oswald:wght@400;500;600&family=Special+Elite&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'stamp': ['"Oswald"', 'sans-serif'],
+                        'type': ['"Courier Prime"', 'monospace'],
+                        'hand': ['"Special Elite"', 'cursive'],
+                    },
+                    colors: {
+                        'manila': '#F0E6D2',
+                        'manila-dark': '#E3D5B8',
+                        'paper': '#FAFAFA',
+                        'ink': '#1F2937',
+                        'red-stamp': '#B91C1C',
+                        'highlighter': '#FEF08A',
+                        'blue-ink': '#1e40af',
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #27272a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 2rem 1rem;
+            color: #1F2937;
+        }
+        
+        .folder-container {
+            background-color: #F0E6D2;
+            width: 100%;
+            max-width: 72rem;
+            border-radius: 4px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+            display: grid;
+            grid-template-columns: 32% 68%;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .spine {
+            position: absolute;
+            left: 32%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.2), rgba(0,0,0,0.1));
+            z-index: 20;
+        }
+        
+        .panel-left {
+            background-color: #E3D5B8;
+            padding: 1.25rem;
+            border-right: 1px solid #d1c4a8;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .panel-right {
+            background-color: #F0E6D2;
+            padding: 1.5rem 2rem;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+        
+        .legal-doc {
+            background: #FAFAFA;
+            padding: 1.5rem;
+            box-shadow: 2px 4px 12px rgba(0,0,0,0.12);
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            position: relative;
+            transform: rotate(0.2deg);
+            margin-bottom: 1.5rem;
+            border: 1px solid #e5e5e5;
+        }
+        
+        .legal-doc::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 30px;
+            right: 30px;
+            height: 3px;
+            background: repeating-linear-gradient(90deg, transparent, transparent 2px, #1e40af 2px, #1e40af 4px);
+            opacity: 0.3;
+        }
+        
+        .sticky-note {
+            background-color: #FEF08A;
+            padding: 1rem;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.15);
+            font-family: 'Special Elite', cursive;
+            transform: rotate(-0.3deg);
+            margin-bottom: 1.25rem;
+            border-bottom-right-radius: 20px;
+            position: relative;
+        }
+        
+        .sticky-note::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #FEF08A 50%, #e9dc74 50%);
+            border-bottom-right-radius: 20px;
+        }
+        
+        .exhibit-card {
+            background: white;
+            border: 2px solid #1F2937;
+            padding: 0.5rem;
+            position: relative;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+        }
+        
+        .exhibit-card::before {
+            content: attr(data-exhibit);
+            position: absolute;
+            top: -8px;
+            left: 8px;
+            background: #1F2937;
+            color: white;
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.55rem;
+            padding: 1px 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .exhibit-card img {
+            width: 100%;
+            height: 90px;
+            object-fit: cover;
+            filter: sepia(10%) contrast(95%);
+            border: 1px solid #ccc;
+        }
+        
+        .def-row {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 0.5rem;
+            padding: 0.35rem 0;
+            border-bottom: 1px dotted #aaa;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.85rem;
+            align-items: start;
+        }
+        
+        .def-row:last-child {
+            border-bottom: none;
+        }
+        
+        .def-number {
+            font-weight: 700;
+            color: #B91C1C;
+            min-width: 1.5rem;
+        }
+        
+        .def-text {
+            color: #333;
+            line-height: 1.4;
+        }
+        
+        .def-answer {
+            grid-column: 1 / -1;
+            margin-top: 0.25rem;
+        }
+        
+        .match-select {
+            width: 100%;
+            padding: 0.2rem 0.3rem;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.7rem;
+            border: 1px dashed #666;
+            background: rgba(255,255,255,0.8);
+            cursor: pointer;
+        }
+        
+        .match-select:focus {
+            outline: none;
+            border-color: #B91C1C;
+            background: white;
+        }
+        
+        .match-select.correct {
+            background: #d1fae5;
+            border: 1px solid #059669;
+        }
+        
+        .match-select.incorrect {
+            background: #fee2e2;
+            border: 1px solid #dc2626;
+        }
+        
+        .gap-select {
+            background: #f3f4f6;
+            border: none;
+            border-bottom: 2px solid #1F2937;
+            font-family: 'Courier Prime', monospace;
+            color: #1e40af;
+            font-weight: bold;
+            font-size: 0.8rem;
+            padding: 0 0.3rem;
+            cursor: pointer;
+            margin: 0 2px;
+        }
+        
+        .gap-select:hover {
+            background: #e5e7eb;
+        }
+        
+        .gap-select.correct {
+            border-bottom-color: #059669;
+            color: #059669;
+        }
+        
+        .gap-select.incorrect {
+            border-bottom-color: #dc2626;
+            color: #dc2626;
+        }
+        
+        .case-box {
+            border: 2px solid #1F2937;
+            padding: 1rem;
+            background: white;
+            position: relative;
+            margin: 1rem 0;
+        }
+        
+        .case-box::before {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border: 1px solid #ddd;
+            pointer-events: none;
+        }
+        
+        .case-label {
+            position: absolute;
+            top: -10px;
+            left: 12px;
+            background: #B91C1C;
+            color: white;
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.65rem;
+            padding: 2px 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .case-label.green {
+            background: #059669;
+        }
+        
+        .discussion-item {
+            background: white;
+            padding: 0.6rem 0.8rem;
+            margin: 0.5rem 0;
+            border-left: 3px solid #1e40af;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.75rem;
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.06);
+        }
+        
+        .discussion-item strong {
+            color: #1e40af;
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.75rem;
+            margin: 0.75rem 0;
+            background: white;
+        }
+        
+        .comparison-table th {
+            background: #1e40af;
+            color: white;
+            padding: 0.4rem;
+            text-align: left;
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            font-size: 0.65rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .comparison-table td {
+            padding: 0.4rem;
+            border: 1px solid #ccc;
+            vertical-align: top;
+        }
+        
+        .comparison-table tr:nth-child(even) td {
+            background: #f9f9f9;
+        }
+        
+        .action-btn {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.75rem;
+        }
+        
+        .btn-check {
+            background: #1F2937;
+            color: white;
+            border: none;
+        }
+        
+        .btn-check:hover {
+            background: #000;
+        }
+        
+        .btn-print {
+            background: white;
+            color: #1F2937;
+            border: 2px solid #1F2937;
+        }
+        
+        .btn-print:hover {
+            background: #1F2937;
+            color: white;
+        }
+        
+        .feedback {
+            font-family: 'Special Elite', cursive;
+            padding: 0.4rem;
+            margin-top: 0.4rem;
+            font-size: 0.75rem;
+        }
+        
+        .feedback.success { color: #059669; }
+        .feedback.partial { color: #B91C1C; }
+        
+        .concept-box {
+            background: #dbeafe;
+            border: 2px solid #1e40af;
+            padding: 0.75rem;
+            margin: 0.75rem 0;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.7rem;
+        }
+        
+        .section-header {
+            font-family: 'Oswald', sans-serif;
+            color: #1e40af;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #E3D5B8;
+            padding-bottom: 0.4rem;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+        
+        .stamp {
+            border: 3px solid #1e40af;
+            color: #1e40af;
+            font-family: 'Oswald', sans-serif;
+            padding: 0.3rem 0.8rem;
+            text-transform: uppercase;
+            transform: rotate(-8deg);
+            opacity: 0.7;
+            display: inline-block;
+            font-weight: 600;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+        }
+        
+        .quiz-box {
+            background: #fef3c7;
+            border: 2px dashed #d97706;
+            padding: 0.75rem;
+            margin-top: 0.75rem;
+            font-family: 'Special Elite', cursive;
+            font-size: 0.75rem;
+        }
+        
+        .quiz-box input[type="text"] {
+            width: 100%;
+            border: none;
+            border-bottom: 2px solid #1F2937;
+            background: transparent;
+            font-family: 'Courier Prime', monospace;
+            font-weight: bold;
+            font-size: 0.85rem;
+            padding: 2px 4px;
+        }
+        
+        .quiz-box input[type="radio"] {
+            margin-right: 5px;
+        }
+        
+        .translation-box {
+            background: #fce7f3;
+            border: 2px solid #db2777;
+            padding: 0.6rem;
+            margin: 0.4rem 0;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.8rem;
+        }
+        
+        .translation-box .polish {
+            color: #be185d;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .translation-box input {
+            width: 100%;
+            border: none;
+            border-bottom: 2px dashed #db2777;
+            background: transparent;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.8rem;
+            padding: 2px;
+        }
+        
+        .roleplay-card {
+            background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);
+            color: white;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.8rem;
+            position: relative;
+        }
+        
+        .roleplay-card h4 {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            color: #fbbf24;
+        }
+        
+        .speaking-frame {
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem;
+            margin: 0.3rem 0;
+            border-left: 3px solid #fbbf24;
+            font-style: italic;
+        }
+        
+        .debate-card {
+            background: #fee2e2;
+            border: 2px solid #dc2626;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.8rem;
+        }
+        
+        .debate-card.pro {
+            background: #d1fae5;
+            border-color: #059669;
+        }
+        
+        .debate-card h4 {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .tf-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem;
+            background: white;
+            margin: 0.3rem 0;
+            border: 1px solid #ddd;
+            font-size: 0.8rem;
+        }
+        
+        .tf-btn {
+            padding: 2px 8px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.65rem;
+            border: 1px solid #333;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .tf-btn:hover {
+            background: #f3f4f6;
+        }
+        
+        .tf-btn.selected-correct {
+            background: #059669;
+            color: white;
+            border-color: #059669;
+        }
+        
+        .tf-btn.selected-wrong {
+            background: #dc2626;
+            color: white;
+            border-color: #dc2626;
+        }
+        
+        .print-only-text { display: none; }
+        .gap-blank { display: none; }
+        .print-wordbank { display: none; }
+        
+        @media print {
+            @page { size: A4; margin: 1.5cm 2cm; }
+            *, *::before, *::after {
+                background: transparent !important;
+                box-shadow: none !important;
+                transform: none !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            body { background: white; display: block; padding: 0; font-size: 11pt; }
+            .btn-print, .btn-check, .spine, .feedback, .match-select, .gap-select { display: none !important; }
+            .print-only-text, .gap-blank, .print-wordbank { display: block !important; }
+            .folder-container { display: flex; flex-direction: column; width: 100%; max-width: 100%; }
+            .panel-left, .panel-right { display: contents; }
+        }
+    </style>
+</head>
+<body>
+    <main class="folder-container">
+        <div class="spine"></div>
+        
+        <!-- LEFT PANEL -->
+        <aside class="panel-left">
+            <!-- Docket Header -->
+            <div id="docket-header" class="text-center border-b-2 border-manila pb-3">
+                <div class="font-stamp text-xs text-ink/50 tracking-widest">DIRECTIVE NO.</div>
+                <div class="font-type text-xl font-bold">EU-2025-RTD</div>
+                <div class="text-[10px] font-type mt-1 opacity-70">RE: RIGHT TO DISCONNECT</div>
+                <div class="mt-2">
+                    <span class="stamp text-xs">B1 Level</span>
+                </div>
+                <p class="font-type text-[9px] mt-2 opacity-50">Est. Time: 60 min</p>
+                <p class="font-type text-[8px] mt-1 opacity-40">ESL for IT Professionals</p>
+            </div>
+            
+            <!-- Task 1: Vocabulary Matching -->
+            <div id="task1-section" class="bg-white/50 p-2 rounded border border-manila-dark flex-grow">
+                <h3 class="font-stamp text-sm mb-1 text-red-stamp uppercase tracking-wide">Task 1: Vocabulary Matching</h3>
+                <p class="font-type text-[8px] mb-2 opacity-70">Match each definition to the correct term.</p>
+                
+                <div class="print-wordbank">
+                    <strong>Vocabulary Bank:</strong> always-on culture • awareness raising • burnout • collective agreement • digital tools • force majeure • out-of-hours contact • right to disconnect • to implement • work-life balance
+                </div>
+                
+                <div id="matching-task" class="space-y-1">
+                    <div class="def-row">
+                        <span class="def-number">1.</span>
+                        <span class="def-text">The legal right not to engage in work activities outside working hours</span>
+                        <div class="def-answer">
+                            <select id="match1" class="match-select" onchange="saveProgress()">
+                                <option value="">— select term —</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="def-row">
+                        <span class="def-number">2.</span>
+                        <span class="def-text">A workplace where employees are expected to be available 24/7</span>
+                        <div class="def-answer">
+                            <select id="match2" class="match-select" onchange="saveProgress()">
+                                <option value="">— select term —</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="def-row">
+                        <span class="def-number">3.</span>
+                        <span class="def-text">Equilibrium between professional duties and personal life</span>
+                        <div class="def-answer">
+                            <select id="match3" class="match-select" onchange="saveProgress()">
+                                <option value="">— select term —</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="def-row">
+                        <span class="def-number">4.</span>
+                        <span class="def-text">Communication from work outside regular working time</span>
+                        <div class="def-answer">
+                            <select id="match4" class="match-select" onchange="saveProgress()">
+                                <option value="">— select term —</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="def-row">
+                        <span class="def-number">5.</span>
+                        <span class="def-text">Electronic devices and software used for work (email, apps)</span>
+                        <div class="def-answer">
+                            <select id="match5" class="match-select" onchange="saveProgress()">
+                                <option value="">— select term —</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="def-row">
+                        <span class="def-number">6.</span>
+                        <span class="def-text">Physical and emotional exhaustion caused by prolonged stress</span>
+                        <div class="def-answer">
+                            <select id="match6" class="match-select" onchange="saveProgress()">
+                                <option value="">— select term —</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="def-row">
+                        <span class="def-number">7.</span>
+                        <span class="def-text">To put a plan or policy into action</span>
+                        <div class="def-answer">
+                            <select id="match7" class="match-select" onchange="saveProgress()">
+                                <option value="">— select term —</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="def-row">
+                        <span class="def-number">8.</span>
+                        <span class="def-text">A negotiated agreement between employers and employee representatives</span>
+                        <div class="def-answer">
+                            <select id="match8" class="match-select" onchange="saveProgress()">
+                                <option value="">— select term —</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="def-row">
+                        <span class="def-number">9.</span>
+                        <span class="def-text">Activities to increase knowledge about an issue</span>
+                        <div class="def-answer">
+                            <select id="match9" class="match-select" onchange="saveProgress()">
+                                <option value="">— select term —</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="def-row">
+                        <span class="def-number">10.</span>
+                        <span class="def-text">Unforeseeable circumstances that justify exceptional actions</span>
+                        <div class="def-answer">
+                            <select id="match10" class="match-select" onchange="saveProgress()">
+                                <option value="">— select term —</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="checkMatching()" class="action-btn btn-check w-full mt-2">
+                    ✓ Verify Matches
+                </button>
+                <div id="matching-feedback" class="feedback text-center"></div>
+            </div>
+            
+            <!-- Polish Translation Exercise -->
+            <div id="translation-section" class="bg-pink-50 p-2 rounded border border-pink-300">
+                <h3 class="font-stamp text-sm mb-1 text-pink-700 uppercase tracking-wide">🇵🇱 Przetłumacz na angielski</h3>
+                <p class="font-type text-[8px] mb-2 opacity-70">Translate these Polish terms to English.</p>
+                
+                <div class="translation-box">
+                    <div class="polish">1. prawo do odłączenia</div>
+                    <input type="text" id="trans1" placeholder="= ..." data-answer="right to disconnect">
+                </div>
+                <div class="translation-box">
+                    <div class="polish">2. równowaga praca-życie</div>
+                    <input type="text" id="trans2" placeholder="= ..." data-answer="work-life balance">
+                </div>
+                <div class="translation-box">
+                    <div class="polish">3. wypalenie zawodowe</div>
+                    <input type="text" id="trans3" placeholder="= ..." data-answer="burnout">
+                </div>
+                <div class="translation-box">
+                    <div class="polish">4. okresy odpoczynku</div>
+                    <input type="text" id="trans4" placeholder="= ..." data-answer="rest periods">
+                </div>
+                <div class="translation-box">
+                    <div class="polish">5. podnoszenie świadomości</div>
+                    <input type="text" id="trans5" placeholder="= ..." data-answer="awareness raising">
+                </div>
+                <div class="translation-box">
+                    <div class="polish">6. elastyczna praca</div>
+                    <input type="text" id="trans6" placeholder="= ..." data-answer="flexible working">
+                </div>
+                
+                <button onclick="checkTranslations()" class="action-btn btn-check w-full mt-2" style="background: #db2777;">
+                    ✓ Sprawdź
+                </button>
+                <div id="translation-feedback" class="feedback text-center"></div>
+            </div>
+            
+            <!-- Print Button -->
+            <div class="text-center mt-4">
+                <button onclick="printWorksheet()" class="action-btn btn-print">
+                    🖨️ Print Worksheet
+                </button>
+            </div>
+        </aside>
+        
+        <!-- RIGHT PANEL -->
+        <section class="panel-right">
+            
+            <!-- WARM-UP -->
+            <div id="warmup-section" class="sticky-note">
+                <h3 class="font-bold text-sm border-b-2 border-black/20 pb-1 mb-2">WARM-UP: After Work Hours</h3>
+                
+                <div class="concept-box mb-3">
+                    <div class="font-stamp text-xs text-sky-800 mb-1">💡 KEY WORDS FOR DISCUSSION:</div>
+                    <div class="grid grid-cols-2 gap-x-3 gap-y-1 text-[10px]">
+                        <div><strong>work email</strong> — messages about your job</div>
+                        <div><strong>personal time</strong> — free time after work</div>
+                        <div><strong>respond</strong> — to answer, to reply</div>
+                        <div><strong>boss / manager</strong> — person who leads you</div>
+                        <div><strong>boundaries</strong> — limits between work and life</div>
+                        <div><strong>stressed</strong> — feeling pressure, worried</div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-4 gap-2 mb-2">
+                    <div class="exhibit-card" data-exhibit="A">
+                        <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=200&h=150&fit=crop" alt="Working late">
+                        <p class="text-[8px] mt-1 text-center">Late Email</p>
+                    </div>
+                    <div class="exhibit-card" data-exhibit="B">
+                        <img src="https://images.unsplash.com/photo-1551836022-4c4c79ecde51?w=200&h=150&fit=crop" alt="Family dinner">
+                        <p class="text-[8px] mt-1 text-center">Family Time</p>
+                    </div>
+                    <div class="exhibit-card" data-exhibit="C">
+                        <img src="https://images.unsplash.com/photo-1603201667230-bd9e28526e70?w=200&h=150&fit=crop" alt="Phone at night">
+                        <p class="text-[8px] mt-1 text-center">Work Call</p>
+                    </div>
+                    <div class="exhibit-card" data-exhibit="D">
+                        <img src="https://images.unsplash.com/photo-1473830394358-91588751b241?w=200&h=150&fit=crop" alt="Relaxing">
+                        <p class="text-[8px] mt-1 text-center">Vacation</p>
+                    </div>
+                </div>
+                
+                <div class="text-[9px] space-y-1 border-t border-black/20 pt-2">
+                    <p><strong>💭 Discuss these questions:</strong></p>
+                    <p>1. Do you ever check work emails after 6 PM or on weekends?</p>
+                    <p>2. How do you feel when your boss contacts you during vacation?</p>
+                    <p>3. Is it polite to send work emails at 10 PM?</p>
+                    <p>4. Should employees be allowed to refuse contact after hours?</p>
+                </div>
+            </div>
+            
+            <!-- TASK 2: Reading Article -->
+            <article class="legal-doc">
+                <div class="absolute top-2 right-4 stamp text-xs">
+                    EU Directive Draft 2025
+                </div>
+                
+                <h1 class="font-bold text-base mb-3 text-center underline decoration-2 underline-offset-4 font-stamp tracking-wide">
+                    THE RIGHT TO DISCONNECT
+                </h1>
+                
+                <h2 class="section-header text-sm">Task 2: Complete the Article</h2>
+                
+                <div class="print-wordbank">
+                    <strong>Word Bank:</strong> right to disconnect • always-on culture • work-life balance • out-of-hours contact • digital tools • remote work • working hours • overtime • rest periods • burnout • work-related communication • to implement • collective agreement • Code of Practice • employee representative • to enforce • awareness raising • penalty • flexible working • force majeure
+                </div>
+                
+                <p class="mb-2">
+                    <strong>§1. THE PROBLEM: WORK NEVER STOPS</strong><br>
+                    Modern technology has changed how we work. Laptops, smartphones, and 
+                    <select class="gap-select" id="gap1" data-ans="digital tools" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank">_______________</span>
+                    allow employees to stay connected anywhere, anytime. But this created a problem: an 
+                    <select class="gap-select" id="gap2" data-ans="always-on culture" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank">_______________</span>.
+                </p>
+                
+                <p class="mb-2">
+                    The COVID-19 pandemic made things worse. When millions of people started 
+                    <select class="gap-select" id="gap3" data-ans="remote work" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank">_______________</span>,
+                    the line between work and personal life disappeared. Many workers now receive 
+                    <select class="gap-select" id="gap4" data-ans="out-of-hours contact" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank">_______________</span>
+                    regularly—emails, messages, and calls after 
+                    <select class="gap-select" id="gap5" data-ans="working hours" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank">_______________</span>.
+                </p>
+                
+                <p class="mb-2">
+                    <strong>§2. HEALTH CONSEQUENCES</strong><br>
+                    Research by Eurofound (2023) shows that <strong>8 out of 10 workers</strong> receive 
+                    <select class="gap-select" id="gap6" data-ans="work-related communication" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank">_______________</span>
+                    outside regular hours. This harms their 
+                    <select class="gap-select" id="gap7" data-ans="work-life balance" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank">_______________</span>.
+                    Workers report stress (38%), anxiety, headaches (41%), and back pain (35%). Many are working unpaid 
+                    <select class="gap-select" id="gap8" data-ans="overtime" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank">_______________</span>
+                    just to answer messages. Some develop 
+                    <select class="gap-select" id="gap9" data-ans="burnout" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank">_______________</span>
+                    —total physical and mental exhaustion.
+                </p>
+                
+                <p class="mb-2">
+                    <strong>§3. WHAT IS THE RIGHT TO DISCONNECT?</strong><br>
+                    The 
+                    <select class="gap-select" id="gap10" data-ans="right to disconnect" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank">_______________</span>
+                    is the legal right of workers not to engage in work activities outside their contracted hours. This includes not reading emails, not answering calls, and not feeling guilty about it. Workers need proper 
+                    <select class="gap-select" id="gap11" data-ans="rest periods" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank">_______________</span>
+                    to recover.
+                </p>
+                
+                <p class="mb-2">
+                    <strong>§4. WHO HAS THIS LAW?</strong><br>
+                    Currently, <strong>11 EU countries</strong> have legislation: Belgium, France, Spain, Portugal, Italy, Ireland, Greece, Croatia, Slovakia, Cyprus, and Luxembourg. France was first (2016). Ireland created a 
+                    <select class="gap-select" id="gap12" data-ans="Code of Practice" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank">_______________</span>
+                    (2021), which is not legally binding but influences workplace culture.
+                </p>
+                
+                <p class="mb-2">
+                    <strong>§5. HOW DOES IT WORK?</strong><br>
+                    In Belgium and France, companies must negotiate a 
+                    <select class="gap-select" id="gap13" data-ans="collective agreement" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank">_______________</span>
+                    with 
+                    <select class="gap-select" id="gap14" data-ans="employee representative" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank">_______________</span>s
+                    or trade unions. They must 
+                    <select class="gap-select" id="gap15" data-ans="to implement" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank">_______________</span>
+                    clear rules: when workers can disconnect, how to use digital tools responsibly, and training for managers.
+                </p>
+                
+                <p class="mb-2">
+                    Portugal has the strictest approach: the government can 
+                    <select class="gap-select" id="gap16" data-ans="to enforce" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank">_______________</span>
+                    the law directly and impose a 
+                    <select class="gap-select" id="gap17" data-ans="penalty" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank">_______________</span>
+                    on companies that violate workers' rights.
+                </p>
+                
+                <p class="mb-2">
+                    <strong>§6. PRACTICAL MEASURES</strong><br>
+                    Companies are introducing practical solutions:
+                    <br>• Automatic deletion of emails received during vacation
+                    <br>• Blocking email delivery outside working hours
+                    <br>• <select class="gap-select" id="gap18" data-ans="awareness raising" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank">_______________</span> campaigns and training
+                    <br>• Email disclaimers: "I work flexible hours; you don't need to respond now"
+                </p>
+                
+                <p class="mb-2">
+                    <strong>§7. EXCEPTIONS</strong><br>
+                    The right to disconnect is NOT absolute. Contact may be allowed in cases of 
+                    <select class="gap-select" id="gap19" data-ans="force majeure" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank">_______________</span>
+                    (natural disasters, serious accidents). However, exceptions must be justified in writing and cannot become routine.
+                </p>
+                
+                <p class="mb-2">
+                    <strong>§8. DOES IT CONFLICT WITH FLEXIBILITY?</strong><br>
+                    Some workers want 
+                    <select class="gap-select" id="gap20" data-ans="flexible working" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank">_______________</span>
+                    —they prefer to work odd hours or from different time zones. The directive does NOT ban this. It protects workers who do NOT want to be contacted. Workers can still CHOOSE to be available—but they cannot be FORCED or PUNISHED for disconnecting.
+                </p>
+                
+                <p class="mb-2">
+                    <strong>§9. NEXT STEPS</strong><br>
+                    The European Commission started the <strong>second stage of consultations in July 2025</strong>. A draft directive is expected in <strong>2026-2027</strong>, with member states required to implement it by <strong>2028-2029</strong>.
+                </p>
+                
+                <div class="text-right mt-3">
+                    <button onclick="checkGaps()" class="action-btn btn-check text-xs">
+                        ✓ Verify Article Gaps
+                    </button>
+                </div>
+                <div id="gaps-feedback" class="feedback text-right"></div>
+            </article>
+            
+            <!-- TASK 3: Case Studies -->
+            <div id="task3-section">
+                <h2 class="section-header">Task 3: Real Stories — Is This Fair?</h2>
+                <p class="font-type text-[10px] mb-2 opacity-70">Read about two employees. Discuss: Do they need the right to disconnect?</p>
+                
+                <!-- Case 1: Anna -->
+                <div class="case-box">
+                    <div class="case-label">Case A: Anna K.</div>
+                    
+                    <div class="flex gap-3 items-start mt-2">
+                        <div class="w-10 h-10 bg-manila border-2 border-ink flex-shrink-0 flex items-center justify-center font-stamp text-xl">
+                            A
+                        </div>
+                        <div class="font-type text-xs flex-grow">
+                            <p class="font-bold mb-1">EMPLOYEE: ANNA K. — MARKETING MANAGER</p>
+                            
+                            <div class="bg-paper p-2 mb-2 text-[11px] border border-gray-200">
+                                <p><strong>Company:</strong> International advertising agency</p>
+                                <p><strong>Contract:</strong> Full-time, 9 AM – 5 PM, Monday to Friday</p>
+                                <p><strong>Situation:</strong> Her manager sends emails every day at 10 PM and expects replies before 8 AM next day.</p>
+                                <p><strong>Problem:</strong> Anna has two young children. She needs to help them with homework, dinner, and bedtime. But she feels she must check her phone constantly. Last month, her manager called her on Sunday at 7 PM to ask about a project. Anna couldn't sleep that night.</p>
+                                <p><strong>Health:</strong> Anna reports stress, headaches, and anxiety. She takes sleeping pills now.</p>
+                            </div>
+                            
+                            <div class="quiz-box">
+                                <p class="font-bold mb-1">📊 YOUR OPINION:</p>
+                                <p class="mb-1 text-[10px]">Should Anna have the right to disconnect after 5 PM?</p>
+                                <label class="block text-[10px]"><input type="radio" name="anna" value="yes"> Yes, she should be protected</label>
+                                <label class="block text-[10px]"><input type="radio" name="anna" value="no"> No, this is normal in business</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Case 2: Jakub -->
+                <div class="case-box">
+                    <div class="case-label green">Case B: Jakub M.</div>
+                    
+                    <div class="flex gap-3 items-start mt-2">
+                        <div class="w-10 h-10 bg-green-100 border-2 border-green-700 flex-shrink-0 flex items-center justify-center font-stamp text-xl text-green-800">
+                            J
+                        </div>
+                        <div class="font-type text-xs flex-grow">
+                            <p class="font-bold mb-1">EMPLOYEE: JAKUB M. — SOFTWARE DEVELOPER</p>
+                            
+                            <div class="bg-paper p-2 mb-2 text-[11px] border border-gray-200">
+                                <p><strong>Company:</strong> Tech startup</p>
+                                <p><strong>Contract:</strong> Remote work, flexible hours</p>
+                                <p><strong>Situation:</strong> Jakub PREFERS to work 2 PM – 10 PM. He is more productive in the evening. His team is international (USA, India, Poland).</p>
+                                <p><strong>Preference:</strong> Jakub WANTS to receive messages at night because he checks them anyway. He chose this job specifically for the flexibility.</p>
+                                <p><strong>Health:</strong> No complaints. He likes his schedule.</p>
+                            </div>
+                            
+                            <div class="quiz-box" style="background: #d1fae5; border-color: #059669;">
+                                <p class="font-bold mb-1">📊 YOUR OPINION:</p>
+                                <p class="mb-1 text-[10px]">Should Jakub be allowed to work flexible hours?</p>
+                                <label class="block text-[10px]"><input type="radio" name="jakub" value="yes"> Yes, it's his choice</label>
+                                <label class="block text-[10px]"><input type="radio" name="jakub" value="no"> No, everyone should disconnect at 5 PM</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="concept-box" style="background: #fef3c7; border-color: #f59e0b;">
+                    <p class="font-bold text-[10px] mb-1">🔍 THE KEY QUESTION:</p>
+                    <p class="text-[9px]">The directive protects the RIGHT to disconnect. It doesn't FORCE everyone to disconnect. Think about: Who needs protection? Who just wants freedom to choose?</p>
+                </div>
+            </div>
+            
+            <!-- TASK 4: Role-Play -->
+            <div id="task4-section" class="mt-4">
+                <h2 class="section-header text-sm">Task 4: IT Workplace Role-Play 🎭</h2>
+                <p class="font-type text-[9px] mb-2 opacity-70">You work in IT. Practice discussing these workplace situations in English.</p>
+                
+                <div class="roleplay-card">
+                    <h4>🏢 Scenario A: Team Lead Meeting</h4>
+                    <p class="text-[10px] mb-2">Your CTO asks: "We're getting complaints about on-call burnout. How should we redesign our incident response policy to protect work-life balance?"</p>
+                    <div class="speaking-frame">"Based on industry best practices, we should implement..."</div>
+                    <div class="speaking-frame">"To reduce burnout while maintaining uptime, I suggest..."</div>
+                    <div class="speaking-frame">"The main issues with our current on-call rotation are..."</div>
+                </div>
+                
+                <div class="roleplay-card" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
+                    <h4>👩‍💻 Scenario B: Supporting a Colleague</h4>
+                    <p class="text-[10px] mb-2">Your colleague says: "My project manager expects me to respond to Slack messages until midnight. I'm exhausted but don't want to look uncommitted. What should I do?"</p>
+                    <div class="speaking-frame">"I've been in a similar situation. What worked for me was..."</div>
+                    <div class="speaking-frame">"You should try setting boundaries by..."</div>
+                    <div class="speaking-frame">"Maybe you could discuss with your PM about..."</div>
+                </div>
+            </div>
+            
+            <!-- TASK 5: Mini-Debate -->
+            <div id="task5-section" class="mt-4">
+                <h2 class="section-header text-sm">Task 5: Defend Your Position 🗣️</h2>
+                <p class="font-type text-[9px] mb-2 opacity-70">Choose one card. Give 2-3 arguments FOR this position.</p>
+                
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="debate-card">
+                        <h4>❌ Against the Directive</h4>
+                        <p class="text-[10px]">"This law is too strict. Some people LIKE working evenings. Companies will lose flexibility. International business will suffer."</p>
+                        <p class="text-[9px] mt-2 italic opacity-70">Give 2-3 arguments to support this view...</p>
+                    </div>
+                    <div class="debate-card pro">
+                        <h4>✅ For the Directive</h4>
+                        <p class="text-[10px]">"This directive is necessary. Workers are burning out. Companies abuse technology to get free labor. Mental health is more important than profits."</p>
+                        <p class="text-[9px] mt-2 italic opacity-70">Give 2-3 arguments to support this view...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TASK 6: Discussion -->
+            <div id="task6-section" class="mt-4">
+                <h2 class="section-header text-sm">Task 6: Discussion Questions</h2>
+                <p class="font-type text-[9px] mb-2 opacity-70">Talk about these questions. Give examples from your experience.</p>
+                
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="discussion-item">
+                        <strong>Team Communication</strong>
+                        <p class="mt-1">Does your team have expectations about Slack/Teams response times? Are there unwritten rules about when you should be online?</p>
+                    </div>
+                    
+                    <div class="discussion-item">
+                        <strong>Developers vs DevOps/Support</strong>
+                        <p class="mt-1">Is the right to disconnect different for developers vs on-call engineers or support teams? Who needs more protection?</p>
+                    </div>
+                    
+                    <div class="discussion-item">
+                        <strong>Distributed Teams</strong>
+                        <p class="mt-1">If you work with colleagues in different time zones (USA, India, UK), how can you disconnect? Is asynchronous communication the answer?</p>
+                    </div>
+                    
+                    <div class="discussion-item">
+                        <strong>Startup vs Corporate Culture</strong>
+                        <p class="mt-1">Do you think "always-on" culture is stronger at startups? Would you accept more money for less work-life balance?</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TASK 7: Quick Recap -->
+            <div id="task7-section" class="mt-4">
+                <h2 class="section-header text-sm">Task 7: True or False?</h2>
+                
+                <div class="tf-item">
+                    <button class="tf-btn" onclick="checkTF(this, true)">T</button>
+                    <button class="tf-btn" onclick="checkTF(this, false)">F</button>
+                    <span class="text-[11px]">1. The right to disconnect means workers can refuse out-of-hours contact.</span>
+                </div>
+                <div class="tf-item">
+                    <button class="tf-btn" onclick="checkTF(this, true)">T</button>
+                    <button class="tf-btn" onclick="checkTF(this, false)">F</button>
+                    <span class="text-[11px]">2. 8 out of 10 workers receive work messages outside working hours.</span>
+                </div>
+                <div class="tf-item">
+                    <button class="tf-btn" onclick="checkTF(this, false)">T</button>
+                    <button class="tf-btn" onclick="checkTF(this, true)">F</button>
+                    <span class="text-[11px]">3. France was the first country to introduce this law in 2020.</span>
+                </div>
+                <div class="tf-item">
+                    <button class="tf-btn" onclick="checkTF(this, true)">T</button>
+                    <button class="tf-btn" onclick="checkTF(this, false)">F</button>
+                    <span class="text-[11px]">4. Workers with right to disconnect policies report 92% work-life balance satisfaction.</span>
+                </div>
+                <div class="tf-item">
+                    <button class="tf-btn" onclick="checkTF(this, false)">T</button>
+                    <button class="tf-btn" onclick="checkTF(this, true)">F</button>
+                    <span class="text-[11px]">5. The directive FORCES all workers to stop working at 5 PM.</span>
+                </div>
+                <div class="tf-item">
+                    <button class="tf-btn" onclick="checkTF(this, true)">T</button>
+                    <button class="tf-btn" onclick="checkTF(this, false)">F</button>
+                    <span class="text-[11px]">6. Portugal can enforce the law with penalties for companies.</span>
+                </div>
+            </div>
+            
+            <!-- Summary Table -->
+            <div id="reference-section" class="mt-4">
+                <h2 class="section-header text-sm">Reference: Country Approaches to Right to Disconnect</h2>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%">Country</th>
+                            <th style="width: 15%">Law Type</th>
+                            <th style="width: 35%">How It Works</th>
+                            <th style="width: 30%">Key Features</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>France</strong></td>
+                            <td>Mandatory (2016)</td>
+                            <td>Companies negotiate with unions; must create written policy</td>
+                            <td>First in EU; covers companies 50+ employees</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Belgium</strong></td>
+                            <td>Mandatory (2022)</td>
+                            <td>Collective agreements required for 20+ employees</td>
+                            <td>Must include practical measures + training</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Portugal</strong></td>
+                            <td>Direct law (2021)</td>
+                            <td>Automatic application; government can fine companies</td>
+                            <td>Strictest enforcement in EU</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ireland</strong></td>
+                            <td>Code of Practice (2021)</td>
+                            <td>Non-binding guidelines; voluntary compliance</td>
+                            <td>Cultural change focus; no direct penalties</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Spain</strong></td>
+                            <td>Mandatory (2018)</td>
+                            <td>Remote workers specifically protected</td>
+                            <td>Part of broader remote work law</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Poland</strong></td>
+                            <td>None yet</td>
+                            <td>Must implement EU directive by 2028-2029</td>
+                            <td>Labor Code may need amendments</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+        </section>
+    </main>
+    
+    <script>
+        // Answer Keys
+        const matchingAnswers = {
+            'match1': 'right to disconnect',
+            'match2': 'always-on culture',
+            'match3': 'work-life balance',
+            'match4': 'out-of-hours contact',
+            'match5': 'digital tools',
+            'match6': 'burnout',
+            'match7': 'to implement',
+            'match8': 'collective agreement',
+            'match9': 'awareness raising',
+            'match10': 'force majeure'
+        };
+        
+        const matchingTerms = [
+            'always-on culture', 'awareness raising', 'burnout',
+            'collective agreement', 'digital tools', 'force majeure',
+            'out-of-hours contact', 'right to disconnect', 'to implement',
+            'work-life balance'
+        ];
+        
+        const gapAnswers = {
+            'gap1': 'digital tools',
+            'gap2': 'always-on culture',
+            'gap3': 'remote work',
+            'gap4': 'out-of-hours contact',
+            'gap5': 'working hours',
+            'gap6': 'work-related communication',
+            'gap7': 'work-life balance',
+            'gap8': 'overtime',
+            'gap9': 'burnout',
+            'gap10': 'right to disconnect',
+            'gap11': 'rest periods',
+            'gap12': 'Code of Practice',
+            'gap13': 'collective agreement',
+            'gap14': 'employee representative',
+            'gap15': 'to implement',
+            'gap16': 'to enforce',
+            'gap17': 'penalty',
+            'gap18': 'awareness raising',
+            'gap19': 'force majeure',
+            'gap20': 'flexible working'
+        };
+        
+        const termOptions = [
+            'always-on culture', 'awareness raising', 'burnout',
+            'Code of Practice', 'collective agreement', 'digital tools',
+            'employee representative', 'flexible working', 'force majeure',
+            'out-of-hours contact', 'overtime', 'penalty',
+            'remote work', 'rest periods', 'right to disconnect',
+            'to enforce', 'to implement', 'work-life balance',
+            'work-related communication', 'working hours'
+        ];
+        
+        function shuffle(array) {
+            const arr = [...array];
+            for (let i = 1; i < arr.length; i++) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+        
+        window.onload = function() {
+            setupMatchingTask();
+            setupGapsTask();
+            loadProgress();
+        };
+        
+        function setupMatchingTask() {
+            const shuffled = shuffle(matchingTerms);
+            for (let i = 1; i <= 10; i++) {
+                const select = document.getElementById(`match${i}`);
+                if (select) {
+                    shuffled.forEach(opt => {
+                        const option = document.createElement('option');
+                        option.value = opt;
+                        option.textContent = opt;
+                        select.appendChild(option);
+                    });
+                }
+            }
+        }
+        
+        function setupGapsTask() {
+            const shuffled = shuffle(termOptions);
+            for (let i = 1; i <= 20; i++) {
+                const select = document.getElementById(`gap${i}`);
+                if (select) {
+                    shuffled.forEach(opt => {
+                        const option = document.createElement('option');
+                        option.value = opt;
+                        option.textContent = opt;
+                        select.appendChild(option);
+                    });
+                }
+            }
+        }
+        
+        function saveProgress() {
+            const progress = {};
+            for (let i = 1; i <= 10; i++) {
+                const m = document.getElementById(`match${i}`);
+                if (m) progress[`match${i}`] = m.value;
+            }
+            for (let i = 1; i <= 20; i++) {
+                const g = document.getElementById(`gap${i}`);
+                if (g) progress[`gap${i}`] = g.value;
+            }
+            for (let i = 1; i <= 6; i++) {
+                const t = document.getElementById(`trans${i}`);
+                if (t) progress[`trans${i}`] = t.value;
+            }
+            localStorage.setItem('right_to_disconnect_b1_progress', JSON.stringify(progress));
+        }
+        
+        function loadProgress() {
+            const saved = localStorage.getItem('right_to_disconnect_b1_progress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                Object.keys(progress).forEach(key => {
+                    const el = document.getElementById(key);
+                    if (el && progress[key]) {
+                        el.value = progress[key];
+                    }
+                });
+            }
+        }
+        
+        function checkMatching() {
+            let correct = 0;
+            for (let i = 1; i <= 10; i++) {
+                const select = document.getElementById(`match${i}`);
+                if (select) {
+                    select.classList.remove('correct', 'incorrect');
+                    if (select.value === matchingAnswers[`match${i}`]) {
+                        correct++;
+                        select.classList.add('correct');
+                    } else if (select.value) {
+                        select.classList.add('incorrect');
+                    }
+                }
+            }
+            
+            const fb = document.getElementById('matching-feedback');
+            if (correct === 10) {
+                fb.className = 'feedback success';
+                fb.textContent = `✓ ALL CORRECT: ${correct}/10`;
+            } else {
+                fb.className = 'feedback partial';
+                fb.textContent = `⚠ ${correct}/10 correct`;
+            }
+        }
+        
+        function checkGaps() {
+            let correct = 0;
+            for (let i = 1; i <= 20; i++) {
+                const select = document.getElementById(`gap${i}`);
+                if (select) {
+                    select.classList.remove('correct', 'incorrect');
+                    const answer = select.getAttribute('data-ans');
+                    if (select.value === answer) {
+                        correct++;
+                        select.classList.add('correct');
+                    } else if (select.value) {
+                        select.classList.add('incorrect');
+                    }
+                }
+            }
+            
+            const fb = document.getElementById('gaps-feedback');
+            if (correct === 20) {
+                fb.className = 'feedback success';
+                fb.textContent = `✓ VERIFIED: ${correct}/20`;
+            } else {
+                fb.className = 'feedback partial';
+                fb.textContent = `⚠ ${correct}/20 correct`;
+            }
+        }
+        
+        function checkTranslations() {
+            let correct = 0;
+            for (let i = 1; i <= 6; i++) {
+                const input = document.getElementById(`trans${i}`);
+                if (input) {
+                    const answer = input.getAttribute('data-answer').toLowerCase();
+                    const userAnswer = input.value.toLowerCase().trim();
+                    input.style.borderColor = '';
+                    input.style.background = '';
+                    
+                    if (userAnswer === answer) {
+                        correct++;
+                        input.style.borderColor = '#059669';
+                        input.style.background = '#d1fae5';
+                    } else if (userAnswer) {
+                        input.style.borderColor = '#dc2626';
+                        input.style.background = '#fee2e2';
+                    }
+                }
+            }
+            
+            const fb = document.getElementById('translation-feedback');
+            if (correct === 6) {
+                fb.className = 'feedback success';
+                fb.textContent = `✓ Brawo! ${correct}/6`;
+            } else {
+                fb.className = 'feedback partial';
+                fb.textContent = `⚠ ${correct}/6 poprawnie`;
+            }
+            saveProgress();
+        }
+        
+        function checkTF(btn, isCorrect) {
+            const parent = btn.parentElement;
+            const buttons = parent.querySelectorAll('.tf-btn');
+            
+            buttons.forEach(b => {
+                b.classList.remove('selected-correct', 'selected-wrong');
+            });
+            
+            if (isCorrect) {
+                btn.classList.add('selected-correct');
+            } else {
+                btn.classList.add('selected-wrong');
+            }
+        }
+        
+        function printWorksheet() {
+            window.print();
+        }
+        
+        // Auto-save on input change
+        document.querySelectorAll('input[type="text"]').forEach(input => {
+            input.addEventListener('blur', saveProgress);
+        });
+    </script>
+</body>
+</html>
