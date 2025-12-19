@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESL Law: 4-Day Working Week – Poland Pilot 2026 (B1)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Oswald:wght@400;500;600&family=Special+Elite&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'stamp': ['"Oswald"', 'sans-serif'],
+                        'type': ['"Courier Prime"', 'monospace'],
+                        'hand': ['"Special Elite"', 'cursive'],
+                    },
+                    colors: {
+                        'manila': '#F0E6D2',
+                        'manila-dark': '#E3D5B8',
+                        'paper': '#FAFAFA',
+                        'ink': '#1F2937',
+                        'red-stamp': '#B91C1C',
+                        'highlighter': '#FEF08A',
+                        'blue-ink': '#1e40af',
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* --- SCREEN STYLES --- */
+        body {
+            background-color: #27272a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 2rem 1rem;
+            color: #1F2937;
+        }
+        
+        .folder-container {
+            background-color: #F0E6D2;
+            width: 100%;
+            max-width: 72rem;
+            border-radius: 4px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+            display: grid;
+            grid-template-columns: 32% 68%;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .spine {
+            position: absolute;
+            left: 32%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.2), rgba(0,0,0,0.1));
+            z-index: 20;
+        }
+        
+        .panel-left {
+            background-color: #E3D5B8;
+            padding: 1.25rem;
+            border-right: 1px solid #d1c4a8;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .panel-right {
+            background-color: #F0E6D2;
+            padding: 1.5rem 2rem;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+        
+        /* Legal Document Styling */
+        .legal-doc {
+            background: #FAFAFA;
+            padding: 1.5rem;
+            box-shadow: 2px 4px 12px rgba(0,0,0,0.12);
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            position: relative;
+            transform: rotate(0.2deg);
+            margin-bottom: 1.5rem;
+            border: 1px solid #e5e5e5;
+        }
+        
+        .legal-doc::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 30px;
+            right: 30px;
+            height: 3px;
+            background: repeating-linear-gradient(90deg, transparent, transparent 2px, #dc2626 2px, #dc2626 4px);
+            opacity: 0.3;
+        }
+        
+        /* Sticky Note */
+        .sticky-note {
+            background-color: #FEF08A;
+            padding: 1rem;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.15);
+            font-family: 'Special Elite', cursive;
+            transform: rotate(-0.3deg);
+            margin-bottom: 1.25rem;
+            border-bottom-right-radius: 20px;
+            position: relative;
+        }
+        
+        .sticky-note::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #FEF08A 50%, #e9dc74 50%);
+            border-bottom-right-radius: 20px;
+        }
+        
+        /* Evidence/Exhibit Cards */
+        .exhibit-card {
+            background: white;
+            border: 2px solid #1F2937;
+            padding: 0.5rem;
+            position: relative;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+        }
+        
+        .exhibit-card::before {
+            content: attr(data-exhibit);
+            position: absolute;
+            top: -8px;
+            left: 8px;
+            background: #1F2937;
+            color: white;
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.55rem;
+            padding: 1px 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .exhibit-card img {
+            width: 100%;
+            height: 90px;
+            object-fit: cover;
+            filter: sepia(10%) contrast(95%);
+            border: 1px solid #ccc;
+        }
+        
+        /* Matching Task - Definition style */
+        .def-row {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 0.5rem;
+            padding: 0.35rem 0;
+            border-bottom: 1px dotted #aaa;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.75rem;
+            align-items: start;
+        }
+        
+        .def-row:last-child {
+            border-bottom: none;
+        }
+        
+        .def-number {
+            font-weight: 700;
+            color: #B91C1C;
+            min-width: 1.5rem;
+        }
+        
+        .def-text {
+            color: #333;
+            line-height: 1.4;
+        }
+        
+        .def-answer {
+            grid-column: 1 / -1;
+            margin-top: 0.25rem;
+        }
+        
+        .match-select {
+            width: 100%;
+            padding: 0.2rem 0.3rem;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.7rem;
+            border: 1px dashed #666;
+            background: rgba(255,255,255,0.8);
+            cursor: pointer;
+        }
+        
+        .match-select:focus {
+            outline: none;
+            border-color: #B91C1C;
+            background: white;
+        }
+        
+        .match-select.correct {
+            background: #d1fae5;
+            border: 1px solid #059669;
+        }
+        
+        .match-select.incorrect {
+            background: #fee2e2;
+            border: 1px solid #dc2626;
+        }
+        
+        /* Gap Fill Selects */
+        .gap-select {
+            background: #f3f4f6;
+            border: none;
+            border-bottom: 2px solid #1F2937;
+            font-family: 'Courier Prime', monospace;
+            color: #1e40af;
+            font-weight: bold;
+            font-size: 0.8rem;
+            padding: 0 0.3rem;
+            cursor: pointer;
+            margin: 0 2px;
+        }
+        
+        .gap-select:hover {
+            background: #e5e7eb;
+        }
+        
+        .gap-select.correct {
+            border-bottom-color: #059669;
+            color: #059669;
+        }
+        
+        .gap-select.incorrect {
+            border-bottom-color: #dc2626;
+            color: #dc2626;
+        }
+        
+        /* Case Study Box */
+        .case-box {
+            border: 2px solid #1F2937;
+            padding: 1rem;
+            background: white;
+            position: relative;
+            margin: 1rem 0;
+        }
+        
+        .case-box::before {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border: 1px solid #ddd;
+            pointer-events: none;
+        }
+        
+        .case-label {
+            position: absolute;
+            top: -10px;
+            left: 12px;
+            background: #B91C1C;
+            color: white;
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.65rem;
+            padding: 2px 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Discussion Items */
+        .discussion-item {
+            background: white;
+            padding: 0.6rem 0.8rem;
+            margin: 0.5rem 0;
+            border-left: 3px solid #B91C1C;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.75rem;
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.06);
+        }
+        
+        .discussion-item strong {
+            color: #B91C1C;
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.75rem;
+            margin: 0.75rem 0;
+            background: white;
+        }
+        
+        .comparison-table th {
+            background: #1F2937;
+            color: white;
+            padding: 0.4rem;
+            text-align: left;
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            font-size: 0.65rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .comparison-table td {
+            padding: 0.4rem;
+            border: 1px solid #ccc;
+            vertical-align: top;
+        }
+        
+        .comparison-table tr:nth-child(even) td {
+            background: #f9f9f9;
+        }
+        
+        /* Buttons */
+        .action-btn {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.75rem;
+        }
+        
+        .btn-check {
+            background: #1F2937;
+            color: white;
+            border: none;
+        }
+        
+        .btn-check:hover {
+            background: #000;
+        }
+        
+        .btn-print {
+            background: white;
+            color: #1F2937;
+            border: 2px solid #1F2937;
+        }
+        
+        .btn-print:hover {
+            background: #1F2937;
+            color: white;
+        }
+        
+        /* Feedback */
+        .feedback {
+            font-family: 'Special Elite', cursive;
+            padding: 0.4rem;
+            margin-top: 0.4rem;
+            font-size: 0.75rem;
+        }
+        
+        .feedback.success { color: #059669; }
+        .feedback.partial { color: #B91C1C; }
+        
+        /* Concept Box */
+        .concept-box {
+            background: #e0f2fe;
+            border: 2px solid #0284c7;
+            padding: 0.75rem;
+            margin: 0.75rem 0;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.7rem;
+        }
+        
+        /* Section Headers */
+        .section-header {
+            font-family: 'Oswald', sans-serif;
+            color: #B91C1C;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #E3D5B8;
+            padding-bottom: 0.4rem;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+        
+        /* Stamp Effect */
+        .stamp {
+            border: 3px solid #B91C1C;
+            color: #B91C1C;
+            font-family: 'Oswald', sans-serif;
+            padding: 0.3rem 0.8rem;
+            text-transform: uppercase;
+            transform: rotate(-8deg);
+            opacity: 0.7;
+            display: inline-block;
+            font-weight: 600;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+        }
+        
+        /* Role-play box */
+        .roleplay-box {
+            background: #fef3c7;
+            border: 2px dashed #d97706;
+            padding: 0.75rem;
+            margin-top: 0.75rem;
+            font-family: 'Special Elite', cursive;
+            font-size: 0.75rem;
+        }
+        
+        .roleplay-box textarea {
+            width: 100%;
+            min-height: 60px;
+            border: 1px solid #d97706;
+            background: white;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.75rem;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            resize: vertical;
+        }
+
+        /* Quiz section */
+        .quiz-item {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.8rem;
+        }
+        
+        .quiz-item .quiz-btns {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .quiz-btn {
+            padding: 0.3rem 1rem;
+            border: 2px solid #1F2937;
+            background: white;
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quiz-btn:hover {
+            background: #f3f4f6;
+        }
+        
+        .quiz-btn.selected-true {
+            background: #d1fae5;
+            border-color: #059669;
+            color: #059669;
+        }
+        
+        .quiz-btn.selected-false {
+            background: #fee2e2;
+            border-color: #dc2626;
+            color: #dc2626;
+        }
+
+        /* Helper for print only text */
+        .print-only-text {
+            display: none;
+        }
+
+        /* --- PRINT STYLES --- */
+        @media print {
+            @page {
+                size: A4;
+                margin: 1.5cm 2cm;
+            }
+
+            *, *::before, *::after {
+                background: transparent !important;
+                box-shadow: none !important;
+                text-shadow: none !important;
+                filter: none !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                transform: none !important;
+            }
+
+            body {
+                background: white;
+                display: block;
+                padding: 0;
+                font-size: 11pt;
+                width: 100%;
+                margin: 0;
+                height: auto;
+                overflow: visible;
+            }
+
+            .btn-print, .btn-check, .spine, .feedback, 
+            .match-select, .gap-select, .sticky-note::after,
+            .legal-doc::before {
+                display: none !important;
+            }
+
+            .print-only-text, .gap-blank, .print-wordbank {
+                display: block !important;
+            }
+
+            .folder-container {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                max-width: 100%;
+                border: none;
+                margin: 0;
+                height: auto !important;
+                overflow: visible !important;
+                box-shadow: none;
+            }
+
+            .panel-left, .panel-right {
+                display: contents;
+                background: transparent;
+                border: none;
+            }
+
+            .panel-left > *, .panel-right > * {
+                order: 100;
+            }
+
+            #docket-header { order: 1; margin-bottom: 10px; }
+            #warmup-section { order: 2; margin-bottom: 20px; }
+            #task1-section { order: 3; margin-bottom: 20px; }
+            .legal-doc { order: 4; }
+            #task3-section { order: 5; }
+            #task4-section { order: 6; }
+            #task5-section { order: 7; }
+            #task6-section { order: 8; }
+            #reference-section { order: 9; }
+
+            #docket-header {
+                border-bottom: 2px solid #333 !important;
+                padding-bottom: 10px;
+                text-align: center;
+            }
+
+            #task1-section {
+                border: none;
+                padding: 0;
+            }
+            
+            .def-row {
+                display: flex;
+                align-items: baseline;
+                border-bottom: 1px dotted #ccc;
+                padding: 4px 0;
+                page-break-inside: avoid;
+            }
+            
+            .def-number { width: 25px; }
+            .def-text { flex-grow: 1; padding-right: 10px; }
+            
+            .def-answer {
+                width: 180px;
+                border-bottom: 1px solid black;
+                height: 1.2em;
+                margin-top: 0;
+            }
+
+            .print-wordbank {
+                border: 1px solid #999 !important;
+                padding: 8px;
+                margin-bottom: 10px;
+                background-color: #f9f9f9 !important;
+                font-size: 0.85em;
+                page-break-inside: avoid;
+                font-family: 'Courier Prime', monospace;
+            }
+
+            .legal-doc {
+                border: none;
+                padding: 0;
+                margin: 20px 0;
+                font-size: 11pt;
+                line-height: 1.6;
+            }
+
+            .gap-blank {
+                display: inline-block !important;
+                width: 3cm;
+                border-bottom: 1px solid black;
+                margin: 0 5px;
+                vertical-align: bottom;
+                height: 1em;
+            }
+
+            .sticky-note {
+                border: 2px solid #FEF08A;
+                border-radius: 0;
+                padding: 10px;
+                margin: 0 0 20px 0;
+                page-break-inside: avoid;
+                background-color: #fff !important;
+            }
+
+            .case-box {
+                border: 2px solid #1F2937;
+                margin: 20px 0;
+                page-break-inside: avoid;
+            }
+            
+            .case-label {
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .discussion-item {
+                border-left: 3px solid #B91C1C !important;
+                border: 1px solid #eee;
+                padding: 5px 10px;
+                margin-bottom: 8px;
+                page-break-inside: avoid;
+            }
+
+            .comparison-table th {
+                background: #eee !important;
+                color: black !important;
+                border: 1px solid #999;
+            }
+            .comparison-table td {
+                border: 1px solid #999;
+            }
+        }
+        
+        .gap-blank { display: none; }
+        .print-wordbank { display: none; }
+    </style>
+</head>
+<body>
+    <main class="folder-container">
+        <div class="spine"></div>
+        
+        <!-- LEFT PANEL -->
+        <aside class="panel-left">
+            <!-- Docket Header -->
+            <div id="docket-header" class="text-center border-b-2 border-manila pb-3">
+                <div class="font-stamp text-xs text-ink/50 tracking-widest">DOCKET NO.</div>
+                <div class="font-type text-xl font-bold">PL-2026-4DW</div>
+                <div class="text-[10px] font-type mt-1 opacity-70">RE: 4-DAY WORKING WEEK PILOT</div>
+                <div class="mt-2">
+                    <span class="stamp text-xs">B1 Level</span>
+                </div>
+                <p class="font-type text-[9px] mt-2 opacity-50">Est. Time: 60 min</p>
+            </div>
+            
+            <!-- Task 1: Vocabulary Matching with Definitions -->
+            <div id="task1-section" class="bg-white/50 p-2 rounded border border-manila-dark flex-grow">
+                <h3 class="font-stamp text-sm mb-1 text-red-stamp uppercase tracking-wide">Task 1: Key Vocabulary</h3>
+                <p class="font-type text-[8px] mb-2 opacity-70">Match each definition to the correct term.</p>
+                
+                <div class="print-wordbank">
+                    <strong>Vocabulary Bank:</strong> pilot programme • productivity • work-life balance • burnout • to implement • compressed schedule • feasibility • funding • retention rate • to roll out
+                </div>
+
+                <div id="matching-task" class="space-y-1">
+                    <div class="def-row">
+                        <span class="def-number">1.</span>
+                        <span class="def-text">Money provided by government or organisation for a specific purpose</span>
+                        <div class="def-answer">
+                            <select id="match1" class="match-select" onchange="saveProgress()">
+                                <option value="">— select term —</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="def-row">
+                        <span class="def-number">2.</span>
+                        <span class="def-text">The percentage of employees who stay with a company over time</span>
+                        <div class="def-answer">
+                            <select id="match2" class="match-select" onchange="saveProgress()">
+                                <option value="">— select term —</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="def-row">
+                        <span class="def-number">3.</span>
+                        <span class="def-text">Physical and emotional exhaustion caused by prolonged stress</span>
+                        <div class="def-answer">
+                            <select id="match3" class="match-select" onchange="saveProgress()">
+                                <option value="">— select term —</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="def-row">
+                        <span class="def-number">4.</span>
+                        <span class="def-text">To introduce or launch something gradually on a wider scale</span>
+                        <div class="def-answer">
+                            <select id="match4" class="match-select" onchange="saveProgress()">
+                                <option value="">— select term —</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="def-row">
+                        <span class="def-number">5.</span>
+                        <span class="def-text">The rate at which work is completed or goods are produced</span>
+                        <div class="def-answer">
+                            <select id="match5" class="match-select" onchange="saveProgress()">
+                                <option value="">— select term —</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="def-row">
+                        <span class="def-number">6.</span>
+                        <span class="def-text">A small-scale test of a new system or method before full implementation</span>
+                        <div class="def-answer">
+                            <select id="match6" class="match-select" onchange="saveProgress()">
+                                <option value="">— select term —</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="def-row">
+                        <span class="def-number">7.</span>
+                        <span class="def-text">The equilibrium between professional duties and personal life</span>
+                        <div class="def-answer">
+                            <select id="match7" class="match-select" onchange="saveProgress()">
+                                <option value="">— select term —</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="def-row">
+                        <span class="def-number">8.</span>
+                        <span class="def-text">The possibility or practicality of something being done successfully</span>
+                        <div class="def-answer">
+                            <select id="match8" class="match-select" onchange="saveProgress()">
+                                <option value="">— select term —</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="def-row">
+                        <span class="def-number">9.</span>
+                        <span class="def-text">Working the same total hours in fewer days (e.g., 38 hours in 4 days)</span>
+                        <div class="def-answer">
+                            <select id="match9" class="match-select" onchange="saveProgress()">
+                                <option value="">— select term —</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="def-row">
+                        <span class="def-number">10.</span>
+                        <span class="def-text">To put a plan, decision, or system into action</span>
+                        <div class="def-answer">
+                            <select id="match10" class="match-select" onchange="saveProgress()">
+                                <option value="">— select term —</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="checkMatching()" class="action-btn btn-check w-full mt-2">
+                    ✔ Verify Matches
+                </button>
+                <div id="matching-feedback" class="feedback text-center"></div>
+            </div>
+            
+            <!-- Print Button -->
+            <div class="text-center mt-4">
+                <button onclick="printWorksheet()" class="action-btn btn-print">
+                    🖨️ Print Worksheet
+                </button>
+            </div>
+        </aside>
+        
+        <!-- RIGHT PANEL -->
+        <section class="panel-right">
+            
+            <!-- WARM-UP: Sticky Note with Key Concepts -->
+            <div id="warmup-section" class="sticky-note">
+                <h3 class="font-bold text-sm border-b-2 border-black/20 pb-1 mb-2">WARM-UP: How Many Days Do You Work?</h3>
+                
+                <!-- Key Concepts for Discussion -->
+                <div class="concept-box mb-3">
+                    <div class="font-stamp text-xs text-sky-800 mb-1">💡 KEY CONCEPTS TO USE IN DISCUSSION:</div>
+                    <div class="grid grid-cols-2 gap-x-3 gap-y-1 text-[10px]">
+                        <div><strong>4-day week</strong> – 4-dniowy tydzień pracy</div>
+                        <div><strong>productivity</strong> – wydajność</div>
+                        <div><strong>reduced hours</strong> – zmniejszona liczba godzin</div>
+                        <div><strong>work-life balance</strong> – równowaga praca-życie</div>
+                        <div><strong>pilot programme</strong> – program pilotażowy</div>
+                        <div><strong>shift work</strong> – praca zmianowa</div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-4 gap-2 mb-2">
+                    <div class="exhibit-card" data-exhibit="A">
+                        <img src="https://st3.depositphotos.com/1258191/16453/i/450/depositphotos_164535170-stock-photo-young-woman-working-at-office.jpg?forcejpeg=true" alt="Happy productive worker">
+                        <p class="text-[8px] mt-1 text-center">Productivity</p>
+                    </div>
+                    <div class="exhibit-card" data-exhibit="B">
+                        <img src="https://static6.depositphotos.com/1005730/667/i/450/depositphotos_6679326-stock-photo-exhausted-businessman.jpg?forcejpeg=true" alt="Exhausted businessman burnout">
+                        <p class="text-[8px] mt-1 text-center">Burnout</p>
+                    </div>
+                    <div class="exhibit-card" data-exhibit="C">
+                        <img src="https://st.depositphotos.com/62628780/61454/i/450/depositphotos_614547344-stock-photo-portrait-happy-caucasian-family-four.jpg?forcejpeg=true" alt="Happy family relaxing at home">
+                        <p class="text-[8px] mt-1 text-center">Extra Day Off</p>
+                    </div>
+                    <div class="exhibit-card" data-exhibit="D">
+                        <img src="https://st2.depositphotos.com/2249091/6998/i/450/depositphotos_69988369-stock-photo-woman-working-on-production-line.jpg?forcejpeg=true" alt="Woman working on production line">
+                        <p class="text-[8px] mt-1 text-center">Shift Work</p>
+                    </div>
+                </div>
+                
+                <div class="text-[9px] space-y-1 border-t border-black/20 pt-2">
+                    <p><strong>💭 Discuss using the concepts above:</strong></p>
+                    <p>1. How many days per week do you currently work? Would you prefer 4 or 5 days?</p>
+                    <p>2. Would you work longer hours each day to have a 3-day weekend?</p>
+                    <p>3. How would a 4-day week affect <em>shift work</em> at a manufacturing company?</p>
+                    <p>4. Do you think <em>productivity</em> would increase or decrease with shorter weeks?</p>
+                </div>
+            </div>
+            
+            <!-- TASK 2: Reading Article -->
+            <article class="legal-doc">
+                <div class="absolute top-2 right-4 stamp text-xs">
+                    Ministry Pilot 2026
+                </div>
+                
+                <h1 class="font-bold text-base mb-3 text-center underline decoration-2 underline-offset-4 font-stamp tracking-wide">
+                    POLAND TESTS THE 4-DAY WORKING WEEK: "IT'S HAPPENING!"
+                </h1>
+                
+                <h2 class="section-header text-sm">Task 2: Complete the Article</h2>
+                
+                <div class="print-wordbank">
+                    <strong>Word Bank:</strong> pilot programme • productivity • work-life balance • burnout • to implement • compressed schedule • feasibility • funding • retention rate • to roll out
+                </div>
+                
+                <p class="mb-2">
+                    <strong>§1. POLAND'S GROUNDBREAKING EXPERIMENT</strong><br>
+                    In August 2025, the Polish Ministry of Family, Labour and Social Policy launched an ambitious 
+                    <select class="gap-select" id="gap1" data-ans="pilot programme" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank"></span>
+                    called "Skrócony czas pracy – to się dzieje!" (Shortened Working Time – It's Happening!). Nearly 2,000 companies applied, and 90 were selected to test various models of reduced working time with over 5,000 workers. The goal? To evaluate the impact on 
+                    <select class="gap-select" id="gap2" data-ans="productivity" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank"></span>,
+                    employee health, and 
+                    <select class="gap-select" id="gap3" data-ans="work-life balance" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank"></span>.
+                    The initiative comes after 107 years of the 8-hour working day – many believe it's time for change.
+                </p>
+                
+                <p class="mb-2">
+                    <strong>§2. HOW THE PILOT WORKS</strong><br>
+                    Selected companies receive government 
+                    <select class="gap-select" id="gap4" data-ans="funding" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank"></span>
+                    of up to 1 million PLN (average: 500,000 PLN) to test different models. Some will try a 4-day week with a 
+                    <select class="gap-select" id="gap5" data-ans="compressed schedule" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank"></span>
+                    (38 hours in 4 days instead of 5). Others will reduce total hours to 32 per week, or offer additional days off per month. Crucially, employers must maintain salaries at 100% of current levels and keep at least 90% of staff employed. The pilot runs from January 2026 to December 2026, with results reported by May 2027.
+                </p>
+                
+                <p class="mb-2">
+                    <strong>§3. DIFFERENT SECTORS, DIFFERENT CHALLENGES</strong><br>
+                    The 90 participating organisations come from various sectors including IT companies (Symbioza.IT), manufacturing (Hydrodukt, Pol-Elektra), water utilities, forestry (Lasy Państwowe), and even city halls (Leszno, Piotrków Trybunalski). For office workers, 
+                    <select class="gap-select" id="gap6" data-ans="to implement" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank"></span>
+                    shorter weeks may be straightforward. But for continuous production with shift work and essential services, the 
+                    <select class="gap-select" id="gap7" data-ans="feasibility" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank"></span>
+                    is less clear. Companies must improve efficiency through automation and process optimisation to make it work.
+                </p>
+                
+                <p class="mb-2">
+                    <strong>§4. GLOBAL EVIDENCE AND EXPECTATIONS</strong><br>
+                    International trials show promising results. In Iceland, 86% of workers now have shorter weeks, with GDP growing by 5%. UK studies found a 39% reduction in 
+                    <select class="gap-select" id="gap8" data-ans="burnout" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank"></span>
+                    and 1.4% revenue increase. Companies also report better 
+                    <select class="gap-select" id="gap9" data-ans="retention rate" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank"></span>
+                    – employees stay longer when they enjoy better work-life balance. However, all stakeholders – workers, employers, unions, and government – must collaborate. If successful, Poland may 
+                    <select class="gap-select" id="gap10" data-ans="to roll out" onchange="saveProgress()"><option value="">▼</option></select><span class="gap-blank"></span>
+                    the policy nationwide after 2027.
+                </p>
+                
+                <div class="text-right mt-3">
+                    <button onclick="checkGaps()" class="action-btn btn-check text-xs">
+                        ✔ Verify Article Gaps
+                    </button>
+                </div>
+                <div id="gaps-feedback" class="feedback text-right"></div>
+            </article>
+            
+            <!-- TASK 3: Case Studies -->
+            <div id="task3-section">
+                <h2 class="section-header">Task 3: Case Studies – Analyse the Situations</h2>
+                <p class="font-type text-[10px] mb-2 opacity-70">Read each case and answer the questions. Discuss your answers.</p>
+                
+                <!-- Case Study 1: Agnieszka -->
+                <div class="case-box">
+                    <div class="case-label">Case A: Agnieszka M.</div>
+                    
+                    <div class="flex gap-3 items-start mt-2">
+                        <div class="w-12 h-12 bg-manila border-2 border-ink flex-shrink-0 flex items-center justify-center font-stamp text-2xl">
+                            A
+                        </div>
+                        <div class="font-type text-xs flex-grow">
+                            <p class="font-bold mb-1">SUBJECT: AGNIESZKA M. – HR MANAGER</p>
+                            
+                            <div class="bg-paper p-2 mb-2 text-[10px] border border-gray-200">
+                                <p><strong>Situation:</strong> Agnieszka works in HR at a manufacturing company similar to Grupa Ergis. The CEO has asked her to prepare a report on whether they should apply for the next round of the 4-day week pilot.</p>
+                                <p class="mt-1"><strong>Challenge:</strong> The production line runs 24/7 with 3 shifts. Office staff work Monday-Friday. How can they implement different models for different departments?</p>
+                                <p class="mt-1"><strong>Budget:</strong> They could receive up to 1 million PLN in government funding.</p>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 gap-2 text-[10px]">
+                                <div class="bg-gray-100 p-2">
+                                    <p class="font-bold text-red-stamp">QUESTIONS:</p>
+                                    <p>1. Should production workers and office workers have the same schedule? Why / why not?</p>
+                                    <p>2. What are the risks of participating in the pilot?</p>
+                                    <p>3. What benefits might the company gain from being an "early adopter"?</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Case Study 2: Marek -->
+                <div class="case-box">
+                    <div class="case-label">Case B: Marek K.</div>
+                    
+                    <div class="flex gap-3 items-start mt-2">
+                        <div class="w-12 h-12 bg-manila border-2 border-ink flex-shrink-0 flex items-center justify-center font-stamp text-2xl">
+                            M
+                        </div>
+                        <div class="font-type text-xs flex-grow">
+                            <p class="font-bold mb-1">SUBJECT: MAREK K. – PRODUCTION LINE SUPERVISOR</p>
+                            
+                            <div class="bg-paper p-2 mb-2 text-[10px] border border-gray-200">
+                                <p><strong>Situation:</strong> Marek has worked at the factory for 15 years on rotating shifts (6 AM–2 PM, 2 PM–10 PM, 10 PM–6 AM). The company is considering a 4-day week pilot.</p>
+                                <p class="mt-1"><strong>Concern:</strong> He's worried that a 4-day week might mean longer 10-hour shifts. With his long commute (45 minutes each way), 10-hour days would leave almost no time with his family.</p>
+                                <p class="mt-1"><strong>Alternative:</strong> He'd prefer the "reduced hours" model (32 hours total) but worries about losing overtime pay.</p>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 gap-2 text-[10px]">
+                                <div class="bg-gray-100 p-2">
+                                    <p class="font-bold text-red-stamp">QUESTIONS:</p>
+                                    <p>1. What is better for shift workers: compressed schedule (38h in 4 days) or reduced hours (32h)?</p>
+                                    <p>2. How might losing overtime affect workers like Marek financially?</p>
+                                    <p>3. Should all employees be consulted before joining the pilot? How?</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TASK 4: Role-Play -->
+            <div id="task4-section" class="mt-4">
+                <h2 class="section-header text-sm">Task 4: Role-Play Scenarios</h2>
+                <p class="font-type text-[9px] mb-2 opacity-70">Practice these workplace conversations. Take turns being Person A and Person B.</p>
+                
+                <div class="grid grid-cols-1 gap-3">
+                    <div class="roleplay-box">
+                        <strong>🎭 SCENARIO 1: Board Meeting Presentation</strong>
+                        <p class="mt-1"><strong>Person A (HR Manager):</strong> You're presenting a proposal to join the 4-day week pilot. Explain: benefits for the company, which model you recommend, and how you'll measure success.</p>
+                        <p class="mt-1"><strong>Person B (CEO/CFO):</strong> You're sceptical about costs and productivity. Ask tough questions about: customer service continuity, production targets, what happens if it fails.</p>
+                        <textarea placeholder="Write key phrases you will use..."></textarea>
+                    </div>
+                    
+                    <div class="roleplay-box">
+                        <strong>🎭 SCENARIO 2: Employee Town Hall</strong>
+                        <p class="mt-1"><strong>Person A (HR):</strong> Announce to employees that the company has been selected for the pilot. Explain: what's changing, when, and that salaries won't be cut.</p>
+                        <p class="mt-1"><strong>Person B (Employee):</strong> You have concerns. Ask about: overtime, holidays, whether you can opt out, childcare issues with changed schedules.</p>
+                        <textarea placeholder="Write key phrases you will use..."></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TASK 5: Mini-Debate -->
+            <div id="task5-section" class="mt-4">
+                <h2 class="section-header text-sm">Task 5: Mini-Debate</h2>
+                <p class="font-type text-[9px] mb-2 opacity-70">Choose FOR or AGAINST. Prepare 2-3 arguments.</p>
+                
+                <div class="bg-white border-2 border-ink p-3 text-center mb-3">
+                    <p class="font-stamp text-lg">"The 4-day working week should become MANDATORY for all companies in Poland"</p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="discussion-item">
+                        <strong>✅ FOR (Mandatory 4-day week):</strong>
+                        <p class="mt-1">• Workers' health and wellbeing should come first</p>
+                        <p>• Voluntary schemes have low adoption (Japan: only 8%)</p>
+                        <p>• 107 years of 8-hour days is enough – time for progress</p>
+                        <p>• <em>Your argument: ________________</em></p>
+                    </div>
+                    
+                    <div class="discussion-item">
+                        <strong>❌ AGAINST (Keep it voluntary):</strong>
+                        <p class="mt-1">• Some industries need 24/7 operations (hospitals, factories)</p>
+                        <p>• Small businesses might not afford extra staff</p>
+                        <p>• Workers should have a choice – some prefer overtime pay</p>
+                        <p>• <em>Your argument: ________________</em></p>
+                    </div>
+                </div>
+                
+                <div class="concept-box mt-2">
+                    <p class="font-bold text-[10px]">🗣️ Useful phrases for debate:</p>
+                    <p class="text-[9px]">"In my opinion..." • "I believe that..." • "On the other hand..." • "However, we must consider..." • "The main advantage/disadvantage is..." • "I partly agree, but..."</p>
+                </div>
+            </div>
+            
+            <!-- TASK 6: Recap Quiz -->
+            <div id="task6-section" class="mt-4">
+                <h2 class="section-header text-sm">Task 6: Recap Quiz – True or False?</h2>
+                <p class="font-type text-[9px] mb-2 opacity-70">Test your understanding. Click TRUE or FALSE.</p>
+                
+                <div id="quiz-container">
+                    <div class="quiz-item" data-correct="true">
+                        <p>1. The Polish pilot programme is called "Skrócony czas pracy – to się dzieje!"</p>
+                        <div class="quiz-btns">
+                            <button class="quiz-btn" onclick="checkQuiz(this, true)">TRUE</button>
+                            <button class="quiz-btn" onclick="checkQuiz(this, false)">FALSE</button>
+                        </div>
+                    </div>
+                    
+                    <div class="quiz-item" data-correct="false">
+                        <p>2. Employers can reduce employees' salaries by 20% during the pilot.</p>
+                        <div class="quiz-btns">
+                            <button class="quiz-btn" onclick="checkQuiz(this, true)">TRUE</button>
+                            <button class="quiz-btn" onclick="checkQuiz(this, false)">FALSE</button>
+                        </div>
+                    </div>
+                    
+                    <div class="quiz-item" data-correct="true">
+                        <p>3. The pilot runs from January 2026 to December 2026 (12 months).</p>
+                        <div class="quiz-btns">
+                            <button class="quiz-btn" onclick="checkQuiz(this, true)">TRUE</button>
+                            <button class="quiz-btn" onclick="checkQuiz(this, false)">FALSE</button>
+                        </div>
+                    </div>
+                    
+                    <div class="quiz-item" data-correct="true">
+                        <p>4. In the UK trial, burnout decreased by 39%.</p>
+                        <div class="quiz-btns">
+                            <button class="quiz-btn" onclick="checkQuiz(this, true)">TRUE</button>
+                            <button class="quiz-btn" onclick="checkQuiz(this, false)">FALSE</button>
+                        </div>
+                    </div>
+                    
+                    <div class="quiz-item" data-correct="false">
+                        <p>5. Poland will definitely implement the 4-day week nationwide after 2027.</p>
+                        <div class="quiz-btns">
+                            <button class="quiz-btn" onclick="checkQuiz(this, true)">TRUE</button>
+                            <button class="quiz-btn" onclick="checkQuiz(this, false)">FALSE</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="quiz-feedback" class="feedback mt-2"></div>
+            </div>
+            
+            <!-- Summary Table -->
+            <div id="reference-section" class="mt-4">
+                <h2 class="section-header text-sm">Reference: International 4-Day Week Trials</h2>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 18%">Country</th>
+                            <th style="width: 22%">Model</th>
+                            <th style="width: 30%">Results</th>
+                            <th style="width: 30%">Challenges</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Iceland</strong><br>(2015-2019)</td>
+                            <td>35-36 hours/week<br>100% salary</td>
+                            <td>✅ 86% workforce covered<br>✅ 5% GDP growth</td>
+                            <td>Required significant planning</td>
+                        </tr>
+                        <tr>
+                            <td><strong>UK</strong><br>(2022)</td>
+                            <td>32 hours/week<br>"100-80-100" model</td>
+                            <td>✅ 39% less burnout<br>✅ 1.4% revenue increase</td>
+                            <td>Some firms reverted back</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Belgium</strong><br>(2022)</td>
+                            <td>38 hours in 4 days<br>(compressed)</td>
+                            <td>✅ Legal right (not obligation)<br>✅ High satisfaction</td>
+                            <td>Long days (9.5h) can be tiring</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Japan</strong><br>(2021+)</td>
+                            <td>Voluntary<br>Various models</td>
+                            <td>❌ Low adoption (8% of firms)</td>
+                            <td>"Overwork culture" deeply rooted</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Poland</strong><br>(2026)</td>
+                            <td>Various models<br>Up to 1M PLN funding</td>
+                            <td>⏳ Testing 90 companies<br>Results: May 2027</td>
+                            <td>Manufacturing/shift work challenges</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="concept-box mt-2">
+                    <p class="font-bold text-[10px]">📊 Key Statistics from Poland's Pilot:</p>
+                    <p class="text-[9px]">• 1,994 companies applied → 90 were selected</p>
+                    <p class="text-[9px]">• Over 5,000 workers will participate</p>
+                    <p class="text-[9px]">• Average funding: 500,000 PLN per company</p>
+                    <p class="text-[9px]">• Participating sectors: IT, manufacturing, public administration, forestry, utilities</p>
+                </div>
+            </div>
+            
+        </section>
+    </main>
+    
+    <script>
+        // Answer Keys
+        const matchingAnswers = {
+            'match1': 'funding',
+            'match2': 'retention rate',
+            'match3': 'burnout',
+            'match4': 'to roll out',
+            'match5': 'productivity',
+            'match6': 'pilot programme',
+            'match7': 'work-life balance',
+            'match8': 'feasibility',
+            'match9': 'compressed schedule',
+            'match10': 'to implement'
+        };
+        
+        const gapAnswers = {
+            'gap1': 'pilot programme',
+            'gap2': 'productivity',
+            'gap3': 'work-life balance',
+            'gap4': 'funding',
+            'gap5': 'compressed schedule',
+            'gap6': 'to implement',
+            'gap7': 'feasibility',
+            'gap8': 'burnout',
+            'gap9': 'retention rate',
+            'gap10': 'to roll out'
+        };
+        
+        // Term options for matching
+        const termOptions = [
+            'burnout', 'compressed schedule', 'feasibility',
+            'funding', 'pilot programme', 'productivity',
+            'retention rate', 'to implement', 'to roll out', 'work-life balance'
+        ];
+        
+        // Shuffle function
+        function shuffle(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+        
+        // Setup on load
+        window.onload = function() {
+            setupMatchingTask();
+            setupGapsTask();
+            loadProgress();
+        };
+        
+        function setupMatchingTask() {
+            const shuffled = shuffle(termOptions);
+            for (let i = 1; i <= 10; i++) {
+                const select = document.getElementById(`match${i}`);
+                if (select) {
+                    shuffled.forEach(opt => {
+                        const option = document.createElement('option');
+                        option.value = opt;
+                        option.textContent = opt;
+                        select.appendChild(option);
+                    });
+                }
+            }
+        }
+        
+        function setupGapsTask() {
+            const shuffled = shuffle(termOptions);
+            for (let i = 1; i <= 10; i++) {
+                const select = document.getElementById(`gap${i}`);
+                if (select) {
+                    shuffled.forEach(opt => {
+                        const option = document.createElement('option');
+                        option.value = opt;
+                        option.textContent = opt;
+                        select.appendChild(option);
+                    });
+                }
+            }
+        }
+        
+        // Save/Load Progress
+        function saveProgress() {
+            const progress = {};
+            for (let i = 1; i <= 10; i++) {
+                const m = document.getElementById(`match${i}`);
+                const g = document.getElementById(`gap${i}`);
+                if (m) progress[`match${i}`] = m.value;
+                if (g) progress[`gap${i}`] = g.value;
+            }
+            localStorage.setItem('four_day_week_b1_progress', JSON.stringify(progress));
+        }
+        
+        function loadProgress() {
+            const saved = localStorage.getItem('four_day_week_b1_progress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                Object.keys(progress).forEach(key => {
+                    const el = document.getElementById(key);
+                    if (el && progress[key]) {
+                        el.value = progress[key];
+                    }
+                });
+            }
+        }
+        
+        // Check Matching
+        function checkMatching() {
+            let correct = 0;
+            for (let i = 1; i <= 10; i++) {
+                const select = document.getElementById(`match${i}`);
+                if (select) {
+                    select.classList.remove('correct', 'incorrect');
+                    if (select.value === matchingAnswers[`match${i}`]) {
+                        correct++;
+                        select.classList.add('correct');
+                    } else if (select.value) {
+                        select.classList.add('incorrect');
+                    }
+                }
+            }
+            
+            const fb = document.getElementById('matching-feedback');
+            if (correct === 10) {
+                fb.className = 'feedback success';
+                fb.textContent = `✔ ALL CORRECT: ${correct}/10`;
+            } else {
+                fb.className = 'feedback partial';
+                fb.textContent = `⚠ ${correct}/10 correct`;
+            }
+        }
+        
+        // Check Gaps
+        function checkGaps() {
+            let correct = 0;
+            for (let i = 1; i <= 10; i++) {
+                const select = document.getElementById(`gap${i}`);
+                if (select) {
+                    select.classList.remove('correct', 'incorrect');
+                    const answer = select.getAttribute('data-ans');
+                    if (select.value === answer) {
+                        correct++;
+                        select.classList.add('correct');
+                    } else if (select.value) {
+                        select.classList.add('incorrect');
+                    }
+                }
+            }
+            
+            const fb = document.getElementById('gaps-feedback');
+            if (correct === 10) {
+                fb.className = 'feedback success';
+                fb.textContent = `✔ VERIFIED: ${correct}/10`;
+            } else {
+                fb.className = 'feedback partial';
+                fb.textContent = `⚠ ${correct}/10 correct`;
+            }
+        }
+        
+        // Quiz checking
+        let quizScore = 0;
+        let quizAnswered = 0;
+        
+        function checkQuiz(btn, userAnswer) {
+            const quizItem = btn.closest('.quiz-item');
+            const correctAnswer = quizItem.getAttribute('data-correct') === 'true';
+            const buttons = quizItem.querySelectorAll('.quiz-btn');
+            
+            // Disable buttons
+            buttons.forEach(b => b.disabled = true);
+            
+            if (userAnswer === correctAnswer) {
+                btn.classList.add('selected-true');
+                quizScore++;
+            } else {
+                btn.classList.add('selected-false');
+                // Highlight correct answer
+                buttons.forEach(b => {
+                    const btnAnswer = b.textContent === 'TRUE';
+                    if (btnAnswer === correctAnswer) {
+                        b.classList.add('selected-true');
+                    }
+                });
+            }
+            
+            quizAnswered++;
+            
+            if (quizAnswered === 5) {
+                const fb = document.getElementById('quiz-feedback');
+                if (quizScore === 5) {
+                    fb.className = 'feedback success';
+                    fb.textContent = `✔ Perfect! ${quizScore}/5 correct`;
+                } else {
+                    fb.className = 'feedback partial';
+                    fb.textContent = `${quizScore}/5 correct`;
+                }
+            }
+        }
+        
+        // Print
+        function printWorksheet() {
+            window.print();
+        }
+    </script>
+</body>
+</html>
